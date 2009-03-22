@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
-<defaultcodec>utf-8</defaultcodec>
+<!DOCTYPE TS>
+<TS version="2.0">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>@default</name>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type="obsolete">User #%1&apos;s IP address is %2.</translation>
     </message>
@@ -12,7 +12,6 @@
 <context>
     <name>AboutDlg</name>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unizone (English)
 Version %1</source>
         <translation type="obsolete">Unizone 
@@ -67,7 +66,6 @@ Version %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
         <translation type="obsolete">Unizone은 Copyright (C) 2003 by Mika T. Lindqvist</translation>
     </message>
@@ -85,37 +83,30 @@ Version %1</source>
         <translation>주제:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Name</source>
         <translation type="obsolete">이름</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ID</source>
         <translation type="obsolete">아이디</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Status</source>
         <translation type="obsolete">상태</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Files</source>
         <translation type="obsolete">파일</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Connection</source>
         <translation type="obsolete">연결</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Load</source>
         <translation type="obsolete">로드</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Client</source>
         <translation type="obsolete">클라이언트</translation>
     </message>
@@ -140,16 +131,27 @@ Version %1</source>
         <translation>비밀</translation>
     </message>
     <message>
+        <location filename="channelimpl.cpp" line="378"/>
+        <location filename="channelimpl.cpp" line="390"/>
+        <location filename="channelimpl.cpp" line="402"/>
+        <location filename="channelimpl.cpp" line="431"/>
+        <location filename="channelimpl.cpp" line="460"/>
+        <location filename="channelimpl.cpp" line="510"/>
         <location filename="channelimpl.cpp" line="563"/>
         <source>Not allowed!</source>
         <translation>허락되지 않았습니다!</translation>
     </message>
     <message>
+        <location filename="channelimpl.cpp" line="423"/>
+        <location filename="channelimpl.cpp" line="452"/>
         <location filename="channelimpl.cpp" line="555"/>
         <source>User(s) not found!</source>
         <translation>사용자를 찾을 수 없습니다!</translation>
     </message>
     <message>
+        <location filename="channelimpl.cpp" line="414"/>
+        <location filename="channelimpl.cpp" line="443"/>
+        <location filename="channelimpl.cpp" line="472"/>
         <location filename="channelimpl.cpp" line="521"/>
         <source>No users passed.</source>
         <translation>지나간 사용자가 없습니다.</translation>
@@ -160,7 +162,6 @@ Version %1</source>
         <translation>사용자 #%1 (a.k.a %2) 님은 이미 현재 채널에 있습니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 %2</source>
         <translation type="obsolete">%1 %2</translation>
     </message>
@@ -256,11 +257,15 @@ Version %1</source>
 <context>
     <name>Channels</name>
     <message>
+        <location filename="channels.cpp" line="214"/>
+        <location filename="channels.cpp" line="541"/>
         <location filename="channels.cpp" line="560"/>
         <source>Yes</source>
         <translation>예</translation>
     </message>
     <message>
+        <location filename="channels.cpp" line="214"/>
+        <location filename="channels.cpp" line="541"/>
         <location filename="channels.cpp" line="560"/>
         <source>No</source>
         <translation>아니오</translation>
@@ -276,6 +281,8 @@ Version %1</source>
         <translation>채널 이름을 입력하여 주십시요</translation>
     </message>
     <message>
+        <location filename="channels.cpp" line="22"/>
+        <location filename="channels.cpp" line="539"/>
         <location filename="channels.cpp" line="558"/>
         <source>Channels</source>
         <translation>채널</translation>
@@ -329,42 +336,34 @@ Version %1</source>
 <context>
     <name>ChannelsBase</name>
     <message>
-        <location filename="" line="2687076"/>
         <source>Channels</source>
         <translation type="obsolete">채널</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Name</source>
         <translation type="obsolete">이름</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Topic</source>
         <translation type="obsolete">주제</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Users</source>
         <translation type="obsolete">사용자</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Admins</source>
         <translation type="obsolete">관리자</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Public</source>
         <translation type="obsolete">일반</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&amp;Create</source>
         <translation type="obsolete">만들기(&amp;C)</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&amp;Join</source>
         <translation type="obsolete">참가하기(&amp;J)</translation>
     </message>
@@ -415,21 +414,25 @@ Version %1</source>
 <context>
     <name>Connection</name>
     <message>
+        <location filename="util.cpp" line="628"/>
         <location filename="util.cpp" line="696"/>
         <source>300 baud</source>
         <translation>300 baud</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="629"/>
         <location filename="util.cpp" line="698"/>
         <source>14.4 kbps</source>
         <translation>14.4 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="630"/>
         <location filename="util.cpp" line="700"/>
         <source>28.8 kbps</source>
         <translation>28.8 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="631"/>
         <location filename="util.cpp" line="702"/>
         <source>33.6 kbps</source>
         <translation>33.6 kbps</translation>
@@ -440,21 +443,25 @@ Version %1</source>
         <translation>36.6 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="633"/>
         <location filename="util.cpp" line="704"/>
         <source>57.6 kbps</source>
         <translation>57.6 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="634"/>
         <location filename="util.cpp" line="706"/>
         <source>ISDN-64k</source>
         <translation>ISDN-64k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="635"/>
         <location filename="util.cpp" line="708"/>
         <source>ISDN-128k</source>
         <translation>ISDN-128k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="636"/>
         <location filename="util.cpp" line="710"/>
         <source>DSL-256k</source>
         <translation>DSL-256k</translation>
@@ -465,46 +472,62 @@ Version %1</source>
         <translation>DSL</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="638"/>
         <location filename="util.cpp" line="712"/>
         <source>DSL-384k</source>
         <translation>DSL-384k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="639"/>
         <location filename="util.cpp" line="714"/>
         <source>DSL-512k</source>
         <translation>DSL-512k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="640"/>
         <location filename="util.cpp" line="716"/>
         <source>Cable</source>
         <translation>Cable</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="641"/>
         <location filename="util.cpp" line="719"/>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="642"/>
         <location filename="util.cpp" line="721"/>
         <source>T1</source>
         <translation>T1</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="643"/>
         <location filename="util.cpp" line="723"/>
         <source>T3</source>
         <translation>T3</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="644"/>
         <location filename="util.cpp" line="725"/>
         <source>OC-3</source>
         <translation>OC-3</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="645"/>
         <location filename="util.cpp" line="727"/>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
     <message>
+        <location filename="prefsimpl.cpp" line="134"/>
+        <location filename="settings.cpp" line="664"/>
+        <location filename="user.cpp" line="24"/>
+        <location filename="user.cpp" line="161"/>
+        <location filename="user.cpp" line="163"/>
+        <location filename="user.cpp" line="168"/>
+        <location filename="user.cpp" line="170"/>
+        <location filename="user.cpp" line="355"/>
         <location filename="util.cpp" line="729"/>
         <source>Unknown</source>
         <translation>알 수 없음</translation>
@@ -568,7 +591,7 @@ Version %1</source>
         <translation>Nov</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="899"/>
+        <location filename="util.cpp" line="898"/>
         <source>Dec</source>
         <translation>Dec</translation>
     </message>
@@ -603,7 +626,7 @@ Version %1</source>
         <translation>Sat</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="914"/>
+        <location filename="util.cpp" line="913"/>
         <source>Sun</source>
         <translation>Sun</translation>
     </message>
@@ -621,7 +644,7 @@ Version %1</source>
         <translation>Unizone</translation>
     </message>
     <message>
-        <location filename="debugimpl.cpp" line="81"/>
+        <location filename="debugimpl.cpp" line="78"/>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
@@ -638,7 +661,7 @@ Date: %4</source>
 날짜: %4</translation>
     </message>
     <message>
-        <location filename="debugimpl.cpp" line="102"/>
+        <location filename="debugimpl.cpp" line="101"/>
         <source>Attempt to read file larger than maximum allocatable memory amount!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -729,7 +752,6 @@ Date: %4</source>
         <translation>CTRL+E</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Search</source>
         <translation type="obsolete">찾아보기</translation>
     </message>
@@ -809,7 +831,6 @@ Date: %4</source>
         <translation>도움말(&amp;H)</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&amp;Channels</source>
         <translation type="obsolete">&amp;Channels</translation>
     </message>
@@ -819,7 +840,6 @@ Date: %4</source>
         <translation>찾아보기 (&amp;S)</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ALT+F</source>
         <translation type="obsolete">ALT+F</translation>
     </message>
@@ -922,12 +942,10 @@ Date: %4</source>
         <translation>당신은 %1 [%2]에 허락되지 않았습니다</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>You must change your nickname before connecting!</source>
         <translation type="obsolete">You must change your nickname before connecting!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type="obsolete">We prefer that none of the nicknames contain word &apos;binky&apos;.</translation>
     </message>
@@ -953,12 +971,10 @@ Date: %4</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unizone (English)</source>
         <translation type="obsolete">Unizone</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
@@ -975,259 +991,208 @@ Date: %4</source>
 날짜: %4</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 of %2</source>
         <translation type="obsolete">%2 중의 %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;시스템:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 is now connected.</source>
         <translation type="obsolete">#%1 님이 연결되었습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) has disconnected.</source>
         <translation type="obsolete">사용자 #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) 님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 is now known as &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</source>
         <translation type="obsolete">사용자 #%1 님은 &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt; 로 알려졌습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now known as &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</source>
         <translation type="obsolete">사용자 #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) 님은 이제 &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt; 님으로 알려졌습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now %3.</source>
         <translation type="obsolete">사용자 #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) 님은 이제 %3 님입니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 is now %2.</source>
         <translation type="obsolete">사용자 #%1 님은 이제 %2 님입니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping %3 미리초 (%4) 만에 돌아왔습니다.&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (유지시간: %3, %4 에 로그온 되었음)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;오류:&lt;/b&gt;&lt;/font&gt; </translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;경고:&lt;/b&gt;&lt;/font&gt; </translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>You are now %1.</source>
         <translation type="obsolete">당신은 이제 %1 입니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;행동:&lt;/b&gt;&lt;/font&gt; </translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;User #%3 (a.k.a. &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;사용자 #%3 (a.k.a. &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) 이 당신에게 ping을 보냈습니다.&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>14.4 kbps</source>
         <translation type="obsolete">14.4 kbps</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>28.8 kbps</source>
         <translation type="obsolete">28.8 kbps</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>33.6 kbps</source>
         <translation type="obsolete">33.6 kbps</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>36.6 kbps</source>
         <translation type="obsolete">36.6 kbps</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>57.6 kbps</source>
         <translation type="obsolete">57.6 kbps</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ISDN-64k</source>
         <translation type="obsolete">ISDN-64k</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ISDN-128k</source>
         <translation type="obsolete">ISDN-128k</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>DSL-256k</source>
         <translation type="obsolete">DSL-256k</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>DSL</source>
         <translation type="obsolete">DSL</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>DSL-384k</source>
         <translation type="obsolete">DSL-384k</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>DSL-512k</source>
         <translation type="obsolete">DSL-512k</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Cable</source>
         <translation type="obsolete">Cable</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>T1</source>
         <translation type="obsolete">T1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>T3</source>
         <translation type="obsolete">T3</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>OC-3</source>
         <translation type="obsolete">OC-3</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>OC-12</source>
         <translation type="obsolete">OC-12</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Date:</source>
         <comment>Date</comment>
         <translation type="obsolete">Date:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>B</source>
         <translation type="obsolete">B</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>kB</source>
         <translation type="obsolete">kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>MB</source>
         <translation type="obsolete">MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>GB</source>
         <translation type="obsolete">GB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>B/s</source>
         <translation type="obsolete">B/s</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>kB/s</source>
         <translation type="obsolete">kB/s</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>MB/s</source>
         <translation type="obsolete">MB/s</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>GB/s</source>
         <translation type="obsolete">GB/s</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1.%2.%3 build %4</source>
         <translation type="obsolete">%1.%2.%3 build %4</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 has disconnected.</source>
         <translation type="obsolete">User #%1 has disconnected.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 is now nameless.</source>
         <translation type="obsolete">User #%1 is now nameless.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
         <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP 주소는 %2 입니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type="obsolete">User #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
         <translation type="obsolete">Reading directory...</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 %2</source>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>DSL-1M</source>
         <translation type="obsolete">DSL-1M</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>300 baud</source>
         <translation type="obsolete">300 baud</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>TB</source>
         <translation type="obsolete">TB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>TB/s</source>
         <translation type="obsolete">TB/s</translation>
     </message>
@@ -1245,6 +1210,7 @@ Date: %4</source>
         <translation>User Name: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="60"/>
         <location filename="resolverthread.cpp" line="151"/>
         <source>IP Address: %1</source>
         <translation>IP 주소: %1</translation>
@@ -1255,16 +1221,19 @@ Date: %4</source>
         <translation>포트: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="70"/>
         <location filename="resolverthread.cpp" line="106"/>
         <source>Host Name: %1</source>
         <translation>호스트명: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="77"/>
         <location filename="resolverthread.cpp" line="116"/>
         <source>Aliases: %1</source>
         <translation>Aliases: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="84"/>
         <location filename="resolverthread.cpp" line="186"/>
         <source>No address info for %1</source>
         <translation>%1 의 주소 정보가 없습니다</translation>
@@ -1303,6 +1272,7 @@ Date: %4</source>
         <translation type="unfinished">Current directory:</translation>
     </message>
     <message>
+        <location filename="scanprogress.ui" line="67"/>
         <location filename="scanprogress.ui" line="109"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
@@ -1318,6 +1288,8 @@ Date: %4</source>
         <translation type="unfinished">Files scanned:</translation>
     </message>
     <message>
+        <location filename="scanprogress.ui" line="151"/>
+        <location filename="scanprogress.ui" line="193"/>
         <location filename="scanprogress.ui" line="235"/>
         <source>0</source>
         <translation type="unfinished">0</translation>
@@ -1402,12 +1374,10 @@ Date: %4</source>
         <translation>QR</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Sent</source>
         <translation type="obsolete">보냄</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>File Transfers</source>
         <translation type="obsolete">파일 전송자</translation>
     </message>
@@ -1422,122 +1392,98 @@ Date: %4</source>
         <translation>제한 없음</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>64 bytes</source>
         <translation type="obsolete">64 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>128 bytes</source>
         <translation type="obsolete">128 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>256 bytes</source>
         <translation type="obsolete">256 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>512 bytes</source>
         <translation type="obsolete">512 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>1 kB</source>
         <translation type="obsolete">1 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>2 kB</source>
         <translation type="obsolete">2 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>4 kB</source>
         <translation type="obsolete">4 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>6 kB</source>
         <translation type="obsolete">6 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>8 kB</source>
         <translation type="obsolete">8 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>10 kB</source>
         <translation type="obsolete">10 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>12 kB</source>
         <translation type="obsolete">12 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>14 kB</source>
         <translation type="obsolete">14 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>16 kB</source>
         <translation type="obsolete">16 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>32 kB</source>
         <translation type="obsolete">32 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>64 kB</source>
         <translation type="obsolete">64 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>128 kB</source>
         <translation type="obsolete">128 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>256 kB</source>
         <translation type="obsolete">256 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>512 kB</source>
         <translation type="obsolete">512 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>1 MB</source>
         <translation type="obsolete">1 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>2 MB</source>
         <translation type="obsolete">2 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>4 MB</source>
         <translation type="obsolete">4 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>8 MB</source>
         <translation type="obsolete">8 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>16 MB</source>
         <translation type="obsolete">16 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>32 MB</source>
         <translation type="obsolete">32 MB</translation>
     </message>
@@ -1572,57 +1518,46 @@ Date: %4</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unbanned</source>
         <translation type="obsolete">추방 해제</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>1 minute</source>
         <translation type="obsolete">1 분</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>2 minutes</source>
         <translation type="obsolete">2 분</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>5 minutes</source>
         <translation type="obsolete">5 분</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>10 minutes</source>
         <translation type="obsolete">10 분</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>15 minutes</source>
         <translation type="obsolete">15 분</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>30 minutes</source>
         <translation type="obsolete">30 분</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>1 hour</source>
         <translation type="obsolete">1 시간</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Infinite</source>
         <translation type="obsolete">무한대</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Ban IP</source>
         <translation type="obsolete">추방 IP</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Block</source>
         <translation type="obsolete">차단</translation>
     </message>
@@ -1637,12 +1572,12 @@ Date: %4</source>
         <translation>%1의 다운로드 포트 범위를 벗어난 이유로 실패했습니다!</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="241"/>
         <location filename="downloadimpl.cpp" line="327"/>
         <source>Locally Queued.</source>
         <translation>로컬 대기됨.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Queued.</source>
         <translation type="obsolete">대기됨.</translation>
     </message>
@@ -1687,6 +1622,8 @@ Date: %4</source>
         <translation>교섭중...</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="670"/>
+        <location filename="downloadimpl.cpp" line="700"/>
         <location filename="downloadimpl.cpp" line="732"/>
         <source>Finished.</source>
         <translation>완료.</translation>
@@ -1717,7 +1654,6 @@ Date: %4</source>
         <translation>스트림 대기중...</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 is downloading %2.</source>
         <translation type="obsolete">%1 은 %2 다운로드 중입니다.</translation>
     </message>
@@ -1732,7 +1668,6 @@ Date: %4</source>
         <translation>다운로드 중: [%1%]</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1</source>
         <translation type="obsolete">%1</translation>
     </message>
@@ -1742,17 +1677,14 @@ Date: %4</source>
         <translation>파일 완료.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Finished downloading %2 from %1.</source>
         <translation type="obsolete">%1 로부터 %2 다운로드 완료.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Uploading: [%1%]</source>
         <translation type="obsolete">업로드 중: [%1%]</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 has finished downloading %2.</source>
         <translation type="obsolete">%1 가 %2 다운로드 완료하였습니다.</translation>
     </message>
@@ -1772,7 +1704,6 @@ Date: %4</source>
         <translation>Elapsed</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Packet Size</source>
         <translation type="obsolete">Packet Size</translation>
     </message>
@@ -1787,36 +1718,53 @@ Date: %4</source>
         <translation>%2 중의 %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 bytes</source>
         <translation type="obsolete">%1 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 kB</source>
         <translation type="obsolete">%1 kB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 MB</source>
         <translation type="obsolete">%1 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 minutes</source>
         <translation type="obsolete">%1 분</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="91"/>
+        <location filename="downloadimpl.cpp" line="92"/>
+        <location filename="downloadimpl.cpp" line="93"/>
         <location filename="downloadimpl.cpp" line="94"/>
         <source>%1 B/s</source>
         <translation>%1 B/s</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="95"/>
+        <location filename="downloadimpl.cpp" line="96"/>
+        <location filename="downloadimpl.cpp" line="97"/>
+        <location filename="downloadimpl.cpp" line="98"/>
+        <location filename="downloadimpl.cpp" line="99"/>
+        <location filename="downloadimpl.cpp" line="100"/>
+        <location filename="downloadimpl.cpp" line="101"/>
+        <location filename="downloadimpl.cpp" line="102"/>
+        <location filename="downloadimpl.cpp" line="103"/>
+        <location filename="downloadimpl.cpp" line="104"/>
+        <location filename="downloadimpl.cpp" line="105"/>
+        <location filename="downloadimpl.cpp" line="106"/>
+        <location filename="downloadimpl.cpp" line="107"/>
         <location filename="downloadimpl.cpp" line="108"/>
         <source>%1 kB/s</source>
         <translation>%1 kB/s</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="109"/>
+        <location filename="downloadimpl.cpp" line="110"/>
+        <location filename="downloadimpl.cpp" line="111"/>
+        <location filename="downloadimpl.cpp" line="112"/>
+        <location filename="downloadimpl.cpp" line="113"/>
         <location filename="downloadimpl.cpp" line="114"/>
         <source>%1 MB/s</source>
         <translation>%1 MB/s</translation>
@@ -1830,7 +1778,6 @@ Date: %4</source>
 <context>
     <name>WDownloadThread</name>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1%2 %3</source>
         <translation type="obsolete">%1%2 %3</translation>
     </message>
@@ -1896,6 +1843,21 @@ Date: %4</source>
 <context>
     <name>WFormat</name>
     <message>
+        <location filename="formatting.cpp" line="103"/>
+        <location filename="formatting.cpp" line="121"/>
+        <location filename="formatting.cpp" line="137"/>
+        <location filename="formatting.cpp" line="159"/>
+        <location filename="formatting.cpp" line="183"/>
+        <location filename="formatting.cpp" line="195"/>
+        <location filename="formatting.cpp" line="217"/>
+        <location filename="formatting.cpp" line="326"/>
+        <location filename="formatting.cpp" line="337"/>
+        <location filename="formatting.cpp" line="347"/>
+        <location filename="formatting.cpp" line="359"/>
+        <location filename="formatting.cpp" line="395"/>
+        <location filename="formatting.cpp" line="421"/>
+        <location filename="formatting.cpp" line="443"/>
+        <location filename="formatting.cpp" line="476"/>
         <location filename="formatting.cpp" line="515"/>
         <source>&lt;font size=&quot;%1&quot;&gt;</source>
         <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
@@ -1906,6 +1868,28 @@ Date: %4</source>
         <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="60"/>
+        <location filename="formatting.cpp" line="67"/>
+        <location filename="formatting.cpp" line="111"/>
+        <location filename="formatting.cpp" line="149"/>
+        <location filename="formatting.cpp" line="171"/>
+        <location filename="formatting.cpp" line="182"/>
+        <location filename="formatting.cpp" line="194"/>
+        <location filename="formatting.cpp" line="205"/>
+        <location filename="formatting.cpp" line="218"/>
+        <location filename="formatting.cpp" line="222"/>
+        <location filename="formatting.cpp" line="327"/>
+        <location filename="formatting.cpp" line="338"/>
+        <location filename="formatting.cpp" line="348"/>
+        <location filename="formatting.cpp" line="351"/>
+        <location filename="formatting.cpp" line="360"/>
+        <location filename="formatting.cpp" line="363"/>
+        <location filename="formatting.cpp" line="412"/>
+        <location filename="formatting.cpp" line="434"/>
+        <location filename="formatting.cpp" line="444"/>
+        <location filename="formatting.cpp" line="448"/>
+        <location filename="formatting.cpp" line="467"/>
+        <location filename="formatting.cpp" line="477"/>
         <location filename="formatting.cpp" line="516"/>
         <source>&lt;font color=&quot;%1&quot;&gt;</source>
         <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
@@ -1921,17 +1905,14 @@ Date: %4</source>
         <translation>#%1 님이 연결되었습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>) has disconnected.</source>
         <translation type="obsolete">) 님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 has disconnected.</source>
         <translation type="obsolete">사용자 #%1 님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 is now known as</source>
         <translation type="obsolete">사용자 #%1 님은</translation>
     </message>
@@ -1946,7 +1927,6 @@ Date: %4</source>
         <translation>nameless</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a.</source>
         <translation type="obsolete">사용자 #%1 (a.k.a.</translation>
     </message>
@@ -1976,12 +1956,10 @@ Date: %4</source>
         <translation>&lt;b&gt;행동:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>) pinged you.</source>
         <translation type="obsolete">) 이 당신에게 ping을 보냈습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>) is now known as</source>
         <translation type="obsolete">)</translation>
     </message>
@@ -2006,7 +1984,6 @@ Date: %4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>) is now</source>
         <translation type="obsolete">) 님은 이제</translation>
     </message>
@@ -2016,6 +1993,7 @@ Date: %4</source>
         <translation>Time request sent to</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="260"/>
         <location filename="formatting.cpp" line="283"/>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
@@ -2046,11 +2024,25 @@ Date: %4</source>
         <translation>로 이름이 변경됨.</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="241"/>
+        <location filename="formatting.cpp" line="275"/>
+        <location filename="formatting.cpp" line="292"/>
+        <location filename="formatting.cpp" line="480"/>
+        <location filename="formatting.cpp" line="548"/>
         <location filename="formatting.cpp" line="566"/>
         <source>User #%1 (a.k.a</source>
         <translation>사용자 #%1 (a.k.a</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="244"/>
+        <location filename="formatting.cpp" line="278"/>
+        <location filename="formatting.cpp" line="295"/>
+        <location filename="formatting.cpp" line="483"/>
+        <location filename="formatting.cpp" line="503"/>
+        <location filename="formatting.cpp" line="504"/>
+        <location filename="formatting.cpp" line="533"/>
+        <location filename="formatting.cpp" line="534"/>
+        <location filename="formatting.cpp" line="551"/>
         <location filename="formatting.cpp" line="569"/>
         <source>)</source>
         <comment>aka suffix</comment>
@@ -2062,6 +2054,7 @@ Date: %4</source>
         <translation>님의 연결이 해제되었습니다.</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="257"/>
         <location filename="formatting.cpp" line="280"/>
         <source>is now known as</source>
         <translation>님은</translation>
@@ -2092,17 +2085,20 @@ Date: %4</source>
         <translation>님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="247"/>
+        <location filename="formatting.cpp" line="255"/>
+        <location filename="formatting.cpp" line="298"/>
+        <location filename="formatting.cpp" line="486"/>
+        <location filename="formatting.cpp" line="554"/>
         <location filename="formatting.cpp" line="572"/>
         <source>User #%1</source>
         <translation>사용자 #%1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>user #%1 (a.k.a</source>
         <translation type="obsolete">사용자 #%1 (a.k.a</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>user #%1</source>
         <translation type="obsolete">사용자 #%1</translation>
     </message>
@@ -2118,12 +2114,14 @@ Date: %4</source>
         <translation>no</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="500"/>
         <location filename="formatting.cpp" line="530"/>
         <source>user #%1 (a.k.a</source>
         <comment>Ping sent to user...</comment>
         <translation>사용자 #%1 (a.k.a</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="507"/>
         <location filename="formatting.cpp" line="537"/>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
@@ -2141,27 +2139,28 @@ Date: %4</source>
 <context>
     <name>WPicViewer</name>
     <message>
-        <location filename="picviewerimpl.cpp" line="323"/>
+        <location filename="picviewerimpl.cpp" line="319"/>
         <source>No File</source>
         <translation type="unfinished">No File</translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="321"/>
+        <location filename="picviewerimpl.cpp" line="317"/>
         <source>%1/%2</source>
         <translation type="unfinished">%1/%2</translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="306"/>
+        <location filename="picviewerimpl.cpp" line="295"/>
+        <location filename="picviewerimpl.cpp" line="302"/>
         <source>Picture Viewer</source>
         <translation type="unfinished">Picture Viewer</translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="438"/>
+        <location filename="picviewerimpl.cpp" line="434"/>
         <source>Open image...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="454"/>
+        <location filename="picviewerimpl.cpp" line="450"/>
         <source>Save image...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2189,7 +2188,6 @@ Date: %4</source>
         <translation type="unfinished">Previous</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>1/1</source>
         <translation type="obsolete">1/1</translation>
     </message>
@@ -2277,6 +2275,7 @@ Date: %4</source>
         <translation>다른 사람들의 대화 내용중 당신의 이름이 호출될때의 사용자명 색상입니다.</translation>
     </message>
     <message>
+        <location filename="prefsimpl.cpp" line="62"/>
         <location filename="prefsimpl.cpp" line="72"/>
         <source>Username</source>
         <translation>사용자명</translation>
@@ -2287,6 +2286,7 @@ Date: %4</source>
         <translation>원격 사용자</translation>
     </message>
     <message>
+        <location filename="prefsimpl.cpp" line="64"/>
         <location filename="prefsimpl.cpp" line="66"/>
         <source>Sample text</source>
         <translation>예제 문구</translation>
@@ -2332,7 +2332,7 @@ Date: %4</source>
         <translation>This is the color of &quot;Warning&quot;.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="59"/>
+        <location filename="prefsimpl.cpp" line="58"/>
         <source>This is the color of the text in warning messages.</source>
         <translation>This is the color of the text in warning messages.</translation>
     </message>
@@ -2342,7 +2342,7 @@ Date: %4</source>
         <translation>&lt;b&gt;Warning&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="75"/>
+        <location filename="prefsimpl.cpp" line="74"/>
         <source>Warning text</source>
         <translation>Warning text</translation>
     </message>
@@ -2470,6 +2470,7 @@ Date: %4</source>
         <translation type="unfinished">자동 자리비움:</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="248"/>
         <location filename="prefs.ui" line="2105"/>
         <source>Disabled</source>
         <translation type="unfinished">사용 안함</translation>
@@ -2695,57 +2696,46 @@ Date: %4</source>
         <translation type="unfinished">표시</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1114"/>
         <source>Local Name</source>
         <translation type="obsolete">로컬 이름</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1119"/>
         <source>Remote Name</source>
         <translation type="obsolete">원격 이름</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1124"/>
         <source>Regular Text</source>
         <translation type="obsolete">일반 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1129"/>
         <source>System Text</source>
         <translation type="obsolete">시스템 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1134"/>
         <source>Ping Text</source>
         <translation type="obsolete">Ping 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1139"/>
         <source>Error Text</source>
         <translation type="obsolete">오류 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1144"/>
         <source>Error Message Text</source>
         <translation type="obsolete">에러 메세지 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1149"/>
         <source>Private Text</source>
         <translation type="obsolete">귓속말 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1154"/>
         <source>Action Text</source>
         <translation type="obsolete">행동 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1159"/>
         <source>URL Text</source>
         <translation type="obsolete">URL 문구</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1164"/>
         <source>&apos;Name Said&apos; Text</source>
         <translation type="obsolete">&apos;자기 이름&apos; 문구</translation>
     </message>
@@ -2770,32 +2760,26 @@ Date: %4</source>
         <translation type="unfinished">색상</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1367"/>
         <source>CDE</source>
         <translation type="obsolete">CDE</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1372"/>
         <source>Motif</source>
         <translation type="obsolete">Motif</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Motif Plus</source>
         <translation type="obsolete">Motif Plus</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Platinum</source>
         <translation type="obsolete">Platinum</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>SGI</source>
         <translation type="obsolete">SGI</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1382"/>
         <source>Windows</source>
         <translation type="obsolete">윈도우즈</translation>
     </message>
@@ -2810,51 +2794,61 @@ Date: %4</source>
         <translation type="unfinished">스타일</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1879"/>
         <location filename="prefs.ui" line="2232"/>
         <source>1</source>
         <translation type="unfinished">1</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1884"/>
         <location filename="prefs.ui" line="2237"/>
         <source>2</source>
         <translation type="unfinished">2</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1889"/>
         <location filename="prefs.ui" line="2242"/>
         <source>3</source>
         <translation type="unfinished">3</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1894"/>
         <location filename="prefs.ui" line="2247"/>
         <source>4</source>
         <translation type="unfinished">4</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1899"/>
         <location filename="prefs.ui" line="2252"/>
         <source>5</source>
         <translation type="unfinished">5</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1904"/>
         <location filename="prefs.ui" line="2257"/>
         <source>10</source>
         <translation type="unfinished">10</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1909"/>
         <location filename="prefs.ui" line="2262"/>
         <source>15</source>
         <translation type="unfinished">15</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1914"/>
         <location filename="prefs.ui" line="2267"/>
         <source>20</source>
         <translation type="unfinished">20</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1919"/>
         <location filename="prefs.ui" line="2272"/>
         <source>30</source>
         <translation type="unfinished">30</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1924"/>
         <location filename="prefs.ui" line="2277"/>
         <source>Unlimited</source>
         <translation type="unfinished">제한 없음</translation>
@@ -2885,7 +2879,6 @@ Date: %4</source>
         <translation type="unfinished">파일 공유를 사용하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Auto Clear finished transfers?</source>
         <translation type="obsolete">전송이 완료되면 자동으로 비우시겠습니까?</translation>
     </message>
@@ -2915,102 +2908,108 @@ Date: %4</source>
         <translation type="unfinished">URL 실행</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2595"/>
+        <location filename="prefs.ui" line="2766"/>
+        <location filename="prefs.ui" line="2921"/>
         <location filename="prefs.ui" line="3086"/>
         <source>No Limit</source>
         <translation type="unfinished">제한 없음</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>128 bytes</source>
         <translation type="obsolete">128 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>256 bytes</source>
         <translation type="obsolete">256 bytes</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>512 bytes</source>
         <translation type="obsolete">512 bytes</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1995"/>
         <location filename="prefs.ui" line="2110"/>
         <source>1 kB</source>
         <translation type="unfinished">1 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2000"/>
         <location filename="prefs.ui" line="2115"/>
         <source>2 kB</source>
         <translation type="unfinished">2 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2005"/>
         <location filename="prefs.ui" line="2120"/>
         <source>4 kB</source>
         <translation type="unfinished">4 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2010"/>
         <location filename="prefs.ui" line="2125"/>
         <source>8 kB</source>
         <translation type="unfinished">8 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2015"/>
         <location filename="prefs.ui" line="2130"/>
         <source>16 kB</source>
         <translation type="unfinished">16 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2020"/>
         <location filename="prefs.ui" line="2135"/>
         <source>32 kB</source>
         <translation type="unfinished">32 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2025"/>
         <location filename="prefs.ui" line="2140"/>
         <source>64 kB</source>
         <translation type="unfinished">64 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2030"/>
         <location filename="prefs.ui" line="2145"/>
         <source>128 kB</source>
         <translation type="unfinished">128 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2035"/>
         <location filename="prefs.ui" line="2150"/>
         <source>256 kB</source>
         <translation type="unfinished">256 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2040"/>
         <location filename="prefs.ui" line="2155"/>
         <source>512 kB</source>
         <translation type="unfinished">512 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2045"/>
         <location filename="prefs.ui" line="2160"/>
         <source>1 MB</source>
         <translation type="unfinished">1 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>2 MB</source>
         <translation type="obsolete">2 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>4 MB</source>
         <translation type="obsolete">4 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>8 MB</source>
         <translation type="obsolete">8 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>16 MB</source>
         <translation type="obsolete">16 MB</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>32 MB</source>
         <translation type="obsolete">32 MB</translation>
     </message>
@@ -3105,102 +3104,158 @@ Date: %4</source>
         <translation type="unfinished">DSL-1M</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2600"/>
+        <location filename="prefs.ui" line="2771"/>
+        <location filename="prefs.ui" line="2926"/>
         <location filename="prefs.ui" line="3091"/>
         <source>128 B/s</source>
         <translation type="unfinished">128 B/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2605"/>
+        <location filename="prefs.ui" line="2776"/>
+        <location filename="prefs.ui" line="2931"/>
         <location filename="prefs.ui" line="3096"/>
         <source>256 B/s</source>
         <translation type="unfinished">256 B/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2610"/>
+        <location filename="prefs.ui" line="2781"/>
+        <location filename="prefs.ui" line="2936"/>
         <location filename="prefs.ui" line="3101"/>
         <source>512 B/s</source>
         <translation type="unfinished">512 B/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2615"/>
+        <location filename="prefs.ui" line="2786"/>
+        <location filename="prefs.ui" line="2941"/>
         <location filename="prefs.ui" line="3106"/>
         <source>1 kB/s</source>
         <translation type="unfinished">1 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2620"/>
+        <location filename="prefs.ui" line="2791"/>
+        <location filename="prefs.ui" line="2946"/>
         <location filename="prefs.ui" line="3111"/>
         <source>2 kB/s</source>
         <translation type="unfinished">2 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2625"/>
+        <location filename="prefs.ui" line="2796"/>
+        <location filename="prefs.ui" line="2951"/>
         <location filename="prefs.ui" line="3116"/>
         <source>4 kB/s</source>
         <translation type="unfinished">4 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2630"/>
+        <location filename="prefs.ui" line="2801"/>
+        <location filename="prefs.ui" line="2956"/>
         <location filename="prefs.ui" line="3121"/>
         <source>8 kB/s</source>
         <translation type="unfinished">8 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2635"/>
+        <location filename="prefs.ui" line="2806"/>
+        <location filename="prefs.ui" line="2961"/>
         <location filename="prefs.ui" line="3126"/>
         <source>16 kB/s</source>
         <translation type="unfinished">16 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2640"/>
+        <location filename="prefs.ui" line="2811"/>
+        <location filename="prefs.ui" line="2966"/>
         <location filename="prefs.ui" line="3131"/>
         <source>32 kB/s</source>
         <translation type="unfinished">32 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2645"/>
+        <location filename="prefs.ui" line="2816"/>
+        <location filename="prefs.ui" line="2971"/>
         <location filename="prefs.ui" line="3136"/>
         <source>64 kB/s</source>
         <translation type="unfinished">64 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2650"/>
+        <location filename="prefs.ui" line="2821"/>
+        <location filename="prefs.ui" line="2976"/>
         <location filename="prefs.ui" line="3141"/>
         <source>128 kB/s</source>
         <translation type="unfinished">128 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2655"/>
+        <location filename="prefs.ui" line="2826"/>
+        <location filename="prefs.ui" line="2981"/>
         <location filename="prefs.ui" line="3146"/>
         <source>256 kB/s</source>
         <translation type="unfinished">256 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2660"/>
+        <location filename="prefs.ui" line="2831"/>
+        <location filename="prefs.ui" line="2986"/>
         <location filename="prefs.ui" line="3151"/>
         <source>512 kB/s</source>
         <translation type="unfinished">512 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2665"/>
+        <location filename="prefs.ui" line="2836"/>
+        <location filename="prefs.ui" line="2991"/>
         <location filename="prefs.ui" line="3156"/>
         <source>1 MB/s</source>
         <translation type="unfinished">1 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2670"/>
+        <location filename="prefs.ui" line="2841"/>
+        <location filename="prefs.ui" line="2996"/>
         <location filename="prefs.ui" line="3161"/>
         <source>2 MB/s</source>
         <translation type="unfinished">2 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2675"/>
+        <location filename="prefs.ui" line="2846"/>
+        <location filename="prefs.ui" line="3001"/>
         <location filename="prefs.ui" line="3166"/>
         <source>4 MB/s</source>
         <translation type="unfinished">4 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2680"/>
+        <location filename="prefs.ui" line="2851"/>
+        <location filename="prefs.ui" line="3006"/>
         <location filename="prefs.ui" line="3171"/>
         <source>8 MB/s</source>
         <translation type="unfinished">8 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2685"/>
+        <location filename="prefs.ui" line="2856"/>
+        <location filename="prefs.ui" line="3011"/>
         <location filename="prefs.ui" line="3176"/>
         <source>16 MB/s</source>
         <translation type="unfinished">16 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2690"/>
+        <location filename="prefs.ui" line="2861"/>
+        <location filename="prefs.ui" line="3016"/>
         <location filename="prefs.ui" line="3181"/>
         <source>32 MB/s</source>
         <translation type="unfinished">32 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1387"/>
         <source>Aqua</source>
         <translation type="obsolete">Aqua</translation>
     </message>
@@ -3258,42 +3313,34 @@ Date: %4</source>
 <context>
     <name>WPrivateWindow</name>
     <message>
-        <location filename="" line="2687076"/>
         <source>Name</source>
         <translation type="obsolete">이름</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ID</source>
         <translation type="obsolete">아이디</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Status</source>
         <translation type="obsolete">상태</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Files</source>
         <translation type="obsolete">파일</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Connection</source>
         <translation type="obsolete">연결</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Load</source>
         <translation type="obsolete">불러오기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Client</source>
         <translation type="obsolete">클라이언트</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>[Freeware] - Private</source>
         <translation type="obsolete">[Freeware] - Private</translation>
     </message>
@@ -3328,7 +3375,6 @@ Date: %4</source>
         <translation>사용자를 찾을 수 없습니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
         <translation type="obsolete">User #%1 (a.k.a. %2) is a bot!</translation>
     </message>
@@ -3338,7 +3384,6 @@ Date: %4</source>
         <translation>사용자 #%1 (a.k.a %2) 님은 이미 비밀 대화창에 있습니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
         <translation type="obsolete">사용자 #%1 (a.k.a. %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
@@ -3363,22 +3408,18 @@ Date: %4</source>
         <translation>IP 주소 받기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
         <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt; 님의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Private</source>
         <translation type="obsolete">비밀</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a %2) is a bot!</source>
         <translation type="obsolete">User #%1 (a.k.a %2) is a bot!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
         <translation type="obsolete">사용자 #%1 (a.k.a %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
@@ -3454,7 +3495,6 @@ Date: %4</source>
         <translation>다운로드</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Close</source>
         <translation type="obsolete">닫기</translation>
     </message>
@@ -3469,6 +3509,7 @@ Date: %4</source>
         <translation>중단</translation>
     </message>
     <message>
+        <location filename="search.cpp" line="185"/>
         <location filename="search.cpp" line="344"/>
         <source>Idle.</source>
         <translation>대기.</translation>
@@ -3532,6 +3573,7 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="settings.cpp" line="479"/>
         <location filename="settings.cpp" line="521"/>
         <source>Bummer</source>
         <translation type="unfinished"></translation>
@@ -3668,16 +3710,37 @@ Date: %4</source>
         <translation type="unfinished">제한 없음</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="68"/>
+        <location filename="uploadimpl.cpp" line="69"/>
+        <location filename="uploadimpl.cpp" line="70"/>
         <location filename="uploadimpl.cpp" line="71"/>
         <source>%1 B/s</source>
         <translation type="unfinished">%1 B/s</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="72"/>
+        <location filename="uploadimpl.cpp" line="73"/>
+        <location filename="uploadimpl.cpp" line="74"/>
+        <location filename="uploadimpl.cpp" line="75"/>
+        <location filename="uploadimpl.cpp" line="76"/>
+        <location filename="uploadimpl.cpp" line="77"/>
+        <location filename="uploadimpl.cpp" line="78"/>
+        <location filename="uploadimpl.cpp" line="79"/>
+        <location filename="uploadimpl.cpp" line="80"/>
+        <location filename="uploadimpl.cpp" line="81"/>
+        <location filename="uploadimpl.cpp" line="82"/>
+        <location filename="uploadimpl.cpp" line="83"/>
+        <location filename="uploadimpl.cpp" line="84"/>
         <location filename="uploadimpl.cpp" line="85"/>
         <source>%1 kB/s</source>
         <translation type="unfinished">%1 kB/s</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="86"/>
+        <location filename="uploadimpl.cpp" line="87"/>
+        <location filename="uploadimpl.cpp" line="88"/>
+        <location filename="uploadimpl.cpp" line="89"/>
+        <location filename="uploadimpl.cpp" line="90"/>
         <location filename="uploadimpl.cpp" line="91"/>
         <source>%1 MB/s</source>
         <translation type="unfinished">%1 MB/s</translation>
@@ -3693,6 +3756,10 @@ Date: %4</source>
         <translation type="unfinished">1 분</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="101"/>
+        <location filename="uploadimpl.cpp" line="102"/>
+        <location filename="uploadimpl.cpp" line="103"/>
+        <location filename="uploadimpl.cpp" line="104"/>
         <location filename="uploadimpl.cpp" line="105"/>
         <source>%1 minutes</source>
         <translation type="unfinished">%1 분</translation>
@@ -3708,6 +3775,15 @@ Date: %4</source>
         <translation type="unfinished">무한대</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="113"/>
+        <location filename="uploadimpl.cpp" line="114"/>
+        <location filename="uploadimpl.cpp" line="115"/>
+        <location filename="uploadimpl.cpp" line="116"/>
+        <location filename="uploadimpl.cpp" line="117"/>
+        <location filename="uploadimpl.cpp" line="118"/>
+        <location filename="uploadimpl.cpp" line="119"/>
+        <location filename="uploadimpl.cpp" line="120"/>
+        <location filename="uploadimpl.cpp" line="121"/>
         <location filename="uploadimpl.cpp" line="122"/>
         <source>%1 kB</source>
         <translation type="unfinished">%1 kB</translation>
@@ -3723,6 +3799,14 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="132"/>
+        <location filename="uploadimpl.cpp" line="133"/>
+        <location filename="uploadimpl.cpp" line="134"/>
+        <location filename="uploadimpl.cpp" line="135"/>
+        <location filename="uploadimpl.cpp" line="136"/>
+        <location filename="uploadimpl.cpp" line="137"/>
+        <location filename="uploadimpl.cpp" line="138"/>
+        <location filename="uploadimpl.cpp" line="139"/>
         <location filename="uploadimpl.cpp" line="140"/>
         <source>Level %1</source>
         <translation type="unfinished"></translation>
@@ -3773,6 +3857,9 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="241"/>
+        <location filename="uploadimpl.cpp" line="306"/>
+        <location filename="uploadimpl.cpp" line="349"/>
         <location filename="uploadimpl.cpp" line="512"/>
         <source>Queued.</source>
         <translation type="unfinished">대기됨.</translation>
@@ -3813,6 +3900,8 @@ Date: %4</source>
         <translation type="unfinished">연결 해제됨.</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="596"/>
+        <location filename="uploadimpl.cpp" line="622"/>
         <location filename="uploadimpl.cpp" line="757"/>
         <source>Finished.</source>
         <translation type="unfinished">완료.</translation>
@@ -3904,16 +3993,21 @@ Date: %4</source>
 <context>
     <name>WUser</name>
     <message>
+        <location filename="formatting.cpp" line="81"/>
+        <location filename="formatting.cpp" line="409"/>
+        <location filename="formatting.cpp" line="431"/>
         <location filename="user.cpp" line="18"/>
         <source>Unknown</source>
         <translation>알 수 없음</translation>
     </message>
     <message>
+        <location filename="user.cpp" line="430"/>
         <location filename="user.cpp" line="433"/>
         <source>Windows</source>
         <translation>윈도우즈</translation>
     </message>
     <message>
+        <location filename="user.cpp" line="431"/>
         <location filename="user.cpp" line="434"/>
         <source>Linux</source>
         <translation>리눅스</translation>
@@ -3924,11 +4018,13 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="user.cpp" line="429"/>
         <location filename="user.cpp" line="438"/>
         <source>BeOS</source>
         <translation>비오에스</translation>
     </message>
     <message>
+        <location filename="user.cpp" line="439"/>
         <location filename="user.cpp" line="440"/>
         <source>Mac OS</source>
         <translation type="unfinished"></translation>
@@ -4007,17 +4103,24 @@ Date: %4</source>
 <context>
     <name>WinShareWindow</name>
     <message>
-        <location filename="winsharewindow.cpp" line="2329"/>
+        <location filename="winshare_network.cpp" line="72"/>
+        <location filename="winsharewindow.cpp" line="2330"/>
         <source>Already scanning!</source>
         <translation>이미 검색중입니다!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="82"/>
+        <location filename="winshare_network.cpp" line="377"/>
+        <location filename="winshare_network.cpp" line="3095"/>
+        <location filename="winshare_slots.cpp" line="135"/>
+        <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="1002"/>
         <source>Not connected.</source>
         <translation>연결되지 않았습니다.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2317"/>
+        <location filename="winshare_network.cpp" line="88"/>
+        <location filename="winsharewindow.cpp" line="2318"/>
         <source>File sharing not enabled.</source>
         <translation>파일 공유를 사용하지 않았습니다.</translation>
     </message>
@@ -4027,6 +4130,7 @@ Date: %4</source>
         <translation>지나간 별명이 없습니다.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="140"/>
         <location filename="winshare_network.cpp" line="162"/>
         <source>No message to send.</source>
         <translation>보낸 메세지가 없습니다.</translation>
@@ -4042,26 +4146,42 @@ Date: %4</source>
         <translation>돌아옴 메세지는 %1 로 설정되었습니다.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="359"/>
         <location filename="winshare_network.cpp" line="364"/>
         <source>Uptime: %1</source>
         <translation>유지시간: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2414"/>
+        <location filename="winshare_network.cpp" line="372"/>
+        <location filename="winsharewindow.cpp" line="2415"/>
         <source>Logged In: %1</source>
         <translation>로그인: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="388"/>
         <location filename="winshare_network.cpp" line="3092"/>
         <source>Number of users logged in: %1</source>
         <translation>로그인한 사용자 수: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="397"/>
+        <location filename="winshare_network.cpp" line="409"/>
+        <location filename="winshare_network.cpp" line="425"/>
+        <location filename="winshare_network.cpp" line="441"/>
+        <location filename="winshare_network.cpp" line="457"/>
+        <location filename="winshare_network.cpp" line="473"/>
+        <location filename="winshare_network.cpp" line="489"/>
+        <location filename="winshare_network.cpp" line="884"/>
+        <location filename="winshare_network.cpp" line="903"/>
+        <location filename="winshare_network.cpp" line="944"/>
+        <location filename="winshare_network.cpp" line="1380"/>
         <location filename="winshare_network.cpp" line="1665"/>
         <source>No users passed.</source>
         <translation>지나간 사용자가 없습니다.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="619"/>
+        <location filename="winshare_network.cpp" line="686"/>
         <location filename="winshare_network.cpp" line="2441"/>
         <source>Current time: %1 %2</source>
         <translation>현재 시간: %1 %2</translation>
@@ -4077,11 +4197,13 @@ Date: %4</source>
         <translation>무시하기 패턴 설정: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="710"/>
         <location filename="winshare_network.cpp" line="722"/>
         <source>Ignore pattern updated.</source>
         <translation>무시하기 패턴이 갱신되었습니다.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="712"/>
         <location filename="winshare_network.cpp" line="724"/>
         <source>Error updating ignore pattern!</source>
         <translation>무시하기 패턴 갱신하는 도중 오류가 발생하였습니다!</translation>
@@ -4097,11 +4219,13 @@ Date: %4</source>
         <translation>블랙리스트 패턴 설정: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="767"/>
         <location filename="winshare_network.cpp" line="803"/>
         <source>Blacklist pattern updated.</source>
         <translation>블랙리스트 패턴이 갱신되었습니다.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="769"/>
         <location filename="winshare_network.cpp" line="805"/>
         <source>Error updating blacklist pattern!</source>
         <translation>블랙리스트 패턴을 갱신하는 도중 오류가 발생하였습니다!</translation>
@@ -4117,11 +4241,13 @@ Date: %4</source>
         <translation>Auto-private pattern set to: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="861"/>
         <location filename="winshare_network.cpp" line="873"/>
         <source>Auto-private pattern updated.</source>
         <translation>Auto-private pattern updated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="863"/>
         <location filename="winshare_network.cpp" line="875"/>
         <source>Error updating auto-private pattern!</source>
         <translation>Error updating auto-private pattern!</translation>
@@ -4132,6 +4258,13 @@ Date: %4</source>
         <translation>사용자 %1: %2</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="893"/>
+        <location filename="winshare_network.cpp" line="915"/>
+        <location filename="winshare_network.cpp" line="934"/>
+        <location filename="winshare_network.cpp" line="956"/>
+        <location filename="winshare_network.cpp" line="975"/>
+        <location filename="winshare_network.cpp" line="997"/>
+        <location filename="winshare_network.cpp" line="1115"/>
         <location filename="winshare_network.cpp" line="3011"/>
         <source>Invalid index.</source>
         <translation>잘못된 색인입니다.</translation>
@@ -4147,6 +4280,8 @@ Date: %4</source>
         <translation>%1 상태: %2</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="925"/>
+        <location filename="winshare_network.cpp" line="966"/>
         <location filename="winshare_network.cpp" line="985"/>
         <source>No index specified.</source>
         <translation>지정된 색인이 없습니다.</translation>
@@ -4187,32 +4322,34 @@ Date: %4</source>
         <translation>다운로드: 현재 세션 %1, 전체 %2</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1030"/>
         <location filename="winshare_network.cpp" line="2760"/>
         <source>Auto-private pattern: %1</source>
         <translation>Auto-private pattern: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1042"/>
         <location filename="winshare_network.cpp" line="2768"/>
         <source>Blacklist pattern: %1</source>
         <translation>블랙리스트 패턴: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1053"/>
         <location filename="winshare_network.cpp" line="2772"/>
         <source>Ignore pattern: %1</source>
         <translation>무시하기 패턴: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1059"/>
         <location filename="winshare_network.cpp" line="2776"/>
         <source>Watch pattern: %1</source>
         <translation>감시 패턴: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>On connect: %1</source>
         <translation type="obsolete">연결: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>On connect 2: %1</source>
         <translation type="obsolete">연결 2: %1</translation>
     </message>
@@ -4232,7 +4369,6 @@ Date: %4</source>
         <translation>원격 비밀번호 설정: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unizone version: %1.%2.%3 build %4</source>
         <translation type="obsolete">Unizone 버전: %1.%2.%3 build %4</translation>
     </message>
@@ -4242,77 +4378,68 @@ Date: %4</source>
         <translation>MUSCLE 버전: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>On connect do: %1</source>
         <translation type="obsolete">연결하기: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1490"/>
         <location filename="winshare_network.cpp" line="1496"/>
         <source>Unknown command!</source>
         <translation>알수 없는 명령입니다!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="658"/>
+        <location filename="winshare_network.cpp" line="1407"/>
+        <location filename="winshare_network.cpp" line="1596"/>
         <location filename="winshare_network.cpp" line="1602"/>
         <source>User(s) not found!</source>
         <translation>사용자를 찾을 수 없습니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User doesn&apos;t exist!</source>
         <translation type="obsolete">사용자가 존재하지 않습니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
         <translation type="obsolete">Ping sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Access Denied!!!</source>
         <translation type="obsolete">접근권한이 없습니다!!!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>do that to</source>
         <translation type="obsolete">do that to</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>kick</source>
         <translation type="obsolete">강제추방</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ban</source>
         <translation type="obsolete">추방</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>unban</source>
         <translation type="obsolete">추방 해제</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>require</source>
         <translation type="obsolete">요청</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>unrequire</source>
         <translation type="obsolete">요청 해제</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>You are not allowed to %1 [%2]</source>
         <translation type="obsolete">당신은 %1 [%2]에 허락되지 않았습니다</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
         <translation type="obsolete">Unizone %1 은 http://www.raasu.org/tools/windows/ 에서 받으실수 있습니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unknown</source>
         <translation type="obsolete">알 수 없음</translation>
     </message>
@@ -4332,11 +4459,13 @@ Date: %4</source>
         <translation>서버 %1에 연결중입니다.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="2489"/>
         <location filename="winshare_slots.cpp" line="470"/>
         <source>Connection to server failed!</source>
         <translation>서버 연결 실패!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="2520"/>
         <location filename="winsharewindow.cpp" line="550"/>
         <source>Reconnect timer stopped</source>
         <translation>재연결 시간 중단되었습니다</translation>
@@ -4357,57 +4486,46 @@ Date: %4</source>
         <translation>%1 파일: %3으로부터 (%2)</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Total: %1 files</source>
         <translation type="obsolete">전체: %1 개의 파일</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Address info for user #%1 (%2)</source>
         <translation type="obsolete">사용자 #%1 (%2) 의 주소 정보:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Address info for %1:</source>
         <translation type="obsolete">%1 의 주소 정보:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>IP Address: %1</source>
         <translation type="obsolete">IP 주소: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Port: %1</source>
         <translation type="obsolete">포트: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Host Name: %1</source>
         <translation type="obsolete">호스트명: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Connected users:</source>
         <translation type="obsolete">연결된 사용자:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>#%1 - %2 (port: %3)</source>
         <translation type="obsolete">#%1 - %2 (포트: %3)</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>#%1 - %2</source>
         <translation type="obsolete">#%1 - %2</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>No address info for %1 or %2</source>
         <translation type="obsolete">%1 또는 %2 의 주소 정보가 없습니다</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>No address info for %1</source>
         <translation type="obsolete">%1 의 주소 정보가 없습니다</translation>
     </message>
@@ -4442,12 +4560,10 @@ Date: %4</source>
         <translation>Ping %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
         <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP 주소는 %2 입니다.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>/ping %1</source>
         <translation type="obsolete">/ping %1</translation>
     </message>
@@ -4467,17 +4583,14 @@ Date: %4</source>
         <translation>사용자 %2 로부터 %1 파일 이어받기 시도중입니다</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
         <translation type="obsolete">Unizone에 오신것을 환영합니다! 윈도우즈용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
         <translation type="obsolete">Unizone에 오신것을 환영합니다! 리눅스용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
         <translation type="obsolete">Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
     </message>
@@ -4497,7 +4610,6 @@ Date: %4</source>
         <translation>도움말을 원하시면 /help 을 입력하십시요.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>[Freeware] - Unizone</source>
         <translation type="obsolete">[Freeware] - Unizone</translation>
     </message>
@@ -4512,7 +4624,6 @@ Date: %4</source>
         <translation>Failed to start accept thread!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Sharing %1 file(s).</source>
         <translation type="obsolete">%1 개의 파일 공유 중.</translation>
     </message>
@@ -4522,7 +4633,6 @@ Date: %4</source>
         <translation>연결됨.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Name changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</source>
         <translation type="obsolete">&lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt; 로 이름이 변경됨.</translation>
     </message>
@@ -4542,42 +4652,34 @@ Date: %4</source>
         <translation>상태:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Name</source>
         <translation type="obsolete">이름</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>ID</source>
         <translation type="obsolete">아이디</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Status</source>
         <translation type="obsolete">상태</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Files</source>
         <translation type="obsolete">파일</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Connection</source>
         <translation type="obsolete">연결</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Load</source>
         <translation type="obsolete">불러오기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Client</source>
         <translation type="obsolete">클라이언트</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Testing Unizone (English) </source>
         <translation type="obsolete">Unizone 테스트 중</translation>
     </message>
@@ -4627,6 +4729,7 @@ Date: %4</source>
         <translation>1 초</translation>
     </message>
     <message>
+        <location filename="winsharewindow.cpp" line="1086"/>
         <location filename="winsharewindow.cpp" line="1147"/>
         <source>%1 seconds</source>
         <translation>%1 초</translation>
@@ -4637,62 +4740,60 @@ Date: %4</source>
         <translation>와</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>%1 %2</source>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1832"/>
+        <location filename="winsharewindow.cpp" line="1833"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Waiting for file scan thread to finish...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2149"/>
+        <location filename="winsharewindow.cpp" line="2150"/>
         <source>here</source>
         <translation>여기</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2150"/>
+        <location filename="winsharewindow.cpp" line="2151"/>
         <source>away</source>
         <translation>자리 비움</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2151"/>
+        <location filename="winsharewindow.cpp" line="2152"/>
         <source>idle</source>
         <translation>대기상태</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2152"/>
+        <location filename="winsharewindow.cpp" line="2153"/>
         <source>busy</source>
         <translation>사용중</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2153"/>
+        <location filename="winsharewindow.cpp" line="2154"/>
         <source>at work</source>
         <translation>일하는 중</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2154"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>around</source>
         <translation>근처에 있음</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2155"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>sleeping</source>
         <translation>잠자는 중</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>/search %1</source>
         <translation type="obsolete">/search %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2340"/>
+        <location filename="winsharewindow.cpp" line="2341"/>
         <source>Rescanning shared files...</source>
         <translation>공유된 파일을 재검색 중...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2345"/>
+        <location filename="winsharewindow.cpp" line="2346"/>
         <source>Scanning shares...</source>
         <translation>공유 검색중...</translation>
     </message>
@@ -4707,27 +4808,22 @@ Date: %4</source>
         <translation>아니오</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Create Channel</source>
         <translation type="obsolete">채널 만들기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Please enter channel name</source>
         <translation type="obsolete">채널 이름을 입력하여 주십시요</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Channels</source>
         <translation type="obsolete">채널</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
         <translation type="obsolete">사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User #%1 requested invite to channel %2. Do you?</source>
         <translation type="obsolete">사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
     </message>
@@ -4762,6 +4858,7 @@ Date: %4</source>
         <translation>Watch pattern set to %1.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="278"/>
         <location filename="winshare_network.cpp" line="303"/>
         <source>Invalid compression!</source>
         <translation>Invalid compression!</translation>
@@ -4772,6 +4869,8 @@ Date: %4</source>
         <translation>Compression level for server %1 at port %2 set to %3.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="264"/>
+        <location filename="winshare_network.cpp" line="272"/>
         <location filename="winshare_network.cpp" line="3107"/>
         <source>Current compression: %1</source>
         <translation>Current compression: %1</translation>
@@ -4782,7 +4881,6 @@ Date: %4</source>
         <translation>Running: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Time request sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
         <translation type="obsolete">Time request sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</translation>
     </message>
@@ -4792,7 +4890,6 @@ Date: %4</source>
         <translation>Unizone 버전: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>passive</source>
         <translation type="obsolete">passive</translation>
     </message>
@@ -5142,12 +5239,10 @@ Date: %4</source>
         <translation>as time goes on.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>On Connect: %1</source>
         <translation type="obsolete">연결: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>On Connect 2: %1</source>
         <translation type="obsolete">연결 2: %1</translation>
     </message>
@@ -5162,27 +5257,22 @@ Date: %4</source>
         <translation>- Local File: %1</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Address info for user #%1 (%2):</source>
         <translation type="obsolete">사용자 #%1 (%2) 의 주소 정보:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Idle.</source>
         <translation type="obsolete">대기.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Searching for: &quot;%1&quot;.</source>
         <translation type="obsolete">찾는 중: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>active</source>
         <translation type="obsolete">active</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Results: %1</source>
         <translation type="obsolete">결과: %1</translation>
     </message>
@@ -5222,107 +5312,88 @@ Date: %4</source>
         <translation>Statusbar</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>File Name</source>
         <translation type="obsolete">파일명</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>File Size</source>
         <translation type="obsolete">크기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>File Type</source>
         <translation type="obsolete">형식</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Modified</source>
         <translation type="obsolete">수정</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Path</source>
         <translation type="obsolete">경로</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User</source>
         <translation type="obsolete">사용자</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Search:</source>
         <translation type="obsolete">검색:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Download</source>
         <translation type="obsolete">다운로드</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Stop</source>
         <translation type="obsolete">중단</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Clear</source>
         <translation type="obsolete">비우기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Clear History</source>
         <translation type="obsolete">Clear History</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Topic</source>
         <translation type="obsolete">주제</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Users</source>
         <translation type="obsolete">사용자</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Admins</source>
         <translation type="obsolete">관리자</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Public</source>
         <translation type="obsolete">일반</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&amp;Create</source>
         <translation type="obsolete">만들기(&amp;C)</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&amp;Join</source>
         <translation type="obsolete">참가하기(&amp;J)</translation>
     </message>
     <message>
+        <location filename="winsharewindow.cpp" line="1320"/>
         <location filename="winsharewindow.cpp" line="1329"/>
         <source>Testing Unizone (English)</source>
         <translation>Unizone 테스트 중</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Chat</source>
         <translation type="obsolete">대화</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Search</source>
         <translation type="obsolete">찾기</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
         <translation type="obsolete">Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</translation>
     </message>
@@ -5337,37 +5408,41 @@ Date: %4</source>
         <translation>Cleared resume list.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1076"/>
+        <location filename="winshare_network.cpp" line="1147"/>
         <location filename="winshare_network.cpp" line="2788"/>
         <source>1. %1</source>
         <translation>1. %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1078"/>
+        <location filename="winshare_network.cpp" line="1149"/>
         <location filename="winshare_network.cpp" line="2792"/>
         <source>2. %1</source>
         <translation>2. %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1075"/>
+        <location filename="winshare_network.cpp" line="1146"/>
         <location filename="winshare_network.cpp" line="2786"/>
         <source>On Connect:</source>
         <translation>On Connect:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1996"/>
+        <location filename="winsharewindow.cpp" line="1997"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Queued file %1 from user #%2.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2023"/>
+        <location filename="winsharewindow.cpp" line="2024"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Downloading file %1 from user #%2.</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Address info for user #%1:</source>
         <translation type="obsolete">Address info for user #%1:</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>User Name: %1</source>
         <translation type="obsolete">User Name: %1</translation>
     </message>
@@ -5382,16 +5457,18 @@ Date: %4</source>
         <translation>/revsay [nick]: [text] - say text reversed but prefix with nick</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Initializing...</source>
         <translation type="obsolete">Initializing...</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1071"/>
+        <location filename="winshare_network.cpp" line="1142"/>
         <location filename="winshare_network.cpp" line="2781"/>
         <source>On Connect: Do Nothing ;)</source>
         <translation>On Connect: Do Nothing ;)</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1024"/>
         <location filename="winshare_network.cpp" line="2546"/>
         <source>&amp;lt;None&amp;gt;</source>
         <translation>&amp;lt;None&amp;gt;</translation>
@@ -5422,21 +5499,25 @@ Date: %4</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="779"/>
         <location filename="winshare_network.cpp" line="815"/>
         <source>Whitelist pattern updated.</source>
         <translation>Whitelist pattern updated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="781"/>
         <location filename="winshare_network.cpp" line="817"/>
         <source>Error updating whitelist pattern!</source>
         <translation>Error updating whitelist pattern!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="791"/>
         <location filename="winshare_network.cpp" line="827"/>
         <source>Filter list pattern updated.</source>
         <translation>Filter list pattern updated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="793"/>
         <location filename="winshare_network.cpp" line="829"/>
         <source>Error updating filter list pattern!</source>
         <translation>Error updating filter list pattern!</translation>
@@ -5482,16 +5563,16 @@ Date: %4</source>
         <translation>/whitelist [pattern] - set the whitelist pattern</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
         <translation type="obsolete">Welcome to Unizone (Korean)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2156"/>
+        <location filename="winsharewindow.cpp" line="2157"/>
         <source>wandering</source>
         <translation>wandering</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="118"/>
         <location filename="winshare_network.cpp" line="124"/>
         <source>Invalid nickname!</source>
         <translation>Invalid nickname!</translation>
@@ -5507,7 +5588,7 @@ Date: %4</source>
         <translation>/view - view picture on local machine</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2042"/>
+        <location filename="winsharewindow.cpp" line="2043"/>
         <source>Failed to create log file.</source>
         <translation>Failed to create log file.</translation>
     </message>
@@ -5532,6 +5613,7 @@ Date: %4</source>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1447"/>
         <location filename="winshare_network.cpp" line="1471"/>
         <source>Bad Conversion!</source>
         <translation>Bad Conversion!</translation>
@@ -5572,11 +5654,15 @@ Date: %4</source>
         <translation>Decrypted: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1201"/>
+        <location filename="winshare_network.cpp" line="1222"/>
         <location filename="winshare_network.cpp" line="1240"/>
         <source>Decoded: %1</source>
         <translation>Decoded: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1211"/>
+        <location filename="winshare_network.cpp" line="1230"/>
         <location filename="winshare_network.cpp" line="1250"/>
         <source>Encoded: %1</source>
         <translation>Encoded: %1</translation>
@@ -5612,7 +5698,6 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation type="obsolete">Unizone에 오신것을 환영합니다! %1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
@@ -5622,7 +5707,6 @@ Date: %4</source>
         <translation>Unizone에 오신것을 환영합니다!</translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation type="obsolete">%1용 &lt;b&gt;THE&lt;/b&gt; MUSCLE 클라이언트입니다!</translation>
     </message>
@@ -5637,7 +5721,7 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1843"/>
+        <location filename="winsharewindow.cpp" line="1844"/>
         <source>Waiting for file list thread to finish...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5662,6 +5746,7 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="winsharewindow.cpp" line="559"/>
         <location filename="winsharewindow.cpp" line="593"/>
         <source>Negotiating...</source>
         <translation>교섭중...</translation>
@@ -5677,6 +5762,7 @@ Date: %4</source>
         <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1036"/>
         <location filename="winshare_network.cpp" line="2764"/>
         <source>Private Message redirect pattern: %1</source>
         <translation>Private Message redirect pattern: %1</translation>
@@ -5687,7 +5773,6 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="" line="2687076"/>
         <source>Unizone - User #%1 on %2</source>
         <translation type="obsolete">Unizone - %2 의 사용자 #%1</translation>
     </message>

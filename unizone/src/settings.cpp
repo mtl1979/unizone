@@ -468,7 +468,7 @@ WSettings::Load()
 		if (buffer()->SetNumBytes((uint32) file.Size(), false) == B_NO_ERROR)
 		{
 			CheckSize(file.Size());
-			if (file.ReadBlock32((char *)buffer()->GetBuffer(), (uint32) file.Size()) == (int32) file.Size())
+			if (file.ReadBlock32(buffer()->GetBuffer(), (uint32) file.Size()) == (int32) file.Size())
 			{
 				// reload settings
 				fSet()->Unflatten(buffer()->GetBuffer(), (uint32) file.Size());

@@ -3153,7 +3153,7 @@ WinShareWindow::SendPicture(const QString &target, const QString &file)
 		{
 			if (buf()->SetNumBytes((uint32) fFile.Size(), false) == B_OK)
 			{
-				fFile.ReadBlock32((char *) buf()->GetBuffer(), (uint32) fFile.Size());
+				fFile.ReadBlock32(buf()->GetBuffer(), (uint32) fFile.Size());
 				fFile.Close();
 				QFileInfo info(file);
 				fNetClient->SendPicture(target, buf, info.fileName());

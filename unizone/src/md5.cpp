@@ -13,8 +13,8 @@ using namespace muscle;
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define byteSwap(buf, words)	// we're little endian (linux & windows on intel hardware)
 										// so we don't need this
-#define HIDWORD(a) *((unsigned int*)(&a)+1)
-#define LODWORD(a) *((unsigned int*)(&a))
+#define HIDWORD(a) *((unsigned int*)((void *)&a)+1)
+#define LODWORD(a) *((unsigned int*)((void *)&a))
 #else
 void byteSwap(UWORD32 *buf, unsigned int words)
 {
@@ -23,8 +23,8 @@ void byteSwap(UWORD32 *buf, unsigned int words)
 		buf[x] = B_SWAP_INT32(buf[x]);
 	}
 }
-#define HIDWORD(a) *((unsigned int*)(&a))
-#define LODWORD(a) *((unsigned int*)(&a)+1)
+#define HIDWORD(a) *((unsigned int*)((void *)&a))
+#define LODWORD(a) *((unsigned int*)((void *)&a)+1)
 #endif
 
 /*
@@ -261,7 +261,7 @@ HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesH
 			
 			MD5Init(&ctx);
 			uint32 numRead;
-			char * buffer = (char *) buf()->GetBuffer();
+			uint8 * buffer = buf()->GetBuffer();
 			size_t bufsize = buf()->GetNumBytes();
 			while ((numRead = file.ReadBlock32(buffer, md_min(bufsize, bytesLeft))) > 0)
 			{
@@ -273,7 +273,7 @@ HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesH
 					return B_ERROR;
 				}
 				
-				MD5Update(&ctx, buf()->GetBuffer(), md_min(numRead, bytesLeft));
+				MD5Update(&ctx, buffer, md_min(numRead, bytesLeft));
 				
 				if (numRead < bytesLeft)
 				{

@@ -1,65 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
-<defaultcodec>utf-8</defaultcodec>
+<!DOCTYPE TS>
+<TS version="2.0">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name></name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone (English)</source>
         <translation type="obsolete">Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of your user name.</source>
         <translation type="obsolete">Das ist die Farbe Deines Benutzernamens.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of other users&apos; names.</source>
         <translation type="obsolete">Das ist die Farbe der anderen Benutzernamen.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of text sent by you and other users.</source>
         <translation type="obsolete">Das ist die Farbe des gesendeten Textes aller Benutzer.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of &quot;System&quot;.</source>
         <translation type="obsolete">Das ist die Farbe von &quot;System&quot;.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of the text in a ping response.</source>
         <translation type="obsolete">Die Farbe einer Ping- Antwort.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of &quot;Error&quot;.</source>
         <translation type="obsolete">Das ist die Farbe von &quot;Error&quot;.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of the text in error messages.</source>
         <translation type="obsolete">Das ist die Farbe einer Fehlermeldung.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of private text.</source>
         <translation type="obsolete">Das ist die Farbe privaten Textes.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of &quot;Action&quot;.</source>
         <translation type="obsolete">Das ist die Farbe der &quot;Aktion&quot;.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of URLs.</source>
         <translation type="obsolete">Das ist die Farbe von URLs.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>This is the color of your user name in text when someone says your name in the main chat.</source>
         <translation type="obsolete">Die Farbe Deines Benutzernamens, wenn ihn jemand im Hauptchat gesagt hat.</translation>
     </message>
@@ -67,137 +56,110 @@
 <context>
     <name>@default</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone (English)</source>
         <translation type="obsolete">Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Username</source>
         <translation type="obsolete">Benutzer</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Remote User</source>
         <translation type="obsolete">Remote Benutzer</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Sample text</source>
         <translation type="obsolete">Beispieltext</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;System&lt;/b&gt; </source>
         <translation type="obsolete">&lt;b&gt;System&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;Error&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;Fehler&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Error text</source>
         <translation type="obsolete">Fehlertext</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Private text</source>
         <translation type="obsolete">Privater Text</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;Action&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;Action&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;u&gt;http://magep.com/&lt;/u&gt;</source>
         <translation type="obsolete">&lt;u&gt;http://magep.com/&lt;/u&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a.</source>
         <translation type="obsolete">Benutzer #%1 (a.k.a.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot;&gt;</source>
         <translation type="obsolete">&lt;Textfarbe=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) is now </source>
         <translation type="obsolete">) ist jetzt </translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now </source>
         <translation type="obsolete">Benutzer #%1 ist jetzt </translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type="obsolete">Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Ping returned in %3 milliseconds</source>
         <translation type="obsolete">Ping zurück in %3 Millisekunden</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Uptime: %1, Logged on for %2)</source>
         <translation type="obsolete"> %1, Eingeloggt seit %2)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;Fehler:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;Warnung:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>You are now </source>
         <translation type="obsolete">Sie sind jetzt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name changed to &lt;font color=&quot;%1&quot;&gt;</source>
         <translation type="obsolete">Name geändert zu &lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font size=&quot;%1&quot;&gt;</source>
         <translation type="obsolete">&lt;Schrifgröße=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;Aktion:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) pinged you.</source>
         <translation type="obsolete">) pingte Sie an.</translation>
     </message>
@@ -205,7 +167,6 @@
 <context>
     <name>AboutDlg</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone (English)
 Version %1</source>
         <translation type="obsolete">Unizone (Deutsch)
@@ -260,7 +221,6 @@ Version %1</translation>
         <translation type="unfinished">Geschrieben von Vitaliy Mikitchenko</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
         <translation type="obsolete">Unizone ist Copyright (C) 2003 von Mika T. Lindqvist</translation>
     </message>
@@ -278,37 +238,30 @@ Version %1</translation>
         <translation>Thema:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name</source>
         <translation type="obsolete">Name</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>ID</source>
         <translation type="obsolete">ID</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Status</source>
         <translation type="obsolete">Status</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Files</source>
         <translation type="obsolete">Dateien</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connection</source>
         <translation type="obsolete">Verbindung</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Load</source>
         <translation type="obsolete">Lade</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Client</source>
         <translation type="obsolete">Client</translation>
     </message>
@@ -333,18 +286,15 @@ Version %1</translation>
         <translation>privat</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 %2</source>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Not allowed!
 </source>
         <translation type="obsolete">Nicht gestattet!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User(s) not found!
 </source>
         <translation type="obsolete">Benutzer nicht gefunden!</translation>
@@ -355,16 +305,27 @@ Version %1</translation>
         <translation>Benutzerer #%1 (a.k.a %2) ist bereits in diesem Channel Fenster!</translation>
     </message>
     <message>
+        <location filename="channelimpl.cpp" line="378"/>
+        <location filename="channelimpl.cpp" line="390"/>
+        <location filename="channelimpl.cpp" line="402"/>
+        <location filename="channelimpl.cpp" line="431"/>
+        <location filename="channelimpl.cpp" line="460"/>
+        <location filename="channelimpl.cpp" line="510"/>
         <location filename="channelimpl.cpp" line="563"/>
         <source>Not allowed!</source>
         <translation>Nicht erlaubt!</translation>
     </message>
     <message>
+        <location filename="channelimpl.cpp" line="423"/>
+        <location filename="channelimpl.cpp" line="452"/>
         <location filename="channelimpl.cpp" line="555"/>
         <source>User(s) not found!</source>
         <translation>Benutzer nicht gefunden!</translation>
     </message>
     <message>
+        <location filename="channelimpl.cpp" line="414"/>
+        <location filename="channelimpl.cpp" line="443"/>
+        <location filename="channelimpl.cpp" line="472"/>
         <location filename="channelimpl.cpp" line="521"/>
         <source>No users passed.</source>
         <translation>Kein(e) Benutzer anwesend.</translation>
@@ -375,7 +336,6 @@ Version %1</translation>
         <translation>Liste der Channel Admins:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 - %2</source>
         <translation type="obsolete">%1 - %2</translation>
     </message>
@@ -466,7 +426,6 @@ Version %1</translation>
 <context>
     <name>Channels</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1</source>
         <translation type="obsolete">%1</translation>
     </message>
@@ -481,16 +440,22 @@ Version %1</translation>
         <translation>Bitte den Namen des Channels eingeben</translation>
     </message>
     <message>
+        <location filename="channels.cpp" line="214"/>
+        <location filename="channels.cpp" line="541"/>
         <location filename="channels.cpp" line="560"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
+        <location filename="channels.cpp" line="214"/>
+        <location filename="channels.cpp" line="541"/>
         <location filename="channels.cpp" line="560"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
+        <location filename="channels.cpp" line="22"/>
+        <location filename="channels.cpp" line="539"/>
         <location filename="channels.cpp" line="558"/>
         <source>Channels</source>
         <translation>Channels</translation>
@@ -544,42 +509,34 @@ Version %1</translation>
 <context>
     <name>ChannelsBase</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Channels</source>
         <translation type="obsolete">Channel</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name</source>
         <translation type="obsolete">Name</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Topic</source>
         <translation type="obsolete">Thema</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Users</source>
         <translation type="obsolete">Benutzer</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Admins</source>
         <translation type="obsolete">Admins</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Public</source>
         <translation type="obsolete">Publik</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&amp;Create</source>
         <translation type="obsolete">&amp;Erzeugen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&amp;Join</source>
         <translation type="obsolete">&amp;Anschließen</translation>
     </message>
@@ -630,21 +587,25 @@ Version %1</translation>
 <context>
     <name>Connection</name>
     <message>
+        <location filename="util.cpp" line="628"/>
         <location filename="util.cpp" line="696"/>
         <source>300 baud</source>
         <translation>300 baud</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="629"/>
         <location filename="util.cpp" line="698"/>
         <source>14.4 kbps</source>
         <translation>14.4 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="630"/>
         <location filename="util.cpp" line="700"/>
         <source>28.8 kbps</source>
         <translation>28.8 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="631"/>
         <location filename="util.cpp" line="702"/>
         <source>33.6 kbps</source>
         <translation>33.6 kbps</translation>
@@ -655,21 +616,25 @@ Version %1</translation>
         <translation>36.6 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="633"/>
         <location filename="util.cpp" line="704"/>
         <source>57.6 kbps</source>
         <translation>57.6 kbps</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="634"/>
         <location filename="util.cpp" line="706"/>
         <source>ISDN-64k</source>
         <translation>ISDN-64k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="635"/>
         <location filename="util.cpp" line="708"/>
         <source>ISDN-128k</source>
         <translation>ISDN-128k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="636"/>
         <location filename="util.cpp" line="710"/>
         <source>DSL-256k</source>
         <translation>DSL-256k</translation>
@@ -680,46 +645,62 @@ Version %1</translation>
         <translation>DSL</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="638"/>
         <location filename="util.cpp" line="712"/>
         <source>DSL-384k</source>
         <translation>DSL-384k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="639"/>
         <location filename="util.cpp" line="714"/>
         <source>DSL-512k</source>
         <translation>DSL-512k</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="640"/>
         <location filename="util.cpp" line="716"/>
         <source>Cable</source>
         <translation>Cable</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="641"/>
         <location filename="util.cpp" line="719"/>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="642"/>
         <location filename="util.cpp" line="721"/>
         <source>T1</source>
         <translation>T1</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="643"/>
         <location filename="util.cpp" line="723"/>
         <source>T3</source>
         <translation>T3</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="644"/>
         <location filename="util.cpp" line="725"/>
         <source>OC-3</source>
         <translation>OC-3</translation>
     </message>
     <message>
+        <location filename="util.cpp" line="645"/>
         <location filename="util.cpp" line="727"/>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
     <message>
+        <location filename="prefsimpl.cpp" line="134"/>
+        <location filename="settings.cpp" line="664"/>
+        <location filename="user.cpp" line="24"/>
+        <location filename="user.cpp" line="161"/>
+        <location filename="user.cpp" line="163"/>
+        <location filename="user.cpp" line="168"/>
+        <location filename="user.cpp" line="170"/>
+        <location filename="user.cpp" line="355"/>
         <location filename="util.cpp" line="729"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
@@ -783,7 +764,7 @@ Version %1</translation>
         <translation>Nov</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="899"/>
+        <location filename="util.cpp" line="898"/>
         <source>Dec</source>
         <translation>Dez</translation>
     </message>
@@ -818,7 +799,7 @@ Version %1</translation>
         <translation>Sa</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="914"/>
+        <location filename="util.cpp" line="913"/>
         <source>Sun</source>
         <translation>So</translation>
     </message>
@@ -836,7 +817,7 @@ Version %1</translation>
         <translation>Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="debugimpl.cpp" line="81"/>
+        <location filename="debugimpl.cpp" line="78"/>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
@@ -853,7 +834,7 @@ File %3
 Date: %4</translation>
     </message>
     <message>
-        <location filename="debugimpl.cpp" line="102"/>
+        <location filename="debugimpl.cpp" line="101"/>
         <source>Attempt to read file larger than maximum allocatable memory amount!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -914,12 +895,10 @@ Date: %4</translation>
         <translation>Lösch&amp;e Chat Log</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Search</source>
         <translation type="obsolete">Suche</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Open C&amp;hannels Window</source>
         <translation type="obsolete">Öffne C&amp;hannel Fenster</translation>
     </message>
@@ -1132,12 +1111,10 @@ Date: %4</translation>
         <translation>Nicht Gestattet zu %1 [%2]</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>You must change your nickname before connecting!</source>
         <translation type="obsolete">Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation type="obsolete">Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
     </message>
@@ -1163,7 +1140,6 @@ Date: %4</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
@@ -1180,259 +1156,208 @@ File %3
 Date: %4</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 of %2</source>
         <translation type="obsolete">%1 auf %2</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;System:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now connected.</source>
         <translation type="obsolete">Benutzer #%1 ist jetzt verbunden.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) has disconnected.</source>
         <translation type="obsolete">Benutzer #%1 (alias &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;) hat die Verbindung getrennt.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now known as &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</source>
         <translation type="obsolete">Benutzer #%1 ist bekannt als &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now known as &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</source>
         <translation type="obsolete">Benutzer #%1 (alias &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) heisst jetzt &lt;font color=&quot;%5&quot;&gt;%3&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) is now %3.</source>
         <translation type="obsolete">Benutzer #%1 (alias &lt;font color=&quot;%4&quot;&gt;%2&lt;/font&gt;) ist jetzt %3.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now %2.</source>
         <translation type="obsolete">Benutzer #%1 ist jetzt %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping returned in %3 milliseconds (%4)&lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Ping zurück in %3 millisekunden (%4)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Uptime: %3, Logged on for %4)&lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt; (Laufzeit: %3, Eingeloggt seit %4)&lt;/font&gt;&quot;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Error:&lt;/b&gt;&lt;/font&gt; </source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Fehler:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Warning:&lt;/b&gt;&lt;/font&gt; </source>
         <translation type="obsolete">&quot;&lt;font color=&quot;&quot;%1&quot;&quot; size=&quot;&quot;%2&quot;&quot;&gt;&lt;b&gt;Warnung:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>You are now %1.</source>
         <translation type="obsolete">Sie sind jetzt %1.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Action:&lt;/b&gt;&lt;/font&gt; </source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;&lt;b&gt;Aktion:&lt;/b&gt; &lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;User #%3 (a.k.a. &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) pinged you.&lt;/font&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;Benutzer #%3 (alias &lt;font color=&quot;%5&quot;&gt;%4&lt;/font&gt;) hat dich gepingt.&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>14.4 kbps</source>
         <translation type="obsolete">14.4 kbps</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>28.8 kbps</source>
         <translation type="obsolete">28.8 kbps</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>33.6 kbps</source>
         <translation type="obsolete">33.6 kbps</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>36.6 kbps</source>
         <translation type="obsolete">36.6 kbps</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>57.6 kbps</source>
         <translation type="obsolete">57.6 kbps</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>ISDN-64k</source>
         <translation type="obsolete">ISDN-64k</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>ISDN-128k</source>
         <translation type="obsolete">ISDN-128k</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>DSL</source>
         <translation type="obsolete">DSL</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Cable</source>
         <translation type="obsolete">Cable</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>T1</source>
         <translation type="obsolete">T1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>T3</source>
         <translation type="obsolete">T3</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>OC-3</source>
         <translation type="obsolete">OC-3</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>OC-12</source>
         <translation type="obsolete">OC-12</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>300 baud</source>
         <translation type="obsolete">300 baud</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>DSL-256k</source>
         <translation type="obsolete">DSL-256k</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>DSL-384k</source>
         <translation type="obsolete">DSL-384k</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>DSL-512k</source>
         <translation type="obsolete">DSL-512k</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone (English)</source>
         <translation type="obsolete">Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Date:</source>
         <comment>Date</comment>
         <translation type="obsolete">Datum:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>B</source>
         <translation type="obsolete">B</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>kB</source>
         <translation type="obsolete">kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>MB</source>
         <translation type="obsolete">MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>GB</source>
         <translation type="obsolete">GB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>B/s</source>
         <translation type="obsolete">B/s</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>kB/s</source>
         <translation type="obsolete">kB/s</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>MB/s</source>
         <translation type="obsolete">MB/s</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>GB/s</source>
         <translation type="obsolete">GB/s</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1.%2.%3 build %4</source>
         <translation type="obsolete">%1.%2.%3 build %4</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 has disconnected.</source>
         <translation type="obsolete">Benutzer #%1 hat die Verbindung getrennt.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now nameless.</source>
         <translation type="obsolete">Benutzer #%1 ist jetzt namenslos.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
         <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP Adresse ist %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation type="obsolete">Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Reading directory...</source>
         <comment>WFileThread</comment>
         <translation type="obsolete">Lese Verzeichnis...</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 %2</source>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>TB</source>
         <translation type="obsolete">TB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>TB/s</source>
         <translation type="obsolete">TB/s</translation>
     </message>
@@ -1450,6 +1375,7 @@ Date: %4</translation>
         <translation>Benutzer Name: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="60"/>
         <location filename="resolverthread.cpp" line="151"/>
         <source>IP Address: %1</source>
         <translation>IP Adresse: %1</translation>
@@ -1460,16 +1386,19 @@ Date: %4</translation>
         <translation>Port: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="70"/>
         <location filename="resolverthread.cpp" line="106"/>
         <source>Host Name: %1</source>
         <translation>Host Name: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="77"/>
         <location filename="resolverthread.cpp" line="116"/>
         <source>Aliases: %1</source>
         <translation>Aliases: %1</translation>
     </message>
     <message>
+        <location filename="resolverthread.cpp" line="84"/>
         <location filename="resolverthread.cpp" line="186"/>
         <source>No address info for %1</source>
         <translation>Keine Adresse Info für %1</translation>
@@ -1508,6 +1437,7 @@ Date: %4</translation>
         <translation type="unfinished">Aktuelles Verzeichnis:</translation>
     </message>
     <message>
+        <location filename="scanprogress.ui" line="67"/>
         <location filename="scanprogress.ui" line="109"/>
         <source>-</source>
         <translation type="unfinished">-</translation>
@@ -1523,6 +1453,8 @@ Date: %4</translation>
         <translation type="unfinished">Dateien gescannt:</translation>
     </message>
     <message>
+        <location filename="scanprogress.ui" line="151"/>
+        <location filename="scanprogress.ui" line="193"/>
         <location filename="scanprogress.ui" line="235"/>
         <source>0</source>
         <translation type="unfinished">0</translation>
@@ -1612,12 +1544,10 @@ Date: %4</translation>
         <translation>Abbruch</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Sent</source>
         <translation type="obsolete">Gesendet</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>File Transfers</source>
         <translation type="obsolete">Datei Transfer</translation>
     </message>
@@ -1632,117 +1562,94 @@ Date: %4</translation>
         <translation>Kein Limit</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>64 bytes</source>
         <translation type="obsolete">64 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>128 bytes</source>
         <translation type="obsolete">128 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>512 bytes</source>
         <translation type="obsolete">512 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 kB</source>
         <translation type="obsolete">1 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>2 kB</source>
         <translation type="obsolete">2 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>4 kB</source>
         <translation type="obsolete">4 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>6 kB</source>
         <translation type="obsolete">6 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>8 kB</source>
         <translation type="obsolete">8 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>10 kB</source>
         <translation type="obsolete">10 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>12 kB</source>
         <translation type="obsolete">12 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>14 kB</source>
         <translation type="obsolete">14 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>16 kB</source>
         <translation type="obsolete">16 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>32 kB</source>
         <translation type="obsolete">32 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>64 kB</source>
         <translation type="obsolete">64 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>128 kB</source>
         <translation type="obsolete">128 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>256 kB</source>
         <translation type="obsolete">256 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>512 kB</source>
         <translation type="obsolete">512 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 MB</source>
         <translation type="obsolete">1 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>2 MB</source>
         <translation type="obsolete">2 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>4 MB</source>
         <translation type="obsolete">4 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>8 MB</source>
         <translation type="obsolete">8 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>16 MB</source>
         <translation type="obsolete">16 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>32 MB</source>
         <translation type="obsolete">32 MB</translation>
     </message>
@@ -1772,62 +1679,50 @@ Date: %4</translation>
         <translation>Beendete Löschen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>256 bytes</source>
         <translation type="obsolete">256 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unbanned</source>
         <translation type="obsolete">Unverbannt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 minute</source>
         <translation type="obsolete">1 Minute</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>2 minutes</source>
         <translation type="obsolete">2 Minuten</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>5 minutes</source>
         <translation type="obsolete">5 Minuten</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>10 minutes</source>
         <translation type="obsolete">10 Minuten</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>15 minutes</source>
         <translation type="obsolete">15 Minuten</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>30 minutes</source>
         <translation type="obsolete">30 Minuten</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 hour</source>
         <translation type="obsolete">1 Stunde</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Infinite</source>
         <translation type="obsolete">Unbegrenzt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Ban IP</source>
         <translation type="obsolete">Verbannte IP</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Block</source>
         <translation type="obsolete">Blockiert</translation>
     </message>
@@ -1842,7 +1737,6 @@ Date: %4</translation>
         <translation>Download Port für Datei %1 außerhalb des Bereiches, es wird möglicherweise fehlschlagen!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1</source>
         <translation type="obsolete">%1</translation>
     </message>
@@ -1857,7 +1751,6 @@ Date: %4</translation>
         <translation>Verbindung fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 is downloading %2.</source>
         <translation type="obsolete">%1 lädt herunter %2.</translation>
     </message>
@@ -1872,27 +1765,24 @@ Date: %4</translation>
         <translation>Downloaden: [%1%]</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Finished downloading %2 from %1.</source>
         <translation type="obsolete">Beendeter Download %2 von %1.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Uploading: [%1%]</source>
         <translation type="obsolete">Uploaden: [%1%]</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 has finished downloading %2.</source>
         <translation type="obsolete">%1 hat Download %2 beendet.</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="241"/>
         <location filename="downloadimpl.cpp" line="327"/>
         <source>Locally Queued.</source>
         <translation>Lokale Warteschleife.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Queued.</source>
         <translation type="obsolete">Warteschleife.</translation>
     </message>
@@ -1927,6 +1817,8 @@ Date: %4</translation>
         <translation>Verhandle...</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="670"/>
+        <location filename="downloadimpl.cpp" line="700"/>
         <location filename="downloadimpl.cpp" line="732"/>
         <source>Finished.</source>
         <translation>Beendet.</translation>
@@ -1972,7 +1864,6 @@ Date: %4</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Packet Size</source>
         <translation type="obsolete">Paket Größe</translation>
     </message>
@@ -1992,36 +1883,53 @@ Date: %4</translation>
         <translation>%1 auf %2</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 bytes</source>
         <translation type="obsolete">%1 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 kB</source>
         <translation type="obsolete">%1 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 MB</source>
         <translation type="obsolete">%1 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 minutes</source>
         <translation type="obsolete">%1 Minuten</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="91"/>
+        <location filename="downloadimpl.cpp" line="92"/>
+        <location filename="downloadimpl.cpp" line="93"/>
         <location filename="downloadimpl.cpp" line="94"/>
         <source>%1 B/s</source>
         <translation>%1 B/s</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="95"/>
+        <location filename="downloadimpl.cpp" line="96"/>
+        <location filename="downloadimpl.cpp" line="97"/>
+        <location filename="downloadimpl.cpp" line="98"/>
+        <location filename="downloadimpl.cpp" line="99"/>
+        <location filename="downloadimpl.cpp" line="100"/>
+        <location filename="downloadimpl.cpp" line="101"/>
+        <location filename="downloadimpl.cpp" line="102"/>
+        <location filename="downloadimpl.cpp" line="103"/>
+        <location filename="downloadimpl.cpp" line="104"/>
+        <location filename="downloadimpl.cpp" line="105"/>
+        <location filename="downloadimpl.cpp" line="106"/>
+        <location filename="downloadimpl.cpp" line="107"/>
         <location filename="downloadimpl.cpp" line="108"/>
         <source>%1 kB/s</source>
         <translation>%1 kB/s</translation>
     </message>
     <message>
+        <location filename="downloadimpl.cpp" line="109"/>
+        <location filename="downloadimpl.cpp" line="110"/>
+        <location filename="downloadimpl.cpp" line="111"/>
+        <location filename="downloadimpl.cpp" line="112"/>
+        <location filename="downloadimpl.cpp" line="113"/>
         <location filename="downloadimpl.cpp" line="114"/>
         <source>%1 MB/s</source>
         <translation>%1 MB/s</translation>
@@ -2035,7 +1943,6 @@ Date: %4</translation>
 <context>
     <name>WDownloadThread</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1%2 %3</source>
         <translation type="obsolete">%1%2 %3</translation>
     </message>
@@ -2101,6 +2008,21 @@ Date: %4</translation>
 <context>
     <name>WFormat</name>
     <message>
+        <location filename="formatting.cpp" line="103"/>
+        <location filename="formatting.cpp" line="121"/>
+        <location filename="formatting.cpp" line="137"/>
+        <location filename="formatting.cpp" line="159"/>
+        <location filename="formatting.cpp" line="183"/>
+        <location filename="formatting.cpp" line="195"/>
+        <location filename="formatting.cpp" line="217"/>
+        <location filename="formatting.cpp" line="326"/>
+        <location filename="formatting.cpp" line="337"/>
+        <location filename="formatting.cpp" line="347"/>
+        <location filename="formatting.cpp" line="359"/>
+        <location filename="formatting.cpp" line="395"/>
+        <location filename="formatting.cpp" line="421"/>
+        <location filename="formatting.cpp" line="443"/>
+        <location filename="formatting.cpp" line="476"/>
         <location filename="formatting.cpp" line="515"/>
         <source>&lt;font size=&quot;%1&quot;&gt;</source>
         <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
@@ -2111,17 +2033,37 @@ Date: %4</translation>
         <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="60"/>
+        <location filename="formatting.cpp" line="67"/>
+        <location filename="formatting.cpp" line="111"/>
+        <location filename="formatting.cpp" line="149"/>
+        <location filename="formatting.cpp" line="171"/>
+        <location filename="formatting.cpp" line="182"/>
+        <location filename="formatting.cpp" line="194"/>
+        <location filename="formatting.cpp" line="205"/>
+        <location filename="formatting.cpp" line="218"/>
+        <location filename="formatting.cpp" line="222"/>
+        <location filename="formatting.cpp" line="327"/>
+        <location filename="formatting.cpp" line="338"/>
+        <location filename="formatting.cpp" line="348"/>
+        <location filename="formatting.cpp" line="351"/>
+        <location filename="formatting.cpp" line="360"/>
+        <location filename="formatting.cpp" line="363"/>
+        <location filename="formatting.cpp" line="412"/>
+        <location filename="formatting.cpp" line="434"/>
+        <location filename="formatting.cpp" line="444"/>
+        <location filename="formatting.cpp" line="448"/>
+        <location filename="formatting.cpp" line="467"/>
+        <location filename="formatting.cpp" line="477"/>
         <location filename="formatting.cpp" line="516"/>
         <source>&lt;font color=&quot;%1&quot;&gt;</source>
         <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;(%1)&lt;/b&gt; </source>
         <translation type="obsolete">&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</source>
         <translation type="obsolete">&lt;font color=&quot;%1&quot; size=&quot;%2&quot;&gt;</translation>
     </message>
@@ -2136,22 +2078,18 @@ Date: %4</translation>
         <translation>Benutzer #%1 ist jetzt verbunden.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. &lt;font color=&quot;%2&quot;&gt;</source>
         <translation type="obsolete">Benutzer #%1 (a.k.a. &lt;font color=&quot;%2&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) has disconnected.</source>
         <translation type="obsolete">) hat die Verbindung getrennt.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 has disconnected.</source>
         <translation type="obsolete">Benutzer #%1 hat die Verbindung getrennt.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now known as</source>
         <translation type="obsolete">Benutzer #%1 heißt jetzt</translation>
     </message>
@@ -2166,22 +2104,18 @@ Date: %4</translation>
         <translation>namenlos</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a.</source>
         <translation type="obsolete">Benutzer #%1 (a.k.a.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) is now known as &lt;font color=&quot;%1&quot;&gt;</source>
         <translation type="obsolete">) heißt jetzt &lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) is now </source>
         <translation type="obsolete">ist jetzt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 is now </source>
         <translation type="obsolete">Benutzer #%1 ist jetzt </translation>
     </message>
@@ -2196,12 +2130,10 @@ Date: %4</translation>
         <translation>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Ping returned in %3 milliseconds</source>
         <translation type="obsolete">Ping zurück in %3 Millisekunden</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Uptime: %1, Logged on for %2)</source>
         <translation type="obsolete">Uptime: %1, eingeloggt seit %2)</translation>
     </message>
@@ -2216,22 +2148,18 @@ Date: %4</translation>
         <translation>&lt;b&gt;Warnung:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>You are now </source>
         <translation type="obsolete">Sie sind jetzt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name changed to &lt;font color=&quot;%1&quot;&gt;</source>
         <translation type="obsolete">Name geändert zu &lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;-%1-&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;-%1-&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
         <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
@@ -2241,17 +2169,14 @@ Date: %4</translation>
         <translation>&lt;b&gt;Action:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. </source>
         <translation type="obsolete">Benutzer #%1 (a.k.a. </translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) pinged you.</source>
         <translation type="obsolete">) hat Sie gepingt.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) is now known as</source>
         <translation type="obsolete">) heißt jetzt</translation>
     </message>
@@ -2276,7 +2201,6 @@ Date: %4</translation>
         <translation>Name geändert zu</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>) is now</source>
         <translation type="obsolete">ist jetzt</translation>
     </message>
@@ -2286,6 +2210,7 @@ Date: %4</translation>
         <translation>Zeit Nachfrage gesendet an</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="260"/>
         <location filename="formatting.cpp" line="283"/>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
@@ -2316,11 +2241,25 @@ Date: %4</translation>
         <translation>.</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="241"/>
+        <location filename="formatting.cpp" line="275"/>
+        <location filename="formatting.cpp" line="292"/>
+        <location filename="formatting.cpp" line="480"/>
+        <location filename="formatting.cpp" line="548"/>
         <location filename="formatting.cpp" line="566"/>
         <source>User #%1 (a.k.a</source>
         <translation>Benutzer #%1 (a.k.a</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="244"/>
+        <location filename="formatting.cpp" line="278"/>
+        <location filename="formatting.cpp" line="295"/>
+        <location filename="formatting.cpp" line="483"/>
+        <location filename="formatting.cpp" line="503"/>
+        <location filename="formatting.cpp" line="504"/>
+        <location filename="formatting.cpp" line="533"/>
+        <location filename="formatting.cpp" line="534"/>
+        <location filename="formatting.cpp" line="551"/>
         <location filename="formatting.cpp" line="569"/>
         <source>)</source>
         <comment>aka suffix</comment>
@@ -2332,6 +2271,7 @@ Date: %4</translation>
         <translation>hat die Verbindung getrennt.</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="257"/>
         <location filename="formatting.cpp" line="280"/>
         <source>is now known as</source>
         <translation>heißt jetzt</translation>
@@ -2362,12 +2302,16 @@ Date: %4</translation>
         <translation>entfernt vom privaten Chat- Fenster.</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="247"/>
+        <location filename="formatting.cpp" line="255"/>
+        <location filename="formatting.cpp" line="298"/>
+        <location filename="formatting.cpp" line="486"/>
+        <location filename="formatting.cpp" line="554"/>
         <location filename="formatting.cpp" line="572"/>
         <source>User #%1</source>
         <translation>Benutzer #%1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>user #%1</source>
         <translation type="obsolete">Benutzer #%1</translation>
     </message>
@@ -2383,12 +2327,14 @@ Date: %4</translation>
         <translation>no</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="500"/>
         <location filename="formatting.cpp" line="530"/>
         <source>user #%1 (a.k.a</source>
         <comment>Ping sent to user...</comment>
         <translation>an Benutzer #%1 (a.k.a</translation>
     </message>
     <message>
+        <location filename="formatting.cpp" line="507"/>
         <location filename="formatting.cpp" line="537"/>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
@@ -2398,7 +2344,6 @@ Date: %4</translation>
 <context>
     <name>WGenericThread</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connection timed out!</source>
         <translation type="obsolete">Verbindung timed out</translation>
     </message>
@@ -2414,27 +2359,28 @@ Date: %4</translation>
 <context>
     <name>WPicViewer</name>
     <message>
-        <location filename="picviewerimpl.cpp" line="323"/>
+        <location filename="picviewerimpl.cpp" line="319"/>
         <source>No File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="321"/>
+        <location filename="picviewerimpl.cpp" line="317"/>
         <source>%1/%2</source>
         <translation type="unfinished">%1/%2</translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="306"/>
+        <location filename="picviewerimpl.cpp" line="295"/>
+        <location filename="picviewerimpl.cpp" line="302"/>
         <source>Picture Viewer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="438"/>
+        <location filename="picviewerimpl.cpp" line="434"/>
         <source>Open image...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="picviewerimpl.cpp" line="454"/>
+        <location filename="picviewerimpl.cpp" line="450"/>
         <source>Save image...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2462,7 +2408,6 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1/1</source>
         <translation type="obsolete">1/1</translation>
     </message>
@@ -2555,6 +2500,7 @@ Date: %4</translation>
         <translation>Die Farbe Deines Benutzernamens, wenn ihn jemand im Hauptchat gesagt hat.</translation>
     </message>
     <message>
+        <location filename="prefsimpl.cpp" line="62"/>
         <location filename="prefsimpl.cpp" line="72"/>
         <source>Username</source>
         <translation>Benutzername</translation>
@@ -2565,6 +2511,7 @@ Date: %4</translation>
         <translation>Entfernter Benutzer</translation>
     </message>
     <message>
+        <location filename="prefsimpl.cpp" line="64"/>
         <location filename="prefsimpl.cpp" line="66"/>
         <source>Sample text</source>
         <translation>Beispiel Text</translation>
@@ -2605,7 +2552,7 @@ Date: %4</translation>
         <translation>Das ist die Farbe für &quot;Warnung&quot;.</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="59"/>
+        <location filename="prefsimpl.cpp" line="58"/>
         <source>This is the color of the text in warning messages.</source>
         <translation>Das ist die Textfarbe einer Warnungsmeldung.</translation>
     </message>
@@ -2615,7 +2562,7 @@ Date: %4</translation>
         <translation>&lt;b&gt;Warning&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="75"/>
+        <location filename="prefsimpl.cpp" line="74"/>
         <source>Warning text</source>
         <translation>Warnung Text</translation>
     </message>
@@ -2743,6 +2690,7 @@ Date: %4</translation>
         <translation type="unfinished">Auto Abwesend:</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="248"/>
         <location filename="prefs.ui" line="2105"/>
         <source>Disabled</source>
         <translation type="unfinished">Deaktiviert</translation>
@@ -2858,7 +2806,6 @@ Date: %4</translation>
         <translation type="unfinished">ISDN-128k</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>DSL</source>
         <translation type="obsolete">DSL</translation>
     </message>
@@ -2958,57 +2905,46 @@ Date: %4</translation>
         <translation type="unfinished">Anzeige</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1114"/>
         <source>Local Name</source>
         <translation type="obsolete">Lokaler Name</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1119"/>
         <source>Remote Name</source>
         <translation type="obsolete">Entfernter Name</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1124"/>
         <source>Regular Text</source>
         <translation type="obsolete">Normaler Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1129"/>
         <source>System Text</source>
         <translation type="obsolete">System Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1134"/>
         <source>Ping Text</source>
         <translation type="obsolete">Ping Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1139"/>
         <source>Error Text</source>
         <translation type="obsolete">Fehler Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1144"/>
         <source>Error Message Text</source>
         <translation type="obsolete">Fehlermeldung Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1149"/>
         <source>Private Text</source>
         <translation type="obsolete">Privat Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1154"/>
         <source>Action Text</source>
         <translation type="obsolete">Aktion Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1159"/>
         <source>URL Text</source>
         <translation type="obsolete">URL Text</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1164"/>
         <source>&apos;Name Said&apos; Text</source>
         <translation type="obsolete">&apos;Name gesagt&apos; Text</translation>
     </message>
@@ -3033,32 +2969,26 @@ Date: %4</translation>
         <translation type="unfinished">Farben</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1367"/>
         <source>CDE</source>
         <translation type="obsolete">CDE</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1372"/>
         <source>Motif</source>
         <translation type="obsolete">Motif</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Motif Plus</source>
         <translation type="obsolete">Motif Plus</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Platinum</source>
         <translation type="obsolete">Platinum</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>SGI</source>
         <translation type="obsolete">SGI</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1382"/>
         <source>Windows</source>
         <translation type="obsolete">Redmont</translation>
     </message>
@@ -3073,51 +3003,61 @@ Date: %4</translation>
         <translation type="unfinished">Stil</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1879"/>
         <location filename="prefs.ui" line="2232"/>
         <source>1</source>
         <translation type="unfinished">1</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1884"/>
         <location filename="prefs.ui" line="2237"/>
         <source>2</source>
         <translation type="unfinished">2</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1889"/>
         <location filename="prefs.ui" line="2242"/>
         <source>3</source>
         <translation type="unfinished">3</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1894"/>
         <location filename="prefs.ui" line="2247"/>
         <source>4</source>
         <translation type="unfinished">4</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1899"/>
         <location filename="prefs.ui" line="2252"/>
         <source>5</source>
         <translation type="unfinished">5</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1904"/>
         <location filename="prefs.ui" line="2257"/>
         <source>10</source>
         <translation type="unfinished">10</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1909"/>
         <location filename="prefs.ui" line="2262"/>
         <source>15</source>
         <translation type="unfinished">15</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1914"/>
         <location filename="prefs.ui" line="2267"/>
         <source>20</source>
         <translation type="unfinished">20</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1919"/>
         <location filename="prefs.ui" line="2272"/>
         <source>30</source>
         <translation type="unfinished">30</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1924"/>
         <location filename="prefs.ui" line="2277"/>
         <source>Unlimited</source>
         <translation type="unfinished">Unbegrenzt</translation>
@@ -3173,107 +3113,112 @@ Date: %4</translation>
         <translation type="unfinished">URL Starter</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Uploads (per blacklisted)</source>
         <translation type="obsolete">Uploads (per blacklisted)</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2595"/>
+        <location filename="prefs.ui" line="2766"/>
+        <location filename="prefs.ui" line="2921"/>
         <location filename="prefs.ui" line="3086"/>
         <source>No Limit</source>
         <translation type="unfinished">Kein Limit</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>128 bytes</source>
         <translation type="obsolete">128 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>256 bytes</source>
         <translation type="obsolete">256 bytes</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>512 bytes</source>
         <translation type="obsolete">512 bytes</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="1995"/>
         <location filename="prefs.ui" line="2110"/>
         <source>1 kB</source>
         <translation type="unfinished">1 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2000"/>
         <location filename="prefs.ui" line="2115"/>
         <source>2 kB</source>
         <translation type="unfinished">2 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2005"/>
         <location filename="prefs.ui" line="2120"/>
         <source>4 kB</source>
         <translation type="unfinished">4 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2010"/>
         <location filename="prefs.ui" line="2125"/>
         <source>8 kB</source>
         <translation type="unfinished">8 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2015"/>
         <location filename="prefs.ui" line="2130"/>
         <source>16 kB</source>
         <translation type="unfinished">16 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2020"/>
         <location filename="prefs.ui" line="2135"/>
         <source>32 kB</source>
         <translation type="unfinished">32 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2025"/>
         <location filename="prefs.ui" line="2140"/>
         <source>64 kB</source>
         <translation type="unfinished">64 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2030"/>
         <location filename="prefs.ui" line="2145"/>
         <source>128 kB</source>
         <translation type="unfinished">128 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2035"/>
         <location filename="prefs.ui" line="2150"/>
         <source>256 kB</source>
         <translation type="unfinished">256 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2040"/>
         <location filename="prefs.ui" line="2155"/>
         <source>512 kB</source>
         <translation type="unfinished">512 kB</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2045"/>
         <location filename="prefs.ui" line="2160"/>
         <source>1 MB</source>
         <translation type="unfinished">1 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>2 MB</source>
         <translation type="obsolete">2 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>4 MB</source>
         <translation type="obsolete">4 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>8 MB</source>
         <translation type="obsolete">8 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>16 MB</source>
         <translation type="obsolete">16 MB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>32 MB</source>
         <translation type="obsolete">32 MB</translation>
     </message>
@@ -3283,12 +3228,10 @@ Date: %4</translation>
         <translation type="unfinished">Chat:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Downloads (per download)</source>
         <translation type="obsolete">Downloads (pro download):</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Uploads (per upload)</source>
         <translation type="obsolete">Uploads (pro upload):</translation>
     </message>
@@ -3298,7 +3241,6 @@ Date: %4</translation>
         <translation type="unfinished">Begrenzung</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Auto Clear finished transfers?</source>
         <translation type="obsolete">Beendete Übertragungen automatisch löschen?</translation>
     </message>
@@ -3353,27 +3295,22 @@ Date: %4</translation>
         <translation type="unfinished">Downloads</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>5 kB</source>
         <translation type="obsolete">5 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>10 kB</source>
         <translation type="obsolete">10 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>25 kB</source>
         <translation type="obsolete">25 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>50 kB</source>
         <translation type="obsolete">50 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>100 kB</source>
         <translation type="obsolete">100 kB</translation>
     </message>
@@ -3388,17 +3325,14 @@ Date: %4</translation>
         <translation type="unfinished">Minimum File Size to Queue:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>200 kB</source>
         <translation type="obsolete">200 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>250 kB</source>
         <translation type="obsolete">250 kB</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>500 kB</source>
         <translation type="obsolete">500 kB</translation>
     </message>
@@ -3433,12 +3367,10 @@ Date: %4</translation>
         <translation type="unfinished">Automatisch Schließen</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1169"/>
         <source>Warning Text</source>
         <translation type="obsolete">Warnmeldung</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1174"/>
         <source>Warning Message Text</source>
         <translation type="obsolete">Warnmeldung Text</translation>
     </message>
@@ -3448,102 +3380,158 @@ Date: %4</translation>
         <translation type="unfinished">DSL-1M</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2600"/>
+        <location filename="prefs.ui" line="2771"/>
+        <location filename="prefs.ui" line="2926"/>
         <location filename="prefs.ui" line="3091"/>
         <source>128 B/s</source>
         <translation type="unfinished">128 B/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2605"/>
+        <location filename="prefs.ui" line="2776"/>
+        <location filename="prefs.ui" line="2931"/>
         <location filename="prefs.ui" line="3096"/>
         <source>256 B/s</source>
         <translation type="unfinished">256 B/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2610"/>
+        <location filename="prefs.ui" line="2781"/>
+        <location filename="prefs.ui" line="2936"/>
         <location filename="prefs.ui" line="3101"/>
         <source>512 B/s</source>
         <translation type="unfinished">512 B/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2615"/>
+        <location filename="prefs.ui" line="2786"/>
+        <location filename="prefs.ui" line="2941"/>
         <location filename="prefs.ui" line="3106"/>
         <source>1 kB/s</source>
         <translation type="unfinished">1 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2620"/>
+        <location filename="prefs.ui" line="2791"/>
+        <location filename="prefs.ui" line="2946"/>
         <location filename="prefs.ui" line="3111"/>
         <source>2 kB/s</source>
         <translation type="unfinished">2 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2625"/>
+        <location filename="prefs.ui" line="2796"/>
+        <location filename="prefs.ui" line="2951"/>
         <location filename="prefs.ui" line="3116"/>
         <source>4 kB/s</source>
         <translation type="unfinished">4 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2630"/>
+        <location filename="prefs.ui" line="2801"/>
+        <location filename="prefs.ui" line="2956"/>
         <location filename="prefs.ui" line="3121"/>
         <source>8 kB/s</source>
         <translation type="unfinished">8 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2635"/>
+        <location filename="prefs.ui" line="2806"/>
+        <location filename="prefs.ui" line="2961"/>
         <location filename="prefs.ui" line="3126"/>
         <source>16 kB/s</source>
         <translation type="unfinished">16 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2640"/>
+        <location filename="prefs.ui" line="2811"/>
+        <location filename="prefs.ui" line="2966"/>
         <location filename="prefs.ui" line="3131"/>
         <source>32 kB/s</source>
         <translation type="unfinished">32 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2645"/>
+        <location filename="prefs.ui" line="2816"/>
+        <location filename="prefs.ui" line="2971"/>
         <location filename="prefs.ui" line="3136"/>
         <source>64 kB/s</source>
         <translation type="unfinished">64 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2650"/>
+        <location filename="prefs.ui" line="2821"/>
+        <location filename="prefs.ui" line="2976"/>
         <location filename="prefs.ui" line="3141"/>
         <source>128 kB/s</source>
         <translation type="unfinished">128 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2655"/>
+        <location filename="prefs.ui" line="2826"/>
+        <location filename="prefs.ui" line="2981"/>
         <location filename="prefs.ui" line="3146"/>
         <source>256 kB/s</source>
         <translation type="unfinished">256 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2660"/>
+        <location filename="prefs.ui" line="2831"/>
+        <location filename="prefs.ui" line="2986"/>
         <location filename="prefs.ui" line="3151"/>
         <source>512 kB/s</source>
         <translation type="unfinished">512 kB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2665"/>
+        <location filename="prefs.ui" line="2836"/>
+        <location filename="prefs.ui" line="2991"/>
         <location filename="prefs.ui" line="3156"/>
         <source>1 MB/s</source>
         <translation type="unfinished">1 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2670"/>
+        <location filename="prefs.ui" line="2841"/>
+        <location filename="prefs.ui" line="2996"/>
         <location filename="prefs.ui" line="3161"/>
         <source>2 MB/s</source>
         <translation type="unfinished">2 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2675"/>
+        <location filename="prefs.ui" line="2846"/>
+        <location filename="prefs.ui" line="3001"/>
         <location filename="prefs.ui" line="3166"/>
         <source>4 MB/s</source>
         <translation type="unfinished">4 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2680"/>
+        <location filename="prefs.ui" line="2851"/>
+        <location filename="prefs.ui" line="3006"/>
         <location filename="prefs.ui" line="3171"/>
         <source>8 MB/s</source>
         <translation type="unfinished">8 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2685"/>
+        <location filename="prefs.ui" line="2856"/>
+        <location filename="prefs.ui" line="3011"/>
         <location filename="prefs.ui" line="3176"/>
         <source>16 MB/s</source>
         <translation type="unfinished">16 MB/s</translation>
     </message>
     <message>
+        <location filename="prefs.ui" line="2690"/>
+        <location filename="prefs.ui" line="2861"/>
+        <location filename="prefs.ui" line="3016"/>
         <location filename="prefs.ui" line="3181"/>
         <source>32 MB/s</source>
         <translation type="unfinished">32 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1387"/>
         <source>Aqua</source>
         <translation type="obsolete">Aqua</translation>
     </message>
@@ -3601,37 +3589,30 @@ Date: %4</translation>
 <context>
     <name>WPrivateWindow</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name</source>
         <translation type="obsolete">Name</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>ID</source>
         <translation type="obsolete">ID</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Status</source>
         <translation type="obsolete">Status</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Files</source>
         <translation type="obsolete">Dateien</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connection</source>
         <translation type="obsolete">Verbindung</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Load</source>
         <translation type="obsolete">Lade</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Client</source>
         <translation type="obsolete">Client</translation>
     </message>
@@ -3641,7 +3622,6 @@ Date: %4</translation>
         <translation>Vom Server getrennt.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. %2) is a bot!
 </source>
         <translation type="obsolete">Benutzer #%1 (a.k.a. %2) ist ein Bot!</translation>
@@ -3652,7 +3632,6 @@ Date: %4</translation>
         <translation>User #%1 (a.k.a %2) ist bereits im privaten Fenster!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. %2) was removed from the private chat window.</source>
         <translation type="obsolete">User #%1 (a.k.a. %2) entfernt vom privaten Chat- Fenster.</translation>
     </message>
@@ -3672,12 +3651,10 @@ Date: %4</translation>
         <translation>Bekomme IP Addresse</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
         <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>[Freeware] - Private</source>
         <translation type="obsolete">[Freeware] - Privat</translation>
     </message>
@@ -3702,7 +3679,6 @@ Date: %4</translation>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User(s) not found!
 </source>
         <translation type="obsolete">Benutzer nicht gefunden!</translation>
@@ -3718,12 +3694,10 @@ Date: %4</translation>
         <translation>Benutzer nicht gefunden!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 (a.k.a. %2) is a bot!</source>
         <translation type="obsolete">User #%1 (a.k.a. %2) ist ein Bot!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Private</source>
         <translation type="obsolete">Privat</translation>
     </message>
@@ -3799,7 +3773,6 @@ Date: %4</translation>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Close</source>
         <translation type="obsolete">Schließen</translation>
     </message>
@@ -3814,12 +3787,12 @@ Date: %4</translation>
         <translation>Stop</translation>
     </message>
     <message>
+        <location filename="search.cpp" line="185"/>
         <location filename="search.cpp" line="344"/>
         <source>Idle.</source>
         <translation>Bereit.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1</source>
         <translation type="obsolete">%1</translation>
     </message>
@@ -3882,6 +3855,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="settings.cpp" line="479"/>
         <location filename="settings.cpp" line="521"/>
         <source>Bummer</source>
         <translation type="unfinished"></translation>
@@ -4018,16 +3992,37 @@ Date: %4</translation>
         <translation type="unfinished">Kein Limit</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="68"/>
+        <location filename="uploadimpl.cpp" line="69"/>
+        <location filename="uploadimpl.cpp" line="70"/>
         <location filename="uploadimpl.cpp" line="71"/>
         <source>%1 B/s</source>
         <translation type="unfinished">%1 B/s</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="72"/>
+        <location filename="uploadimpl.cpp" line="73"/>
+        <location filename="uploadimpl.cpp" line="74"/>
+        <location filename="uploadimpl.cpp" line="75"/>
+        <location filename="uploadimpl.cpp" line="76"/>
+        <location filename="uploadimpl.cpp" line="77"/>
+        <location filename="uploadimpl.cpp" line="78"/>
+        <location filename="uploadimpl.cpp" line="79"/>
+        <location filename="uploadimpl.cpp" line="80"/>
+        <location filename="uploadimpl.cpp" line="81"/>
+        <location filename="uploadimpl.cpp" line="82"/>
+        <location filename="uploadimpl.cpp" line="83"/>
+        <location filename="uploadimpl.cpp" line="84"/>
         <location filename="uploadimpl.cpp" line="85"/>
         <source>%1 kB/s</source>
         <translation type="unfinished">%1 kB/s</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="86"/>
+        <location filename="uploadimpl.cpp" line="87"/>
+        <location filename="uploadimpl.cpp" line="88"/>
+        <location filename="uploadimpl.cpp" line="89"/>
+        <location filename="uploadimpl.cpp" line="90"/>
         <location filename="uploadimpl.cpp" line="91"/>
         <source>%1 MB/s</source>
         <translation type="unfinished">%1 MB/s</translation>
@@ -4043,6 +4038,10 @@ Date: %4</translation>
         <translation type="unfinished">1 Minute</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="101"/>
+        <location filename="uploadimpl.cpp" line="102"/>
+        <location filename="uploadimpl.cpp" line="103"/>
+        <location filename="uploadimpl.cpp" line="104"/>
         <location filename="uploadimpl.cpp" line="105"/>
         <source>%1 minutes</source>
         <translation type="unfinished">%1 Minuten</translation>
@@ -4058,6 +4057,15 @@ Date: %4</translation>
         <translation type="unfinished">Unbegrenzt</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="113"/>
+        <location filename="uploadimpl.cpp" line="114"/>
+        <location filename="uploadimpl.cpp" line="115"/>
+        <location filename="uploadimpl.cpp" line="116"/>
+        <location filename="uploadimpl.cpp" line="117"/>
+        <location filename="uploadimpl.cpp" line="118"/>
+        <location filename="uploadimpl.cpp" line="119"/>
+        <location filename="uploadimpl.cpp" line="120"/>
+        <location filename="uploadimpl.cpp" line="121"/>
         <location filename="uploadimpl.cpp" line="122"/>
         <source>%1 kB</source>
         <translation type="unfinished">%1 kB</translation>
@@ -4073,6 +4081,14 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="132"/>
+        <location filename="uploadimpl.cpp" line="133"/>
+        <location filename="uploadimpl.cpp" line="134"/>
+        <location filename="uploadimpl.cpp" line="135"/>
+        <location filename="uploadimpl.cpp" line="136"/>
+        <location filename="uploadimpl.cpp" line="137"/>
+        <location filename="uploadimpl.cpp" line="138"/>
+        <location filename="uploadimpl.cpp" line="139"/>
         <location filename="uploadimpl.cpp" line="140"/>
         <source>Level %1</source>
         <translation type="unfinished"></translation>
@@ -4123,6 +4139,9 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="241"/>
+        <location filename="uploadimpl.cpp" line="306"/>
+        <location filename="uploadimpl.cpp" line="349"/>
         <location filename="uploadimpl.cpp" line="512"/>
         <source>Queued.</source>
         <translation type="unfinished">Warteschleife.</translation>
@@ -4163,6 +4182,8 @@ Date: %4</translation>
         <translation type="unfinished">Getrennt.</translation>
     </message>
     <message>
+        <location filename="uploadimpl.cpp" line="596"/>
+        <location filename="uploadimpl.cpp" line="622"/>
         <location filename="uploadimpl.cpp" line="757"/>
         <source>Finished.</source>
         <translation type="unfinished">Beendet.</translation>
@@ -4211,7 +4232,6 @@ Date: %4</translation>
 <context>
     <name>WUploadThread</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>Your download has been blocked for %1 minute(s)!</source>
         <translation type="obsolete">Ihr Download wurde für %1 Minute(n) geblockt!</translation>
     </message>
@@ -4231,7 +4251,6 @@ Date: %4</translation>
         <translation>Kan&apos;n keine neue Verbindung erstellen!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connection reset by peer!</source>
         <translation type="obsolete">Verbindung wurde zurückgesetzt!</translation>
     </message>
@@ -4264,16 +4283,21 @@ Date: %4</translation>
 <context>
     <name>WUser</name>
     <message>
+        <location filename="formatting.cpp" line="81"/>
+        <location filename="formatting.cpp" line="409"/>
+        <location filename="formatting.cpp" line="431"/>
         <location filename="user.cpp" line="18"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
+        <location filename="user.cpp" line="430"/>
         <location filename="user.cpp" line="433"/>
         <source>Windows</source>
         <translation>Redmont</translation>
     </message>
     <message>
+        <location filename="user.cpp" line="431"/>
         <location filename="user.cpp" line="434"/>
         <source>Linux</source>
         <translation type="unfinished"></translation>
@@ -4284,11 +4308,13 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="user.cpp" line="429"/>
         <location filename="user.cpp" line="438"/>
         <source>BeOS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="user.cpp" line="439"/>
         <location filename="user.cpp" line="440"/>
         <source>Mac OS</source>
         <translation type="unfinished"></translation>
@@ -4367,7 +4393,6 @@ Date: %4</translation>
 <context>
     <name>WinShare</name>
     <message>
-        <location filename="" line="7602275"/>
         <source>%d.%d.%d build %d</source>
         <translation type="obsolete">%d.%d.%d build %d</translation>
     </message>
@@ -4375,17 +4400,24 @@ Date: %4</translation>
 <context>
     <name>WinShareWindow</name>
     <message>
-        <location filename="winsharewindow.cpp" line="2329"/>
+        <location filename="winshare_network.cpp" line="72"/>
+        <location filename="winsharewindow.cpp" line="2330"/>
         <source>Already scanning!</source>
         <translation>Schon gescannt!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="82"/>
+        <location filename="winshare_network.cpp" line="377"/>
+        <location filename="winshare_network.cpp" line="3095"/>
+        <location filename="winshare_slots.cpp" line="135"/>
+        <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="1002"/>
         <source>Not connected.</source>
         <translation>Nicht verbunden.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2317"/>
+        <location filename="winshare_network.cpp" line="88"/>
+        <location filename="winsharewindow.cpp" line="2318"/>
         <source>File sharing not enabled.</source>
         <translation>Gemeinsame Dateinutzung nicht aktiviert.</translation>
     </message>
@@ -4395,6 +4427,7 @@ Date: %4</translation>
         <translation>Kein Nickname gesetzt.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="140"/>
         <location filename="winshare_network.cpp" line="162"/>
         <source>No message to send.</source>
         <translation>Keine Nachricht zum senden.</translation>
@@ -4410,27 +4443,41 @@ Date: %4</translation>
         <translation>Hier Nachricht gesetzt an %1.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="359"/>
         <location filename="winshare_network.cpp" line="364"/>
         <source>Uptime: %1</source>
         <translation>Betriebszeit: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2414"/>
+        <location filename="winshare_network.cpp" line="372"/>
+        <location filename="winsharewindow.cpp" line="2415"/>
         <source>Logged In: %1</source>
         <translation>Eingeloggt: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Number of users logged in: %1
 </source>
         <translation type="obsolete">Anzahl eingeloggter Benutzer : %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="397"/>
+        <location filename="winshare_network.cpp" line="409"/>
+        <location filename="winshare_network.cpp" line="425"/>
+        <location filename="winshare_network.cpp" line="441"/>
+        <location filename="winshare_network.cpp" line="457"/>
+        <location filename="winshare_network.cpp" line="473"/>
+        <location filename="winshare_network.cpp" line="489"/>
+        <location filename="winshare_network.cpp" line="884"/>
+        <location filename="winshare_network.cpp" line="903"/>
+        <location filename="winshare_network.cpp" line="944"/>
+        <location filename="winshare_network.cpp" line="1380"/>
         <location filename="winshare_network.cpp" line="1665"/>
         <source>No users passed.</source>
         <translation>Kein(e) Benutzer anwesend.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="619"/>
+        <location filename="winshare_network.cpp" line="686"/>
         <location filename="winshare_network.cpp" line="2441"/>
         <source>Current time: %1 %2</source>
         <translation>Uhrzeit: %1 %2</translation>
@@ -4456,6 +4503,13 @@ Date: %4</translation>
         <translation>Benutzer %1: %2</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="893"/>
+        <location filename="winshare_network.cpp" line="915"/>
+        <location filename="winshare_network.cpp" line="934"/>
+        <location filename="winshare_network.cpp" line="956"/>
+        <location filename="winshare_network.cpp" line="975"/>
+        <location filename="winshare_network.cpp" line="997"/>
+        <location filename="winshare_network.cpp" line="1115"/>
         <location filename="winshare_network.cpp" line="3011"/>
         <source>Invalid index.</source>
         <translation>Fehlerhafter Index.</translation>
@@ -4471,6 +4525,8 @@ Date: %4</translation>
         <translation>Status %1: %2</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="925"/>
+        <location filename="winshare_network.cpp" line="966"/>
         <location filename="winshare_network.cpp" line="985"/>
         <source>No index specified.</source>
         <translation>Kein Index angegeben.</translation>
@@ -4501,32 +4557,34 @@ Date: %4</translation>
         <translation>Heruntergeladen: Diese Sitzung %1, Gesamt %2</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1030"/>
         <location filename="winshare_network.cpp" line="2760"/>
         <source>Auto-private pattern: %1</source>
         <translation>Auto-private Muster: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1042"/>
         <location filename="winshare_network.cpp" line="2768"/>
         <source>Blacklist pattern: %1</source>
         <translation>Schwarze Liste Muster: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1053"/>
         <location filename="winshare_network.cpp" line="2772"/>
         <source>Ignore pattern: %1</source>
         <translation>Ignorieren Muster: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1059"/>
         <location filename="winshare_network.cpp" line="2776"/>
         <source>Watch pattern: %1</source>
         <translation>Beobachtungsmuster: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On connect: %1</source>
         <translation type="obsolete">An Verbindung: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On connect 2: %1</source>
         <translation type="obsolete">An Verbindung 2: %1</translation>
     </message>
@@ -4541,7 +4599,6 @@ Date: %4</translation>
         <translation>Entfernt Passwort gesetzt zu: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone version: %1.%2.%3 build %4</source>
         <translation type="obsolete">Unizone Version: %1.%2.%3 build %4</translation>
     </message>
@@ -4551,42 +4608,40 @@ Date: %4</translation>
         <translation>MUSCLE Version: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On connect do: %1</source>
         <translation type="obsolete">An Verbindung zu: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1490"/>
         <location filename="winshare_network.cpp" line="1496"/>
         <source>Unknown command!</source>
         <translation>Unbekannter Befehl!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="658"/>
+        <location filename="winshare_network.cpp" line="1407"/>
+        <location filename="winshare_network.cpp" line="1596"/>
         <location filename="winshare_network.cpp" line="1602"/>
         <source>User(s) not found!</source>
         <translation>Benutzer nicht gefunden!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Ping sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
         <translation type="obsolete">Ping gesendet an Benutzer #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>You are not allowed to %1 [%2]</source>
         <translation type="obsolete">Nicht Gestattet zu %1 [%2]</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone (English) %1 is available at http://www.raasu.org/tools/windows/.</source>
         <translation type="obsolete">Unizone (Deutsch) %1 ist erhältlich bei http://www.raasu.org/tools/windows/.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unknown</source>
         <translation type="obsolete">Unbekannt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone (English) </source>
         <translation type="obsolete">Unizone (Deutsch)</translation>
     </message>
@@ -4596,6 +4651,7 @@ Date: %4</translation>
         <translation>Verbinde mit Server %1.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="2489"/>
         <location filename="winshare_slots.cpp" line="470"/>
         <source>Connection to server failed!</source>
         <translation>Verbindung mit Server fehlgeschlagen!</translation>
@@ -4611,52 +4667,42 @@ Date: %4</translation>
         <translation>Datei %1: (%2) von %3</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Total: %1 files</source>
         <translation type="obsolete">Gesamt: %1 Dateien</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Address info for user #%1 (%2):</source>
         <translation type="obsolete">Adresse Info für Benutzer #%1 (%2):</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Address info for %1:</source>
         <translation type="obsolete">Adresse Info für %1:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>IP Address: %1</source>
         <translation type="obsolete">IP Adresse: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Port: %1</source>
         <translation type="obsolete">Port: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Host Name: %1</source>
         <translation type="obsolete">Host Name: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>#%1 - %2 (port: %3)</source>
         <translation type="obsolete">#%1 - %2 (port: %3)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>#%1 - %2</source>
         <translation type="obsolete">#%1 - %2</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>No address info for %1 or %2</source>
         <translation type="obsolete">Keine Adresse Info für %1 or %2</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>No address info for %1</source>
         <translation type="obsolete">Keine Adresse Info für %1</translation>
     </message>
@@ -4691,12 +4737,10 @@ Date: %4</translation>
         <translation>Ping %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP address is %2.</source>
         <translation type="obsolete">&lt;font color=&quot;%3&quot;&gt;%1&lt;/font&gt;&apos;s IP Adresse ist %2.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>/ping %1</source>
         <translation type="obsolete">/ping %1</translation>
     </message>
@@ -4706,12 +4750,10 @@ Date: %4</translation>
         <translation>Versuche Datei %1 von Benutzer %2 wieder aufzunehmen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Windows!</source>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für Windows!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for Linux!</source>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für Linux!</translation>
     </message>
@@ -4741,7 +4783,6 @@ Date: %4</translation>
         <translation>Start der Befehlsfolge fehlgeschlagen!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Sharing %1 file(s).</source>
         <translation type="obsolete">%1 anteilige Dateie(n).</translation>
     </message>
@@ -4751,12 +4792,12 @@ Date: %4</translation>
         <translation>Verbunden.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="2520"/>
         <location filename="winsharewindow.cpp" line="550"/>
         <source>Reconnect timer stopped</source>
         <translation>Wiederverbinden Timer gestoppt</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</source>
         <translation type="obsolete">Name geändert zu &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
     </message>
@@ -4776,162 +4817,140 @@ Date: %4</translation>
         <translation>Status:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Name</source>
         <translation type="obsolete">Name</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>ID</source>
         <translation type="obsolete">ID</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Status</source>
         <translation type="obsolete">Status</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Files</source>
         <translation type="obsolete">Dateien</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connection</source>
         <translation type="obsolete">Verbindung</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Load</source>
         <translation type="obsolete">Lade</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Client</source>
         <translation type="obsolete">Client</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Testing Unizone (English) </source>
         <translation type="obsolete">Testing Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 week, </source>
         <translation type="obsolete">1 week,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 weeks, </source>
         <translation type="obsolete">%1 weeks,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 day, </source>
         <translation type="obsolete">1 day,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 days, </source>
         <translation type="obsolete">%1 days,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 hour, </source>
         <translation type="obsolete">1 hour,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 hours, </source>
         <translation type="obsolete">%1 hours,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 minute, </source>
         <translation type="obsolete">1 minute,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 minutes, </source>
         <translation type="obsolete">%1 Minuten,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>1 second, </source>
         <translation type="obsolete">1 Sekunde,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 seconds, </source>
         <translation type="obsolete">%1 Sekunden,</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source> and </source>
         <translation type="obsolete">und</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1 %2</source>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1832"/>
+        <location filename="winsharewindow.cpp" line="1833"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Warte auf Dateiscan...</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1</source>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2149"/>
+        <location filename="winsharewindow.cpp" line="2150"/>
         <source>here</source>
         <translation>hier</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2150"/>
+        <location filename="winsharewindow.cpp" line="2151"/>
         <source>away</source>
         <translation>abwesend</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2151"/>
+        <location filename="winsharewindow.cpp" line="2152"/>
         <source>idle</source>
         <translation>bereit</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2152"/>
+        <location filename="winsharewindow.cpp" line="2153"/>
         <source>busy</source>
         <translation>beschäftigt</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2153"/>
+        <location filename="winsharewindow.cpp" line="2154"/>
         <source>at work</source>
         <translation>auf Arbeit</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2154"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>around</source>
         <translation>in der Nähe</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2155"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>sleeping</source>
         <translation>schlafend</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>/search %1</source>
         <translation type="obsolete">/ suchen %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2340"/>
+        <location filename="winsharewindow.cpp" line="2341"/>
         <source>Rescanning shared files...</source>
         <translation>Rescannen gemeinsamer Dateien...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2345"/>
+        <location filename="winsharewindow.cpp" line="2346"/>
         <source>Scanning shares...</source>
         <translation>Scanning gemeinsamer...</translation>
     </message>
@@ -4941,7 +4960,6 @@ Date: %4</translation>
         <translation>Nick kollidiert mit Benutzer #%1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>[Freeware] - Unizone</source>
         <translation type="obsolete">[Freeware] - Unizone</translation>
     </message>
@@ -4951,11 +4969,13 @@ Date: %4</translation>
         <translation>Ignorieren Muster gelöscht.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="710"/>
         <location filename="winshare_network.cpp" line="722"/>
         <source>Ignore pattern updated.</source>
         <translation>Ignorieren Muster upgedated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="712"/>
         <location filename="winshare_network.cpp" line="724"/>
         <source>Error updating ignore pattern!</source>
         <translation>Fehler beim updaten des Ignorieren Musters!</translation>
@@ -4966,11 +4986,13 @@ Date: %4</translation>
         <translation>Schwarze Liste Muster gelöscht.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="767"/>
         <location filename="winshare_network.cpp" line="803"/>
         <source>Blacklist pattern updated.</source>
         <translation>Schwarze Liste Muster upgedated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="769"/>
         <location filename="winshare_network.cpp" line="805"/>
         <source>Error updating blacklist pattern!</source>
         <translation>Fehler beim updaten des Schwarze Liste Musters!</translation>
@@ -4981,11 +5003,13 @@ Date: %4</translation>
         <translation>Auto-Privat Muster gelöscht.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="861"/>
         <location filename="winshare_network.cpp" line="873"/>
         <source>Auto-private pattern updated.</source>
         <translation>Auto-Private Muster upgedated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="863"/>
         <location filename="winshare_network.cpp" line="875"/>
         <source>Error updating auto-private pattern!</source>
         <translation>Fehler beim updaten des Auto-Privat Musters!</translation>
@@ -5006,37 +5030,30 @@ Date: %4</translation>
         <translation>Übertragungsstatistiken gelöscht.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Access Denied!!!</source>
         <translation type="obsolete">Zugriff verweigert!!!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>do that to</source>
         <translation type="obsolete">mach das mit</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>kick</source>
         <translation type="obsolete">kicken</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>ban</source>
         <translation type="obsolete">verbannen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>unban</source>
         <translation type="obsolete">begnadigen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>require</source>
         <translation type="obsolete">erforderlich</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>unrequire</source>
         <translation type="obsolete">nicht erforderlich</translation>
     </message>
@@ -5046,7 +5063,6 @@ Date: %4</translation>
         <translation>Wiederaufnahme Liste:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connected users: </source>
         <translation type="obsolete">Verbundene Benutzer:</translation>
     </message>
@@ -5061,17 +5077,16 @@ Date: %4</translation>
         <translation>Loggen aktiviert.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Copyright (C) 2002-2003 Mika T. Lindqvist.</source>
         <translation type="obsolete">Copyright (C) 2002-2003 Mika T. Lindqvist.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="388"/>
         <location filename="winshare_network.cpp" line="3092"/>
         <source>Number of users logged in: %1</source>
         <translation>Anzahl eingeloggter Benutzer : %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User doesn&apos;t exist!</source>
         <translation type="obsolete">Benutzer existiert nicht!</translation>
     </message>
@@ -5121,6 +5136,7 @@ Date: %4</translation>
         <translation>1 Sekunde</translation>
     </message>
     <message>
+        <location filename="winsharewindow.cpp" line="1086"/>
         <location filename="winsharewindow.cpp" line="1147"/>
         <source>%1 seconds</source>
         <translation>%1 Sekunden</translation>
@@ -5131,7 +5147,6 @@ Date: %4</translation>
         <translation>und</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Connected users:</source>
         <translation type="obsolete">Verbundene Benutzer:</translation>
     </message>
@@ -5141,6 +5156,7 @@ Date: %4</translation>
         <translation>Unizone (Deutsch)</translation>
     </message>
     <message>
+        <location filename="winsharewindow.cpp" line="1320"/>
         <location filename="winsharewindow.cpp" line="1329"/>
         <source>Testing Unizone (English)</source>
         <translation>Test Unizone (Deutsch)</translation>
@@ -5496,32 +5512,26 @@ Date: %4</translation>
         <translation>mit der Zeit.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Auto-private pattern : %1</source>
         <translation type="obsolete">Auto-Privat Muster : %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Blacklist pattern : %1</source>
         <translation type="obsolete">Schwarze Liste Muster : %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Ignore pattern : %1</source>
         <translation type="obsolete">Ignorieren Muster : %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Watch pattern : %1</source>
         <translation type="obsolete">Beobachtungsmuster : %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On Connect : %1</source>
         <translation type="obsolete">vebunden : %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On Connect 2: %1</source>
         <translation type="obsolete">verbunden 2: %1</translation>
     </message>
@@ -5536,7 +5546,6 @@ Date: %4</translation>
         <translation>Neuverbinden in 1 Minute!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Time request sent to user #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</source>
         <translation type="obsolete">Zeitnachfrage gesendet an Benutzer #%1 (a.k.a. &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;).</translation>
     </message>
@@ -5546,6 +5555,7 @@ Date: %4</translation>
         <translation>/time [nick] [gmt] - Erfragen der Zeitmarke von anderem Benutzer</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="278"/>
         <location filename="winshare_network.cpp" line="303"/>
         <source>Invalid compression!</source>
         <translation>Fehlerhafte Kompression!</translation>
@@ -5556,6 +5566,8 @@ Date: %4</translation>
         <translation>Kompression Level für Server %1 an Port %2 gesetzt an %3.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="264"/>
+        <location filename="winshare_network.cpp" line="272"/>
         <location filename="winshare_network.cpp" line="3107"/>
         <source>Current compression: %1</source>
         <translation>Aktuelle Kompression: %1</translation>
@@ -5576,132 +5588,106 @@ Date: %4</translation>
         <translation>/running - zeigt die verstrichene Zeit seit Deinem Unizone Start</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>File Name</source>
         <translation type="obsolete">Datei Name</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>File Size</source>
         <translation type="obsolete">Datei Größe</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>File Type</source>
         <translation type="obsolete">Datei Typ</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Modified</source>
         <translation type="obsolete">Geändert</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Path</source>
         <translation type="obsolete">Pfad</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User</source>
         <translation type="obsolete">Benutzer</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Search:</source>
         <translation type="obsolete">Suche:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Download</source>
         <translation type="obsolete">Download</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Clear</source>
         <translation type="obsolete">Löschen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Stop</source>
         <translation type="obsolete">Stop</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Idle.</source>
         <translation type="obsolete">Bereit.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Topic</source>
         <translation type="obsolete">Thema</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Users</source>
         <translation type="obsolete">Benutzer</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Admins</source>
         <translation type="obsolete">Admins</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Public</source>
         <translation type="obsolete">Publik</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&amp;Create</source>
         <translation type="obsolete">&amp;Erstellen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&amp;Join</source>
         <translation type="obsolete">&amp;Anschließen</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Chat</source>
         <translation type="obsolete">Chat</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Search</source>
         <translation type="obsolete">Suche</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Channels</source>
         <translation type="obsolete">Channels</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Searching for: &quot;%1&quot;.</source>
         <translation type="obsolete">Suche nach: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Results: %1</source>
         <translation type="obsolete">Ergebnisse: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Create Channel</source>
         <translation type="obsolete">Erzeuge Channel</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Please enter channel name</source>
         <translation type="obsolete">Bitte den Namen des Channels eingeben</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
         <translation type="obsolete">Benutzer #%1 lädt Dich ein zum Channel %2. Akzeptieren?</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User #%1 requested invite to channel %2. Do you?</source>
         <translation type="obsolete">Benutzer #%1 fragt nach Einladung zum Channel %2. Was nun?</translation>
     </message>
@@ -5736,27 +5722,22 @@ Date: %4</translation>
         <translation>Beobachtungsmuster gesetzt zu %1.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>%1.%2.%3 build %4</source>
         <translation type="obsolete">%1.%2.%3 build %4</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On Connect: %1</source>
         <translation type="obsolete">verbunden: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>passive</source>
         <translation type="obsolete">passiv</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>active</source>
         <translation type="obsolete">activ</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Clear History</source>
         <translation type="obsolete">Historie löschen</translation>
     </message>
@@ -5791,12 +5772,10 @@ Date: %4</translation>
         <translation>Unizone Version: %1</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone</source>
         <translation type="obsolete">Unizone</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for FreeBSD!</source>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für FreeBSD!</translation>
     </message>
@@ -5811,42 +5790,45 @@ Date: %4</translation>
         <translation>Resume Liste gelöscht.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>On connect:</source>
         <translation type="obsolete">Verbunden:</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1076"/>
+        <location filename="winshare_network.cpp" line="1147"/>
         <location filename="winshare_network.cpp" line="2788"/>
         <source>1. %1</source>
         <translation>1. %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1078"/>
+        <location filename="winshare_network.cpp" line="1149"/>
         <location filename="winshare_network.cpp" line="2792"/>
         <source>2. %1</source>
         <translation>2. %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1075"/>
+        <location filename="winshare_network.cpp" line="1146"/>
         <location filename="winshare_network.cpp" line="2786"/>
         <source>On Connect:</source>
         <translation>Verbunden:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1996"/>
+        <location filename="winsharewindow.cpp" line="1997"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Datei %1 von User #%2 beendet.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2023"/>
+        <location filename="winsharewindow.cpp" line="2024"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Lade Datei %1 von User #%2 herunter.</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Address info for user #%1:</source>
         <translation type="obsolete">Addressen Info for user #%1:</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>User Name: %1</source>
         <translation type="obsolete">Benutzer Name: %1</translation>
     </message>
@@ -5861,16 +5843,18 @@ Date: %4</translation>
         <translation>/revsay [nick]: [text] - sage den Text umgekehrt, aber Präfix mit Nick</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Initializing...</source>
         <translation type="obsolete">Initialisieren...</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1071"/>
+        <location filename="winshare_network.cpp" line="1142"/>
         <location filename="winshare_network.cpp" line="2781"/>
         <source>On Connect: Do Nothing ;)</source>
         <translation>Beim Verbinden: Nichts tun ;)</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1024"/>
         <location filename="winshare_network.cpp" line="2546"/>
         <source>&amp;lt;None&amp;gt;</source>
         <translation>&amp;lt;None&amp;gt;</translation>
@@ -5901,21 +5885,25 @@ Date: %4</translation>
         <translation>Filter Liste Muster gesetzt zu: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="779"/>
         <location filename="winshare_network.cpp" line="815"/>
         <source>Whitelist pattern updated.</source>
         <translation>Weiße Liste Muster upgedated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="781"/>
         <location filename="winshare_network.cpp" line="817"/>
         <source>Error updating whitelist pattern!</source>
         <translation>Fehler beim updaten des Weiße Liste Musters!</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="791"/>
         <location filename="winshare_network.cpp" line="827"/>
         <source>Filter list pattern updated.</source>
         <translation>Filter Liste Muster upgedated.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="793"/>
         <location filename="winshare_network.cpp" line="829"/>
         <source>Error updating filter list pattern!</source>
         <translation>Fehler beim updaten der Muster Liste!</translation>
@@ -5956,7 +5944,6 @@ Date: %4</translation>
         <translation>/unwhitelist [name] - entfernt Name von der Weißen Liste</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>/whitelist - set the whitelist pattern</source>
         <translation type="obsolete">/whitelist [pattern] - setze das Weiße Liste Muster</translation>
     </message>
@@ -5966,16 +5953,16 @@ Date: %4</translation>
         <translation>/whitelist [pattern] - setzt das Weiße Liste Muster</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for QNX Neutrino!</source>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für QNX Neutrino!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2156"/>
+        <location filename="winsharewindow.cpp" line="2157"/>
         <source>wandering</source>
         <translation>wandering</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="118"/>
         <location filename="winshare_network.cpp" line="124"/>
         <source>Invalid nickname!</source>
         <translation type="unfinished"></translation>
@@ -5991,7 +5978,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2042"/>
+        <location filename="winsharewindow.cpp" line="2043"/>
         <source>Failed to create log file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6016,6 +6003,7 @@ Date: %4</translation>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1447"/>
         <location filename="winshare_network.cpp" line="1471"/>
         <source>Bad Conversion!</source>
         <translation type="unfinished"></translation>
@@ -6056,11 +6044,15 @@ Date: %4</translation>
         <translation>Decrypted: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1201"/>
+        <location filename="winshare_network.cpp" line="1222"/>
         <location filename="winshare_network.cpp" line="1240"/>
         <source>Decoded: %1</source>
         <translation>Decoded: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1211"/>
+        <location filename="winshare_network.cpp" line="1230"/>
         <location filename="winshare_network.cpp" line="1250"/>
         <source>Encoded: %1</source>
         <translation>Encoded: %1</translation>
@@ -6096,7 +6088,6 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Welcome to Unizone (English)! &lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für %1!</translation>
     </message>
@@ -6106,7 +6097,6 @@ Date: %4</translation>
         <translation>Willkommen bei Unizone (Deutsch)!</translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>&lt;b&gt;THE&lt;/b&gt; MUSCLE client for %1!</source>
         <translation type="obsolete">&lt;b&gt;DEM&lt;/b&gt; MUSCLE Klient für %1!</translation>
     </message>
@@ -6121,7 +6111,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1843"/>
+        <location filename="winsharewindow.cpp" line="1844"/>
         <source>Waiting for file list thread to finish...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6146,6 +6136,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="winsharewindow.cpp" line="559"/>
         <location filename="winsharewindow.cpp" line="593"/>
         <source>Negotiating...</source>
         <translation>Verhandle...</translation>
@@ -6161,6 +6152,7 @@ Date: %4</translation>
         <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
+        <location filename="winshare_network.cpp" line="1036"/>
         <location filename="winshare_network.cpp" line="2764"/>
         <source>Private Message redirect pattern: %1</source>
         <translation>Private Message redirect pattern: %1</translation>
@@ -6171,7 +6163,6 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="" line="7602275"/>
         <source>Unizone - User #%1 on %2</source>
         <translation type="obsolete">Unizone - Benutzer #%1 auf %2</translation>
     </message>

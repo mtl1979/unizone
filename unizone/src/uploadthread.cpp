@@ -752,95 +752,95 @@ WUploadThread::DoUpload()
 			// think about doing this in a dynamic way (depending on connection)
 			double dpps = GetPacketSize() * 1024.0f;
 			uint32 bufferSize = lrint(dpps);	
-         ByteBufferRef buf = GetByteBufferFromPool(bufferSize);
+			ByteBufferRef buf = GetByteBufferFromPool(bufferSize);
 
-         uint8 * scratchBuffer = buf()->GetBuffer();
-         if (scratchBuffer == NULL)
-         {
-            _nobuffer();
-            return;
-         }
+			uint8 * scratchBuffer = buf()->GetBuffer();
+			if (scratchBuffer == NULL)
+			{
+				_nobuffer();
+				return;
+			}
 
 			int32 numBytes = 0;
-			numBytes = fFile->ReadBlock32((char *)scratchBuffer, bufferSize);
-         if (numBytes > 0)
-         {
-            buf()->SetNumBytes(numBytes, true);
+			numBytes = fFile->ReadBlock32(scratchBuffer, bufferSize);
+			if (numBytes > 0)
+			{
+				buf()->SetNumBytes(numBytes, true);
 
-            // munge mode
+				// munge mode
 
-            switch (fMungeMode)
-            {
-               case WTransfer::MungeModeNone:
-                  {
-                     uref()->AddInt32("mm", WTransfer::MungeModeNone);
-                     break;
-                  }
+				switch (fMungeMode)
+				{
+					case WTransfer::MungeModeNone:
+					{
+						uref()->AddInt32("mm", WTransfer::MungeModeNone);
+						break;
+					}
 
-               case WTransfer::MungeModeXOR:
-                  {
-                     for (int32 x = 0; x < numBytes; x++)
-                        scratchBuffer[x] ^= 0xFF;
-                     uref()->AddInt32("mm", WTransfer::MungeModeXOR);
-                     break;
-                  }
-                  
-               default:
-                  {
-                     break;
-                  }
-            }
+					case WTransfer::MungeModeXOR:
+					{
+						for (int32 x = 0; x < numBytes; x++)
+							scratchBuffer[x] ^= 0xFF;
+ 						uref()->AddInt32("mm", WTransfer::MungeModeXOR);
+						break;
+					}
 
-            if (uref()->AddFlat("data", buf) == B_OK)
-            {
-               // possibly do checksums here
-               uref()->AddInt32("chk", CalculateFileChecksum(buf));  // a little paranoia, due to file-resumes not working.... (TCP should handle this BUT...)
-               
-               SendMessageToSessions(uref);
-               
-               // NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
-               //       calling it!
-               fCurrentOffset += numBytes;
-               if (fTunneled)
-               {
-                  SignalUpload();
-               }
-               else
-               {
-                  MessageRef drain(GetMessageFromPool());
-                  if (drain())
-                     qmtt->RequestOutputQueuesDrainedNotification(drain);
-               }
-               
-               WUploadEvent *update = new WUploadEvent(WUploadEvent::FileDataSent);	
-               if (update)
-               {
-                  update->SetOffset(fCurrentOffset);
-                  update->SetSize(fFileSize);
-                  update->SetSent(numBytes);
-                  
-                  if (fCurrentOffset >= fFileSize)
-                  {
-                     update->SetDone(true);	// file done!
-                     update->SetFile(SimplifyPath(fFileUl));
-                     
-                     if (gWin->fSettings->GetUploads())
-                     {
-                        SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( SimplifyPath(fFileUl) ) );
-                     }
-                  }
-                  SendReply(update);
-               }
-               
-               return;
-            }
-            else
-            {
-               _nobuffer();
-               return;
-            }
+					default:
+					{
+						break;
+					}
+				}
+
+				if (uref()->AddFlat("data", buf) == B_OK)
+				{
+					// possibly do checksums here
+					uref()->AddInt32("chk", CalculateFileChecksum(buf));  // a little paranoia, due to file-resumes not working.... (TCP should handle this BUT...)
+
+					SendMessageToSessions(uref);
+
+					// NOTE: RequestOutputQueuesDrainedNotification() can recurse, so we need to update the offset before
+					//       calling it!
+					fCurrentOffset += numBytes;
+					if (fTunneled)
+					{
+						SignalUpload();
+					} 
+					else
+					{
+						MessageRef drain(GetMessageFromPool());
+						if (drain())
+ 							qmtt->RequestOutputQueuesDrainedNotification(drain);
+					}
+
+					WUploadEvent *update = new WUploadEvent(WUploadEvent::FileDataSent);	
+					if (update)
+					{
+						update->SetOffset(fCurrentOffset);
+ 						update->SetSize(fFileSize);
+						update->SetSent(numBytes);
+
+						if (fCurrentOffset >= fFileSize)
+						{
+							update->SetDone(true);	// file done!
+							update->SetFile(SimplifyPath(fFileUl));
+
+							if (gWin->fSettings->GetUploads())
+							{
+								SystemEvent( gWin, tr("%1 has finished downloading %2.").arg( GetRemoteUser() ).arg( SimplifyPath(fFileUl) ) );
+							}
+						}
+						SendReply(update);
+					}
+
+					return;
+				}
+				else
+				{
+					_nobuffer();
+					return;
+				}
 			}
-				
+
 			if (numBytes <= 0)
 			{
 				NextFile();

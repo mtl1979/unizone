@@ -142,7 +142,7 @@ TRANSLATIONS =  unizone_en.ts \
                 unizone_sv.ts \
                 unizone_1337.ts
 
-CODEC =		utf-8
+CODEC =		UTF-8
 
 DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS
 
