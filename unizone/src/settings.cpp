@@ -471,7 +471,7 @@ WSettings::Load()
 			if (file.ReadBlock32(buffer()->GetBuffer(), (uint32) file.Size()) == (int32) file.Size())
 			{
 				// reload settings
-				ret = (fSet()->UnflattenFromByteBuffer(*buffer()) == B_OK);
+				ret = (fSet()->UnflattenFromByteBuffer(buffer) == B_OK);
 			}
 			if (ret == false)
 			{

@@ -137,6 +137,12 @@ public:
      */
    status_t UnflattenFromByteBuffer(const ByteBuffer & buf);
 
+   /** Convenience method.  Unflattens this object from the specified byte buffer reference.
+     * @param buf The ByteBufferRef to unflatten from.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (or if buf is a NULL reference)
+     */
+   status_t UnflattenFromByteBuffer(const ConstRef<ByteBuffer> & buf) {return buf() ? UnflattenFromByteBuffer(*buf()) : B_ERROR;}
+
    /** Convenience method.  Allocated an appropriately sized ByteBuffer object via GetByteBufferFromPool(), Flatten()s
      * this object into the byte buffer, and returns the resulting ByteBufferRef.  Returns a NULL reference on failure (out of memory?)
      */ 
