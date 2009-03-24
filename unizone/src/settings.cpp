@@ -471,10 +471,9 @@ WSettings::Load()
 			if (file.ReadBlock32(buffer()->GetBuffer(), (uint32) file.Size()) == (int32) file.Size())
 			{
 				// reload settings
-				fSet()->Unflatten(buffer()->GetBuffer(), (uint32) file.Size());
-				ret = true;
+				ret = (fSet()->UnflattenFromByteBuffer(*buffer()) == B_OK);
 			}
-			else
+			if (ret == false)
 			{
 				QMessageBox::warning(NULL, qApp->translate( "WSettings", "Read Error" ), qApp->translate( "WSettings", "Unable to read data from file!" ), qApp->translate( "WSettings", "Bummer" ));
 			}
@@ -506,13 +505,11 @@ WSettings::Save()
 		))
 	{
 		uint32 s = fSet()->FlattenedSize();
-		uint8 * buffer = new uint8[s];
-		if (buffer)
+		ByteBufferRef buffer = fSet()->FlattenToByteBuffer();
+		if (buffer())
 		{
-			fSet()->Flatten(buffer);
-			if (file.WriteBlock((const char *)buffer, s) == s)
+			if (file.WriteBlock(buffer()->GetBuffer(), s) == s)
 				ret = true;
-			delete [] buffer;
 		}
 		file.Close();
 	}
