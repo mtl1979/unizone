@@ -5,6 +5,7 @@
 #include <qdir.h>
 #include <qstringlist.h>
 #include <QByteArray>
+#include <fcntl.h>
 
 #include "util.h"
 #include "tokenizer.h"
@@ -1132,13 +1133,20 @@ CheckIfEmpty(const QString & str, const QString & str2)
 }
 
 uint32
+CalculateFileChecksum(const uint8 *data, size_t size)
+{
+	uint32 sum = 0L;
+	for (size_t i=0; i<size; i++) 
+		sum += (*(data++)<<(i%24));
+	return sum;
+}
+
+uint32
 CalculateFileChecksum(const ByteBufferRef &buf)
 {
-   uint32 sum = 0L;
-   uint8 * data = buf()->GetBuffer();
+	const uint8 * data = buf()->GetBuffer();
 	size_t bufsize = buf()->GetNumBytes();
-   for (size_t i=0; i<bufsize; i++) sum += (*(data++)<<(i%24));
-   return sum;
+	return CalculateFileChecksum(data, bufsize);
 }
 
 uint32
@@ -1167,7 +1175,7 @@ UniqueName(const QString & file, int index)
 }
 
 void
-SavePicture(QString &file, const ByteBufferRef &buf)
+SavePicture(QString &file, const uint8 * buf, size_t bufsize)
 {
 	int n = 1;
 	QString path = MakePath(downloadDir(), FixFileName(file));
@@ -1177,10 +1185,17 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 		nf = UniqueName(path, n++);
 	}
 	WFile fFile;
-	if (fFile.Open(nf, QIODevice::WriteOnly))
+	WString wfile(nf);
+	PRINT("SavePicture: file=%ls, buf=%p, size=%ld\n", wfile.getBuffer(), buf, bufsize);
+	if (fFile.Open(wfile, 
+#ifdef WIN32
+		O_WRONLY | O_CREAT | O_BINARY
+#else
+		O_WRONLY | O_CREAT
+#endif
+		))
 	{
-		size_t bufsize = buf()->GetNumBytes();
-		uint64 bytes = fFile.WriteBlock((char *) buf()->GetBuffer(), bufsize);
+		uint64 bytes = fFile.WriteBlock(buf, bufsize);
 		fFile.Close();
 		if (bytes == bufsize)
 		{
@@ -1189,6 +1204,14 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 		}
 	}
 	file = QString::null;
+}
+
+void
+SavePicture(QString &file, const ByteBufferRef &buf)
+{
+	const uint8 * data = buf()->GetBuffer();
+	size_t bufsize = buf()->GetNumBytes();
+	SavePicture(file, data, bufsize);
 }
 
 void CloseFile(WFile * & file)
