@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>WPrefsBase</class>
- <widget class="QDialog" name="WPrefsBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="WPrefsBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,32 +10,32 @@
     <height>320</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize" >
+  <property name="minimumSize">
    <size>
     <width>600</width>
     <height>320</height>
    </size>
   </property>
-  <property name="maximumSize" >
+  <property name="maximumSize">
    <size>
     <width>600</width>
     <height>320</height>
    </size>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <widget class="QWidget" name="Layout38" >
-   <property name="geometry" >
+  <widget class="QWidget" name="Layout38">
+   <property name="geometry">
     <rect>
      <x>1</x>
      <y>291</y>
@@ -42,31 +43,22 @@
      <height>28</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" >
-    <property name="spacing" >
+   <layout class="QHBoxLayout">
+    <property name="spacing">
      <number>6</number>
     </property>
-    <property name="leftMargin" >
-     <number>0</number>
-    </property>
-    <property name="topMargin" >
-     <number>0</number>
-    </property>
-    <property name="rightMargin" >
-     <number>0</number>
-    </property>
-    <property name="bottomMargin" >
+    <property name="margin">
      <number>0</number>
     </property>
     <item>
      <spacer>
-      <property name="orientation" >
+      <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <property name="sizeType" >
+      <property name="sizeType">
        <enum>QSizePolicy::Fixed</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0">
        <size>
         <width>70</width>
         <height>21</height>
@@ -75,24 +67,24 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="fOK" >
-      <property name="text" >
+     <widget class="QPushButton" name="fOK">
+      <property name="text">
        <string>OK</string>
       </property>
-      <property name="default" >
+      <property name="default">
        <bool>true</bool>
       </property>
      </widget>
     </item>
     <item>
      <spacer>
-      <property name="orientation" >
+      <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <property name="sizeType" >
+      <property name="sizeType">
        <enum>QSizePolicy::Expanding</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
         <height>20</height>
@@ -101,24 +93,24 @@
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="fCancel" >
-      <property name="text" >
+     <widget class="QPushButton" name="fCancel">
+      <property name="text">
        <string>Cancel</string>
       </property>
-      <property name="shortcut" >
+      <property name="shortcut">
        <number>0</number>
       </property>
      </widget>
     </item>
     <item>
      <spacer>
-      <property name="orientation" >
+      <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <property name="sizeType" >
+      <property name="sizeType">
        <enum>QSizePolicy::Fixed</enum>
       </property>
-      <property name="sizeHint" >
+      <property name="sizeHint" stdset="0">
        <size>
         <width>71</width>
         <height>20</height>
@@ -128,8 +120,8 @@
     </item>
    </layout>
   </widget>
-  <widget class="QTabWidget" name="fTabs" >
-   <property name="geometry" >
+  <widget class="QTabWidget" name="fTabs">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
@@ -137,15 +129,15 @@
      <height>290</height>
     </rect>
    </property>
-   <property name="currentIndex" >
-    <number>2</number>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
-   <widget class="QWidget" name="fGeneral" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fGeneral">
+    <attribute name="title">
      <string>General</string>
     </attribute>
-    <widget class="QWidget" name="Layout53" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout53">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -153,81 +145,54 @@
        <height>240</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Minimum" hsizetype="Fixed" >
+           <widget class="QLabel" name="TextLabel1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Auto Away:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -236,55 +201,55 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="fAutoAway" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <widget class="QComboBox" name="fAutoAway">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Disabled</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2 Minutes</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>5 Minutes</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>10 Minutes</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>15 Minutes</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>20 Minutes</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>30 Minutes</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1 Hour</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2 Hours</string>
              </property>
             </item>
@@ -293,58 +258,58 @@
          </layout>
         </item>
         <item>
-         <widget class="QCheckBox" name="fAutoUpdateServers" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fAutoUpdateServers">
+          <property name="text">
            <string>Auto Update Server List</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fNewVersions" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fNewVersions">
+          <property name="text">
            <string>Check For New Versions</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fLoginStartup" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fLoginStartup">
+          <property name="text">
            <string>Login On Startup</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fLogging" >
-          <property name="minimumSize" >
+         <widget class="QCheckBox" name="fLogging">
+          <property name="minimumSize">
            <size>
             <width>260</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Enable Logging</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fMultiColor" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fMultiColor">
+          <property name="text">
            <string>Multi-color ListViews</string>
           </property>
-          <property name="checked" >
+          <property name="checked">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -355,100 +320,82 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="fSounds" >
-          <property name="minimumSize" >
+         <widget class="QCheckBox" name="fSounds">
+          <property name="minimumSize">
            <size>
             <width>260</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Enable Sound Effects</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="lblSoundFile" >
-          <property name="text" >
+         <widget class="QLabel" name="lblSoundFile">
+          <property name="text">
            <string>Sound File:</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="fSoundFile" >
-          <property name="text" >
+         <widget class="QLabel" name="fSoundFile">
+          <property name="text">
            <string/>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="fSound" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+           <widget class="QPushButton" name="fSound">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
+            <property name="minimumSize">
              <size>
               <width>0</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Select</string>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -457,8 +404,8 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="fResetSound" >
-            <property name="text" >
+           <widget class="QPushButton" name="fResetSound">
+            <property name="text">
              <string>Reset</string>
             </property>
            </widget>
@@ -467,13 +414,13 @@
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -486,12 +433,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fConnection" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fConnection">
+    <attribute name="title">
      <string>Connection</string>
     </attribute>
-    <widget class="QWidget" name="Layout46" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout46">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -499,81 +446,54 @@
        <height>240</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel2" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Minimum" hsizetype="Fixed" >
+           <widget class="QLabel" name="TextLabel2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Upload Bandwidth:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -582,90 +502,115 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="fBandwidth" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <widget class="QComboBox" name="fBandwidth">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <item>
-             <property name="text" >
-              <string>300 baud</string>
+             <property name="text">
+              <string>75 baud</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
+              <string>9.6 kbps</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>14.4 kbps</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>28.8 kbps</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>36.6 kbps</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>57.6 kbps</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>ISDN-64k</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>ISDN-128k</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>DSL-256k</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>DSL-384k</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>DSL-512k</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
+              <string>EDGE</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>HSDPA</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>HSUPA</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Cable</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>DSL-1M</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
+              <string>DSL-2M</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>T1</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>T3</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>OC-3</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>OC-12</string>
              </property>
             </item>
@@ -674,21 +619,21 @@
          </layout>
         </item>
         <item>
-         <widget class="QCheckBox" name="fFireWalled" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fFireWalled">
+          <property name="text">
            <string>I'm Firewalled</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -699,69 +644,42 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <layout class="QVBoxLayout" >
-            <property name="spacing" >
+           <layout class="QVBoxLayout">
+            <property name="spacing">
              <number>6</number>
             </property>
-            <property name="leftMargin" >
-             <number>0</number>
-            </property>
-            <property name="topMargin" >
-             <number>0</number>
-            </property>
-            <property name="rightMargin" >
-             <number>0</number>
-            </property>
-            <property name="bottomMargin" >
+            <property name="margin">
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="TextLabel2_3" >
-              <property name="text" >
+             <widget class="QLabel" name="TextLabel2_3">
+              <property name="text">
                <string>HTTP Proxy:</string>
               </property>
-              <property name="wordWrap" >
+              <property name="wordWrap">
                <bool>false</bool>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="fHTTPproxy" >
-              <property name="minimumSize" >
+             <widget class="QLineEdit" name="fHTTPproxy">
+              <property name="minimumSize">
                <size>
                 <width>200</width>
                 <height>0</height>
@@ -773,13 +691,13 @@
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -788,53 +706,44 @@
            </spacer>
           </item>
           <item>
-           <layout class="QVBoxLayout" >
-            <property name="spacing" >
+           <layout class="QVBoxLayout">
+            <property name="spacing">
              <number>6</number>
             </property>
-            <property name="leftMargin" >
-             <number>0</number>
-            </property>
-            <property name="topMargin" >
-             <number>0</number>
-            </property>
-            <property name="rightMargin" >
-             <number>0</number>
-            </property>
-            <property name="bottomMargin" >
+            <property name="margin">
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="TextLabel3_2" >
-              <property name="maximumSize" >
+             <widget class="QLabel" name="TextLabel3_2">
+              <property name="maximumSize">
                <size>
                 <width>50</width>
                 <height>32767</height>
                </size>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>Port:</string>
               </property>
-              <property name="wordWrap" >
+              <property name="wordWrap">
                <bool>false</bool>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="fHTTPport" >
-              <property name="maximumSize" >
+             <widget class="QLineEdit" name="fHTTPport">
+              <property name="maximumSize">
                <size>
                 <width>50</width>
                 <height>32767</height>
                </size>
               </property>
-              <property name="text" >
+              <property name="text">
                <string>0</string>
               </property>
-              <property name="maxLength" >
+              <property name="maxLength">
                <number>5</number>
               </property>
-              <property name="alignment" >
+              <property name="alignment">
                <set>Qt::AlignLeading</set>
               </property>
              </widget>
@@ -845,13 +754,13 @@
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -864,12 +773,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fDisplay" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fDisplay">
+    <attribute name="title">
      <string>Display</string>
     </attribute>
-    <widget class="QWidget" name="" >
-     <property name="geometry" >
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
       <rect>
        <x>1</x>
        <y>11</y>
@@ -877,75 +786,66 @@
        <height>251</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" >
+     <layout class="QHBoxLayout">
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="fTimeStamps" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fTimeStamps">
+          <property name="text">
            <string>Time Stamps</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fUserEvents" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fUserEvents">
+          <property name="text">
            <string>User Events</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fUploads" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fUploads">
+          <property name="text">
            <string>Uploads</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fDownloads" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fDownloads">
+          <property name="text">
            <string>Downloads</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fChat" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fChat">
+          <property name="text">
            <string>Chat</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fIPAddresses" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fIPAddresses">
+          <property name="text">
            <string>IP Addresses</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -957,13 +857,13 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>
@@ -972,59 +872,50 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="fPrivate" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fPrivate">
+          <property name="text">
            <string>Private Messages</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fInfo" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fInfo">
+          <property name="text">
            <string>Info Messages</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fWarning" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fWarning">
+          <property name="text">
            <string>Warning Messages</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fError" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fError">
+          <property name="text">
            <string>Error Messages</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -1036,13 +927,13 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>
@@ -1051,34 +942,25 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
+       <layout class="QVBoxLayout">
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QCheckBox" name="fFlashMain" >
-            <property name="text" >
+           <widget class="QCheckBox" name="fFlashMain">
+            <property name="text">
              <string>Flash Window When Mentioned</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="fFlashPrivate" >
-            <property name="text" >
+           <widget class="QCheckBox" name="fFlashPrivate">
+            <property name="text">
              <string>Flash Private Windows</string>
             </property>
            </widget>
@@ -1087,13 +969,13 @@
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -1102,46 +984,37 @@
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel2_2" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel2_2">
+            <property name="text">
              <string>Empty Windows:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="fEmptyWindows" >
+           <widget class="QComboBox" name="fEmptyWindows">
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Do Nothing</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Prompt</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Automatically Close</string>
              </property>
             </item>
@@ -1151,13 +1024,13 @@
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>176</width>
             <height>21</height>
@@ -1166,26 +1039,26 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
+         <layout class="QHBoxLayout">
           <item>
-           <widget class="Q3GroupBox" name="GroupBox1" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+           <widget class="Q3GroupBox" name="GroupBox1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
+            <property name="minimumSize">
              <size>
               <width>80</width>
               <height>56</height>
              </size>
             </property>
-            <property name="title" >
+            <property name="title">
              <string>Font Size</string>
             </property>
-            <widget class="QSpinBox" name="fFontSize" >
-             <property name="geometry" >
+            <widget class="QSpinBox" name="fFontSize">
+             <property name="geometry">
               <rect>
                <x>10</x>
                <y>20</y>
@@ -1193,13 +1066,13 @@
                <height>31</height>
               </rect>
              </property>
-             <property name="minimum" >
+             <property name="minimum">
               <number>1</number>
              </property>
-             <property name="maximum" >
+             <property name="maximum">
               <number>7</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>3</number>
              </property>
             </widget>
@@ -1207,13 +1080,13 @@
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>81</width>
               <height>20</height>
@@ -1228,12 +1101,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fColors" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fColors">
+    <attribute name="title">
      <string>Colors</string>
     </attribute>
-    <widget class="QWidget" name="Layout28" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout28">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -1241,90 +1114,63 @@
        <height>240</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <widget class="Q3ListBox" name="fColorsList" />
+       <widget class="Q3ListBox" name="fColorsList"/>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel5" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+           <widget class="QLabel" name="TextLabel5">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize" >
+            <property name="maximumSize">
              <size>
               <width>32767</width>
               <height>20</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Description:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="fDesc" >
-            <property name="text" >
+           <widget class="QLabel" name="fDesc">
+            <property name="text">
              <string/>
             </property>
-            <property name="alignment" >
+            <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>true</bool>
             </property>
            </widget>
@@ -1332,53 +1178,44 @@
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel3" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Maximum" hsizetype="Minimum" >
+           <widget class="QLabel" name="TextLabel3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize" >
+            <property name="maximumSize">
              <size>
               <width>32767</width>
               <height>20</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Preview:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="fPreview" >
-            <property name="text" >
+           <widget class="QLabel" name="fPreview">
+            <property name="text">
              <string/>
             </property>
-            <property name="textFormat" >
+            <property name="textFormat">
              <enum>Qt::RichText</enum>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
@@ -1387,13 +1224,13 @@
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -1402,31 +1239,22 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -1435,8 +1263,8 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="fChange" >
-            <property name="text" >
+           <widget class="QPushButton" name="fChange">
+            <property name="text">
              <string>Change</string>
             </property>
            </widget>
@@ -1448,12 +1276,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fStyle" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fStyle">
+    <attribute name="title">
      <string>Style</string>
     </attribute>
-    <widget class="QWidget" name="Layout30" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout30">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -1461,31 +1289,22 @@
        <height>240</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <widget class="Q3ListBox" name="fStyleList" >
-        <property name="minimumSize" >
+       <widget class="Q3ListBox" name="fStyleList">
+        <property name="minimumSize">
          <size>
           <width>175</width>
           <height>0</height>
          </size>
         </property>
-        <property name="maximumSize" >
+        <property name="maximumSize">
          <size>
           <width>260</width>
           <height>32767</height>
@@ -1495,13 +1314,13 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>
@@ -1510,56 +1329,47 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel7" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+         <widget class="QLabel" name="TextLabel7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize" >
+          <property name="minimumSize">
            <size>
             <width>275</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>The selected style will be applied as soon as it is selected.</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -1572,12 +1382,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fFileSharing" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fFileSharing">
+    <attribute name="title">
      <string>File Sharing</string>
     </attribute>
-    <widget class="QWidget" name="Layout49" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout49">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -1585,88 +1395,61 @@
        <height>242</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
+     <layout class="QHBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="fFileSharingEnabled" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fFileSharingEnabled">
+          <property name="text">
            <string>File sharing enabled?</string>
           </property>
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1_6" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="TextLabel1_6">
+            <property name="minimumSize">
              <size>
               <width>75</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Base Port:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -1675,52 +1458,43 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="fBasePort" />
+           <widget class="QLineEdit" name="fBasePort"/>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1_7" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="TextLabel1_7">
+            <property name="minimumSize">
              <size>
               <width>75</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Number of Ports:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -1729,19 +1503,19 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="fPortRange" />
+           <widget class="QLineEdit" name="fPortRange"/>
           </item>
          </layout>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -1750,28 +1524,28 @@
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="fBinkyNuke" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fBinkyNuke">
+          <property name="text">
            <string>Block binkies?</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fBlockDisconnected" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fBlockDisconnected">
+          <property name="text">
            <string>Block disconnected users?</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -1780,8 +1554,8 @@
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="fPreservePaths" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fPreservePaths">
+          <property name="text">
            <string>Preserve paths?</string>
           </property>
          </widget>
@@ -1789,70 +1563,52 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
+       <layout class="QVBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1_2_3" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+           <widget class="QLabel" name="TextLabel1_2_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
+            <property name="minimumSize">
              <size>
               <width>175</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Maximum Simultaneous Uploads:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -1861,66 +1617,66 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="fMaxUL" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <widget class="QComboBox" name="fMaxUL">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
+            <property name="minimumSize">
              <size>
               <width>80</width>
               <height>0</height>
              </size>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>3</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>4</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>5</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>10</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>15</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>20</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>30</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Unlimited</string>
              </property>
             </item>
@@ -1929,41 +1685,32 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1_4" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel1_4">
+            <property name="text">
              <string>Upload Packet Size:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -1972,76 +1719,76 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="fPacketSize" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <widget class="QComboBox" name="fPacketSize">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
+            <property name="minimumSize">
              <size>
               <width>80</width>
               <height>0</height>
              </size>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>512 B</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>4 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>8 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>16 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>32 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>64 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>128 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>256 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>512 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1 MB</string>
              </property>
             </item>
@@ -2050,41 +1797,32 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1_5" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel1_5">
+            <property name="text">
              <string>Minimum File Size to Queue:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -2093,70 +1831,70 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="fMinQueued" >
-            <property name="minimumSize" >
+           <widget class="QComboBox" name="fMinQueued">
+            <property name="minimumSize">
              <size>
               <width>80</width>
               <height>0</height>
              </size>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Disabled</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>4 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>8 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>16 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>32 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>64 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>128 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>256 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>512 kB</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1 MB</string>
              </property>
             </item>
@@ -2165,47 +1903,38 @@
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
+         <layout class="QHBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="leftMargin" >
-           <number>0</number>
-          </property>
-          <property name="topMargin" >
-           <number>0</number>
-          </property>
-          <property name="rightMargin" >
-           <number>0</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="TextLabel1_2_3_3" >
-            <property name="minimumSize" >
+           <widget class="QLabel" name="TextLabel1_2_3_3">
+            <property name="minimumSize">
              <size>
               <width>175</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Maximum Simultaneous Downloads:</string>
             </property>
-            <property name="wordWrap" >
+            <property name="wordWrap">
              <bool>false</bool>
             </property>
            </widget>
           </item>
           <item>
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
               <height>20</height>
@@ -2214,66 +1943,66 @@
            </spacer>
           </item>
           <item>
-           <widget class="QComboBox" name="fMaxDL" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <widget class="QComboBox" name="fMaxDL">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="minimumSize" >
+            <property name="minimumSize">
              <size>
               <width>80</width>
               <height>0</height>
              </size>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>3</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>4</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>5</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>10</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>15</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>20</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>30</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>Unlimited</string>
              </property>
             </item>
@@ -2283,13 +2012,13 @@
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -2298,15 +2027,15 @@
          </spacer>
         </item>
         <item>
-         <widget class="QCheckBox" name="fAutoClear" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fAutoClear">
+          <property name="text">
            <string>Automatically clear finished transfers?</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="fAutoClose" >
-          <property name="text" >
+         <widget class="QCheckBox" name="fAutoClose">
+          <property name="text">
            <string>Automatically close upload window?</string>
           </property>
          </widget>
@@ -2316,12 +2045,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fURLLaunching" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fURLLaunching">
+    <attribute name="title">
      <string>URL Launching</string>
     </attribute>
-    <widget class="QWidget" name="Layout39" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout39">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -2329,183 +2058,138 @@
        <height>240</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="TextLabel1_2">
+          <property name="minimumSize">
            <size>
             <width>135</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Mailto: launcher:</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fMailtoLauncher" />
+         <widget class="QLineEdit" name="fMailtoLauncher"/>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2_2" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="TextLabel1_2_2">
+          <property name="minimumSize">
            <size>
             <width>135</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>HTTP launcher:</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fHTTPLauncher" />
+         <widget class="QLineEdit" name="fHTTPLauncher"/>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2_2_2" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="TextLabel1_2_2_2">
+          <property name="minimumSize">
            <size>
             <width>135</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>FTP launcher:</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fFTPLauncher" />
+         <widget class="QLineEdit" name="fFTPLauncher"/>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_3" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="TextLabel1_3">
+          <property name="minimumSize">
            <size>
             <width>135</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Default launcher:</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fDefaultLauncher" />
+         <widget class="QLineEdit" name="fDefaultLauncher"/>
         </item>
        </layout>
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>
@@ -2516,12 +2200,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="fThrottling" >
-    <attribute name="title" >
+   <widget class="QWidget" name="fThrottling">
+    <attribute name="title">
      <string>Throttling</string>
     </attribute>
-    <widget class="QWidget" name="Layout37" >
-     <property name="geometry" >
+    <widget class="QWidget" name="Layout37">
+     <property name="geometry">
       <rect>
        <x>0</x>
        <y>10</y>
@@ -2529,58 +2213,40 @@
        <height>240</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2_4" >
-          <property name="text" >
+         <widget class="QLabel" name="TextLabel1_2_4">
+          <property name="text">
            <string>Chat:</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -2589,104 +2255,104 @@
          </spacer>
         </item>
         <item>
-         <widget class="QComboBox" name="fChatLimit" >
+         <widget class="QComboBox" name="fChatLimit">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>No Limit</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>64 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 MB/s</string>
            </property>
           </item>
@@ -2696,13 +2362,13 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>
@@ -2711,47 +2377,38 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2_4_2" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="TextLabel1_2_4_2">
+          <property name="minimumSize">
            <size>
             <width>135</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Uploads (per upload):</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -2760,104 +2417,104 @@
          </spacer>
         </item>
         <item>
-         <widget class="QComboBox" name="fULLimit" >
+         <widget class="QComboBox" name="fULLimit">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>No Limit</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>64 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 MB/s</string>
            </property>
           </item>
@@ -2866,47 +2523,38 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2_4_4" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="TextLabel1_2_4_4">
+          <property name="minimumSize">
            <size>
             <width>135</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Uploads (per blacklisted):</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -2915,104 +2563,104 @@
          </spacer>
         </item>
         <item>
-         <widget class="QComboBox" name="fBLLimit" >
+         <widget class="QComboBox" name="fBLLimit">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>No Limit</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>64 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 MB/s</string>
            </property>
           </item>
@@ -3022,13 +2670,13 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>
@@ -3037,41 +2685,32 @@
        </spacer>
       </item>
       <item>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>0</number>
-        </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="TextLabel1_2_4_3" >
-          <property name="text" >
+         <widget class="QLabel" name="TextLabel1_2_4_3">
+          <property name="text">
            <string>Downloads (per download):</string>
           </property>
-          <property name="wordWrap" >
+          <property name="wordWrap">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeType" >
+          <property name="sizeType">
            <enum>QSizePolicy::Expanding</enum>
           </property>
-          <property name="sizeHint" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
             <height>20</height>
@@ -3080,104 +2719,104 @@
          </spacer>
         </item>
         <item>
-         <widget class="QComboBox" name="fDLLimit" >
+         <widget class="QComboBox" name="fDLLimit">
           <item>
-           <property name="text" >
+           <property name="text">
             <string>No Limit</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 B/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>64 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>128 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>256 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>512 kB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>1 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>2 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>4 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>8 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>16 MB/s</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>32 MB/s</string>
            </property>
           </item>
@@ -3187,13 +2826,13 @@
       </item>
       <item>
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeType" >
+        <property name="sizeType">
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>20</height>

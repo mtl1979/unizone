@@ -626,25 +626,33 @@ struct ConPair
 };
 
 ConPair Bandwidths[] = {
+	{QT_TRANSLATE_NOOP("Connection", "75 baud"),	75},		// For reverse lookup
 	{QT_TRANSLATE_NOOP("Connection", "300 baud"),	75},		// 300 down / 75 up
+	{QT_TRANSLATE_NOOP("Connection", "9.6 kbps"),	9600},
 	{QT_TRANSLATE_NOOP("Connection", "14.4 kbps"),	14400},
 	{QT_TRANSLATE_NOOP("Connection", "28.8 kbps"),	28800},
 	{QT_TRANSLATE_NOOP("Connection", "33.6 kbps"),	33600},
-	{QT_TRANSLATE_NOOP("Connection", "36.6 kbps"),	33600},		// Misspelled 33.6 kbps
+	{QT_TRANSLATE_NOOP("Connection", "36.6 kbps"),	33600},	// Misspelled 33.6 kbps
 	{QT_TRANSLATE_NOOP("Connection", "57.6 kbps"),	57600},
 	{QT_TRANSLATE_NOOP("Connection", "ISDN-64k"),	64000},
 	{QT_TRANSLATE_NOOP("Connection", "ISDN-128k"),	128000},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-256k"),	256000},
-	{QT_TRANSLATE_NOOP("Connection", "DSL"),		384000},
+	{QT_TRANSLATE_NOOP("Connection", "EDGE"),		236800},	// 4 timeslots
 	{QT_TRANSLATE_NOOP("Connection", "DSL-384k"),	384000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL"),		384000},	// Backwards compatibility
+	{QT_TRANSLATE_NOOP("Connection", "HSDPA"),	384000},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-512k"),	512000},
-	{QT_TRANSLATE_NOOP("Connection", "Cable"),		768000},
-	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),		1024000},	// Was 1000000
-	{QT_TRANSLATE_NOOP("Connection", "T1"),			1500000},
-	{QT_TRANSLATE_NOOP("Connection", "T3"),			4500000},
+	{QT_TRANSLATE_NOOP("Connection", "Cable"),	768000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1024000},	// Was 1000000
+	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1000000},	// For reverse lookup
+	{QT_TRANSLATE_NOOP("Connection", "DSL-2M"),	2048000},
+	{QT_TRANSLATE_NOOP("Connection", "T1"),		1500000},
+	{QT_TRANSLATE_NOOP("Connection", "T3"),		4500000},
 	{QT_TRANSLATE_NOOP("Connection", "OC-3"),		155520000}, // 3  * 51840000
-	{QT_TRANSLATE_NOOP("Connection", "OC-12"),		622080000}, // 12 * 51840000
-	{"?", 0},													// Dummy entry
+	{QT_TRANSLATE_NOOP("Connection", "HSUPA"),	576000000}, // 5.76 Mbit/s
+	{QT_TRANSLATE_NOOP("Connection", "OC-12"),	622080000}, // 12 * 51840000
+	{QT_TRANSLATE_NOOP("Connection", "Unknown"),	0},		// Unknown speed
+	{"?", 0},									// Dummy entry
 	{NULL, ULONG_MAX}
 };
 
@@ -690,45 +698,17 @@ BandwidthToBytes(const QString & connection)
 QString
 BandwidthToString(uint32 bps)
 {
-	switch (bps)
+	ConPair bw;
+	int n = 0;
+	while ((bw = Bandwidths[n++]).bw != ULONG_MAX)
 	{
-	case 75:
-	case 300:
-		return qApp->translate("Connection", "300 baud");
-	case 14400:
-		return qApp->translate("Connection", "14.4 kbps");
-	case 28800:
-		return qApp->translate("Connection", "28.8 kbps");
-	case 33600:
-		return qApp->translate("Connection", "33.6 kbps");
-	case 57600:
-		return qApp->translate("Connection", "57.6 kbps");
-	case 64000:
-		return qApp->translate("Connection", "ISDN-64k");
-	case 128000:
-		return qApp->translate("Connection", "ISDN-128k");
-	case 256000:
-		return qApp->translate("Connection", "DSL-256k");
-	case 384000:
-		return qApp->translate("Connection", "DSL-384k");
-	case 512000:
-		return qApp->translate("Connection", "DSL-512k");
-	case 768000:
-		return qApp->translate("Connection", "Cable");
-	case 1000000:
-	case 1024000:
-		return qApp->translate("Connection", "DSL-1M");
-	case 1500000:
-		return qApp->translate("Connection", "T1");
-	case 4500000:
-		return qApp->translate("Connection", "T3");
-	case 155520000:
-		return qApp->translate("Connection", "OC-3");
-	case 622080000:
-		return qApp->translate("Connection", "OC-12");
-	default:
-		return qApp->translate("Connection", "Unknown");
-	}
+		if (bps == bw.bw)
+		{
+			return qApp->translate("Connection", bw.id);
+		}
+	};
+	
+	return qApp->translate("Connection", "Unknown");
 }
 
 QString
