@@ -91,7 +91,7 @@ private:
 	QString fLocalSID;
 
 	QString GetUserName(WDownloadThread *gt);
-	QString FormatIndex(long cur, long num);
+	QString FormatIndex(int32 cur, int32 num);
 
 	void EmptyDownloads();
 

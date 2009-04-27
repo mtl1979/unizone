@@ -1073,7 +1073,11 @@ WinShareWindow::MakeHumanDiffTime(uint64 time)
 	QString s;
 
 	char buf[25];
+#ifdef __amd64__
+	sprintf(buf, "%lu:%02lu:%02lu", hours, minutes, seconds);
+#else
 	sprintf(buf, "%llu:%02llu:%02llu", hours, minutes, seconds);
+#endif
 	s = buf;
 
 	return s;
@@ -1731,20 +1735,21 @@ WinShareWindow::SaveSettings()
 
 	// Toolbar Layout
 
-	int _dock, _index, _extra;
+	Qt::Dock _dock;
+	int _index, _extra;
 	bool _nl;
 
 #ifndef __APPLE__
-	getLocation(fTBMenu, (Qt::ToolBarDock &) _dock, _index, _nl, _extra);
+	getLocation(fTBMenu, _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(UID_MENUBAR, _dock, _index, _nl, _extra);
 #endif
-	getLocation(fTBServer, (Qt::ToolBarDock &) _dock, _index, _nl, _extra);
+	getLocation(fTBServer, _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(UID_SERVERBAR, _dock, _index, _nl, _extra);
 
-	getLocation(fTBNick, (Qt::ToolBarDock &) _dock, _index, _nl, _extra);
+	getLocation(fTBNick, _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(UID_NICKBAR, _dock, _index, _nl, _extra);
 
-	getLocation(fTBStatus, (Qt::ToolBarDock &) _dock, _index, _nl, _extra);
+	getLocation(fTBStatus, _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(UID_STATUSBAR, _dock, _index, _nl, _extra);
 
 	fSettings->SetInstallID(fInstallID);

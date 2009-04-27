@@ -143,7 +143,11 @@ WUniListItem::key(int c, bool /* asc */) const
 					o = lrint((double) ( (double) n / (double) m * 10000.0f ));
 					o = o * 100 + m;
 				}
+#ifdef __amd64
+				result.sprintf("0x%08lx", o);
+#else
 				result.sprintf("0x%08llx", o);
+#endif
 			}
 			else
 			{
@@ -499,7 +503,11 @@ WUniListItem::text(int c) const
 
 		if (lMod > 0)
 		{
+#ifdef __amd64__
+			result.sprintf("%u:%.2u:%.2u", hours, min, secs);
+#else
 			result.sprintf("%lu:%.2lu:%.2lu", hours, min, secs);
+#endif
 		}
 		else
 		{

@@ -88,7 +88,7 @@ private:
 	WFileThread * fSharedFiles;
 
 	QString GetUserName(WUploadThread *gt);
-	QString FormatIndex(long cur, long num);
+	QString FormatIndex(int32 cur, int32 num);
 
 	// Simple method that is used to decrease the download/upload count
 	// when one is canceled or finished. Returns the count after everything
