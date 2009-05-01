@@ -56,6 +56,7 @@ WinShareWindow::OpenSharedFolder()
 void
 WinShareWindow::ClearChatLog()
 {
+	Clear();
 }
 
 void
