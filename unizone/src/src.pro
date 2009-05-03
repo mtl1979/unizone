@@ -1,6 +1,8 @@
 unix:TARGET = ../Unizone
 win32:TARGET = Unizone
 
+CONFIG += precompile_header
+
 SOURCES =	aboutdlgimpl.cpp \
                 botitem.cpp \
                 channelimpl.cpp \
@@ -141,6 +143,8 @@ TRANSLATIONS =  unizone_en.ts \
                 unizone_es.ts \
                 unizone_sv.ts \
                 unizone_1337.ts
+
+PRECOMPILED_HEADER = unizone_pch.h
 
 CODEC =		UTF-8
 
