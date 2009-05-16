@@ -5,7 +5,9 @@
 
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+#ifdef __cplusplus
+namespace muscle {
+#endif
 
 /** 'What' codes understood to have special meaning by the StorageReflectSession class */
 enum 
@@ -116,6 +118,7 @@ enum
 #define PR_NAME_SERVER_MEM_MAX       "!Mmx"   // uint64 indicating how the maximum number of bytes the MUSCLE server may have allocated at once.
 #define PR_NAME_SERVER_VERSION       "!Msv"   // String indicating version of MUSCLE that the server was compiled from
 #define PR_NAME_SERVER_UPTIME        "!Mup"   // uint64 indicating how many microseconds the server has been running for
+#define PR_NAME_SERVER_SESSION_ID    "!Ssi"   // uint64 that is unique to this particular instance of the server in this particular process
 #define PR_NAME_MAX_NODES_PER_SESSION "!Mns"  // uint32 indicating the maximum number of nodes uploadable by a session
 #define PR_NAME_SESSION               "session"  // this field will be replaced with the sender's session number for any client-to-client message (named "session" for BeShare backwards compatibility)
 #define PR_NAME_SUBSCRIBE_PREFIX      "SUBSCRIBE:" // Prefix for parameters that indicate a subscription request 
@@ -347,6 +350,8 @@ enum
 //    of the message is not specified by the StorageReflectSession; it just passes any message
 //    on verbatim.
 
-END_NAMESPACE(muscle);
+#ifdef __cplusplus
+}; // end namespace muscle
+#endif
 
 #endif

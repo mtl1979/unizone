@@ -8,7 +8,7 @@
 # include <mach/vm_map.h>
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef WIN32
 # ifndef USE_KERNEL32_DLL_FOR_GETSYSTEMTIMES
@@ -98,5 +98,4 @@ float CPULoadMeter :: GetCPULoad()
    return sysLoadPercentage;
 }
 
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle

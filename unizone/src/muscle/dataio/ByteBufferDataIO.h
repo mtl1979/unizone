@@ -6,7 +6,7 @@
 #include "dataio/DataIO.h"
 #include "util/ByteBuffer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  *  Data I/O class to allow reading from/writing to a ByteBuffer object (as if it was an I/O device)
@@ -118,6 +118,6 @@ private:
    int32 _seekPos;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

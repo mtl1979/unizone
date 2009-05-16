@@ -5,7 +5,7 @@
 
 #include "util/MemoryAllocator.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 // You can't use these functions unless memory tracking is enabled!
 // So if you are getting errors, make sure -DMUSCLE_ENABLE_MEMORY_TRACKING
@@ -86,6 +86,6 @@ status_t MemoryParanoiaCheckBuffer(void * p, bool crashIfInvalid = true);
 # define muscleRealloc realloc
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

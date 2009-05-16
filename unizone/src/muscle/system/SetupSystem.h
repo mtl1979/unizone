@@ -7,7 +7,7 @@
 #include "system/Mutex.h"
 #include "util/GenericCallback.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class AtomicCounter;
 
@@ -193,6 +193,6 @@ private:
  */
 Mutex * GetGlobalMuscleLock();
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

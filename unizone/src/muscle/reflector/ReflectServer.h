@@ -5,7 +5,7 @@
 
 #include "reflector/AbstractReflectSession.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class MemoryAllocator;
 
@@ -198,14 +198,10 @@ public:
    /** Read-only implementation of the above */
    const Hashtable<ip_address, String> & GetAddressRemappingTable() const {return _remapIPs;}
 
-   /** If you wish to have a Control-C cause your server to gracefully exit, instead of rudely just
-     * killing your server process, you can call this method to enable a signal handler that
-     * will catch the interrupt signal and cause this ReflectServer's ServerProcessLoop() to exit cleanly.
-     * Note that this function is currently implemented only under Linux and OS/X; under other operating 
-     * systems it will just always return B_ERROR.
-     * @param enabled If true, managed signal handling will be enabled; if false, it will be disabled.
+   /** Returns a number that is (hopefully) unique to each ReflectSession instance. 
+     * This number will be different each time the server is run, but will remain the same for the duration of the server's life.
      */
-   status_t SetSignalHandlingEnabled(bool enabled);
+   uint64 GetServerSessionID() const {return _serverSessionID;}
 
 protected:
    /**
@@ -269,7 +265,7 @@ private:
    bool _keepServerGoing;
    uint64 _serverStartedAt;
    bool _doLogging;
-   bool _setSignalHandlingEnabledWasCalled;
+   uint64 _serverSessionID;
 
    Hashtable<ip_address, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
 
@@ -277,13 +273,6 @@ private:
 };
 DECLARE_REFTYPES(ReflectServer);
 
-/** Returns true iff any signals were caught by the signal handler since the last time
-  * SetSignalHandlingEnabled() was called.  Will always return false if SetSignalHandlingEnabled()
-  * was never called.  Only implemented under Linux; under other operating systems it will
-  * always just return false.
-  */
-bool WasSignalCaught();
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

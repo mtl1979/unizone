@@ -5,7 +5,7 @@
 
 #include "util/FlatCountable.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class IMemoryAllocationStrategy;
 
@@ -139,11 +139,7 @@ public:
    /** Returns a 32-bit checksum corresponding to this ByteBuffer's contetns.
      * Note that this method is O(N).
      */
-#ifdef MUSCLE_AVOID_NAMESPACES
-   uint32 CalculateChecksum() const {return ::CalculateChecksum(_buffer, _numValidBytes);}
-#else
    uint32 CalculateChecksum() const {return muscle::CalculateChecksum(_buffer, _numValidBytes);}
-#endif
 
    /** Sets our allocation strategy pointer.  Note that you should be careful when you call this,
     *  as changing strategies can lead to allocation/deallocation method mismatches.
@@ -235,6 +231,6 @@ public:
    virtual void Free(void * ptr, size_t size) = 0;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

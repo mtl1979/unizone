@@ -2,7 +2,7 @@
 
 #include "util/PulseNode.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 PulseNode :: PulseNode() : _parent(NULL), _aggregatePulseTime(MUSCLE_TIME_NEVER), _myScheduledTime(MUSCLE_TIME_NEVER), _cycleStartedAt(0), _myScheduledTimeValid(false), _curList(-1), _prevSibling(NULL), _nextSibling(NULL), _maxTimeSlice(MUSCLE_TIME_NEVER), _timeSlicingSuggested(false)
 {
@@ -151,7 +151,9 @@ void PulseNode :: ReschedulePulseChild(PulseNode * child, int whichList)
          }
          break;
 
-         case LINKED_LIST_UNSCHEDULED: case LINKED_LIST_NEEDSRECALC:
+         case LINKED_LIST_NEEDSRECALC:
+            if (_parent) _parent->ReschedulePulseChild(this, LINKED_LIST_NEEDSRECALC);  // if our child is rescheduled that reschedules us too!
+         case LINKED_LIST_UNSCHEDULED: 
          {
             // These lists are unsorted, so we can just quickly append the child to the head of the list
             if (_firstChild[whichList])
@@ -171,4 +173,4 @@ void PulseNode :: ReschedulePulseChild(PulseNode * child, int whichList)
    }
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

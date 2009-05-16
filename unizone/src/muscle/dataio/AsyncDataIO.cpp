@@ -3,7 +3,7 @@
 #include "dataio/AsyncDataIO.h"
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 AsyncDataIO :: ~AsyncDataIO()
 {
@@ -219,4 +219,4 @@ void AsyncDataIO :: InternalThreadEntry()
    }
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

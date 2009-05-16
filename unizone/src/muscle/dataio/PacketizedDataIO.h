@@ -6,7 +6,7 @@
 #include "dataio/DataIO.h"
 #include "util/ByteBuffer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  * This class can be used to "wrap" a streaming I/O object (e.g. a TCPSocketDataIO) in order to make 
@@ -72,6 +72,6 @@ private:
    uint32 _outputBufferBytesSent;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

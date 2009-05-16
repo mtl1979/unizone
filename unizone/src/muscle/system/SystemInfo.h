@@ -5,7 +5,7 @@
 
 #include "util/String.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Returns a human-readable name for the operating system that the code has 
   * been compiled on.  For example, "Windows", "MacOS/X", or "Linux".  If the 
@@ -57,6 +57,6 @@ inline const char * GetFilePathSeparator()
 #endif
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

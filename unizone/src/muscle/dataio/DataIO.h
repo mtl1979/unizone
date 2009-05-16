@@ -5,7 +5,7 @@
 
 #include "util/Socket.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
  
 /** Abstract base class for a byte-stream Data I/O interface, similar to Be's BDataIO.  */
 class DataIO : public RefCountable
@@ -159,6 +159,6 @@ public:
 };
 DECLARE_REFTYPES(DataIO);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

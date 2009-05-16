@@ -8,7 +8,7 @@
 #include "regex/StringMatcher.h"
 #include "message/Message.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 DECLARE_REFTYPES(StringMatcher);
  
@@ -185,6 +185,6 @@ String GetPathClauseString(int depth, const char * path);
  */
 int GetPathDepth(const char * path);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

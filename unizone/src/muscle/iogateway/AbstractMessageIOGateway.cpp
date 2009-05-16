@@ -3,7 +3,7 @@
 #include "iogateway/AbstractMessageIOGateway.h"
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 AbstractMessageIOGateway :: AbstractMessageIOGateway() : _hosed(false), _flushOnEmpty(true)
 {
@@ -142,4 +142,4 @@ ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64
    return B_NO_ERROR;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

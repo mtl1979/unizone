@@ -5,31 +5,20 @@
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/ReflectServer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static status_t FindIPAddressInMessage(const Message & msg, const String & fieldName, ip_address & ip)
 {
-#ifdef MUSCLE_USE_IPV6
-   const uint8 * ipData;
-   uint32 numBytes;
-   if ((msg.FindData(fieldName, B_RAW_TYPE, (const void **) &ipData, &numBytes) == B_NO_ERROR)&&(numBytes >= 16))
-   {
-      ip_address ret; ret.ReadFromNetworkArray(ipData);
-      return ret;
-   }
-#else
-   return msg.FindInt32(fieldName, (int32*) &ip);
-#endif
+   const String * s = NULL;
+   if (msg.FindString(fieldName, &s) != B_NO_ERROR) return B_ERROR;
+
+   ip = Inet_AtoN(s->Cstr());
+   return B_NO_ERROR;
 }
 
 static status_t AddIPAddressToMessage(Message & msg, const String & fieldName, const ip_address & ip)
 {
-#ifdef MUSCLE_USE_IPV6
-   uint8 ipData[16]; ip.WriteToNetworkArray(ipData);
-   return msg.AddData(fieldName, B_RAW_TYPE, ipData, sizeof(ipData));
-#else
-   return msg.AddInt32(fieldName, ip);
-#endif
+   return msg.AddString(fieldName, Inet_NtoA(ip));
 }
 
 MessageTransceiverThread :: MessageTransceiverThread()
@@ -211,7 +200,7 @@ int32 MessageTransceiverThread :: GetNextEventFromInternalThread(uint32 & code, 
          code = msgRef()->what;
          if (optRetRef)        (void) msgRef()->FindMessage(MTT_NAME_MESSAGE, *optRetRef);
          if (optFromSession)   (void) msgRef()->FindString(MTT_NAME_FROMSESSION, *optFromSession);
-         if (optFromFactoryID) (void) msgRef()->FindInt32(MTT_NAME_FACTORY_ID, (int32 *)optFromFactoryID);
+         if (optFromFactoryID) (void) msgRef()->FindInt32(MTT_NAME_FACTORY_ID, optFromFactoryID);
       }
       else ret = -1;  // NULL event message should never happen, but just in case
    }
@@ -482,7 +471,7 @@ void ThreadWorkerSession :: MessageReceivedFromSession(AbstractReflectSession & 
             case MTT_COMMAND_SET_OUTGOING_ENCODING:
             {
                int32 enc;
-               if (msg->FindInt32(MTT_NAME_ENCODING, &enc) == B_NO_ERROR)
+               if (msg->FindInt32(MTT_NAME_ENCODING, enc) == B_NO_ERROR)
                {
                   MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway()());
                   if (gw) gw->SetOutgoingEncoding(enc);
@@ -517,7 +506,7 @@ void ThreadSupervisorSession :: AboutToDetachFromServer()
 {
    // Neutralize all outstanding DrainTrags so that they won't try to call DrainTagIsBeingDeleted() on me after I'm gone.
    HashtableIterator<DrainTag *, bool> tagIter(_drainTags);
-   DrainTag * nextKey;
+   DrainTag * nextKey = NULL;  // just to shut the compiler up
    while(tagIter.GetNextKey(nextKey) == B_NO_ERROR) nextKey->SetNotify(NULL);
 
    StorageReflectSession :: AboutToDetachFromServer();
@@ -576,7 +565,12 @@ status_t ThreadSupervisorSession :: AddNewWorkerConnectSession(const ThreadWorke
    status_t ret = (hostIP != invalidIP) ? AddNewConnectSession(AbstractReflectSessionRef(sessionRef.GetRefCountableRef(), true), hostIP, port, autoReconnectDelay) : B_ERROR;
 
    // For immediate failure: Since (sessionRef) never attached, we need to send the disconnect message ourself.
-   if (ret != B_NO_ERROR) MessageReceivedFromSession(*sessionRef(), GetMessageFromPool(MTT_EVENT_SESSION_DISCONNECTED), NULL);
+   if ((ret != B_NO_ERROR)&&(sessionRef()))
+   {
+      // We have to synthesize the MTT_NAME_FROMSESSION path ourselves, since the session was never added to the server and thus its path isn't set
+      MessageRef errorMsg = GetMessageFromPool(MTT_EVENT_SESSION_DISCONNECTED);
+      if ((errorMsg())&&(errorMsg()->AddString(MTT_NAME_FROMSESSION, String("/%1/%2").Arg(Inet_NtoA(hostIP)).Arg(sessionRef()->GetSessionID())) == B_NO_ERROR)) _mtt->SendMessageToOwner(errorMsg);
+   }
    return ret;
 }
 
@@ -605,8 +599,8 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                   {
                      const char * hostName;
                      ip_address hostIP;
-                     uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*) &port);
-                     uint64 autoReconnectDelay = MUSCLE_TIME_NEVER; (void) msg->FindInt64(MTT_NAME_AUTORECONNECTDELAY, (int64*)&autoReconnectDelay);
+                     uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, port);
+                     uint64 autoReconnectDelay = MUSCLE_TIME_NEVER; (void) msg->FindInt64(MTT_NAME_AUTORECONNECTDELAY, autoReconnectDelay);
 
                           if (FindIPAddressInMessage(*msg, MTT_NAME_IP_ADDRESS, hostIP) == B_NO_ERROR) (void) AddNewWorkerConnectSession(sessionRef, hostIP, port, autoReconnectDelay);
                      else if (msg->FindString(MTT_NAME_HOSTNAME, &hostName)             == B_NO_ERROR) 
@@ -633,7 +627,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                   ThreadWorkerSessionFactoryRef factoryRef(tagRef, true);
                   if (factoryRef())
                   {
-                     uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, (int16*)&port);
+                     uint16 port = 0; (void) msg->FindInt16(MTT_NAME_PORT, port);
                      ip_address ip = invalidIP; (void) FindIPAddressInMessage(*msg, MTT_NAME_IP_ADDRESS, ip);
                      (void) PutAcceptFactory(port, ReflectSessionFactoryRef(factoryRef.GetRefCountableRef(), true), ip);
                   }
@@ -646,7 +640,7 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
             {
                uint16 port;
                ip_address ip;
-               if ((msg->FindInt16(MTT_NAME_PORT, (int16*)&port) == B_NO_ERROR)&&(FindIPAddressInMessage(*msg, MTT_NAME_IP_ADDRESS, ip) == B_NO_ERROR)) (void) RemoveAcceptFactory(port, ip);
+               if ((msg->FindInt16(MTT_NAME_PORT, port) == B_NO_ERROR)&&(FindIPAddressInMessage(*msg, MTT_NAME_IP_ADDRESS, ip) == B_NO_ERROR)) (void) RemoveAcceptFactory(port, ip);
             }
             break;
 
@@ -700,6 +694,4 @@ DrainTag :: ~DrainTag()
    if (_notify) _notify->DrainTagIsBeingDeleted(this);
 }
 
-
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle

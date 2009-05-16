@@ -4,7 +4,7 @@
 #include "regex/StringMatcher.h"
 #include "util/MiscUtilityFunctions.h"  // for MemMem()
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 QueryFilter :: ~QueryFilter()
 {
@@ -32,8 +32,8 @@ status_t WhatCodeQueryFilter :: SaveToArchive(Message & archive) const
 status_t WhatCodeQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("min", (int32*)&_minWhatCode) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("max", (int32*)&_maxWhatCode) != B_NO_ERROR) _maxWhatCode = _minWhatCode;
+   if (archive.FindInt32("min", _minWhatCode) != B_NO_ERROR) return B_ERROR;
+   if (archive.FindInt32("max", _maxWhatCode) != B_NO_ERROR) _maxWhatCode = _minWhatCode;
    return B_NO_ERROR;
 }
 
@@ -47,7 +47,7 @@ status_t ValueQueryFilter :: SaveToArchive(Message & archive) const
 status_t ValueQueryFilter ::SetFromArchive(const Message & archive)
 {
    if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("idx", (int32*)&_index) != B_NO_ERROR) _index = 0;
+   if (archive.FindInt32("idx", _index) != B_NO_ERROR) _index = 0;
    return archive.FindString("fn", _fieldName);
 }
 
@@ -59,7 +59,7 @@ status_t ValueExistsQueryFilter :: SaveToArchive(Message & archive) const
 status_t ValueExistsQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (ValueQueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("type", (int32*)&_typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
+   if (archive.FindInt32("type", _typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
    return B_NO_ERROR;
 }
 
@@ -99,7 +99,7 @@ status_t AndOrQueryFilter :: SaveToArchive(Message & archive) const
 status_t AndOrQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (MultiQueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("min", (int32*)&_minMatches) != B_NO_ERROR) _minMatches = MUSCLE_NO_LIMIT;
+   if (archive.FindInt32("min", _minMatches) != B_NO_ERROR) _minMatches = MUSCLE_NO_LIMIT;
    return B_NO_ERROR;
 }
 
@@ -126,7 +126,7 @@ status_t NandNotQueryFilter :: SaveToArchive(Message & archive) const
 status_t NandNotQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (MultiQueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
-   if (archive.FindInt32("max", (int32*)&_maxMatches) != B_NO_ERROR) _maxMatches = 0;
+   if (archive.FindInt32("max", _maxMatches) != B_NO_ERROR) _maxMatches = 0;
    return B_NO_ERROR;
 }
 
@@ -197,7 +197,7 @@ status_t StringQueryFilter :: SetFromArchive(const Message & archive)
    FreeMatcher();
    _default.Clear();
    _assumeDefault = (archive.FindString("val", 1, _default) == B_NO_ERROR);
-   return ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&(archive.FindString("val", _value) == B_NO_ERROR)) ? archive.FindInt8("op", (int8*)&_op) : B_ERROR;
+   return ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&(archive.FindString("val", _value) == B_NO_ERROR)) ? archive.FindInt8("op", _op) : B_ERROR;
 }
 
 bool StringQueryFilter :: Matches(const Message & msg, const DataNode *) const
@@ -294,8 +294,8 @@ status_t RawDataQueryFilter :: SaveToArchive(Message & archive) const
 
 status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
 {
-   if ((ValueQueryFilter::SetFromArchive(archive) != B_NO_ERROR)||(archive.FindInt8("op", (int8*)&_op) != B_NO_ERROR)) return B_ERROR;
-   if (archive.FindInt32("type", (int32*)&_typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
+   if ((ValueQueryFilter::SetFromArchive(archive) != B_NO_ERROR)||(archive.FindInt8("op", _op) != B_NO_ERROR)) return B_ERROR;
+   if (archive.FindInt32("type", _typeCode) != B_NO_ERROR) _typeCode = B_ANY_TYPE;
 
    _value.Reset();
    const void * data;
@@ -427,4 +427,4 @@ void SetGlobalQueryFilterFactory(const QueryFilterFactoryRef & newFactory)
    _customQueryFilterFactoryRef = newFactory;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

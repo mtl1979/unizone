@@ -8,7 +8,7 @@
 #include "util/Queue.h"
 #include "util/RefCount.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class MemoryAllocator;
 
@@ -165,6 +165,6 @@ private:
    Queue<GenericCallbackRef> _callbacks;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

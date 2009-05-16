@@ -5,7 +5,7 @@
 #include "util/Queue.h"
 #include "message/Message.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static Message _emptyMessage;
 static MessageRef _emptyMessageRef(&_emptyMessage, false);
@@ -1751,12 +1751,12 @@ status_t Message :: RemoveData(const String & fieldName, uint32 index)
    else return B_ERROR;
 }
 
-status_t Message :: FindString(const String & fieldName, uint32 index, const char ** setMe) const 
+status_t Message :: FindString(const String & fieldName, uint32 index, const char * & setMe) const
 {
    const StringDataArray * ada = (const StringDataArray *)GetArray(fieldName, B_STRING_TYPE);
    if ((ada)&&(index < ada->GetNumItems()))
    {
-      *setMe = ada->ItemAt(index)();
+      setMe = ada->ItemAt(index)();
       return B_NO_ERROR;
    }
    else return B_ERROR;
@@ -2336,11 +2336,4 @@ void Message :: SwapContents(Message & swapWith)
    _entries.SwapContents(swapWith._entries);
 }
 
-Cloneable * Message :: Clone() const
-{
-       Message * ret = newnothrow Message(*this);
-       if (ret == NULL) WARN_OUT_OF_MEMORY;
-       return ret;
-}
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle

@@ -5,7 +5,7 @@
 
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifndef SMALL_QUEUE_SIZE
 # define SMALL_QUEUE_SIZE 3
@@ -314,12 +314,26 @@ public:
     */
    status_t EnsureSize(uint32 numSlots, bool setNumItems = false, uint32 extraReallocItems = 0);
 
-   /** Returns the last index of the given (item), or -1 if (item) is
-    *  not found in the list.  O(n) search time.
+   /** Returns the first index of the given (item), or -1 if (item) is not found in the list.  O(n) search time.
     *  @param item The item to look for.
-    *  @return The index of (item), or -1 if no such item is present.
+    *  @param startAt The first index in the list to look at.  Defaults to zero.
+    *  @param endAtPlusOne One more than the final index to look at.  If this value is greater than
+    *               the number of items in the list, it will be clamped internally to be equal 
+    *               to the number of items in the list.  Defaults to MUSCLE_NO_LIMIT.
+    *  @return The index of the first item found, or -1 if no such item was found in the specified range.
     */
-   int32 IndexOf(const ItemType & item) const;
+   int32 IndexOf(const ItemType & item, uint32 startAt = 0, uint32 endAtPlusOne = MUSCLE_NO_LIMIT) const;
+
+   /** Returns the last index of the given (item), or -1 if (item) is not found in the list.  O(n) search time.  
+    *  This method is different from IndexOf() in that this method searches backwards in the list.
+    *  @param item The item to look for.
+    *  @param startAt The initial index in the list to look at.  If this value is greater than or equal to
+    *                 the size of the list, it will be clamped down to (numItems-1).   Defaults to MUSCLE_NO_LIMIT.
+    *  @param endAt The final index in the list to look at.  Defaults to zero, which means
+    *               to search back to the beginning of the list, if necessary.
+    *  @return The index of the first item found in the reverse search, or -1 if no such item was found in the specified range.
+    */
+   int32 LastIndexOf(const ItemType & item, uint32 startAt = MUSCLE_NO_LIMIT, uint32 endAt = 0) const;
 
    /**
     *  Swaps the values of the two items at the given indices.  This operation
@@ -913,12 +927,26 @@ EnsureSize(uint32 size, bool setNumItems, uint32 extraPreallocs)
 template <class ItemType>
 int32 
 Queue<ItemType>::
-IndexOf(const ItemType & item) const
+IndexOf(const ItemType & item, uint32 startAt, uint32 endAtPlusOne) const
 {
-   if (_queue) for (int i=((int)GetNumItems())-1; i>=0; i--) if (*GetItemAt(i) == item) return i;
+   if (startAt >= GetNumItems()) return -1;
+
+   endAtPlusOne = muscleMin(endAtPlusOne, GetNumItems());
+   for (uint32 i=startAt; i<endAtPlusOne; i++) if (*GetItemAt(i) == item) return i;
    return -1;
 }
 
+template <class ItemType>
+int32 
+Queue<ItemType>::
+LastIndexOf(const ItemType & item, uint32 startAt, uint32 endAt) const
+{
+   if (endAt >= GetNumItems()) return -1;
+
+   startAt = muscleMin(startAt, GetNumItems()-1);
+   for (int32 i=(int32)startAt; i>=((int32)endAt); i--) if (*GetItemAt(i) == item) return i;
+   return -1;
+}
 
 template <class ItemType>
 void 
@@ -1303,6 +1331,6 @@ Queue<ItemType>::Normalize()
    }
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

@@ -7,7 +7,7 @@
 #include "dataio/DataIO.h"
 #include "util/Queue.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This DataIO class is a handy cross-platform way to spawn 
  *  and talk to a child process.  Any data that the child process
@@ -220,6 +220,6 @@ private:
 #endif
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

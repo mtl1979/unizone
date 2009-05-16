@@ -1272,7 +1272,7 @@ WinShareWindow::GetRemoteVersionString(MessageRef msg)
 	QString versionString("?");
 	const char * version;
 
-	if (msg()->FindString("version", &version) == B_OK)
+        if (msg()->FindString("version", version) == B_OK)
 	{
 		if (muscleInRange(version[0], '0', '9'))
 		{

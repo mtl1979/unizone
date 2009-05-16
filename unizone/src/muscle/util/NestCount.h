@@ -5,7 +5,7 @@
 
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This class represents a counter of nested function calls.  It is essentially just a uint32,
   * but made into a class so that it can be auto-initialized to zero, protected from arbitrary
@@ -65,6 +65,6 @@ private:
    NestCount & _count;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

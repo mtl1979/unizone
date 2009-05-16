@@ -13,7 +13,7 @@
 
 #include "support/Point.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /*-----------------------------------------------------------------------*/
 /*----- Rect class ----------------------------------------------*/
@@ -235,6 +235,6 @@ public:
 
 DECLARE_ALL_TUPLE_OPERATORS(Rect,float);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif 

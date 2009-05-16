@@ -3,7 +3,7 @@
 #include "reflector/DataNode.h"
 #include "reflector/StorageReflectSession.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 DataNode :: DataNode() : _children(NULL), _orderedIndex(NULL), _orderedCounter(0L)  // _parent and _cachedDataChecksum will be set in Init()/Reset(), not here
 {
@@ -460,4 +460,4 @@ DataNode * DataNode :: FindFirstMatchingNode(const char * path, uint32 maxDepth)
    }
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

@@ -6,7 +6,7 @@
 #include "util/Queue.h"
 #include "system/Mutex.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 // Uncomment this #define to disable object pools (i.e. turn them into
 // fancy new/delete operators).  This is helpful if you are trying
@@ -123,7 +123,7 @@ public:
          if (_firstSlab->IsInUse()) 
          {
             LogTime(MUSCLE_LOG_CRITICALERROR, "~ObjectPool %p:  slab %p is still in use when we destroy it!\n", this, _firstSlab);
-            MCRASH("ObjectPool destroyed while its objects were still in use (Is a CompleteSetupSystem object declared at the top of main()?");
+            MCRASH("ObjectPool destroyed while its objects were still in use (Is a CompleteSetupSystem object declared at the top of main()?)");
          }
          ObjectSlab * nextSlab = _firstSlab->GetNext();
          delete _firstSlab;
@@ -455,6 +455,6 @@ private:
    ObjectSlab * _lastSlab;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

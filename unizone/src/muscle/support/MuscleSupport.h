@@ -12,7 +12,7 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "4.51"
+#define MUSCLE_VERSION_STRING "4.60"
 
 #include <string.h>  /* for memcpy() */
 
@@ -40,31 +40,8 @@
 #endif
 
 #ifndef __cplusplus
-# define MUSCLE_AVOID_NAMESPACES
 # define NEW_H_NOT_AVAILABLE
 #endif
-
-/* Since certain antique compilers don't support namespaces, we
- * do all namespace-related declarations via macros which can
- * be no-op'd out by declaring -DMUSCLE_AVOID_NAMESPACES in the Makefile.
- */
-#ifdef MUSCLE_AVOID_NAMESPACES
-# define DECLARE_NAMESPACE(x)
-# define BEGIN_NAMESPACE(x)
-# define END_NAMESPACE(x)
-# define USING_NAMESPACE(x)
-#else
-# define DECLARE_NAMESPACE(x) namespace x {};
-# define BEGIN_NAMESPACE(x) namespace x {
-# define END_NAMESPACE(x) };
-# define USING_NAMESPACE(x) using namespace x;
-#endif
-
-/* Just declare the muscle namespace as existing.
- * If we ever decide to make the muscle namespace a superset
- * of another namespace, we would add a 'using namespace' line here.
- */
-DECLARE_NAMESPACE(muscle);
 
 /* these CPUs can't handle non-aligned word reads, so we'll accomodate them by using memcpy() instead. */
 #if defined(MIPS) || defined(mc68000) || defined(sparc) || defined(__sparc) || defined(m68k) || defined(__68k__) || defined(__sparc__)
@@ -95,20 +72,18 @@ DECLARE_NAMESPACE(muscle);
 
 #ifndef NEW_H_NOT_AVAILABLE
 # include <new>
-# ifndef MUSCLE_AVOID_NAMESPACES
-#  ifndef __MWERKS__
+# ifndef __MWERKS__
 using std::bad_alloc;
 using std::nothrow_t;
 using std::nothrow;
-#   if (defined(_MSC_VER))
+#  if (defined(_MSC_VER))
 // VC++ 6.0 and earlier lack this definition
-#    if (_MSC_VER < 1300)
+#   if (_MSC_VER < 1300)
 inline void __cdecl operator delete(void *p, const std::nothrow_t&) _THROW0() {delete(p);}
-#    endif
-#   else
+#   endif
+#  else
 using std::new_handler;
 using std::set_new_handler;
-#   endif
 #  endif
 # endif
 #else
@@ -159,15 +134,10 @@ using std::set_new_handler;
 # define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
 #endif
 
-#ifdef MUSCLE_AVOID_NAMESPACES
-# define MCRASH(msg) {LogTime(MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
-# define WARN_OUT_OF_MEMORY LogTime(MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
-# define MCHECKPOINT LogTime(MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
-#else
-# define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
-# define WARN_OUT_OF_MEMORY muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
-# define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
-#endif
+#define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
+#define MEXIT(retVal,msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); ExitWithoutCleanup(retVal);}
+#define WARN_OUT_OF_MEMORY muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
+#define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
 
 #define UNLESS(x) if(!(x))
 #define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  /* returns # of items in array */
@@ -200,7 +170,7 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
     typedef unsigned char           uint8;
     typedef short                   int16;
     typedef unsigned short          uint16;
-#   if defined(MUSCLE_64_BIT_PLATFORM) || defined(__osf__) || defined(__amd64__) || defined(__PPC64__)    /* some 64bit systems will have long=64-bit, int=32-bit */
+#   if defined(MUSCLE_64_BIT_PLATFORM) || defined(__osf__) || defined(__amd64__) || defined(__PPC64__) || defined(__x86_64__)   /* some 64bit systems will have long=64-bit, int=32-bit */
 #    ifndef MUSCLE_64_BIT_PLATFORM
 #     define MUSCLE_64_BIT_PLATFORM 1  // auto-define it if it wasn't defined in the Makefile
 #    endif
@@ -603,6 +573,9 @@ static inline uint64 MuscleX86SwapInt64(uint64 val)
       mov DWORD PTR val + 4, eax;
    };
    return val;
+#elif defined(MUSCLE_64_BIT_PLATFORM)
+   __asm__ ("bswap %0" : "=r" (val) : "0" (val));
+   return val;
 #else
    return ((uint64)(MuscleX86SwapInt32((uint32)((val>>32)&0xFFFFFFFF))))|(((uint64)(MuscleX86SwapInt32((uint32)(val&0xFFFFFFFF))))<<32);
 #endif
@@ -775,11 +748,13 @@ static inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxS
    return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking;
 }
 
-BEGIN_NAMESPACE(muscle);
+#ifdef __cplusplus
+namespace muscle {
+#endif
 
 #ifdef __cplusplus
 /** These compare functions are useful for passing into Hashtables or Queues to keep them sorted */
-int IntCompareFunc  ( const int    & i1, const int8   & i2, void *);
+int IntCompareFunc  ( const int    & i1, const int    & i2, void *);
 int Int8CompareFunc ( const int8   & i1, const int8   & i2, void *);
 int Int16CompareFunc( const int16  & i1, const int16  & i2, void *);
 int Int32CompareFunc( const int32  & i1, const int32  & i2, void *);
@@ -903,6 +878,8 @@ static inline uint32 CalculateChecksumForDouble(double v) {return CalculateCheck
    namespace muscle {DECLARE_HASHTABLE_KEY_CLASS(nameSpace::keyClass);}; \
    namespace nameSpace {
 
-END_NAMESPACE(muscle);
+#ifdef __cplusplus
+}; // end namespace muscle
+#endif
 
 #endif /* _MUSCLE_SUPPORT_H */

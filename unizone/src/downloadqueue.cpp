@@ -22,7 +22,7 @@ DownloadQueue::addItem(const QString & file, const QString & path, const WUserRe
 	int32 i = 0;
 	String mUser = (const char *) user()->GetUserID().utf8();
 	fLock.Lock();
-	if (fQueue()->FindInt32(mUser, &i) == B_OK)
+        if (fQueue()->FindInt32(mUser, i) == B_OK)
 		fQueue()->ReplaceInt32(false, mUser, ++i);
 	else
 		fQueue()->AddInt32(mUser, 1);
@@ -52,7 +52,7 @@ DownloadQueue::run()
 		{
 			int32 i;
 
-			fQueue()->FindInt32(mUser, &numItems);
+                        fQueue()->FindInt32(mUser, numItems);
 			files = new QString[numItems];
 			Q_CHECK_PTR(files);
 			paths = new QString[numItems];

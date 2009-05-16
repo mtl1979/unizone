@@ -10,7 +10,7 @@
 # include "Shlwapi.h"
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 const char * GetOSName(const char * defStr)
 {
@@ -270,6 +270,4 @@ status_t GetNumberOfProcessors(uint32 & retNumProcessors)
    return B_ERROR;
 }
 
-
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle

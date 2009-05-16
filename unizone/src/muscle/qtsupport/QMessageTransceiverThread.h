@@ -9,9 +9,7 @@
 #include <qthread.h>
 #include "system/MessageTransceiverThread.h"
 
-#ifndef MUSCLE_AVOID_NAMESPACES
 namespace muscle {
-#endif
 
 class QMessageTransceiverHandler;
 class QMessageTransceiverThread;
@@ -527,8 +525,6 @@ private:
    QMessageTransceiverHandler * _nextSeen;  // used by _mtt for a quickie linked list
 };
 
-#ifndef MUSCLE_AVOID_NAMESPACES
 };  // end namespace muscle;
-#endif
 
 #endif

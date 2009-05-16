@@ -7,7 +7,7 @@
 #include "reflector/StorageReflectConstants.h"
 #include "regex/PathMatcher.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class StorageReflectSession;
 class DataNode;
@@ -257,6 +257,6 @@ private:
    Hashtable<const String *, uint32> _subscribers; 
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

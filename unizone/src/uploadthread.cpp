@@ -465,14 +465,14 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 		{
 			PRINT("WUpload::TransferCommandPeerID\n");
 			const char *id = NULL;
-			if (msg()->FindString("beshare:FromSession", &id) == B_OK)
+                        if (msg()->FindString("beshare:FromSession", id) == B_OK)
 			{
 				fRemoteSessionID = QString::fromUtf8(id);
 				
 				{
 					const char *name = NULL;
 					
-					if (msg()->FindString("beshare:FromUserName", &name) ==  B_OK)
+                                        if (msg()->FindString("beshare:FromUserName", name) ==  B_OK)
 					{							
 						QString user = QString::fromUtf8(name);
 						if ((user.isEmpty()) || (fRemoteUser == fRemoteSessionID))
@@ -502,7 +502,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 
 			bool c = false;
 			
-			if (!fTunneled && msg()->FindBool("unishare:supports_compression", &c) == B_OK)
+                        if (!fTunneled && msg()->FindBool("unishare:supports_compression", c) == B_OK)
 			{
 				SetCompression(6);
 			}
@@ -510,7 +510,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 			double dpps = GetPacketSize() * 1024.0f;
 			int32 pps = lrint(dpps);
 			
-			if ((msg()->FindInt32("unishare:preferred_packet_size", &pps) == B_OK) && (pps < lrint(dpps)))
+                        if ((msg()->FindInt32("unishare:preferred_packet_size", pps) == B_OK) && (pps < lrint(dpps)))
 				SetPacketSize((double) pps / 1024.0f);
 			break;
 		}
@@ -878,7 +878,7 @@ WUploadThread::DoUpload()
 				// got our file!
 				fFileSize = fFile->Size();
 				fCurrentOffset = 0;	// from the start
-				if (fCurrentRef()->FindInt64("secret:offset", &fCurrentOffset) == B_OK)
+                                if (fCurrentRef()->FindInt64("secret:offset", fCurrentOffset) == B_OK)
 				{
 					if (!fFile->Seek(fCurrentOffset)) // <postmaster@raasu.org> 20021026
 					{
@@ -1106,7 +1106,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 					int64 offset = 0L;
 					ByteBufferRef hisDigest;
 					uint32 numBytes = 0L;
-					if (msg()->FindInt64("offsets", i, (int64 *) &offset) == B_OK &&
+                                        if (msg()->FindInt64("offsets", i, offset) == B_OK &&
 						msg()->FindFlat("md5", i, hisDigest) == B_OK && 
 						numBytes == MD5_DIGEST_SIZE)
 					{
@@ -1117,7 +1117,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
 							myDigest[j] = 'x';
 						
-						if ((msg()->FindInt64("numbytes", i, (int64 *)&readLen) == B_OK) && (readLen > 0))
+                                                if ((msg()->FindInt64("numbytes", i, readLen) == B_OK) && (readLen > 0))
 						{
 							PRINT("\t\tULT: peer requested partial resume\n");
 							int64 temp = readLen;
@@ -1179,7 +1179,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 				{
 					// Check file size if is smaller than minimum size wanted for queue
 					int64 filesize;
-					if (fref()->FindInt64("beshare:File Size", (int64 *) &filesize) == B_OK)
+                                        if (fref()->FindInt64("beshare:File Size", filesize) == B_OK)
 					{
 						if (filesize < gWin->fSettings->GetMinQueuedSize())
 						{

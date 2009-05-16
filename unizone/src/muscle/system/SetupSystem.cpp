@@ -39,7 +39,7 @@
 # include <CoreServices/CoreServices.h>
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
 bool _muscleSingleThreadOnly = true;
@@ -1041,4 +1041,4 @@ void DebugTimer :: SetMode(uint32 newMode)
    }
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

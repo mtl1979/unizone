@@ -23,7 +23,7 @@
 #include "util/String.h"
 #include "util/Hashtable.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class Message;
 DECLARE_REFTYPES(Message);
@@ -216,7 +216,7 @@ public:
    Message(uint32 what) : what(what) {/* empty */}
 
    /** Copy Constructor. */
-   Message(const Message & copyMe) : FlatCountable() {*this = copyMe;}
+   Message(const Message & copyMe) : FlatCountable(), Cloneable() {*this = copyMe;}
 
    /** Destructor. */
    virtual ~Message() {/* empty */}
@@ -671,10 +671,10 @@ public:
     *  @param setMe On success, a pointer to the string value is written into this object.
     *  @return B_NO_ERROR if the string value was found, or B_ERROR if it wasn't.
     */
-   status_t FindString(const String & fieldName, uint32 index, const char ** setMe) const;
+   status_t FindString(const String & fieldName, uint32 index, const char * & setMe) const;
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindString(const String & fieldName, const char ** setMe) const {return FindString(fieldName, 0, setMe);}
+   status_t FindString(const String & fieldName, const char * & setMe) const {return FindString(fieldName, 0, setMe);}
 
    /** Retrieve a string value from the Message.
     *  @param fieldName The field name to look for the string value under.
@@ -693,10 +693,10 @@ public:
     *  @param val On success, the value of the int8 is written into this object.
     *  @return B_NO_ERROR if the int8 value was found, or B_ERROR if it wasn't.
     */
-   status_t FindInt8(const String & fieldName, uint32 index, int8 *val) const {return FindDataItemAux(fieldName, index, B_INT8_TYPE, val, sizeof(int8));}
+   status_t FindInt8(const String & fieldName, uint32 index, int8 & val) const {return FindDataItemAux(fieldName, index, B_INT8_TYPE, &val, sizeof(int8));}
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindInt8(const String & fieldName, int8 *value) const {return FindInt8(fieldName, 0, value);}
+   status_t FindInt8(const String & fieldName, int8 & value) const {return FindInt8(fieldName, 0, value);}
 
    /** Retrieve an int16 value from the Message.
     *  @param fieldName The field name to look for the int16 value under.
@@ -704,10 +704,10 @@ public:
     *  @param val On success, the value of the int16 is written into this object.
     *  @return B_NO_ERROR if the int16 value was found, or B_ERROR if it wasn't.
     */
-   status_t FindInt16(const String & fieldName, uint32 index, int16 *val) const {return FindDataItemAux(fieldName, index, B_INT16_TYPE, val, sizeof(int16));} 
+   status_t FindInt16(const String & fieldName, uint32 index, int16 & val) const {return FindDataItemAux(fieldName, index, B_INT16_TYPE, &val, sizeof(int16));} 
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindInt16(const String & fieldName, int16 *value) const {return FindInt16(fieldName, 0, value);}
+   status_t FindInt16(const String & fieldName, int16 & value) const {return FindInt16(fieldName, 0, value);}
 
    /** Retrieve an int32 value from the Message.
     *  @param fieldName The field name to look for the int32 value under.
@@ -715,10 +715,10 @@ public:
     *  @param val On success, the value of the int32 is written into this object.
     *  @return B_NO_ERROR if the int32 value was found, or B_ERROR if it wasn't.
     */
-   status_t FindInt32(const String & fieldName, uint32 index, int32 *val) const {return FindDataItemAux(fieldName, index, B_INT32_TYPE, val, sizeof(int32));} 
+   status_t FindInt32(const String & fieldName, uint32 index, int32 & val) const {return FindDataItemAux(fieldName, index, B_INT32_TYPE, &val, sizeof(int32));} 
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindInt32(const String & fieldName, int32 *value) const {return FindInt32(fieldName, 0, value);}
+   status_t FindInt32(const String & fieldName, int32 & value) const {return FindInt32(fieldName, 0, value);}
 
    /** Retrieve an int64 value from the Message.
     *  @param fieldName The field name to look for the int64 value under.
@@ -726,10 +726,10 @@ public:
     *  @param val On success, the value of the int64 is written into this object.
     *  @return B_NO_ERROR if the int64 value was found, or B_ERROR if it wasn't.
     */
-   status_t FindInt64(const String & fieldName, uint32 index, int64 *val) const {return FindDataItemAux(fieldName, index, B_INT64_TYPE, val, sizeof(int64));}  
+   status_t FindInt64(const String & fieldName, uint32 index, int64 & val) const {return FindDataItemAux(fieldName, index, B_INT64_TYPE, &val, sizeof(int64));}  
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindInt64(const String & fieldName, int64 *value) const {return FindInt64(fieldName, 0, value);}
+   status_t FindInt64(const String & fieldName, int64 & value) const {return FindInt64(fieldName, 0, value);}
 
    /** Retrieve a boolean value from the Message.
     *  @param fieldName The field name to look for the boolean value under.
@@ -737,10 +737,10 @@ public:
     *  @param val On success, the value of the boolean is written into this object.
     *  @return B_NO_ERROR if the boolean value was found, or B_ERROR if it wasn't.
     */
-   status_t FindBool(const String & fieldName, uint32 index, bool *val) const {return FindDataItemAux(fieldName, index, B_BOOL_TYPE, val, sizeof(bool));} 
+   status_t FindBool(const String & fieldName, uint32 index, bool & val) const {return FindDataItemAux(fieldName, index, B_BOOL_TYPE, &val, sizeof(bool));} 
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindBool(const String & fieldName, bool *value) const {return FindBool(fieldName, 0, value);}
+   status_t FindBool(const String & fieldName, bool & value) const {return FindBool(fieldName, 0, value);}
 
    /** Retrieve a float value from the Message.
     *  @param fieldName The field name to look for the float value under.
@@ -748,10 +748,10 @@ public:
     *  @param val On success, the value of the float is written into this object.
     *  @return B_NO_ERROR if the float value was found, or B_ERROR if it wasn't.
     */
-   status_t FindFloat(const String & fieldName, uint32 index, float *val) const {return FindDataItemAux(fieldName, index, B_FLOAT_TYPE, val, sizeof(float));}
+   status_t FindFloat(const String & fieldName, uint32 index, float & val) const {return FindDataItemAux(fieldName, index, B_FLOAT_TYPE, &val, sizeof(float));}
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindFloat(const String & fieldName, float *f) const {return FindFloat(fieldName, 0, f);}
+   status_t FindFloat(const String & fieldName, float & f) const {return FindFloat(fieldName, 0, f);}
 
    /** Retrieve a double value from the Message.
     *  @param fieldName The field name to look for the double value under.
@@ -759,10 +759,10 @@ public:
     *  @param val On success, the value of the double is written into this object.
     *  @return B_NO_ERROR if the double value was found, or B_ERROR if it wasn't.
     */
-   status_t FindDouble(const String & fieldName, uint32 index, double * val) const {return FindDataItemAux(fieldName, index, B_DOUBLE_TYPE, val, sizeof(double));}
+   status_t FindDouble(const String & fieldName, uint32 index, double & val) const {return FindDataItemAux(fieldName, index, B_DOUBLE_TYPE, &val, sizeof(double));}
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindDouble(const String & fieldName, double *d) const {return FindDouble(fieldName, 0, d);}
+   status_t FindDouble(const String & fieldName, double & d) const {return FindDouble(fieldName, 0, d);}
 
    /** Retrieve a Message value from the Message.
     *  Note that this method is less efficient than the FindMessage(MessageRef)
@@ -832,10 +832,10 @@ public:
     *  @param val On success, the value of the pointer is written into this object.
     *  @return B_NO_ERROR if the pointer value was found, or B_ERROR if it wasn't.
     */
-   status_t FindPointer(const String & fieldName, uint32 index, void ** val) const {return FindDataItemAux(fieldName, index, B_POINTER_TYPE, val, sizeof(void *));}
+   status_t FindPointer(const String & fieldName, uint32 index, void * & val) const {return FindDataItemAux(fieldName, index, B_POINTER_TYPE, &val, sizeof(void *));}
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindPointer(const String & fieldName, void ** ptr) const {return FindPointer(fieldName, 0, ptr);}
+   status_t FindPointer(const String & fieldName, void * & ptr) const {return FindPointer(fieldName, 0, ptr);}
 
    /** Retrieve a point value from the Message.
     *  @param fieldName The field name to look for the point value under.
@@ -1340,8 +1340,54 @@ public:
      */ 
    void BecomeLightweightCopyOf(const Message & rhs) {what = rhs.what; _entries = rhs._entries;}
 
-   /** Allocates new Message object, makes it equivalent to this one, and returns it. */
-   virtual Cloneable * Clone() const;
+#define DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(bw)                                                                                               \
+   inline status_t FindInt##bw (const String & fieldName, uint32 index, uint##bw & val) const {return FindInt##bw (fieldName, index, (int##bw &)val);} \
+   inline status_t FindInt##bw (const String & fieldName,               uint##bw & val) const {return FindInt##bw (fieldName,        (int##bw &)val);}
+   DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(8);   ///< This macro defined Find methods with unsigned value arguments, so the user doesn't have to do ugly C-style casts to retrieve unsigned values.
+   DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(16);  ///< This macro defined Find methods with unsigned value arguments, so the user doesn't have to do ugly C-style casts to retrieve unsigned values.
+   DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(32);  ///< This macro defined Find methods with unsigned value arguments, so the user doesn't have to do ugly C-style casts to retrieve unsigned values.
+   DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(64);  ///< This macro defined Find methods with unsigned value arguments, so the user doesn't have to do ugly C-style casts to retrieve unsigned values.
+
+#define DECLARE_MUSCLE_POINTER_FIND_METHODS(name, type)                                                                                \
+   inline status_t Find##name (const String & fieldName, uint32 index, type * val) const {return Find##name (fieldName, index, *val);} \
+   inline status_t Find##name (const String & fieldName,               type * val) const {return Find##name (fieldName,        *val);}
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Bool,    bool);         ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Double,  double);       ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Float,   float);        ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int8,    int8);         ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int16,   int16);        ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int32,   int32);        ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int64,   int64);        ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int8,    uint8);        ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int16,   uint16);       ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int32,   uint32);       ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Int64,   uint64);       ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Point,   Point);        ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(Rect,    Rect);         ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+   DECLARE_MUSCLE_POINTER_FIND_METHODS(String,  const char *); ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
+
+#define DECLARE_MUSCLE_GET_METHODS(name, type)                                                                                                                              \
+   inline type Get##name(const String & fieldName, const type & defVal = type(), uint32 idx = 0) const {type r; return (Find##name (fieldName, idx, r) == B_NO_ERROR) ? (const type &)r : defVal;}
+   DECLARE_MUSCLE_GET_METHODS(Bool,    bool);            ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Double,  double);          ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Float,   float);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Int8,    int8);            ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Int16,   int16);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Int32,   int32);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Int64,   int64);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Point,   Point);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Rect,    Rect);            ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(String,  String);          ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Message, MessageRef);      ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Flat,    ByteBufferRef);   ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+   DECLARE_MUSCLE_GET_METHODS(Tag,     RefCountableRef); ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
+
+   inline const char * GetCstr(        const String & fn, const char * defVal = NULL, uint32 idx = 0) const {const char * r; return (FindString( fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
+   inline       void * GetPointer(     const String & fn,       void * defVal = NULL, uint32 idx = 0) const {void       * r; return (FindPointer(fn, idx,  r) == B_NO_ERROR) ? r : defVal;}
+   inline const void * GetConstPointer(const String & fn, const void * defVal = NULL, uint32 idx = 0) const {void       * r; return (FindPointer(fn, idx,  r) == B_NO_ERROR) ? r : defVal;}
+   inline const String * GetStringPointer(const String & fn, const String * defVal=NULL, uint32 idx= 0) const {const String * r;return (FindString(fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
+
+   DECLARE_STANDARD_CLONE_METHOD(Message);  ///< implements the standard Clone() method to copy a Message object.
 
 protected:
    /** Overridden to copy directly if (copyFrom) is a Message as well. */
@@ -1416,7 +1462,7 @@ template<typename T> inline MessageRef GetArchiveMessageFromPool(const T & objec
    return m;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif /* _MUSCLEMESSAGE_H */
 

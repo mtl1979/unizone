@@ -23,7 +23,7 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "util/StringTokenizer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<String> * optAddToQueue)
 {
@@ -253,24 +253,44 @@ static status_t ParseFileAux(FILE * fpIn, Message * optAddToMsg, Queue<String> *
 status_t ParseFile(FILE * fpIn, Message & addTo)       {return ParseFileAux(fpIn, &addTo, NULL);}
 status_t ParseFile(FILE * fpIn, Queue<String> & addTo) {return ParseFileAux(fpIn, NULL, &addTo);}
 
+static status_t ParseConnectArgAux(const String & s, uint32 startIdx, uint16 & retPort, bool portRequired)
+{
+   int32 colIdx = s.IndexOf(':', startIdx);
+   const char * pStr = (colIdx>=0)?(s()+colIdx+1):NULL;
+   if ((pStr)&&(muscleInRange(*pStr, '0', '9')))
+   {
+      uint16 p = atoi(pStr);
+      if (p > 0) retPort = p;
+      return B_NO_ERROR; 
+   }
+   else return portRequired ? B_ERROR : B_NO_ERROR;
+}
+
 status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired)
 {
-   TCHECKPOINT;
+   const String * s;
+   return (args.FindString(fn, &s) == B_NO_ERROR) ? ParseConnectArg(*s, retHost, retPort, portRequired) : B_ERROR;
+}
 
-   if (args.FindString(fn, retHost) == B_NO_ERROR)
+status_t ParseConnectArg(const String & s, String & retHost, uint16 & retPort, bool portRequired)
+{
+#ifdef MUSCLE_USE_IPV6
+   int32 rBracket = s.StartsWith('[') ? s.IndexOf(']') : -1;
+   if (rBracket >= 0)
    {
-      int32 colIdx = retHost.IndexOf(':');
-      if (colIdx >= 0)
-      {
-         uint16 p = (uint16) atoi(retHost()+colIdx+1);
-         if (p > 0) retPort = p;
-         retHost = retHost.Substring(0, colIdx);
-      }
-      else if (portRequired) return B_ERROR;
-
-      return B_NO_ERROR;
+      // If there are brackets, they are assumed to surround the address part, e.g. "[::1]:9999"
+      retHost = s.Substring(1,rBracket);
+      return ParseConnectArgAux(s, rBracket+1, retPort, portRequired);
    }
-   return B_ERROR;
+   else if (s.GetNumInstancesOf(':') != 1)  // I assume IPv6-style address strings never have exactly one colon in them
+   {  
+      retHost = s;
+      return portRequired ? B_ERROR : B_NO_ERROR;
+   }  
+#endif
+
+   retHost = s.Substring(0, ":");
+   return ParseConnectArgAux(s, retHost.Length(), retPort, portRequired);
 }
 
 status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
@@ -325,13 +345,7 @@ void HandleStandardDaemonArgs(const Message & args)
    }
 
 #ifdef WIN32
-   if (args.HasName("console"))
-   {
-      // Open a console for debug output to appear in
-      AllocConsole();
-      freopen("conout$", "w", stdout);
-      freopen("conout$", "w", stderr);
-   }
+   if (args.HasName("console")) Win32AllocateStdioConsole();
 #endif
 
    const char * value;
@@ -451,7 +465,6 @@ int64 Atoll(const char * str)
    int64 ret = (int64) Atoull(s);
    return negative ? -ret : ret;
 }
-
 
 status_t GetHumanReadableTimeValues(uint64 timeUS, HumanReadableTimeValues & v, uint32 timeType)
 {
@@ -741,6 +754,49 @@ void RemoveANSISequences(String & s)
    }
 }
 
+String CleanupDNSLabel(const String & s)
+{
+   uint32 len = muscleMin(s.Length(), (uint32)63);  // DNS spec says maximum 63 chars per label!
+   String ret; if (ret.Prealloc(len) != B_NO_ERROR) return ret;
+  
+   const char * p = s();
+   for (uint32 i=0; i<len; i++)
+   {
+      char c = p[i];
+      switch(c)
+      {
+         case '\'': case '\"': case '(': case ')': case '[': case ']': case '{': case '}':
+            // do nothing -- we will omit delimiters
+         break;
+
+         default:
+                 if ((muscleInRange(c, '0', '9'))||(muscleInRange(c, 'A', 'Z'))||(muscleInRange(c, 'a', 'z'))) ret += c;
+            else if ((ret.HasChars())&&(ret.EndsWith('-') == false)) ret += '-';
+         break;
+      }
+   }
+   while(ret.EndsWith('-')) ret -= '-';  // remove any trailing dashes
+   return ret;
+}
+
+String CleanupDNSPath(const String & orig)
+{
+   String ret; (void) ret.Prealloc(orig.Length());
+
+   const char * s;
+   StringTokenizer tok(orig(), ".");
+   while((s = tok()) != NULL)
+   {
+      String cleanTok = CleanupDNSLabel(s);
+      if (cleanTok.HasChars())
+      {
+         if (ret.HasChars()) ret += '.';
+         ret += cleanTok;
+      }
+   }
+   return ret;  
+}
+
 status_t NybbleizeData(const ByteBuffer & buf, String & retString)
 {
    uint32 numBytes = buf.GetNumBytes();
@@ -869,4 +925,92 @@ status_t AssembleBatchMessage(MessageRef & batchMsg, const MessageRef & newMsg)
    return B_ERROR;
 }
 
-END_NAMESPACE(muscle);
+bool FileExists(const char * filePath)
+{
+   FILE * fp = fopen(filePath, "rb");
+   if (fp) fclose(fp);
+   return (fp != NULL);
+}
+
+status_t RenameFile(const char * oldPath, const char * newPath)
+{
+   return (rename(oldPath, newPath) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+status_t CopyFile(const char * oldPath, const char * newPath)
+{
+   if (strcmp(oldPath, newPath) == 0) return B_NO_ERROR;  // Copying something onto itself is a no-op
+
+   FILE * fpIn = fopen(oldPath, "rb");
+   if (fpIn == NULL) return B_ERROR;
+
+   status_t ret = B_NO_ERROR;  // optimistic default
+   FILE * fpOut = fopen(newPath, "wb");
+   if (fpOut)
+   {
+      while(1)
+      {
+         char buf[4*1024];
+         size_t bytesRead = fread(buf, 1, sizeof(buf), fpIn);
+         if ((bytesRead < sizeof(buf))&&(feof(fpIn) == false))
+         {
+            ret = B_ERROR;
+            break;
+         }
+         
+         size_t bytesWritten = fwrite(buf, 1, bytesRead, fpOut);
+         if (bytesWritten < bytesRead)
+         {
+            ret = B_ERROR;
+            break;
+         }
+         if (feof(fpIn)) break;
+      }
+      fclose(fpOut);
+   }
+   else ret = B_ERROR;
+
+   fclose(fpIn);
+
+   if ((fpOut)&&(ret != B_NO_ERROR)) (void) DeleteFile(newPath);  // clean up on error
+   return ret;
+}
+
+status_t DeleteFile(const char * filePath)
+{
+#ifdef _MSC_VER
+   int unlinkRet = _unlink(filePath);  // stupid MSVC!
+#else
+   int unlinkRet = unlink(filePath);
+#endif
+   return (unlinkRet == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+String GetHumanReadableProgramNameFromArgv0(const char * argv0)
+{
+   String ret = argv0;
+
+#ifdef __APPLE__
+   ret = ret.Substring(0, ".app/");  // we want the user-visible name, not the internal name!
+#endif
+
+#ifdef __WIN32__
+   ret = ret.Substring("\\").Substring(0, ".exe");
+#else
+   ret = ret.Substring("/");
+#endif
+   return ret;
+}
+
+#ifdef WIN32
+void Win32AllocateStdioConsole()
+{
+   // Open a console for debug output to appear in
+   AllocConsole();
+   freopen("conin$",  "r", stdin);
+   freopen("conout$", "w", stdout);
+   freopen("conout$", "w", stderr);
+}
+#endif
+
+}; // end namespace muscle

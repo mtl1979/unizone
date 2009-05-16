@@ -6,7 +6,7 @@
 #include <math.h>  // here for subclasses to use
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Templated base class representing a fixed-size set of numeric values that can be operated on in parallel.  */
 template <int NumItems, class ItemType> class Tuple
@@ -275,6 +275,6 @@ template <int N,class T> inline const Tuple<N,T> operator /  (const Tuple<N,T> &
         DECLARE_DIVISION_TUPLE_OPERATORS(C,I)  \
         DECLARE_SHIFT_TUPLE_OPERATORS(C)
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

@@ -20,7 +20,7 @@
 
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 RS232DataIO :: RS232DataIO(const char * port, uint32 baudRate, bool blocking) : _blocking(blocking)
 #ifdef USE_WINDOWS_IMPLEMENTATION
@@ -572,4 +572,4 @@ void RS232DataIO :: IOThreadEntry()
 }
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

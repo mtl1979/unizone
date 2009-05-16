@@ -2,7 +2,7 @@
 
 #include "reflector/DumbReflectSession.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 // This is a callback function that may be passed to the ServerProcessLoop() function.
 // It creates and returns a new DumbReflectSession object.
@@ -59,4 +59,4 @@ GetReflectToSelf() const
    return _reflectToSelf;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

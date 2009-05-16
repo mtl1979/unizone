@@ -12,7 +12,7 @@
 # error "You're not allowed use the Thread class if you have the MUSCLE_SINGLE_THREAD_ONLY compiler constant defined!"
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
@@ -358,4 +358,4 @@ void Thread::InternalThreadEntryAux()
    _threadData[MESSAGE_THREAD_INTERNAL]._messageSocket.Reset();  // this will wake up the owner thread with EOF on socket
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

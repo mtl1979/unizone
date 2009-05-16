@@ -3,7 +3,7 @@
 #include "regex/PathMatcher.h"
 #include "util/StringTokenizer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static void ResetMatcherQueueFunc(StringMatcherQueue * q, void *) {q->Clear();}
 StringMatcherQueueRef::ItemPool _stringMatcherQueuePool(100, ResetMatcherQueueFunc);
@@ -199,5 +199,4 @@ int GetPathDepth(const char * path)
    return depth;
 }
 
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle

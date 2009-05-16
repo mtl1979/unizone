@@ -8,7 +8,7 @@
 #include "dataio/DataIO.h"
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  *  Data I/O to and from a UDP socket! 
@@ -110,6 +110,6 @@ private:
    IPAddressAndPort _sendTo;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

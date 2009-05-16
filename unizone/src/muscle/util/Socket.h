@@ -5,7 +5,7 @@
 
 #include "util/RefCount.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** A simple socket-holder class to make sure that socket fd's 
   * added to Messages get properly closed and not leaked if said 
@@ -114,6 +114,6 @@ const ConstSocketRef & GetNullSocket();
 /** Convenience method:  Returns a reference to an invalid Socket (i.e. a Socket object with a negative file descriptor).  Note the difference between what this function returns and what GetNullSocket() returns!  If you're not sure which of these two functions to use, then GetNullSocket() is probably the one you want. */
 const ConstSocketRef & GetInvalidSocket();
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

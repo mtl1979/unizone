@@ -41,7 +41,7 @@
 
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 // If false, then we must not assume that we are running in single-threaded mode.
 // This variable should be set by the ThreadSetupSystem constructor ONLY!
@@ -233,6 +233,6 @@ static inline void _PLOCKimp(  const char * n, const void * p, const char * f, i
 static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT64_FORMAT_SPEC" punlock p=%p [%s] %s:%i\n", (int64)((long)pthread_self()), p, n, f, ln);}
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

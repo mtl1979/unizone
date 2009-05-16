@@ -7,9 +7,7 @@
 #include <qthread.h>
 #include "system/AcceptSocketsThread.h"
 
-#ifndef MUSCLE_AVOID_NAMESPACES
 namespace muscle {
-#endif
 
 /**
  *  This is a Qt-specific subclass of AcceptSocketsThread.
@@ -52,8 +50,6 @@ private slots:
    virtual bool event(QEvent * event);
 };
 
-#ifndef MUSCLE_AVOID_NAMESPACES
 };  // end namespace muscle
-#endif
 
 #endif

@@ -2,7 +2,7 @@
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 PlainTextMessageIOGateway ::
 PlainTextMessageIOGateway() : _eolString("\r\n"), _prevCharWasCarriageReturn(false), _flushPartialIncomingLines(false)
@@ -159,4 +159,4 @@ Reset()
    _incomingText.Clear();
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

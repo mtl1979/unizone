@@ -9,7 +9,7 @@
 
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** A cross-platform API for examining the attributes of a particular file. */
 class FilePathInfo
@@ -142,6 +142,6 @@ private:
    uint64 _mtime;  // modification time
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

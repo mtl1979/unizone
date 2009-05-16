@@ -10,7 +10,7 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "util/PulseNode.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class AbstractMessageIOGateway;
 
@@ -325,6 +325,6 @@ private:
 };
 DECLARE_REFTYPES(AbstractMessageIOGateway);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

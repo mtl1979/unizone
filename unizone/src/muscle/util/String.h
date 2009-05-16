@@ -16,7 +16,7 @@
 #include "support/Flattenable.h"
 #include "system/GlobalMemoryAllocator.h"  // for muscleFree()
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifndef SMALL_MUSCLE_STRING_LENGTH
 # define SMALL_MUSCLE_STRING_LENGTH 7  // strings shorter than this length can be stored inline, without requiring an extra new[].
@@ -24,6 +24,9 @@ BEGIN_NAMESPACE(muscle);
 
 /** A nice hashing function for use with (const char *)'s */
 uint32 CStringHashFunc(const char * str); 
+
+/** As above, but this one computes a 64-bit hash. */
+uint64 CStringHashFunc64(const char * str); 
 
 /** A character string class.  Represents a dynamically resizable NUL-terminated string. */
 class String : public Flattenable
@@ -97,6 +100,13 @@ public:
     *             If (rhs) is not found, there is no effect.
     */
    String & operator -= (const String &rhs);
+
+   /** Remove Operator. 
+    *  @param rhs A substring to remove from this string;  the
+    *             last instance of the substring will be cut out.
+    *             If (rhs) is not found, there is no effect.
+    */
+   String & operator -= (const char * rhs);
 
    /** Remove Operator.
     *  @param ch A character to remove from this string;  the last
@@ -327,8 +337,13 @@ public:
      */
    int LastIndexOf(char ch, uint32 fromIndex = 0) const
    {
-      const char * lio = (fromIndex < Length()) ? strrchr(Cstr()+fromIndex, ch) : NULL;
-      return lio ? (lio - Cstr()) : -1;
+      if (fromIndex < Length())
+      {
+         const char * s = Cstr()+fromIndex;
+         const char * p = Cstr()+Length();
+         while(--p >= s) if (*p == ch) return p-Cstr();
+      }
+      return -1;
    }
 
    /** Returns the last index of substring (str) in this string  
@@ -533,6 +548,9 @@ public:
    /** Returns a hash code for this string */
    inline uint32 HashCode() const {return CStringHashFunc(Cstr());}
 
+   /** Calculates a 64-bit hash code for this string. */
+   inline uint64 HashCode64() const {return CStringHashFunc64(Cstr());}
+
    /** Replaces all instances of (oldChar) in this string with (newChar).
      * @param replaceMe The character to search for.
      * @param withMe The character to replace all occurrences of (replaceMe) with.
@@ -636,11 +654,7 @@ public:
    /** Returns a 32-bit checksum corresponding to this String's contents.
      * Note that this method method is O(N).
      */
-#ifdef MUSCLE_AVOID_NAMESPACES
-   uint32 CalculateChecksum() const {return ::CalculateChecksum((const uint8 *) Cstr(), Length());}
-#else
    uint32 CalculateChecksum() const {return muscle::CalculateChecksum((const uint8 *) Cstr(), Length());}
-#endif
 
 private:
    bool IsSpaceChar(char c) const {return ((c==' ')||(c=='\t')||(c=='\r')||(c=='\n'));}
@@ -705,6 +719,6 @@ inline String operator-(const String & lhs, const char *rhs)    {String ret(lhs)
 inline String operator-(const char *lhs,    const String &rhs)  {String ret(lhs); ret -= rhs; return ret;}
 inline String operator-(const String & lhs, char rhs)           {String ret(lhs); ret -= rhs; return ret;}
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

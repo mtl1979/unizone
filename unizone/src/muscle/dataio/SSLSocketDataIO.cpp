@@ -1,7 +1,7 @@
 #include <openssl/err.h>
 #include "dataio/SSLSocketDataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static void SetupOpenSSL() 
 {
@@ -98,4 +98,4 @@ int32 SSLSocketDataIO::Write(const void *buffer, uint32 size)
    return bytes;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

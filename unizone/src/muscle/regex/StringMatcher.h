@@ -17,7 +17,7 @@
 # include <regex.h>
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** A utility class for doing globbing or regular expression matching.  (A thin wrapper around the C regex calls) */
 class StringMatcher : public RefCountable
@@ -76,6 +76,9 @@ public:
 
    /** Returns the current state of our negate flag. */
    bool IsNegate() const {return _negate;}
+
+   /** Resets this StringMatcher to the state it would be in if created with default arguments. */
+   void Reset();
 
 private:
    bool _regExpValid;
@@ -146,7 +149,7 @@ bool IsRegexToken(char c, bool isFirstCharInString);
  */
 bool MakeRegexCaseInsensitive(String & str);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 
 #endif

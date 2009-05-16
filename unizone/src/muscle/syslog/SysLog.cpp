@@ -17,7 +17,7 @@
 # define MUSCLE_USE_BACKTRACE 1
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #define MAX_STACK_TRACE_DEPTH ((uint32)(256))
 
@@ -70,7 +70,8 @@ status_t GetStackTrace(String & retStr, uint32 maxDepth)
       return B_NO_ERROR;
    }
 #else
-   (void) maxDepth;  // shut the compiler up
+   (void) retStr;   // shut the compiler up
+   (void) maxDepth;
 #endif
 
    return B_ERROR;
@@ -111,11 +112,11 @@ public:
        // empty
    }
 
-   virtual void Log(time_t, int ll, const char * fmt, va_list argList)
+   virtual void Log(const LogCallbackArgs & a)
    {
-      if (ll <= _consoleLogLevel) 
+      if (a.GetLogLevel() <= _consoleLogLevel) 
       {
-         vprintf(fmt, argList);                  
+         vprintf(a.GetText(), *a.GetArgList());                  
          fflush(stdout);
       }
    }
@@ -153,20 +154,21 @@ public:
        // empty
    }
 
-   virtual void Log(time_t when, int ll, const char * fmt, va_list argList)
+   virtual void Log(const LogCallbackArgs & a)
    {
-      if ((ll <= _fileLogLevel)&&(_logFile == NULL))
+      if ((a.GetLogLevel() <= _fileLogLevel)&&(_logFile == NULL))
       {
          struct tm wtm;
+         time_t when = a.GetWhen();
          struct tm * now = muscle_localtime_r(&when, &wtm);
          char tb[100]; sprintf(tb, "%02i%02i%02i%02i.log", now->tm_mon+1, now->tm_mday, now->tm_hour, now->tm_min); 
          const char * fn = _fileLogName.HasChars() ? _fileLogName() : tb;
          _logFile = fopen(fn, "w");              
          if (_logFile) LogTime(MUSCLE_LOG_INFO, "Created log file %s\n", fn);
       }                                          
-      if ((ll <= _fileLogLevel)&&(_logFile))
+      if ((a.GetLogLevel() <= _fileLogLevel)&&(_logFile))
       {                                         
-         vfprintf(_logFile, fmt, argList);       
+         vfprintf(_logFile, a.GetText(), *a.GetArgList());
          Flush();
       }
    }
@@ -192,30 +194,32 @@ LogLineCallback :: ~LogLineCallback()
    // empty
 }
 
-void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_list argList)
+void LogLineCallback :: Log(const LogCallbackArgs & a)
 {
    TCHECKPOINT;
 
    // Generate the new text
 #ifdef __MWERKS__
-   int bytesAttempted = vsprintf(_writeTo, format, argList);  // BeOS/PPC doesn't know vsnprintf :^P
+   int bytesAttempted = vsprintf(_writeTo, a.GetText(), *a.GetArgList());  // BeOS/PPC doesn't know vsnprintf :^P
 #elif WIN32
-   int bytesAttempted = _vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), format, argList);  // the -1 is for the guaranteed NUL terminator
-#else   
-   int bytesAttempted = vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), format, argList);  // the -1 is for the guaranteed NUL terminator
+   int bytesAttempted = _vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), a.GetText(), *a.GetArgList());  // the -1 is for the guaranteed NUL terminator
+#else
+   int bytesAttempted = vsnprintf(_writeTo, (sizeof(_buf)-1)-(_writeTo-_buf), a.GetText(), *a.GetArgList());  // the -1 is for the guaranteed NUL terminator
 #endif
    bool wasTruncated = (bytesAttempted != (int)strlen(_writeTo));  // do not combine with above line!
 
    // Log any newly completed lines
    char * logFrom  = _buf;
    char * searchAt = _writeTo;
+   LogCallbackArgs tmp(a);
    while(true)
    {
       char * nextReturn = strchr(searchAt, '\n');
       if (nextReturn)
       {
          *nextReturn = '\0';  // terminate the string
-         LogLine(when, logLevel, logFrom);
+         tmp.SetText(logFrom);
+         LogLine(tmp);
          searchAt = logFrom = nextReturn+1;
       }
       else 
@@ -224,7 +228,8 @@ void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_l
          // then we need to just dump what we have and move on, there's nothing else we can do
          if (wasTruncated)
          {
-            LogLine(when, logLevel, logFrom);
+            tmp.SetText(logFrom);
+            LogLine(tmp);
             _buf[0] = '\0';
             _writeTo = searchAt = logFrom = _buf;
          }
@@ -241,8 +246,7 @@ void LogLineCallback :: Log(time_t when, int logLevel, const char * format, va_l
    }
    else _writeTo = strchr(searchAt, '\0');
 
-   _lastLogWhen = when;
-   _lastLogLevel = logLevel;
+   _lastLog = a;
 }
  
 void LogLineCallback :: Flush()
@@ -251,7 +255,8 @@ void LogLineCallback :: Flush()
 
    if (_writeTo > _buf)
    {
-      LogLine(_lastLogWhen, _lastLogLevel, _buf);
+      _lastLog.SetText(_buf);
+      LogLine(_lastLog);
       _writeTo = _buf;
       _buf[0] = '\0';
    }
@@ -357,14 +362,14 @@ status_t SetConsoleLogLevel(int loglevel)
    else return B_ERROR;
 }
 
-#define DO_LOGGING(when, doCallbacks)                               \
+#define DO_LOGGING(doCallbacks)                                     \
 {                                                                   \
    va_list argList;                                                 \
    va_start(argList, fmt);                                          \
-   _dfl.Log(when, ll, fmt, argList);                                \
+   _dfl.Log(LogCallbackArgs(when, ll, sourceFile, sourceFunction, sourceLine, fmt, &argList)); \
    va_end(argList);                                                 \
    va_start(argList, fmt);                                          \
-   _dcl.Log(when, ll, fmt, argList);                                \
+   _dcl.Log(LogCallbackArgs(when, ll, sourceFile, sourceFunction, sourceLine, fmt, &argList)); \
    va_end(argList);                                                 \
    if (doCallbacks)                                                 \
    {                                                                \
@@ -375,43 +380,113 @@ status_t SetConsoleLogLevel(int loglevel)
          if (nextKey->GetItemPointer())                             \
          {                                                          \
             va_start(argList, fmt);                                 \
-            nextKey->GetItemPointer()->Log(when, ll, fmt, argList); \
+            nextKey->GetItemPointer()->Log(LogCallbackArgs(when, ll, sourceFile, sourceFunction, sourceLine, fmt, &argList)); \
             va_end(argList);                                        \
          }                                                          \
       }                                                             \
    }                                                                \
 }
 
-void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when)
+// Our 34-character alphabet of usable symbols
+#define NUM_CHARS_IN_KEY_ALPHABET (sizeof(_keyAlphabet)-1)
+static const char _keyAlphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ2346789";  // 0, 1, and 5 intentionally omitted since they look like O and I, and S
+static const uint32 _keySpaceSize = NUM_CHARS_IN_KEY_ALPHABET * NUM_CHARS_IN_KEY_ALPHABET * NUM_CHARS_IN_KEY_ALPHABET * NUM_CHARS_IN_KEY_ALPHABET;
+
+uint32 GenerateSourceCodeLocationKey(const char * fileName, uint32 lineNumber)
 {
-   struct tm ltm;
-   struct tm * temp = muscle_localtime_r(&when, &ltm);
-   sprintf(buf, "[%c %02i/%02i %02i:%02i:%02i] ", GetLogLevelName(logLevel)[0], temp->tm_mon+1, temp->tm_mday, temp->tm_hour, temp->tm_min, temp->tm_sec);
+#ifdef WIN32
+   const char * lastSlash = strrchr(fileName, '\\');
+#else
+   const char * lastSlash = strrchr(fileName, '/');
+#endif
+   if (lastSlash) fileName = lastSlash+1;
+
+   return ((CStringHashFunc(fileName)+lineNumber)%(_keySpaceSize-1))+1;  // note that 0 is not considered a valid key value!
 }
 
-status_t LogTime(int ll, const char * fmt, ...)
+String SourceCodeLocationKeyToString(uint32 key)
 {
-   TCHECKPOINT;
+   if (key == 0) return "";                  // 0 is not a valid key value
+   if (key >= _keySpaceSize) return "????";  // values greater than or equal to our key space size are errors
+
+   char buf[5]; buf[4] = '\0';
+   for (int32 i=3; i>=0; i--)
+   {
+      buf[i] = _keyAlphabet[key % NUM_CHARS_IN_KEY_ALPHABET];
+      key /= NUM_CHARS_IN_KEY_ALPHABET; 
+   }
+   return buf;
+}
+
+uint32 SourceCodeLocationKeyFromString(const String & ss)
+{
+   String s = ss.ToUpperCase().Trim();
+   if (s.Length() != 4) return 0;  // codes must always be exactly 4 characters long!
+
+   s.Replace('0', 'O');
+   s.Replace('1', 'I');
+   s.Replace('5', 'S');
+
+   uint32 ret  = 0;
+   uint32 base = 1;
+   for (int32 i=3; i>=0; i--)
+   {
+      const char * p = strchr(_keyAlphabet, s[i]);
+      if (p == NULL) return 0;  // invalid character!
+
+      int whichChar = (int) (p-_keyAlphabet);
+      ret += (whichChar*base);
+      base *= NUM_CHARS_IN_KEY_ALPHABET;  // -1 because the NUL terminator doesn't count
+   }
+   return ret;
+}
+
+void GetStandardLogLinePreamble(char * buf, const LogCallbackArgs & a)
+{
+   struct tm ltm;
+   time_t when = a.GetWhen();
+   struct tm * temp = muscle_localtime_r(&when, &ltm);
+#ifdef MUSCLE_INCLUDE_SOURCE_LOCATION_IN_LOGTIME
+   sprintf(buf, "[%c %02i/%02i %02i:%02i:%02i] [%s] ", GetLogLevelName(a.GetLogLevel())[0], temp->tm_mon+1, temp->tm_mday, temp->tm_hour, temp->tm_min, temp->tm_sec, SourceCodeLocationKeyToString(GenerateSourceCodeLocationKey(a.GetSourceFile(), a.GetSourceLineNumber()))());
+#else
+   sprintf(buf, "[%c %02i/%02i %02i:%02i:%02i] ", GetLogLevelName(a.GetLogLevel())[0], temp->tm_mon+1, temp->tm_mday, temp->tm_hour, temp->tm_min, temp->tm_sec);
+#endif
+}
+
+#ifdef MUSCLE_INCLUDE_SOURCE_LOCATION_IN_LOGTIME
+status_t _LogTime(const char * sourceFile, const char * sourceFunction, int sourceLine, int ll, const char * fmt, ...)
+#else
+status_t LogTime(int ll, const char * fmt, ...)
+#endif
+{
+#ifndef MUSCLE_INCLUDE_SOURCE_LOCATION_IN_LOGTIME
+   static const char * sourceFile = "";
+   static const char * sourceFunction = "";
+   static const int sourceLine = -1;
+#endif
 
    status_t lockRet = LockLog();
    if (_inLogCallNestCount.IsInBatch() == false)
    {
       _inLogCallNestCount.Increment();
       {
-         time_t n = time(NULL);
+         time_t when = time(NULL);
          char buf[128];
-         GetStandardLogLinePreamble(buf, ll, n);
 
          va_list dummyList;
          va_start(dummyList, fmt);  // not used
-         _dfl.Log(n, ll, buf, dummyList);
+         LogCallbackArgs lca(when, ll, sourceFile, sourceFunction, sourceLine, buf, &dummyList);
+         GetStandardLogLinePreamble(buf, lca);
+         lca.SetText(buf);
+         _dfl.Log(lca);
          va_end(dummyList);
+
          va_start(dummyList, fmt);  // not used
-         _dcl.Log(n, ll, buf, dummyList);
+         _dcl.Log(LogCallbackArgs(when, ll, sourceFile, sourceFunction, sourceLine, buf, &dummyList));
          va_end(dummyList);
       
          // Log message to file/stdio and callbacks
-         DO_LOGGING(n, (lockRet==B_NO_ERROR));
+         DO_LOGGING((lockRet==B_NO_ERROR));
       }
       _inLogCallNestCount.Decrement();
    }
@@ -461,15 +536,19 @@ status_t LogStackTrace(int ll, uint32 maxDepth)
 
 status_t Log(int ll, const char * fmt, ...)
 {
-   TCHECKPOINT;
+   // No way to get these, since #define Log() as a macro causes
+   // nasty namespace collisions with other methods/functions named Log()
+   static const char * sourceFile     = "";
+   static const char * sourceFunction = "";
+   static const int sourceLine        = -1;
 
    status_t lockRet = LockLog();
    if (_inLogCallNestCount.IsInBatch() == false)
    {
       _inLogCallNestCount.Increment();
       {
-         time_t n = time(NULL);  // don't inline this, ya dummy
-         DO_LOGGING(n, (lockRet==B_NO_ERROR));
+         time_t when = time(NULL);  // don't inline this, ya dummy
+         DO_LOGGING((lockRet==B_NO_ERROR));
       }
       _inLogCallNestCount.Decrement();
    }
@@ -512,4 +591,4 @@ status_t RemoveLogCallback(const LogCallbackRef & cb)
 
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

@@ -5,7 +5,7 @@
 #include "util/NetworkUtilityFunctions.h"
 #include "util/MiscUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 SharedFilterSessionFactory :: SharedFilterSessionFactory(const ReflectSessionFactoryRef & slaveRef, const String & sharedMemName, bool isGrantList, bool defaultPass) : ProxySessionFactory(slaveRef), _sharedMemName(sharedMemName), _isGrantList(isGrantList), _defaultPass(defaultPass)
 {
@@ -46,7 +46,7 @@ bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMem
                allowAccess = isGrantList;
                break;
             }
-            else if (nextIP == localhostIP)
+            else if (IsStandardLoopbackDeviceAddress(nextIP))
             {
                if (gotIFs == false)
                {
@@ -74,4 +74,4 @@ bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMem
    return allowAccess;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

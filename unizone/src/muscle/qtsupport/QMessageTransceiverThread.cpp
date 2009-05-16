@@ -3,7 +3,7 @@
 #include <qapplication.h>
 #include "qtsupport/QMessageTransceiverThread.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static const uint32 QMTT_SIGNAL_EVENT = QEvent::User+14837;  // why yes, this is a completely arbitrary number
 
@@ -368,4 +368,4 @@ ThreadWorkerSessionRef QMessageTransceiverHandler :: CreateDefaultWorkerSession(
    return thread.CreateDefaultWorkerSession();
 }
 
-END_NAMESPACE(muscle);
+};  // end namespace muscle;

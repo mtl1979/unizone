@@ -9,7 +9,7 @@
 #include "util/Queue.h"
 #include "util/RefCount.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This is an interface for an object that knows how to create new
  *  AbstractReflectSession objects when needed.  It is used by the
@@ -43,7 +43,7 @@ public:
 
    /**
     * Returns an auto-assigned ID value that represents this factory.
-    * The returned value is guaranteed to be unique across all factory in the server.
+    * The returned value is guaranteed to be unique across all factories in the server.
     */
    uint32 GetFactoryID() const {return _id;}
 
@@ -331,6 +331,11 @@ public:
    /** Returns true iff this session is currently connected to our remote counterpart. */
    bool IsConnected() const {return _isConnected;}
 
+   /** Returns true if this session was successfully connected to its remote counterpart before it became disconnected.
+     * Returns false if the session never was successfully connected.
+     */
+   bool WasConnected() const {return _wasConnected;}
+
 protected:
    /**
     * Adds a MessageRef to our gateway's outgoing message queue.
@@ -417,6 +422,6 @@ private:
 DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractReflectSession>);
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

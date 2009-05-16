@@ -8,7 +8,7 @@
 #include "system/Mutex.h"
 #include "system/SetupSystem.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static uint32 _sessionIDCounter = 0L;
 static uint32 _factoryIDCounter = 0L;
@@ -123,7 +123,7 @@ Reconnect()
       _gateway()->Reset();                 // set gateway back to its virgin state
    }
 
-   _isConnected = _connectingAsync = false;  // paranoia
+   _isConnected = _wasConnected = _connectingAsync = false;
 
    bool doTCPConnect = (_asyncConnectDest.GetIPAddress() != invalidIP);
    bool isReady = false;
@@ -302,8 +302,7 @@ GetSessionDescriptionString() const
    ret += GetSessionIDString();
    ret += (port>0)?" from [":" to [";
    ret += _hostName;
-   ret += ':';
-   char buf[64]; sprintf(buf, "%u]", (port>0)?port:_asyncConnectDest.GetPort()); ret += buf;
+   char buf[64]; sprintf(buf, ":%u]", (port>0)?port:_asyncConnectDest.GetPort()); ret += buf;
    return ret;
 }
 
@@ -419,4 +418,4 @@ Pulse(const PulseArgs & args)
 }
 
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

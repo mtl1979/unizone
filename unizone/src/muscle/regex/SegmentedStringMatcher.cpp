@@ -4,7 +4,7 @@
 #include "regex/SegmentedStringMatcher.h"
 #include "util/StringTokenizer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static void RecycleSegmentedStringMatcherFunc(SegmentedStringMatcher * m, void *) {m->Clear();}
 static SegmentedStringMatcherRef::ItemPool _segmentedStringMatcherPool(100, RecycleSegmentedStringMatcherFunc);
@@ -68,4 +68,4 @@ bool SegmentedStringMatcher::MatchAux(const char * const str) const
    return true;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

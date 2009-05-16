@@ -11,7 +11,7 @@
 # include "dataio/FileDescriptorDataIO.h"
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  *  This DataIO handles I/O to and from the STDIN_FILENO file descriptor.
@@ -85,6 +85,6 @@ private:
 #endif
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

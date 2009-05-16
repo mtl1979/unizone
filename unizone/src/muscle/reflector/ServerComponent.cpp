@@ -3,7 +3,7 @@
 #include "reflector/ServerComponent.h"
 #include "reflector/ReflectServer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 ServerComponent ::
 ServerComponent() : _owner(NULL)
@@ -119,6 +119,14 @@ GetServerUptime() const
    return _owner->GetServerUptime();
 }
 
+uint64
+ServerComponent ::
+GetServerSessionID() const
+{
+   MASSERT(_owner, "Can't call GetServerSessionID() while not attached to the server");
+   return _owner->GetServerSessionID();
+}
+
 uint32 
 ServerComponent ::
 GetNumAvailableBytes() const
@@ -173,4 +181,4 @@ MessageReceivedFromFactory(ReflectSessionFactory &, const MessageRef &, void * )
    // empty
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

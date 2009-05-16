@@ -8,7 +8,7 @@
 #include "reflector/StorageReflectConstants.h"
 #include "regex/PathMatcher.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  *  This is a factory class that returns new StorageReflectSession objects.
@@ -526,7 +526,7 @@ private:
    friend class StorageReflectSession :: NodePathMatcher;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif
 

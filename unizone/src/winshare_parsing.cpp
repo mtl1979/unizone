@@ -259,7 +259,7 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 			SendSystemEvent(tr("Server version: %1").arg(serverVersion));
 
 		int64 serverUptime;
-		if (msg()->FindInt64(PR_NAME_SERVER_UPTIME, &serverUptime) == B_OK)
+                if (msg()->FindInt64(PR_NAME_SERVER_UPTIME, serverUptime) == B_OK)
 			SendSystemEvent(tr("Server uptime: %1").arg(MakeHumanTime(serverUptime)));
 
 		// reuse old string
@@ -267,8 +267,8 @@ WinShareWindow::ServerParametersReceived(MessageRef msg)
 			SendSystemEvent(tr("Session root: %1").arg(serverVersion));
 
 		int64 memA, memU = 0;
-		if ((msg()->FindInt64(PR_NAME_SERVER_MEM_AVAILABLE, &memA) == B_OK) &&
-			(msg()->FindInt64(PR_NAME_SERVER_MEM_USED, &memU) == B_OK))
+                if ((msg()->FindInt64(PR_NAME_SERVER_MEM_AVAILABLE, memA) == B_OK) &&
+                        (msg()->FindInt64(PR_NAME_SERVER_MEM_USED, memU) == B_OK))
 		{
 			if (memU > 0)
 			{

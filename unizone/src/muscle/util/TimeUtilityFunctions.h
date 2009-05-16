@@ -15,7 +15,7 @@
 # include <kernel/OS.h>
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** A value that GetPulseTime() can return to indicate that Pulse() should never be called. */
 #define MUSCLE_TIME_NEVER ((uint64)-1) // (9223372036854775807LL)
@@ -170,6 +170,6 @@ inline bool OnceEvery(uint64 interval, uint64 & lastTime)
    if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: " UINT64_FORMAT_SPEC "/s\n", x, (1000000*((uint64)count))/(now-startTime)); \
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

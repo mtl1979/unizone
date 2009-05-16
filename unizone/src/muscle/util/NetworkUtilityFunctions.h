@@ -20,62 +20,97 @@
 # include <sys/select.h>  // sikosis at bebits.com says this is necessary... hmm.
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef MUSCLE_USE_IPV6
 /* IPv6 addressing support */
 
-/** This class represents an IPv6 network address -- it acts like a uint128, 
-  * except that only the functions necessary for networking are implemented.
+/** This class represents an IPv6 network address, including the 128-bit IP
+  * address and the interface index field (necessary for connecting to link-local addresses)
   */
 class ip_address
 {
 public:
-   ip_address(uint64 lowBits = 0, uint64 highBits = 0) : _lowBits(lowBits), _highBits(highBits) {/* empty */}
-   ip_address(const ip_address & rhs) : _lowBits(rhs._lowBits), _highBits(rhs._highBits) {/* empty */}
+   ip_address(uint64 lowBits = 0, uint64 highBits = 0, uint32 interfaceIndex = 0) : _lowBits(lowBits), _highBits(highBits), _interfaceIndex(interfaceIndex) {/* empty */}
+   ip_address(const ip_address & rhs) : _lowBits(rhs._lowBits), _highBits(rhs._highBits), _interfaceIndex(rhs._interfaceIndex) {/* empty */}
 
-   ip_address & operator = (const ip_address & rhs) {_lowBits = rhs._lowBits; _highBits = rhs._highBits; return *this;}
+   ip_address & operator = (const ip_address & rhs) {_lowBits = rhs._lowBits; _highBits = rhs._highBits; _interfaceIndex = rhs._interfaceIndex; return *this;}
 
-   bool operator == (const ip_address & rhs) const {return ((_lowBits == rhs._lowBits)&&(_highBits == rhs._highBits));}
-   bool operator != (const ip_address & rhs) const {return ((_lowBits != rhs._lowBits)||(_highBits != rhs._highBits));}
+   bool EqualsIgnoreInterfaceIndex(const ip_address & rhs) const {return ((_lowBits == rhs._lowBits)&&(_highBits == rhs._highBits));}
+   bool operator ==               (const ip_address & rhs) const {return ((EqualsIgnoreInterfaceIndex(rhs))&&(_interfaceIndex == rhs._interfaceIndex));}
+   bool operator !=               (const ip_address & rhs) const {return !(*this == rhs);}
 
-   bool operator <  (const ip_address & rhs) const {return ((_highBits < rhs._highBits)||((_highBits == rhs._highBits)&&(_lowBits < rhs._lowBits)));}
-   bool operator >  (const ip_address & rhs) const {return ((_highBits > rhs._highBits)||((_highBits == rhs._highBits)&&(_lowBits > rhs._lowBits)));}
+   bool operator < (const ip_address & rhs) const 
+   {
+      if (_highBits < rhs._highBits) return true;
+      if (_highBits > rhs._highBits) return false;
+      if (_lowBits  < rhs._lowBits)  return true;
+      if (_lowBits  > rhs._lowBits)  return false;
+      return (_interfaceIndex < rhs._interfaceIndex);
+   }
+
+   bool operator > (const ip_address & rhs) const 
+   {
+      if (_highBits < rhs._highBits) return false;
+      if (_highBits > rhs._highBits) return true;
+      if (_lowBits  < rhs._lowBits)  return false;
+      if (_lowBits  > rhs._lowBits)  return true;
+      return (_interfaceIndex > rhs._interfaceIndex);
+   }
+
    bool operator <= (const ip_address & rhs) const {return (*this == rhs)||(*this < rhs);}
    bool operator >= (const ip_address & rhs) const {return (*this == rhs)||(*this > rhs);}
 
-   ip_address operator & (const ip_address & rhs) {return ip_address(_lowBits & rhs._lowBits, _highBits & rhs._highBits);}
-   ip_address operator | (const ip_address & rhs) {return ip_address(_lowBits | rhs._lowBits, _highBits | rhs._highBits);}
-   ip_address operator ~ () {return ip_address(~_lowBits, ~_highBits);}
+   ip_address operator & (const ip_address & rhs) {return ip_address(_lowBits & rhs._lowBits, _highBits & rhs._highBits, _interfaceIndex);}
+   ip_address operator | (const ip_address & rhs) {return ip_address(_lowBits | rhs._lowBits, _highBits | rhs._highBits, _interfaceIndex);}
+   ip_address operator ~ () {return ip_address(~_lowBits, ~_highBits, _interfaceIndex);}
 
    ip_address operator &= (const ip_address & rhs) {*this = *this & rhs; return *this;}
    ip_address operator |= (const ip_address & rhs) {*this = *this | rhs; return *this;}
 
    void SetBits(uint64 lowBits, uint64 highBits) {_lowBits = lowBits; _highBits = highBits;}
 
-   uint64 GetLowBits() const {return _lowBits;}
+   uint64 GetLowBits()  const {return _lowBits;}
    uint64 GetHighBits() const {return _highBits;}
 
-   uint32 HashCode() const {return (uint32)((_lowBits+_highBits)%((uint32)-1));}
+   void SetLowBits( uint64 lb) {_lowBits  = lb;}
+   void SetHighBits(uint64 hb) {_highBits = hb;}
+
+   void SetInterfaceIndex(uint32 iidx) {_interfaceIndex = iidx;}
+   uint32 GetInterfaceIndex() const    {return _interfaceIndex;}
+
+   uint32 HashCode() const {return _interfaceIndex+((uint32)((_lowBits+_highBits)%((uint32)-1)));}
 
    /** Writes our address into the specified uint8 array, in the required network-friendly order.
-     * @param networkBuf The 16-byte network-array to write to.  Typically you would pass in 
-     *                    mySockAddr_in6.sin6_addr.s6_addr as the argument to this function.
+     * @param networkBuf If non-NULL, the 16-byte network-array to write to.  Typically you would pass in 
+     *                   mySockAddr_in6.sin6_addr.s6_addr as the argument to this function.
+     * @param interfaceIndex If non-NULL, this value will receive a copy of our interface index.  Typically
+     *                       you would pass a pointer to mySockAddr_in6.sin6_addr.sin6_scope_id here.
      */
-   void WriteToNetworkArray(uint8 * networkBuf) const
+   void WriteToNetworkArray(uint8 * networkBuf, uint32 * optInterfaceIndex) const
    {
-      WriteToNetworkArrayAux(&networkBuf[0], _highBits);
-      WriteToNetworkArrayAux(&networkBuf[8], _lowBits);
+      if (networkBuf)
+      {
+         WriteToNetworkArrayAux(&networkBuf[0], _highBits);
+         WriteToNetworkArrayAux(&networkBuf[8], _lowBits);
+      }
+      if (optInterfaceIndex) *optInterfaceIndex = _interfaceIndex;
    }
 
    /** Reads our address in from the specified uint8 array, in the required network-friendly order.
-     * @param networkBuf The 16-byte network-array to read from.  Typically you would pass in 
+     * @param networkBuf If non-NULL, a 16-byte network-endian-array to read from.  Typically you would pass in 
      *                    mySockAddr_in6.sin6_addr.s6_addr as the argument to this function.
+     * @param interfaceIndex If non-NULL, this value will receive a copy of our interface index.  Typically
+     *                       you would pass a pointer to mySockAddr_in6.sin6_addr.sin6_scope_id here.
      */
-   void ReadFromNetworkArray(const uint8 * networkBuf)
+   void ReadFromNetworkArray(const uint8 * networkBuf, const uint32 * optInterfaceIndex)
    {
-      ReadFromNetworkArrayAux(&networkBuf[0], _highBits);
-      ReadFromNetworkArrayAux(&networkBuf[8], _lowBits);
+      if (networkBuf)
+      {
+         ReadFromNetworkArrayAux(&networkBuf[0], _highBits);
+         ReadFromNetworkArrayAux(&networkBuf[8], _lowBits);
+      }
+      if (optInterfaceIndex) _interfaceIndex = *optInterfaceIndex;
    }
 
 private:
@@ -84,8 +119,12 @@ private:
 
    uint64 _lowBits;
    uint64 _highBits;
+   uint32 _interfaceIndex;
 };
 DECLARE_HASHTABLE_KEY_CLASS(ip_address);
+
+/** Given an IP address, returns a 32-bit hash code for it.  For IPv6, this is done by calling the HashCode() method on the ip_address object. */
+inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return ip.HashCode();}
 
 /** IPv6 Numeric representation of a all-zeroes invalid/guard address */
 const ip_address invalidIP(0x00);
@@ -102,6 +141,9 @@ const ip_address broadcastIP(0x01, ((uint64)0xFF02)<<48);
 
 typedef uint32 ip_address;
 
+/** Given an IP address, returns a 32-bit hash code for it.  For IPv4, this is a pretty trivial function! */
+inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return ip;}
+
 /** IPv4 Numeric representation of a all-zeroes invalid/guard address */
 const ip_address invalidIP = 0;
 
@@ -112,6 +154,18 @@ const ip_address localhostIP = ((((uint32)127)<<24)|((uint32)1));
 const ip_address broadcastIP = ((uint32)-1);
 
 #endif
+
+/** IPv4 Numeric representation of broadcast (255.255.255.255), for convenience 
+  * This constant is defined in both IPv6 and IPv4 modes, since sometimes you
+  * need to do an IPv4 broadcast even in an IPv6 program
+  */
+const ip_address broadcastIP_IPv4 = ip_address((uint32)-1);
+
+/** IPv4 Numeric representation of broadcast (255.255.255.255), for convenience 
+  * This constant is defined in both IPv6 and IPv4 modes, since sometimes you
+  * need to do an IPv4 broadcast even in an IPv6 program
+  */
+const ip_address localhostIP_IPv4 = ip_address((((uint32)127)<<24)|((uint32)1));
 
 /** This simple class holds an IP address and a port number, and lets you do
   * useful things on the two such as using them as key values in a hash table,
@@ -174,11 +228,7 @@ public:
    bool operator >= (const IPAddressAndPort & rhs) const {return !(*this<rhs);}
 
    /** HashCode returns a usable 32-bit hash code value for this object, based on its contents. */
-#ifdef MUSCLE_USE_IPV6
-   uint32 HashCode() const {return _ip.HashCode()+_port;}
-#else
-   uint32 HashCode() const {return _ip+_port;}
-#endif
+   uint32 HashCode() const {return GetHashCodeForIPAddress(_ip)+_port;}
 
    /** Returns this object's current IP address */
    const ip_address & GetIPAddress() const {return _ip;}
@@ -222,6 +272,9 @@ private:
    uint16 _port;
 };
 DECLARE_HASHTABLE_KEY_CLASS(IPAddressAndPort);
+
+/** Function callback used to compare two ip_address objects */
+int IPAddressCompareFunc(const ip_address &, const ip_address &, void *);
 
 /** Given a hostname or IP address (e.g. "mycomputer.be.com" or "192.168.0.1"),
   * performs a hostname lookup and returns the 4-byte IP address that corresponds
@@ -422,15 +475,17 @@ ConstSocketRef CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * 
  *  @param address The 4-byte IP address to translate into text.
  *  @param outBuf Buffer where the NUL-terminated ASCII representation of the string will be placed.
  *                This buffer must be at least 16 bytes long if compiled in IPv4 mode,
- *                or at least 46 bytes long if -DMUSCLE_USE_IPV6 is enabled in the Makefile.
+ *                or at least 64 bytes long if -DMUSCLE_USE_IPV6 is enabled in the Makefile.
  */
 void Inet_NtoA(const ip_address & address, char * outBuf);
 
 /** A more convenient version of Inet_Ntoa().  Given an IP address, returns a 
   * human-readable String representation of that address (e.g. "192.168.0.1",
   * or IPv6 equivalent if -DMUSCLE_USE_IPV6 is defined).
+  *  @param preferIPv4 If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1".
+  *                    Defaults to false.  If MUSCLE_USE_UPV6 is not defined, this value won't be used.
   */
-String Inet_NtoA(const ip_address & ipAddress);
+String Inet_NtoA(const ip_address & ipAddress, bool preferIPv4Style = false);
 
 /** Returns true iff (s) is a well-formed IP address (e.g. "192.168.0.1")
   * @param (s) An ASCII string to check the formatting of
@@ -442,9 +497,12 @@ bool IsIPAddress(const char * s);
 /** Given a dotted-quad IP address in ASCII format (e.g. "192.168.0.1"), returns
   * the equivalent IP address in ip_address (packed binary) form. 
   * @param buf numeric IP address in ASCII.
-  * @returns IP address as a ip_address, or 0 on failure.
+  * @returns IP address as a ip_address, or invalidIP on failure.
   */
 ip_address Inet_AtoN(const char * buf);
+
+/** Returns a string that is the local host's primary host name. */
+String GetLocalHostName();
 
 /** Reurns the IP address that the given socket is connected to.
  *  @param socket The socket descriptor to find out info about.
@@ -573,6 +631,21 @@ status_t SetUDPSocketBroadcastEnabled(const ConstSocketRef & sock, bool broadcas
  */
 status_t SetUDPSocketTarget(const ConstSocketRef & sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost = false);
 
+/** This function returns true iff (ip) is one of the standard, well-known addresses for the
+  * localhost loopback device.  (e.g. 127.0.0.1 or ::1 or fe80::1)
+  * @param ip an IP address.
+  * @returns true iff (ip) is a well-known loopback device address.  Note that this function
+  *          does NOT check to see if an arbitrary IP address actually maps to the local host;  
+  *          it merely sees if (ip) is one of a few hard-coded values as described above.
+  */
+bool IsStandardLoopbackDeviceAddress(const ip_address & ip);
+
+/** This function returns true iff (ip) is a multicast IP address.
+  * @param ip an IP address.
+  * @returns true iff (ip) is a multicast address.
+  */
+bool IsMulticastIPAddress(const ip_address & ip);
+
 /** This little container class is used to return data from the GetNetworkInterfaceInfos() function, below */
 class NetworkInterfaceInfo
 {
@@ -587,7 +660,7 @@ public:
      * @param netmask The netmask being used by this interface.
      * @param broadcastIP The broadcast IP address associated with this interface.
      */
-   NetworkInterfaceInfo(const char * name, const char * desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP);
+   NetworkInterfaceInfo(const String & name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP);
 
    /** Returns the name of this interface, or "" if the name is not known. */
    const String & GetName() const {return _name;}
@@ -595,7 +668,9 @@ public:
    /** Returns a (human-readable) description of this interface, or "" if a description is unavailable. */
    const String & GetDescription() const {return _desc;}
 
-   /** Returns the IP address of this interface */
+   /** Returns the IP address of this interface 
+     * NOTE:  This value has no meaning for an IPv6 interface; use GetInterfaceIndex() instead!
+     */
    const ip_address & GetLocalAddress() const {return _ip;}
 
    /** Returns the netmask of this interface */
@@ -606,6 +681,12 @@ public:
      * method returns the broadcast address for this interface.
      */
    const ip_address & GetBroadcastAddress() const {return _broadcastIP;}
+
+   /** For debugging.  Returns a human-readable string describing this interface. */
+   String ToString() const;
+
+   /** Returns a hash code for this NetworkInterfaceInfo object. */
+   uint32 HashCode() const;
 
 private:
    String _name;
@@ -675,6 +756,45 @@ status_t SetSocketMulticastTimeToLive(const ConstSocketRef & sock, uint8 ttl);
   */
 uint8 GetSocketMulticastTimeToLive(const ConstSocketRef & sock);
 
+#ifdef MUSCLE_USE_IPV6
+
+/** Specify the interface index of the local network interface that the given socket should
+  * send multicast packets on.  If this isn't called, the kernel will choose an appropriate
+  * default interface to send multicast packets over.
+  * @param sock The socket to set the sending interface for.
+  * @param interfaceIndex Optional index of the interface to send the multicast packets on.
+  *                       Zero means the default interface, larger values mean another interface.
+  *                       You can call GetNetworkInterfaceInfos() to get the list of available interfaces.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock, uint32 interfaceIndex);
+
+/** Returns the index of the local interface that the given socket will
+  * try to send multicast packets on, or -1 on failure.
+  * @param sock The socket to query the sending interface index of.
+  * @returns the socket's interface index, or -1 on error.
+  */
+int32 GetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock);
+
+/** Attempts to add the specified socket to the specified multicast group.
+  * @param sock The socket to add to the multicast group
+  * @param groupAddress The IP address of the multicast group.
+  * @note Under Windows this call will fail unless the socket has already
+  *       been bound to a port (e.g. with BindUDPSocket()).  Other OS's don't
+  *       seem to have that requirement.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress);
+
+/** Attempts to remove the specified socket from the specified multicast group that it was previously added to.
+  * @param sock The socket to add to the multicast group
+  * @param groupAddress The IP address of the multicast group.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress);
+
+#else
+
 /** Specify the address of the local interface that the given socket should
   * send multicast packets on.  If this isn't called, the kernel will try to choose
   * an appropriate default interface to send on.
@@ -712,9 +832,11 @@ status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address
   */
 status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress = invalidIP);
 
+#endif  // IPv4 multicast
+
 #endif  // MUSCLE_ENABLE_MULTICAST_API
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif
 

@@ -47,7 +47,7 @@ WUser::InitName(MessageRef msg)
 	bool isbot;
 	uint64 installID;
 
-	if (msg()->FindBool("bot", &isbot) == B_OK)
+        if (msg()->FindBool("bot", isbot) == B_OK)
 	{
 		fBot = true;
 		// is a bot... so no client, files, etc.
@@ -58,7 +58,7 @@ WUser::InitName(MessageRef msg)
 	else 
 		fBot = false;
 
-	if (msg()->FindInt64("installid", (int64 *)&installID) != B_OK)
+        if (msg()->FindInt64("installid", installID) != B_OK)
 		fInstallID = 0;
 	else
 		fInstallID = installID;
@@ -85,14 +85,14 @@ WUser::InitName(MessageRef msg)
 			gWin->fNetClient->SendPing(fUserID);
 	}
 
-	msg()->FindBool("supports_partial_hashing", &fPartial);			// NEW 11/7/2002 partial resumes
-	msg()->FindBool("supports_transfer_tunneling", &fTunneling);	// NEW 8th Aug 2004 
+        msg()->FindBool("supports_partial_hashing", fPartial);			// NEW 11/7/2002 partial resumes
+        msg()->FindBool("supports_transfer_tunneling", fTunneling);	// NEW 8th Aug 2004
 
 	// <postmaster@raasu.org> 20020213 -- Fix for download troubles when no files shared
 	//
 	bool b = false;
 
-	if (msg()->FindBool("firewalled", &b) == B_OK)
+        if (msg()->FindBool("firewalled", b) == B_OK)
 	{
 		PRINT("WUser: %s firewalled\n", (b ? "Is" : "Isn't"));
 	}
@@ -124,7 +124,7 @@ void
 WUser::InitStatus(MessageRef msg)
 {
 	const char * status;
-	if (msg()->FindString("userstatus", &status) == B_OK)
+        if (msg()->FindString("userstatus", status) == B_OK)
 		fUserStatus = QString::fromUtf8(status);
 
 #ifdef _DEBUG
@@ -162,7 +162,7 @@ WUser::InitBandwidth(MessageRef msg)
 
 	if (fBandwidthLabel == qApp->translate("Connection", "Unknown"))
 	{
-		if (msg()->FindString("label", &l) == B_OK)
+                if (msg()->FindString("label", l) == B_OK)
 		{
 			if (strcmp(l, "?") == 0)
 				fBandwidthLabel = qApp->translate("Connection", "Unknown");

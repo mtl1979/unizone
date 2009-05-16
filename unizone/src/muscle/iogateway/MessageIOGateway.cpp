@@ -2,8 +2,9 @@
 
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/StorageReflectConstants.h"  // for PR_COMMAND_PING, PR_RESULT_PONG
+#include "dataio/TCPSocketDataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 MessageIOGateway :: MessageIOGateway(int32 encoding) :
    _maxIncomingMessageSize(MUSCLE_NO_LIMIT),
@@ -360,4 +361,17 @@ void MessageIOGateway :: SynchronousMessageReceivedFromGateway(const MessageRef 
    else AbstractMessageIOGateway::SynchronousMessageReceivedFromGateway(msg, userData, r);
 }
 
-END_NAMESPACE(muscle);
+MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod)
+{
+   ConstSocketRef s = Connect(targetIAP);
+   if (s())
+   {
+      TCPSocketDataIO tsdio(s, false);
+      MessageIOGateway iog; iog.SetDataIO(DataIORef(&tsdio, false));
+      QueueGatewayMessageReceiver receiver;
+      if ((iog.AddOutgoingMessage(MessageRef(const_cast<Message *>(&requestMessage), false)) == B_NO_ERROR)&&(iog.ExecuteSynchronousMessaging(&receiver, timeoutPeriod) == B_NO_ERROR)&&(receiver.HasItems())) return receiver.Head();
+   }
+   return MessageRef();
+}
+
+}; // end namespace muscle

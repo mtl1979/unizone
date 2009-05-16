@@ -6,7 +6,7 @@
 #include "util/MemoryAllocator.h"
 #include "system/SharedMemory.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This MemoryAllocator decorates its slave MemoryAllocator to 
   * enforce a user-defined per-process-group limit on how much 
@@ -80,6 +80,6 @@ private:
    int32 _localCachedBytes;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

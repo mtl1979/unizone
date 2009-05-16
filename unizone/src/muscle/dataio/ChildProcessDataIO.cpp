@@ -22,7 +22,7 @@
 #include "util/String.h"
 #include "util/StringTokenizer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true), _childProcessInheritFileDescriptors(false)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
@@ -567,4 +567,4 @@ status_t ChildProcessDataIO :: System(const char * cmdLine, bool usePty)
    else return B_ERROR;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

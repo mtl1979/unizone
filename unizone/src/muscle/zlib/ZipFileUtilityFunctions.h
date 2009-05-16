@@ -6,7 +6,7 @@
 #include "dataio/DataIO.h"
 #include "message/Message.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Given a Message object, outputs a .zip file containing the B_RAW_TYPE data in that Message.
   * Each B_RAW_TYPE field in the Message object will be written to the .zip file as a contained file.
@@ -50,6 +50,6 @@ MessageRef ReadZipFile(DataIO & readFrom, bool loadData = true);
 /** Convenience method:  as above, but takes a file name instead of a DataIO object. */
 MessageRef ReadZipFile(const char * fileName, bool loadData = true);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

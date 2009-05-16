@@ -6,7 +6,7 @@
 #include "util/RefCount.h"
 #include "util/PulseNode.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class AbstractReflectSession;
 class ReflectServer;
@@ -151,7 +151,7 @@ DECLARE_REFTYPES(AbstractSessionIOPolicy);
 DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractSessionIOPolicy>);
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 // At the bottom to avoid circular-forward-reference problems, while
 // still allowing subclasses to automatically get this header

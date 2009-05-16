@@ -5,7 +5,7 @@
 
 #include "iogateway/AbstractMessageIOGateway.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** 
  * This gateway is simple almost to the point of being crippled... all it does
@@ -59,6 +59,6 @@ private:
    MessageRef _signalMessage;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

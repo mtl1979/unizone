@@ -10,7 +10,7 @@
 #include "zlib/zlib/contrib/minizip/zip.h"
 #include "zlib/zlib/contrib/minizip/unzip.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static voidpf ZCALLBACK fopen_dataio_func (voidpf opaque, const char * /*filename*/, int /*mode*/)
 {
@@ -249,6 +249,6 @@ MessageRef ReadZipFile(DataIO & readFrom, bool loadData)
    return MessageRef();
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

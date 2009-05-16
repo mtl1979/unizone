@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+#include "util/MiscUtilityFunctions.h"  // for GetConnectString() (which is deliberately defined here)
 #include "util/NetworkUtilityFunctions.h"
 
 #if defined(__BEOS__) || defined(__HAIKU__)
@@ -13,6 +14,7 @@
 #ifdef WIN32
 # include <iphlpapi.h>
 # include <mswsock.h>  // for SIO_UDP_CONNRESET, etc
+# include <ws2tcpip.h> 
 # ifdef MUSCLE_ENABLE_MULTICAST_API
 #  include <ws2ipdef.h>  // for IP_MULTICAST_LOOP, etc
 # endif
@@ -28,9 +30,6 @@ typedef void sockopt_arg;  // Whereas sane operating systems use void pointers
 #  include <net/if.h>
 # endif
 # include <sys/ioctl.h>
-# ifdef SunOS
-#  include <sys/sockio.h>     // for the SIOCGIFADDR definition on Solaris
-# endif
 # ifdef BEOS_OLD_NETSERVER
 #  include <app/Roster.h>     // for the run-time bone check
 #  include <storage/Entry.h>  // for the backup run-time bone check
@@ -65,12 +64,21 @@ typedef int muscle_socklen_t;
 typedef size_t muscle_socklen_t;
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef MUSCLE_USE_IPV6
 # define MUSCLE_SOCKET_FAMILY AF_INET6
-static inline void GET_SOCKADDR_IP(const struct sockaddr_in6 & sockAddr, ip_address & ipAddr) {ipAddr.ReadFromNetworkArray(sockAddr.sin6_addr.s6_addr);}
-static inline void SET_SOCKADDR_IP(struct sockaddr_in6 & sockAddr, const ip_address & ipAddr) {ipAddr.WriteToNetworkArray(sockAddr.sin6_addr.s6_addr);}
+static inline void GET_SOCKADDR_IP(const struct sockaddr_in6 & sockAddr, ip_address & ipAddr) 
+{
+   uint32 tmp = sockAddr.sin6_scope_id;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
+   ipAddr.ReadFromNetworkArray(sockAddr.sin6_addr.s6_addr, &tmp);
+}
+static inline void SET_SOCKADDR_IP(struct sockaddr_in6 & sockAddr, const ip_address & ipAddr) 
+{
+   uint32 tmp;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
+   ipAddr.WriteToNetworkArray(sockAddr.sin6_addr.s6_addr, &tmp);
+   sockAddr.sin6_scope_id = tmp;
+}
 static inline uint16 GET_SOCKADDR_PORT(const struct sockaddr_in6 & addr) {return ntohs(addr.sin6_port);}
 static inline void SET_SOCKADDR_PORT(struct sockaddr_in6 & addr, uint16 port) {addr.sin6_port = htons(port);}
 static inline uint16 GET_SOCKADDR_FAMILY(const struct sockaddr_in6 & addr) {return addr.sin6_family;}
@@ -103,6 +111,16 @@ static void InitializeSockAddr4(struct sockaddr_in & addr, const ip_address * op
 }
 # define DECLARE_SOCKADDR(addr, ip, port) struct sockaddr_in addr; InitializeSockAddr4(addr, ip, port);
 #endif
+
+int IPAddressCompareFunc(const ip_address & a1, const ip_address & a2, void *)
+{
+#ifdef MUSCLE_USE_IPV6
+   int cmpHi = muscleCompare(a1.GetHighBits(), a2.GetHighBits());
+   return cmpHi ? cmpHi : muscleCompare(a1.GetLowBits(), a2.GetLowBits());
+#else
+   return muscleCompare(a1, a2);
+#endif
+}
 
 ConstSocketRef CreateUDPSocket()
 {
@@ -257,10 +275,10 @@ int32 SendDataUDP(const ConstSocketRef & sock, const void * buffer, uint32 size,
    if (fd >= 0)
    {
        int s;
-       if ((optToIP != invalidIP)||(optToPort))
+       if ((optToPort)||(optToIP != invalidIP))
        {
           DECLARE_SOCKADDR(toAddr, NULL, 0);
-          if ((optToIP == invalidIP)||(optToPort == 0))
+          if ((optToPort == 0)||(optToIP == invalidIP))
           {
              // Fill in the values with our socket's current target-values, as defaults
              muscle_socklen_t length = sizeof(sockaddr_in);
@@ -329,7 +347,7 @@ ConstSocketRef Connect(const ip_address & hostIP, uint16 port, const char * optD
 
    if ((debugTitle)&&(errorsOnly == false))
    {
-      LogTime(MUSCLE_LOG_INFO, "%s: Connecting to [%s:%u]: ", debugTitle, optDebugHostName?optDebugHostName:ipbuf, port);
+      LogTime(MUSCLE_LOG_INFO, "%s: Connecting to %s: ", debugTitle, GetConnectString(optDebugHostName?optDebugHostName:ipbuf, port)());
       LogFlush();
    }
 
@@ -386,7 +404,7 @@ ConstSocketRef Connect(const ip_address & hostIP, uint16 port, const char * optD
       }
       else if (debugTitle)
       {
-         if (errorsOnly) LogTime(MUSCLE_LOG_INFO, "%s: connect() to [%s:%u] failed!\n", debugTitle, optDebugHostName?optDebugHostName:ipbuf, port);
+         if (errorsOnly) LogTime(MUSCLE_LOG_INFO, "%s: connect() to %s failed!\n", debugTitle, GetConnectString(optDebugHostName?optDebugHostName:ipbuf, port)());
                     else Log(MUSCLE_LOG_INFO, "Connection failed!\n");
       }
    }
@@ -396,6 +414,12 @@ ConstSocketRef Connect(const ip_address & hostIP, uint16 port, const char * optD
                  else Log(MUSCLE_LOG_INFO, "socket() failed!\n");
    }
    return ConstSocketRef();
+}
+
+String GetLocalHostName()
+{
+   char buf[512];
+   return (gethostname(buf, sizeof(buf)) == 0) ? buf : "";
 }
 
 static bool IsIP4Address(const char * s)
@@ -422,26 +446,111 @@ static bool IsIP4Address(const char * s)
    return (numDots == 3);
 }
 
+#ifdef MUSCLE_USE_IPV6
+
+static const char * Inet_NtoP(int af, const void * src, char * dst, muscle_socklen_t size)
+{
+#ifdef WIN32
+   switch(af)
+   {
+      case AF_INET:
+      {
+         struct sockaddr_in in;
+         memset(&in, 0, sizeof(in));
+         in.sin_family = AF_INET;
+         memcpy(&in.sin_addr, src, sizeof(struct in_addr));
+         return (getnameinfo((struct sockaddr *)&in, sizeof(struct sockaddr_in), dst, size, NULL, 0, NI_NUMERICHOST) == 0) ? dst : NULL;
+      }
+
+      case AF_INET6:
+      {
+         struct sockaddr_in6 in;
+         memset(&in, 0, sizeof(in));
+         in.sin6_family = AF_INET6;
+         memcpy(&in.sin6_addr, src, sizeof(struct in_addr6));
+         return (getnameinfo((struct sockaddr *)&in, sizeof(in), dst, size, NULL, 0, NI_NUMERICHOST) == 0) ? dst : NULL;
+      }
+
+      default:
+         return NULL;
+   }
+#else
+   return inet_ntop(af, src, dst, size);
+#endif
+}
+
+static int Inet_PtoN(int af, const char * src, struct in6_addr * dst)
+{
+#ifdef WIN32
+   struct addrinfo hints; memset(&hints, 0, sizeof(struct addrinfo));
+   hints.ai_family = af;
+
+   bool ok = false;  // default
+   struct addrinfo * res;
+   if (getaddrinfo(src, NULL, &hints, &res) != 0) return -1;
+   if (res)
+   {
+      switch(res->ai_family)
+      {
+         case AF_INET:
+            if (res->ai_addrlen == sizeof(struct sockaddr_in))
+            {
+               struct sockaddr_in * sin = (struct sockaddr_in *) res->ai_addr;
+               memset(dst, 0, sizeof(*dst));
+               // Copy IPv4 bits to the low word of the IPv6 address
+               memcpy(((char *)dst)+12, &sin->sin_addr.s_addr, sizeof(uint32));
+
+               // And make it IPv6-mapped-to-IPv4
+               memset(((char *)dst)+10, 0xFF, 2);
+               ok = true;
+            }
+         break;
+
+         case AF_INET6:
+            if (res->ai_addrlen == sizeof(struct sockaddr_in6))
+            {
+               struct sockaddr_in6 * sin6 = (struct sockaddr_in6 *) res->ai_addr;
+               memcpy(dst, &sin6->sin6_addr, sizeof(*dst));
+               ok = true;
+            }
+         break;
+      }
+      freeaddrinfo(res);
+   }
+   return ok ? 1 : -1;
+#else
+   return inet_pton(af, src, dst);
+#endif
+}
+
+#endif
+
 bool IsIPAddress(const char * s)
 {
 #ifdef MUSCLE_USE_IPV6
    struct in6_addr tmp;
-   return ((inet_pton(MUSCLE_SOCKET_FAMILY, s, &tmp) > 0)||(IsIP4Address(s)));
+   return ((Inet_PtoN(MUSCLE_SOCKET_FAMILY, s, &tmp) > 0)||(Inet_AtoN(s) != invalidIP)||(IsIP4Address(s)));  // Inet_AtoN() handles the "@blah" suffixes
 #else
    return IsIP4Address(s);
 #endif
 }
 
+static ip_address _cachedLocalhostAddress = invalidIP;
+
 static void ExpandLocalhostAddress(ip_address & ipAddress)
 {
-   if (ipAddress == localhostIP)
+   if (IsStandardLoopbackDeviceAddress(ipAddress))
    {
       ip_address altRet = GetLocalHostIPOverride();  // see if the user manually specified a preferred local address
       if (altRet == invalidIP)
       {
          // If not, try to grab one from the OS
-         Queue<NetworkInterfaceInfo> ifs;
-         if ((GetNetworkInterfaceInfos(ifs, false) == B_NO_ERROR)&&(ifs.HasItems())) altRet = ifs.Head().GetLocalAddress();
+         if (_cachedLocalhostAddress == invalidIP)
+         {
+            Queue<NetworkInterfaceInfo> ifs;
+            (void) GetNetworkInterfaceInfos(ifs, false);  // just to set _cachedLocalhostAddress
+         }
+         altRet = _cachedLocalhostAddress;
       }
       if (altRet != invalidIP) ipAddress = altRet;
    }
@@ -456,7 +565,10 @@ ip_address GetHostByName(const char * name, bool expandLocalhost)
 #ifdef MUSCLE_USE_IPV6
       ret = invalidIP;
       struct addrinfo * result;
-      if (getaddrinfo(name, NULL, NULL, &result) == 0)
+      struct addrinfo hints; memset(&hints, 0, sizeof(hints));
+      hints.ai_family   = AF_UNSPEC;     // We're not too particular, for now
+      hints.ai_socktype = SOCK_STREAM;   // so we don't get every address twice (once for UDP and once for TCP)
+      if (getaddrinfo(name, NULL, &hints, &result) == 0)
       {
          struct addrinfo * next = result;
          while(next)
@@ -465,10 +577,15 @@ ip_address GetHostByName(const char * name, bool expandLocalhost)
             {
                case AF_INET:
                   ret.SetBits(ntohl(((struct sockaddr_in *) next->ai_addr)->sin_addr.s_addr), 0);  // read IPv4 address into low bits of IPv6 address structure
+                  ret.SetLowBits(ret.GetLowBits() | ((uint64)0xFFFF)<<32);                         // and make it IPv6-mapped (why doesn't AI_V4MAPPED do this?)
                break;
 
                case AF_INET6:
-                  ret.ReadFromNetworkArray(((struct sockaddr_in6 *) (next->ai_addr))->sin6_addr.s6_addr);
+               {
+                  struct sockaddr_in6 * sin6 = (struct sockaddr_in6 *) next->ai_addr;
+                  uint32 tmp = sin6->sin6_scope_id;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
+                  ret.ReadFromNetworkArray(sin6->sin6_addr.s6_addr, &tmp);
+               }
                break;
             }
             if (ret == invalidIP) next = next->ai_next;
@@ -691,30 +808,42 @@ status_t SetSocketReceiveBufferSize(const ConstSocketRef & sock, uint32 receiveB
 #endif
 }
 
-NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(0), _netmask(0), _broadcastIP(0)
+NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(invalidIP), _netmask(invalidIP), _broadcastIP(invalidIP)
 {
    // empty
 }
 
-NetworkInterfaceInfo :: NetworkInterfaceInfo(const char * name, const char * desc, const ip_address & ip, const ip_address & netmask, const ip_address & remoteIP) : _ip(ip), _netmask(netmask), _broadcastIP(remoteIP)
+NetworkInterfaceInfo :: NetworkInterfaceInfo(const String &name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP) : _name(name), _desc(desc), _ip(ip), _netmask(netmask), _broadcastIP(broadcastIP)
 {
-   _name = name;
-   _desc = desc;
+   // empty
 }
 
-#if defined(USE_GETIFADDRS)
-static ip_address SockAddrToIPAddr(struct sockaddr * a)
+String NetworkInterfaceInfo :: ToString() const
+{
+   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5]").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP));
+}
+
+uint32 NetworkInterfaceInfo :: HashCode() const
+{
+   return _name.HashCode() + _desc.HashCode() + GetHashCodeForIPAddress(_ip) + GetHashCodeForIPAddress(_netmask) + GetHashCodeForIPAddress(_broadcastIP);
+}
+
+#if defined(USE_GETIFADDRS) || defined(WIN32)
+static ip_address SockAddrToIPAddr(const struct sockaddr * a)
 {
    if (a)
    {
       switch(a->sa_family)   
       {
          case AF_INET:  return ip_address(ntohl(((struct sockaddr_in *)a)->sin_addr.s_addr));
+
 #ifdef MUSCLE_USE_IPV6
          case AF_INET6:
          {
+            struct sockaddr_in6 * sin6 = (struct sockaddr_in6 *) a;
             ip_address ret;
-            ret.ReadFromNetworkArray(((struct sockaddr_in6 *)a)->sin6_addr.s6_addr);
+            uint32 tmp = sin6->sin6_scope_id;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
+            ret.ReadFromNetworkArray(sin6->sin6_addr.s6_addr, &tmp);
             return ret;
          }
 #endif
@@ -723,6 +852,30 @@ static ip_address SockAddrToIPAddr(struct sockaddr * a)
    return invalidIP;
 }
 #endif
+
+bool IsMulticastIPAddress(const ip_address & ip)
+{
+#ifdef MUSCLE_USE_IPV6
+   // In IPv6, any address that starts with 0xFF is a multicast address
+   if (((ip.GetHighBits() >> 56)&((uint64)0xFF)) == 0xFF) return true;
+#endif
+
+   // check for IPv4 address-ness
+   ip_address minMulticastAddress = Inet_AtoN("224.0.0.0");
+   ip_address maxMulticastAddress = Inet_AtoN("239.255.255.255");
+   return muscleInRange(ip, minMulticastAddress, maxMulticastAddress);
+}
+
+bool IsStandardLoopbackDeviceAddress(const ip_address & ip)
+{
+#ifdef MUSCLE_USE_IPV6
+   // fe80::1 is another name for localhostIP in IPv6 land
+   static const ip_address localhostIP_linkScope(localhostIP.GetLowBits(), ((uint64)0xFE80)<<48);
+   return ((ip.EqualsIgnoreInterfaceIndex(localhostIP))||(ip.EqualsIgnoreInterfaceIndex(localhostIP_IPv4))||(ip.EqualsIgnoreInterfaceIndex(localhostIP_linkScope)));
+#else
+   return (ip == localhostIP);
+#endif
+}
 
 status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool includeLocalhost)
 {
@@ -744,12 +897,19 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
          struct ifaddrs * p = ifap;
          while(p)
          {
-            ip_address ifaAddr  = SockAddrToIPAddr(p->ifa_addr);
-            ip_address maskAddr = SockAddrToIPAddr(p->ifa_netmask);
-            ip_address dstAddr  = SockAddrToIPAddr(p->ifa_broadaddr);
-            if ((ifaAddr != invalidIP)&&((includeLocalhost)||(ifaAddr != localhostIP)))
+            ip_address unicastIP  = SockAddrToIPAddr(p->ifa_addr);
+            ip_address netmask = SockAddrToIPAddr(p->ifa_netmask);
+            ip_address broadcastIP  = SockAddrToIPAddr(p->ifa_broadaddr);
+            if ((unicastIP != invalidIP)&&((includeLocalhost)||(IsStandardLoopbackDeviceAddress(unicastIP) == false)))
             {
-               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", ifaAddr, maskAddr, dstAddr)) != B_NO_ERROR)
+#ifdef MUSCLE_USE_IPV6
+               unicastIP.SetInterfaceIndex(if_nametoindex(p->ifa_name));  // so the user can find out; it will be ignore by the TCP stack
+#endif
+               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", unicastIP, netmask, broadcastIP)) == B_NO_ERROR)
+               {
+                  if (_cachedLocalhostAddress == invalidIP) _cachedLocalhostAddress = unicastIP;
+               }
+               else
                {
                   ret = B_ERROR;  // out of memory!?
                   break;
@@ -762,114 +922,94 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
       return ret;
    }
 #elif defined(WIN32)
-   // Adapted from example code at http://msdn2.microsoft.com/en-us/library/aa365917.aspx
-   status_t ret = B_NO_ERROR;  // optimistic default
+   // IPv6 implementation, adapted from
+   // http://msdn.microsoft.com/en-us/library/aa365915(VS.85).aspx
+   //
+   int s = WSASocket(AF_INET, SOCK_DGRAM, IPPROTO_UDP, NULL, 0, 0);
+   if (s == INVALID_SOCKET) return B_ERROR;
 
-   // Now get Windows' IPv4 addresses table.  We gotta call GetIpAddrTable()
-   // multiple times in order to deal with potential race conditions properly.
-   MIB_IPADDRTABLE * ipTable = NULL;
+   INTERFACE_INFO localAddrs[64];  // Assume there will be no more than 64 IP interfaces 
+   DWORD bytesReturned;
+   if (WSAIoctl(s, SIO_GET_INTERFACE_LIST, NULL, 0, &localAddrs, sizeof(localAddrs), &bytesReturned, NULL, NULL) == SOCKET_ERROR)
    {
-      ULONG bufLen = 0;
-      for (int i=0; i<5; i++) 
-      {
-         DWORD ipRet = GetIpAddrTable(ipTable, &bufLen, false);
-         if (ipRet == ERROR_INSUFFICIENT_BUFFER)
-         {
-            muscleFree(ipTable);  // in case we had previously allocated it
-            ipTable = (MIB_IPADDRTABLE *) muscleAlloc(bufLen);
-            if (ipTable == NULL) {WARN_OUT_OF_MEMORY; break;}
-         }
-         else if (ipRet == NO_ERROR) break;
-         else 
-         {
-            muscleFree(ipTable);
-            ipTable = NULL;
-            break;
-         }
-      }
+      closesocket(s);
+      return B_ERROR;
    }
+   else closesocket(s);
 
-   if (ipTable)
+   PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+   ULONG outBufLen = 0;
+   while(1)
    {
-      // Try to get the Adapters-info table, so we can given useful names to the IP 
-      // addresses we are returning.  Once again, we gotta call GetAdaptersInfo() up to 
-      // 5 times to handle the potential race condition between the size-query call and 
-      // the get-data call.  I love a well-designed API :^P
-      IP_ADAPTER_INFO * pAdapterInfo = NULL;
+      DWORD flags = GAA_FLAG_INCLUDE_PREFIX|GAA_FLAG_SKIP_ANYCAST|GAA_FLAG_SKIP_MULTICAST|GAA_FLAG_SKIP_DNS_SERVER;
+      switch(GetAdaptersAddresses(AF_UNSPEC, flags, NULL, pAddresses, &outBufLen))
       {
-         ULONG bufLen = 0;
-         for (int i=0; i<5; i++) 
-         {
-            DWORD apRet = GetAdaptersInfo(pAdapterInfo, &bufLen);
-            if (apRet == ERROR_BUFFER_OVERFLOW)
-            {
-               muscleFree(pAdapterInfo);  // in case we had previously allocated it
-               pAdapterInfo = (IP_ADAPTER_INFO *) muscleAlloc(bufLen);
-               if (pAdapterInfo == NULL) {WARN_OUT_OF_MEMORY; break;}
-            }
-            else if (apRet == ERROR_SUCCESS) break;
-            else 
-            {
-               muscleFree(pAdapterInfo);
-               pAdapterInfo = NULL;
-               break;
-            }
-         }
-      }
+         case ERROR_BUFFER_OVERFLOW:
+            if (pAddresses) muscleFree(pAddresses);
 
-      for (DWORD i=0; i<ipTable->dwNumEntries; i++)
-      {
-         const MIB_IPADDRROW & row = ipTable->table[i];
-         
-         // Now lookup the appropriate adaptor-name in the pAdaptorInfos, if we can find it
-         const char * name = NULL;
-         const char * desc = NULL;
-         if (pAdapterInfo)
-         {
-            IP_ADAPTER_INFO * next = pAdapterInfo;
-            while((next)&&(name==NULL))
+            // Add some breathing room so that if the required size
+            // grows during the time period between the two calls to
+            // GetAdaptersAddresses(), we won't have to reallocate again.
+            outBufLen *= 2;
+
+            pAddresses = (IP_ADAPTER_ADDRESSES *) muscleAlloc(outBufLen);
+            if (pAddresses == NULL) 
             {
-               IP_ADDR_STRING * ipAddr = &next->IpAddressList;
-               while(ipAddr)
+               WARN_OUT_OF_MEMORY;
+               return B_ERROR;
+            }
+         break;
+
+         case ERROR_SUCCESS:
+            for (PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses; pCurrAddresses; ((pCurrAddresses = pCurrAddresses->Next) != NULL))
+            {
+               PIP_ADAPTER_UNICAST_ADDRESS ua = pCurrAddresses->FirstUnicastAddress;
+               while(ua)
                {
-                  if (Inet_AtoN(ipAddr->IpAddress.String) == ntohl(row.dwAddr))
+                  ip_address unicastIP = SockAddrToIPAddr(ua->Address.lpSockaddr);
+                  if ((includeLocalhost) || (IsStandardLoopbackDeviceAddress(unicastIP) == false))
                   {
-                     name = next->AdapterName;
-                     desc = next->Description;
-                     break;
+                     ip_address broadcastIP, netmask;
+                     uint32 numLocalAddrs = (bytesReturned/sizeof(INTERFACE_INFO));
+                     for (int i=0; i<numLocalAddrs; i++) 
+                     {
+                        ip_address nextIP = SockAddrToIPAddr((const sockaddr *) &localAddrs[i].iiAddress);
+                        if (nextIP == unicastIP)
+                        {
+                           broadcastIP = SockAddrToIPAddr((const sockaddr *) &localAddrs[i].iiBroadcastAddress);
+                           netmask     = SockAddrToIPAddr((const sockaddr *) &localAddrs[i].iiNetmask);
+                           break;
+                        }
+                     }
+
+#ifdef MUSCLE_USE_IPV6
+                     unicastIP.SetInterfaceIndex(pCurrAddresses->Ipv6IfIndex);  // so the user can find out; it will be ignore by the TCP stack
+#endif
+
+                     char outBuf[512];
+                     if (WideCharToMultiByte(CP_UTF8, 0, pCurrAddresses->Description, -1, outBuf, sizeof(outBuf), NULL, NULL) <= 0) outBuf[0] = '\0';
+
+                     if (results.AddTail(NetworkInterfaceInfo(pCurrAddresses->AdapterName, outBuf, unicastIP, netmask, broadcastIP)) == B_NO_ERROR)
+                     {
+                        if (_cachedLocalhostAddress == invalidIP) _cachedLocalhostAddress = unicastIP;
+                     }
+                     else
+                     {
+                        if (pAddresses) muscleFree(pAddresses);
+                        return B_ERROR;
+                     }
                   }
-                  ipAddr = ipAddr->Next;
+                  ua = ua->Next;
                }
-               next = next->Next;
             }
-         }
-         char buf[128];
-         if (name == NULL) 
-         {
-            sprintf(buf, "unnamed-%i", i);
-            name = buf;
-         }
+            if (pAddresses) muscleFree(pAddresses);
+         return B_NO_ERROR;
 
-         uint32 ipAddr  = ntohl(row.dwAddr);
-         uint32 netmask = ntohl(row.dwMask);
-         uint32 baddr   = ipAddr & netmask;
-         if (row.dwBCastAddr) baddr |= ~netmask;
-         if ((includeLocalhost)||(ipAddr != localhostIP))
-         {
-            if (results.AddTail(NetworkInterfaceInfo(name, desc?desc:"", ipAddr, netmask, baddr)) != B_NO_ERROR)
-            {
-               ret = B_ERROR;
-               break;
-            }
-         }
+         default:
+           if (pAddresses) muscleFree(pAddresses);
+           return B_ERROR;
       }
-
-      muscleFree(pAdapterInfo);
-      muscleFree(ipTable);
    }
-   else ret = B_ERROR;
-
-   return ret;
 #else
    (void) results;  // for other OS's, this function isn't implemented.
 #endif
@@ -886,18 +1026,35 @@ status_t GetNetworkInterfaceAddresses(Queue<ip_address> & results, bool includeL
    return B_NO_ERROR;
 }
 
-String Inet_NtoA(const ip_address & ipAddress)
+String Inet_NtoA(const ip_address & ipAddress, bool preferIPv4)
 {
-   char buf[64];
-   Inet_NtoA(ipAddress, buf);
+   char buf[64]; Inet_NtoA(ipAddress, buf);
+
+#ifdef MUSCLE_USE_IPV6
+   String ret = buf;
+   if ((preferIPv4)&&(ret.StartsWith("::"))&&(ret.IndexOf(':', 2) < 0)&&((ret.IndexOf('.'), 2) >= 0)) ret = ret.Substring(2); 
+   return ret;
+#else
+   (void) preferIPv4;
    return String(buf);
+#endif
 }
 
 void Inet_NtoA(const ip_address & addr, char * ipbuf)
 {
 #ifdef MUSCLE_USE_IPV6
-   uint8 ip6[16]; addr.WriteToNetworkArray(ip6);
-   if (inet_ntop(AF_INET6, ip6, ipbuf, 46) == NULL) ipbuf[0] = '\0';
+   uint32 iIdx = 0;
+   uint8 ip6[16]; addr.WriteToNetworkArray(ip6, &iIdx);
+   if (Inet_NtoP(AF_INET6, (const in6_addr *) ip6, ipbuf, 46) != NULL)
+   {
+      if (iIdx > 0)
+      {
+         // Add the index suffix
+         char buf[32]; sprintf(buf, "@"UINT32_FORMAT_SPEC, iIdx);
+         strcat(ipbuf, buf);
+      } 
+   }
+   else ipbuf[0] = '\0';
 #else
    sprintf(ipbuf, INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC, (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
 #endif
@@ -923,17 +1080,46 @@ static uint32 Inet4_AtoN(const char * buf)
    return ret;
 }
 
-ip_address Inet_AtoN(const char * buf)
-{
 #ifdef MUSCLE_USE_IPV6
+static ip_address Inet6_AtoN(const char * buf, uint32 iIdx)
+{
    struct in6_addr dst;
-   if (inet_pton(AF_INET6, buf, &dst) > 0)
+   if (Inet_PtoN(AF_INET6, buf, &dst) > 0)
    {
       ip_address ret;
-      ret.ReadFromNetworkArray(dst.s6_addr);
+      ret.ReadFromNetworkArray(dst.s6_addr, &iIdx);
+
       return ret;
    }
    else return (IsIP4Address(buf)) ? ip_address(Inet4_AtoN(buf), 0) : invalidIP;
+}
+#endif
+
+ip_address Inet_AtoN(const char * buf)
+{
+#ifdef MUSCLE_USE_IPV6
+   const char * at = strchr(buf, '@');
+   if (at)
+   {
+      // Gah... Inet_PtoN() won't accept the @idx suffix, so
+      // I have to chop that out and parse it separately.  What a pain.
+      uint32 charsBeforeAt = at-buf;
+      char * tmp = newnothrow_array(char, 1+charsBeforeAt);
+      if (tmp)
+      {
+         memcpy(tmp, buf, charsBeforeAt);
+         tmp[charsBeforeAt] = '\0';
+         ip_address ret = Inet6_AtoN(tmp, atoi(at+1));
+         delete [] tmp;
+         return ret;
+      }
+      else 
+      {
+         WARN_OUT_OF_MEMORY;
+         return invalidIP;
+      }
+   }
+   else return Inet6_AtoN(buf, 0);
 #else
    return Inet4_AtoN(buf);
 #endif
@@ -947,32 +1133,24 @@ static ip_address ResolveIP(const char * s, bool allowDNSLookups)
 void IPAddressAndPort :: SetFromString(const String & s, uint16 defaultPort, bool allowDNSLookups)
 {
 #ifdef MUSCLE_USE_IPV6
-   int lBracket = s.IndexOf('[');
-   if (lBracket >= 0)
+   int32 rBracket = s.StartsWith('[') ? s.IndexOf(']') : -1;
+   if (rBracket >= 0)
    {
-      int rBracket = s.IndexOf(']', lBracket+1);
-      int colIdx   = (rBracket>=0) ? s.IndexOf(':', rBracket+1) : -1;
-      _ip   = ResolveIP(((rBracket>lBracket) ? s.Substring(lBracket+1,rBracket) : s.Substring(lBracket+1))(), allowDNSLookups);
+      // If there are brackets, they are assumed to surround the address part, e.g. "[::1]:9999"
+      _ip = ResolveIP(s.Substring(1,rBracket)(), allowDNSLookups);
+
+      int32 colIdx = s.IndexOf(':', rBracket+1);
       _port = ((colIdx >= 0)&&(muscleInRange(s()[colIdx+1], '0', '9'))) ? atoi(s()+colIdx+1) : defaultPort;
+      return;
    }
-   else
+   else if (s.GetNumInstancesOf(':') != 1)  // I assume IPv6-style address strings never have exactly one colon in them
    {
-      // If we see a colon after the last dot, then we'll assume that's a port separator.
-      // That way "old style" IPv4 address:port combos (e.g. "192.168.0.1:2960") still work
-      int lastDot = s.LastIndexOf('.');
-      int colIdx = (lastDot >= 0) ? s.IndexOf(':', lastDot+1) : -1;
-      if ((colIdx >= 0)&&(muscleInRange(s()[colIdx+1], '0', '9')))
-      {
-         _ip   = ResolveIP(s.Substring(0, colIdx)(), allowDNSLookups);
-         _port = atoi(s()+colIdx+1);
-      }
-      else
-      {
-         _ip   = ResolveIP(s(), allowDNSLookups);
-         _port = defaultPort;
-      }
+      _ip   = ResolveIP(s(), allowDNSLookups);
+      _port = defaultPort;
+      return;
    }
-#else
+#endif
+
    // Old style IPv4 parsing (e.g. "192.168.0.1" or "192.168.0.1:2960")
    int colIdx = s.IndexOf(':');
    if ((colIdx >= 0)&&(muscleInRange(s()[colIdx+1], '0', '9')))
@@ -985,7 +1163,6 @@ void IPAddressAndPort :: SetFromString(const String & s, uint16 defaultPort, boo
       _ip   = ResolveIP(s(), allowDNSLookups);
       _port = defaultPort;
    }
-#endif 
 }
 
 
@@ -1007,6 +1184,18 @@ String IPAddressAndPort :: ToString(bool includePort) const
    else return buf;
 }
 
+// defined here to avoid having to pull in MiscUtilityFunctions.cpp for everything
+String GetConnectString(const String & host, uint16 port)
+{
+#ifdef MUSCLE_USE_IPV6
+   char buf[32]; sprintf(buf, "]:%u", port);
+   return host.Prepend("[") + buf;
+#else
+   char buf[32]; sprintf(buf, ":%u", port);
+   return host + buf;
+#endif
+}
+
 static ip_address _customLocalhostIP = invalidIP;  // disabled by default
 void SetLocalHostIPOverride(const ip_address & ip) {_customLocalhostIP = ip;}
 ip_address GetLocalHostIPOverride() {return _customLocalhostIP;}
@@ -1017,7 +1206,11 @@ status_t SetSocketMulticastToSelf(const ConstSocketRef & sock, bool multicastToS
 {
    uint8 toSelf = (uint8) multicastToSelf;
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const sockopt_arg *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
+#ifdef MUSCLE_USE_IPV6
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, (const sockopt_arg *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
+#else
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP,   IP_MULTICAST_LOOP,   (const sockopt_arg *) &toSelf, sizeof(toSelf)) == 0)) ? B_NO_ERROR : B_ERROR;
+#endif
 }
 
 bool GetSocketMulticastToSelf(const ConstSocketRef & sock)
@@ -1025,29 +1218,96 @@ bool GetSocketMulticastToSelf(const ConstSocketRef & sock)
    uint8 toSelf;
    muscle_socklen_t size = sizeof(toSelf);
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (sockopt_arg *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
+#ifdef MUSCLE_USE_IPV6
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, (sockopt_arg *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
+#else
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP,   IP_MULTICAST_LOOP,   (sockopt_arg *) &toSelf, &size) == 0)&&(size == sizeof(toSelf))&&(toSelf));
+#endif
 }
 
 status_t SetSocketMulticastTimeToLive(const ConstSocketRef & sock, uint8 ttl)
 {
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (const sockopt_arg *) &ttl, sizeof(ttl)) == 0)) ? B_NO_ERROR : B_ERROR;
+   int ttl_arg = (int) ttl;  // MacOS/X won't take a uint8
+#ifdef MUSCLE_USE_IPV6
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (const sockopt_arg *) &ttl_arg, sizeof(ttl_arg)) == 0)) ? B_NO_ERROR : B_ERROR;
+#else
+   return ((fd>=0)&&(setsockopt(fd, IPPROTO_IP,   IP_MULTICAST_TTL,    (const sockopt_arg *) &ttl_arg, sizeof(ttl_arg)) == 0)) ? B_NO_ERROR : B_ERROR;
+#endif
 }
 
 uint8 GetSocketMulticastTimeToLive(const ConstSocketRef & sock)
 {
-   uint8 ttl = 0;
+   int ttl = 0;
    muscle_socklen_t size = sizeof(ttl);
    int fd = sock.GetFileDescriptor();
-   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, (sockopt_arg *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
+#ifdef MUSCLE_USE_IPV6
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (sockopt_arg *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
+#else
+   return ((fd>=0)&&(getsockopt(fd, IPPROTO_IP,   IP_MULTICAST_TTL,    (sockopt_arg *) &ttl, &size) == 0)&&(size == sizeof(ttl))) ? ttl : 0;
+#endif
 }
+
+#ifdef MUSCLE_USE_IPV6
+
+// Apparently not everyone has settled on the same IPv6 multicast constant names.... :^P
+#ifndef IPV6_ADD_MEMBERSHIP
+# define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
+#endif
+#ifndef IPV6_DROP_MEMBERSHIP
+# define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+#endif
+
+status_t SetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock, uint32 interfaceIndex)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return B_ERROR;
+
+   int idx = interfaceIndex;
+   return (setsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, (const sockopt_arg *) &idx, sizeof(idx)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+int32 GetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return -1;
+   
+   int idx = 0;
+   socklen_t len = sizeof(idx);
+   return ((getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, (sockopt_arg *) &idx, &len) == 0)&&(len == sizeof(idx))) ? idx : -1;
+}
+
+status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return B_ERROR;
+
+   struct ipv6_mreq req; memset(&req, 0, sizeof(req));
+   uint32 interfaceIdx;
+   groupAddress.WriteToNetworkArray((uint8*)(&req.ipv6mr_multiaddr), &interfaceIdx);
+   req.ipv6mr_interface = interfaceIdx;
+   return (setsockopt(fd, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, (const sockopt_arg *) &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress)
+{
+   int fd = sock.GetFileDescriptor();
+   if (fd < 0) return B_ERROR;
+
+   struct ipv6_mreq req; memset(&req, 0, sizeof(req));
+   uint32 interfaceIdx;
+   groupAddress.WriteToNetworkArray((uint8*)(&req.ipv6mr_multiaddr), &interfaceIdx);
+   req.ipv6mr_interface = interfaceIdx;
+   return (setsockopt(fd, IPPROTO_IPV6, IPV6_DROP_MEMBERSHIP, (const sockopt_arg *) &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
+}
+
+#else  // end IPv6 multicast, begin IPv4 multicast
 
 status_t SetSocketMulticastSendInterfaceAddress(const ConstSocketRef & sock, const ip_address & address)
 {
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return B_ERROR;
 
-   // TODO:  Add IPv6 support; in_addr only has a 32-bit address so it won't do
    struct in_addr localInterface; memset(&localInterface, 0, sizeof(localInterface));
    localInterface.s_addr = htonl(address);
    return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const sockopt_arg *) &localInterface, sizeof(localInterface)) == 0) ? B_NO_ERROR : B_ERROR;
@@ -1058,7 +1318,6 @@ ip_address GetSocketMulticastSendInterfaceAddress(const ConstSocketRef & sock)
    int fd = sock.GetFileDescriptor();
    if (fd < 0) return invalidIP;
    
-   // TODO:  Add IPv6 support; in_addr only has a 32-bit address so it won't do
    struct in_addr localInterface; memset(&localInterface, 0, sizeof(localInterface));
    muscle_socklen_t len = sizeof(localInterface);
    return ((getsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (sockopt_arg *) &localInterface, &len) == 0)&&(len == sizeof(localInterface))) ? ntohl(localInterface.s_addr) : invalidIP;
@@ -1067,7 +1326,7 @@ ip_address GetSocketMulticastSendInterfaceAddress(const ConstSocketRef & sock)
 status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
 {
    int fd = sock.GetFileDescriptor();
-   if (fd < 0) return invalidIP;
+   if (fd < 0) return B_ERROR;
 
    struct ip_mreq req; memset(&req, 0, sizeof(req));
    req.imr_multiaddr.s_addr = htonl(groupAddress);
@@ -1078,7 +1337,7 @@ status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address
 status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress)
 {
    int fd = sock.GetFileDescriptor();
-   if (fd < 0) return invalidIP;
+   if (fd < 0) return B_ERROR;
 
    struct ip_mreq req; memset(&req, 0, sizeof(req));
    req.imr_multiaddr.s_addr = htonl(groupAddress);
@@ -1086,6 +1345,8 @@ status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_ad
    return (setsockopt(fd, IPPROTO_IP, IP_DROP_MEMBERSHIP, (const sockopt_arg *) &req, sizeof(req)) == 0) ? B_NO_ERROR : B_ERROR;
 }
 
+#endif  // IPv4 multicast
+
 #endif  // MUSCLE_ENABLE_MULTICAST_API
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

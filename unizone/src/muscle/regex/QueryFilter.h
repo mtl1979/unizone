@@ -7,7 +7,7 @@
 #include "util/ByteBuffer.h"
 #include "message/Message.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class DataNode;
 class StringMatcher;
@@ -219,7 +219,7 @@ public:
       const void * dt;
       uint32 numBytes;
       if ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&
-          (archive.FindInt8("op", (int8*)&_op)       == B_NO_ERROR)&&
+          (archive.FindInt8("op", _op)               == B_NO_ERROR)&&
           (archive.FindData("val", DataTypeCode, &dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_value)))
       {
          _value = *((DataType *)dt);
@@ -745,6 +745,6 @@ QueryFilterFactoryRef GetGlobalQueryFilterFactory();
   */
 void SetGlobalQueryFilterFactory(const QueryFilterFactoryRef & newFactory);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

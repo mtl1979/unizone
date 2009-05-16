@@ -2,7 +2,7 @@
 #include "util/MiscUtilityFunctions.h"
 #include "system/GlobalMemoryAllocator.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 void ByteBuffer :: AdoptBuffer(uint32 numBytes, uint8 * optBuffer)
 {
@@ -147,5 +147,10 @@ status_t Flattenable :: UnflattenFromByteBuffer(const ByteBuffer & buf)
    return Unflatten(buf.GetBuffer(), buf.GetNumBytes());
 }
 
-END_NAMESPACE(muscle);
+status_t Flattenable :: UnflattenFromByteBuffer(const ConstRef<ByteBuffer> & buf)
+{
+   return buf() ? Unflatten(buf()->GetBuffer(), buf()->GetNumBytes()) : B_ERROR;
+}
+
+}; // end namespace muscle
 

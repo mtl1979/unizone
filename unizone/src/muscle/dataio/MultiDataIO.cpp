@@ -1,6 +1,6 @@
 #include "dataio/MultiDataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
  
 int32 MultiDataIO :: Read(void * buffer, uint32 size)
 {
@@ -49,4 +49,4 @@ status_t MultiDataIO :: SeekAll(uint32 first, int64 offset, int whence)
    return B_NO_ERROR;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

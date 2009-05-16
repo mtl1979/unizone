@@ -10,7 +10,7 @@
 # include "zlib/ZLibCodec.h"
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  * Encoding IDs.  As of MUSCLE 2.40, we support vanilla MUSCLE_MESSAGE_ENCODING_DEFAULT and 9 levels of zlib compression!
@@ -232,6 +232,18 @@ private:
    String _syncPingKey;
 };
 
+/** Convenience method:  Connects to the specified IPAddressAndPort via TCP, sends the specified Message, waits
+  * for a reply Message, and returns the reply Message.  This is useful if you want a client/server transaction
+  * to act like a function call, although it is a bit inefficient since the TCP connection is re-established
+  * and then closed every time this function is called.
+  * @param requestMessage the request Message to send
+  * @param targetIAP Where to connect to (via TCP) to send (requestMessage)
+  * @param timeoutPeriod The maximum amount of time this function should wait for a reply before returning.
+  *                      Defaults to MUSCLE_TIME_NEVER, i.e. no timeout.
+  * @returns A reference to a reply Message, or a NULL MessageRef() on failure (couldn't connect, or no reply received)
+  */
+MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
+
 //////////////////////////////////////////////////////////////////////////////////
 //
 // Here is a commented example of a flattened Message's byte structure, using
@@ -297,6 +309,6 @@ private:
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

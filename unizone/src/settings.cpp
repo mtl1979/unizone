@@ -110,7 +110,7 @@ int32
 WSettings::GetCurrentServerItem() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(SERVER_ITEM, &i);	// if it fails, who cares, return 0
+        fSet()->FindInt32(SERVER_ITEM, i);	// if it fails, who cares, return 0
 	return i;
 }
 
@@ -156,7 +156,7 @@ int32
 WSettings::GetCurrentUserItem() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(USER_ITEM, &i);
+        fSet()->FindInt32(USER_ITEM, i);
 	return i;
 }
 
@@ -202,7 +202,7 @@ int32
 WSettings::GetCurrentStatusItem() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(STATUS_ITEM, &i);
+        fSet()->FindInt32(STATUS_ITEM, i);
 	return i;
 }
 
@@ -216,14 +216,14 @@ WSettings::SetStyle(WinShareWindow::Style style)
 WinShareWindow::Style
 WSettings::GetStyle() const
 {
-	WinShareWindow::Style s = 
+        int32 s =
 #ifdef WIN32
 		WinShareWindow::Windows;
 #else
 		WinShareWindow::Motif;
 #endif
-	fSet()->FindInt32(STYLE, (int32 *)&s);
-	return s;
+        fSet()->FindInt32(STYLE, s);
+        return (WinShareWindow::Style) s;
 }
 
 // column
@@ -237,7 +237,7 @@ int32
 WSettings::GetColumnItem(int index) const
 {
 	int32 i = -1;
-	fSet()->FindInt32(COLUMN_LIST, index, &i);
+        fSet()->FindInt32(COLUMN_LIST, index, i);
 	return i;
 }
 
@@ -265,7 +265,7 @@ int32
 WSettings::GetWindowHeight() const
 {
 	int32 i = -1;
-	fSet()->FindInt32(WINDOW_HEIGHT, &i);
+        fSet()->FindInt32(WINDOW_HEIGHT, i);
 	return i;
 }
 
@@ -273,7 +273,7 @@ int32
 WSettings::GetWindowWidth() const
 {
 	int32 i = -1;
-	fSet()->FindInt32(WINDOW_WIDTH, &i);
+        fSet()->FindInt32(WINDOW_WIDTH, i);
 	return i;
 }
 
@@ -281,7 +281,7 @@ int32
 WSettings::GetWindowX() const
 {
 	int32 i = -1;
-	fSet()->FindInt32(WINDOW_X, &i);
+        fSet()->FindInt32(WINDOW_X, i);
 	return i;
 }
 
@@ -289,7 +289,7 @@ int32
 WSettings::GetWindowY() const
 {
 	int32 i = -1;
-	fSet()->FindInt32(WINDOW_Y, &i);
+        fSet()->FindInt32(WINDOW_Y, i);
 	return i;
 }
 
@@ -323,7 +323,7 @@ WSettings::GetChatSizes() const
 {
 	Q3ValueList<int> l;
 	int32 j;
-	for (int i = 0; fSet()->FindInt32(CHAT_SIZES, i, &j) == B_OK; i++)
+        for (int i = 0; fSet()->FindInt32(CHAT_SIZES, i, j) == B_OK; i++)
 		l.append(j);
 	return l;
 }
@@ -340,7 +340,7 @@ WSettings::GetMainSizes() const
 {
 	Q3ValueList<int> l;
 	int32 j;
-	for (int i = 0; fSet()->FindInt32(USER_SIZES, i, &j) == B_OK; i++)
+        for (int i = 0; fSet()->FindInt32(USER_SIZES, i, j) == B_OK; i++)
 		l.append(j);
 	return l;
 }
@@ -523,7 +523,7 @@ WSettings::Save()
 #define SET_BOOL(X, Y) fSet()->ReplaceBool(true, X, Y)
 #define GET_BOOL(X, D) \
 	bool r = D; \
-	fSet()->FindBool(X, &r); \
+        fSet()->FindBool(X, r); \
 	return r;
 
 void
@@ -686,7 +686,7 @@ uint32
 WSettings::GetHTTPPort() const
 {
 	uint32 p = 0;
-	fSet()->FindInt32(HTTPPORT, (int32 *) &p);
+        fSet()->FindInt32(HTTPPORT, p);
 	return p;
 }
 
@@ -702,7 +702,7 @@ WSettings::GetEncoding(const QString & server, uint16 port) const
 {
 	QString key = server+":"+QString::number(port);
 	uint32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT;
-	fSet()->FindInt32((const char *) key.utf8(), (int32 *) &encoding);
+        fSet()->FindInt32((const char *) key.utf8(), encoding);
 	return encoding;
 }
 
@@ -718,7 +718,7 @@ WSettings::GetMaxUsers(const QString & server, uint16 port) const
 {
 	QString key = MAXUSERS + server+":"+QString::number(port);
 	uint32 users = 0;
-	fSet()->FindInt32((const char *) key.utf8(), (int32 *) &users);
+        fSet()->FindInt32((const char *) key.utf8(), users);
 	return users;
 }
 
@@ -876,7 +876,7 @@ int32
 WSettings::GetAutoAway() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(AUTO_AWAY, &i);
+        fSet()->FindInt32(AUTO_AWAY, i);
 	return i;
 }
 
@@ -899,7 +899,7 @@ int64
 WSettings::GetRegisterTime() const
 {
 	int64 i = GetCurrentTime64();
-	fSet()->FindInt64(REGISTERTIME, &i);
+        fSet()->FindInt64(REGISTERTIME, i);
 	return i;
 }
 
@@ -910,7 +910,7 @@ WSettings::GetRegisterTime(const QString & nick) const
 	ni += "_";
 	ni += (const char *) nick.utf8();
 	int64 i = GetCurrentTime64();
-	fSet()->FindInt64(ni, &i);
+        fSet()->FindInt64(ni, i);
 	return i;
 }
 
@@ -924,7 +924,7 @@ int32
 WSettings::GetFlash() const
 {
 	int32 i = FlashAll;
-	fSet()->FindInt32(FLASH, &i);
+        fSet()->FindInt32(FLASH, i);
 	return i;
 }
 
@@ -938,7 +938,7 @@ int32
 WSettings::GetEmptyWindows() const
 {
 	int32 i = 1;
-	fSet()->FindInt32(EMPTYWIN, &i);
+        fSet()->FindInt32(EMPTYWIN, i);
 	return i;
 }
 
@@ -958,7 +958,7 @@ int32
 WSettings::GetBasePort() const
 {
 	int32 i = 7000;
-	fSet()->FindInt32(BASEPORT, &i);
+        fSet()->FindInt32(BASEPORT, i);
 	return i;
 }
 
@@ -972,7 +972,7 @@ int32
 WSettings::GetPortRange() const
 {
 	int32 i = 100;
-	fSet()->FindInt32(PORTRANGE, &i);
+        fSet()->FindInt32(PORTRANGE, i);
 	return i;
 }
 
@@ -986,7 +986,7 @@ int32
 WSettings::GetMaxUploads() const
 {
 	int32 i = Five;
-	fSet()->FindInt32(MAX_UPLOADS, &i);
+        fSet()->FindInt32(MAX_UPLOADS, i);
 	return i;
 }
 
@@ -1000,7 +1000,7 @@ int32
 WSettings::GetMaxDownloads() const
 {
 	int32 i = Five;
-	fSet()->FindInt32(MAX_DOWNLOADS, &i);
+        fSet()->FindInt32(MAX_DOWNLOADS, i);
 	return i;
 }
 
@@ -1014,7 +1014,7 @@ int32
 WSettings::GetFontSize() const
 {
 	int32 i = 3;
-	fSet()->FindInt32(FONT_SIZE, &i);
+        fSet()->FindInt32(FONT_SIZE, i);
 	return i;
 }
 
@@ -1206,7 +1206,7 @@ int32
 WSettings::GetChatLimit() const
 {
 	int32 i = LimitNone;
-	fSet()->FindInt32(CHAT_LIMIT, &i);
+        fSet()->FindInt32(CHAT_LIMIT, i);
 	return i;
 }
 
@@ -1220,7 +1220,7 @@ int32
 WSettings::GetULLimit() const
 {
 	int32 i = LimitNone;
-	fSet()->FindInt32(UL_LIMIT, &i);
+        fSet()->FindInt32(UL_LIMIT, i);
 	return i;
 }
 
@@ -1234,7 +1234,7 @@ int32
 WSettings::GetDLLimit() const
 {
 	int32 i = LimitNone;
-	fSet()->FindInt32(DL_LIMIT, &i);
+        fSet()->FindInt32(DL_LIMIT, i);
 	return i;
 }
 
@@ -1248,7 +1248,7 @@ int32
 WSettings::GetBLLimit() const
 {
 	int32 i = LimitNone;
-	fSet()->FindInt32(BL_LIMIT, &i);
+        fSet()->FindInt32(BL_LIMIT, i);
 	return i;
 }
 
@@ -1263,13 +1263,13 @@ WSettings::GetPacketSize() const
 {
 	double d = 8;
 	int32 i = 8; // old format
-	if (fSet()->FindInt32(PACKET_SIZE, &i) == B_OK)
+        if (fSet()->FindInt32(PACKET_SIZE, i) == B_OK)
 	{
 		d = i;
 	}
 	else
 	{
-		fSet()->FindDouble(PACKET_SIZE, &d);
+                fSet()->FindDouble(PACKET_SIZE, d);
 	}
 	return d;
 }
@@ -1285,7 +1285,7 @@ int32
 WSettings::GetMinQueued() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(MIN_QUEUED, &i);
+        fSet()->FindInt32(MIN_QUEUED, i);
 	return i;
 }
 
@@ -1369,7 +1369,7 @@ uint64
 WSettings::GetTransmitStats() const
 {
 	uint64 t = 0;
-	fSet()->FindInt64(TX_STATS, (int64 *)&t);
+        fSet()->FindInt64(TX_STATS, t);
 	return t;
 }
 
@@ -1383,7 +1383,7 @@ uint64
 WSettings::GetReceiveStats() const
 {
 	uint64 r = 0;
-	fSet()->FindInt64(RX_STATS, (int64 *)&r);
+        fSet()->FindInt64(RX_STATS, r);
 	return r;
 }
 
@@ -1455,7 +1455,7 @@ int32
 WSettings::GetNickListSortColumn() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(NL_SORTCOL, &i);	// if it fails, who cares, return 0
+        fSet()->FindInt32(NL_SORTCOL, i);	// if it fails, who cares, return 0
 	return i;
 }
 
@@ -1481,7 +1481,7 @@ int32
 WSettings::GetSearchListSortColumn() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(SL_SORTCOL, &i);
+        fSet()->FindInt32(SL_SORTCOL, i);
 	return i;
 }
 
@@ -1537,7 +1537,7 @@ int32
 WSettings::GetCurrentQueryItem() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(QUERY_ITEM, &i);
+        fSet()->FindInt32(QUERY_ITEM, i);
 	return i;
 }
 
@@ -1583,7 +1583,7 @@ int32
 WSettings::GetResumeCount() const
 {
 	int32 i = 0;
-	fSet()->FindInt32(RESUMELIST, &i);	// if it fails, return 0
+        fSet()->FindInt32(RESUMELIST, i);	// if it fails, return 0
 	return i;
 }
 
@@ -1621,10 +1621,10 @@ WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl,
 	MessageRef mref;
 	if (fSet()->FindMessage(sToolBar, mref) == B_OK)
 	{
-		mref()->FindInt32("dock", &dock);
-		mref()->FindInt32("index", &index);
-		mref()->FindBool("nl", &nl);
-		mref()->FindInt32("extra", &extra);
+                mref()->FindInt32("dock", dock);
+                mref()->FindInt32("index", index);
+                mref()->FindBool("nl", nl);
+                mref()->FindInt32("extra", extra);
 	}
 }
 
@@ -1653,7 +1653,7 @@ WSettings::GetInstallID()
 	uint64 i1 = rand()*(ULONG_MAX/RAND_MAX);
 	uint64 i2 = rand()*(ULONG_MAX/RAND_MAX);
 	int64 iid = (i1 << 32) + i2;
-	fSet()->FindInt64(INSTALLID, &iid);
+        fSet()->FindInt64(INSTALLID, iid);
 	return iid;
 }
 

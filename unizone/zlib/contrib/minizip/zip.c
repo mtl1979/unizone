@@ -322,6 +322,9 @@ local uLong ziplocal_TmzDateToDosDate(ptm,dosDate)
     uLong dosDate;
 {
     uLong year = (uLong)ptm->tm_year;
+
+    (void) dosDate;  // to shut the compiler up -- jaf
+
     if (year>1980)
         year-=1980;
     else if (year>80)

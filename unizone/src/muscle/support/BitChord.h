@@ -6,7 +6,7 @@
 #include "util/String.h"
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** A templated class for implement an N-bit-long bit-chord.  Useful for doing efficient parallel boolean operations
   * in bit-lengths that can't fit in any of the standard integer types.
@@ -152,6 +152,6 @@ private:
   inline const BitChord<N> operator & (const BitChord<N> & lhs, const BitChord<N> & rhs) {BitChord<N> ret(lhs); ret &= rhs; return ret;} \
   inline const BitChord<N> operator ^ (const BitChord<N> & lhs, const BitChord<N> & rhs) {BitChord<N> ret(lhs); ret ^= rhs; return ret;}
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

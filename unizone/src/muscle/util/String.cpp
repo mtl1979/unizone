@@ -3,7 +3,7 @@
 #include "util/String.h"
 #include <stdarg.h>
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 status_t
 String::SetFromString(const String & s, uint32 firstChar, uint32 afterLastChar)
@@ -47,19 +47,6 @@ String::SetCstr(const char * str, uint32 maxLen)
 }
 
 String &
-String::operator-=(const char aChar)
-{
-   int idx = LastIndexOf(aChar);
-   if (idx >= 0)
-   {
-      String temp = Substring(idx+1);
-      (*this) = this->Substring(0, idx);
-      (*this) += temp;
-   }
-   return *this;
-}
-
-String &
 String::operator+=(const String &other)
 {
    uint32 otherLen = other.Length();
@@ -89,17 +76,46 @@ String::operator+=(const char * other)
 }
 
 String &
+String::operator-=(const char aChar)
+{
+   int idx = LastIndexOf(aChar);
+   if (idx >= 0)
+   {
+      memmove(&_buffer[idx], &_buffer[idx+1], 1+_length-idx);
+      --_length;
+   }
+   return *this;
+}
+
+String &
 String::operator-=(const String &other)
 {
-   if (*this == other) Clear();
-   else
+        if (*this == other) Clear();
+   else if (other.HasChars())
    {
       int idx = LastIndexOf(other);
       if (idx >= 0)
       {
-         String temp = Substring(idx+other.Length());
-         (*this) = Substring(0, idx);
-         (*this) += temp;
+         uint32 newEndIdx = idx+other.Length();
+         memmove(&_buffer[idx], &_buffer[newEndIdx], 1+_length-newEndIdx);
+         _length -= other.Length();
+      }
+   }
+   return *this;
+}
+
+String &
+String::operator -= (const char * other)
+{
+   int otherLen = ((other)&&(*other)) ? strlen(other) : 0;
+   if (otherLen > 0)
+   {
+      int idx = LastIndexOf(other);
+      if (idx >= 0)
+      {
+         uint32 newEndIdx = idx+otherLen;
+         memmove(&_buffer[idx], &_buffer[newEndIdx], 1+_length-newEndIdx);
+         _length -= otherLen;
       }
    }
    return *this;
@@ -646,15 +662,31 @@ const String & GetEmptyString()
  *-------------------------------------------------------------*/ 
 uint32 CStringHashFunc(const char * n)
 {
-    uint32 h = 0, g; 
+    uint32 h = 0, g;
     const unsigned char * name = (const unsigned char *) n;
-    while (*name) 
-    { 
-        h = (h << 4) + *name++; 
-        if ((g = h & 0xF0000000) != 0) h ^= g >> 24; 
-        h &= ~g; 
-    } 
-    return h; 
+    while(*name)
+    {
+        h = (h << 4) + *name++;
+        if ((g = h & 0xF0000000) != 0) h ^= g >> 24;
+        h &= ~g;
+    }
+    return h;
+}
+
+
+/** A version of ElfHash that generates a 64-bit hash */
+uint64 CStringHashFunc64(const char * n)
+{
+    static const uint64 bitMask = ((uint64)0x0F)<<60;
+    uint64 h = 0, g;
+    const unsigned char * name = (const unsigned char *) n;
+    while(*name)
+    {
+        h = (h << 4) + *name++;
+        if ((g = h & bitMask) != 0) h ^= g >> 56;
+        h &= ~g;
+    }
+    return h;
 }
 
 int CStringCompareFunc(const char * const & s1, const char * const & s2, void *)
@@ -791,4 +823,4 @@ int NumericAwareCStringCompareFunc(const char * const & ss1, const char * const 
 int NumericAwareStringCompareFunc(const String & s1,         const String & s2,         void *) {return strnatcmp(s1(), s2());}
 int NumericAwareStringCompareFunc(const String * const & s1, const String * const & s2, void *) {return strnatcmp(s1->Cstr(), s2->Cstr());}
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

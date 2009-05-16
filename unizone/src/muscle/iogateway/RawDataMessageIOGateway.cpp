@@ -2,7 +2,7 @@
 
 #include "iogateway/RawDataMessageIOGateway.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 RawDataMessageIOGateway ::
 RawDataMessageIOGateway(uint32 minChunkSize, uint32 maxChunkSize) : _recvScratchSpace(NULL), _minChunkSize(minChunkSize), _maxChunkSize(maxChunkSize)
@@ -152,4 +152,4 @@ Reset()
    _recvMsgRef.Reset();
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

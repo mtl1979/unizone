@@ -10,7 +10,7 @@
 #include "dataio/DataIO.h"
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  *  Data I/O to and from a file descriptor (useful for talking to Linux device drivers and the like)
@@ -87,6 +87,6 @@ private:
    bool _blocking;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

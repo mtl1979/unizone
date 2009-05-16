@@ -6,7 +6,7 @@
 #include "dataio/DataIO.h"
 #include "util/Queue.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
  
 /** This DataIO holds a list of one or more other DataIO objects, and passes any
   * calls made to all the sub-DataIOs.  If an error occurs on any of the sub-objects,
@@ -64,6 +64,6 @@ private:
    Queue<DataIORef> _childIOs;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

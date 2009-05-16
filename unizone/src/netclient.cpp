@@ -432,7 +432,7 @@ NetClient::HandleUniAddMessage(const String & nodePath, MessageRef ref)
 					{
 						int64 rtime;
 						QString user, newid, oldid;
-						tmpRef()->FindInt64("registertime", &rtime);
+                                                tmpRef()->FindInt64("registertime", rtime);
 						GetStringFromMessage(tmpRef, "user", user);
 						GetStringFromMessage(tmpRef, PR_NAME_SESSION, newid);
 						if (GetStringFromMessage(tmpRef, "oldid", oldid) == B_OK)

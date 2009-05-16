@@ -1,9 +1,5 @@
 /* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
-#if defined(__linux__) || defined(__APPLE__)
-# include <signal.h>
-#endif
-
 #include "reflector/ReflectServer.h"
 #include "reflector/StorageReflectConstants.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -13,19 +9,7 @@
 # include "system/GlobalMemoryAllocator.h"
 #endif
 
-static volatile bool _signalCaught = false;
-
-#if defined(WIN32)
-static BOOL Win32SignalHandlerCallbackFunc(DWORD /*ctlType*/)
-{
-   _signalCaught = true;
-   return true;
-}
-#else
-void MuscleSignalHandlerCallbackFunc(int /*signum*/) {_signalCaught = true;}
-#endif
-
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 status_t
 ReflectServer ::
@@ -192,8 +176,10 @@ AttachNewSession(const AbstractReflectSessionRef & ref)
 }
 
 
-ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _serverStartedAt(0), _doLogging(true), _setSignalHandlingEnabledWasCalled(false), _watchMemUsage(optMemoryUsageTracker)
+ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepServerGoing(true), _serverStartedAt(0), _doLogging(true), _serverSessionID(GetCurrentTime64()+GetRunTime64()+rand()), _watchMemUsage(optMemoryUsageTracker)
 {
+   if (_serverSessionID == 0) _serverSessionID++;  // paranoia:  make sure 0 can be used as a guard value
+
    // make sure _lameDuckSessions has plenty of memory available in advance (we need might need it in a tight spot later!)
    _lameDuckSessions.EnsureSize(256);
    _sessions.SetKeyCompareFunction(StringCompareFunc);
@@ -291,22 +277,18 @@ ServerProcessLoop()
 {
    TCHECKPOINT;
 
-#ifdef MUSCLE_CATCH_SIGNALS_BY_DEFAULT
-   if (_setSignalHandlingEnabledWasCalled == false) SetSignalHandlingEnabled(true);
-#endif
-
    _serverStartedAt = GetRunTime64();
 
    if (_doLogging)
    {
       LogTime(MUSCLE_LOG_DEBUG, "This %s server was compiled on " __DATE__ " " __TIME__ "\n", GetServerName());
-      LogTime(MUSCLE_LOG_DEBUG, "The server was compiled with MUSCLE version %s.  IPv6 support is %s.\n", MUSCLE_VERSION_STRING,
 #ifdef MUSCLE_USE_IPV6
-           "enabled"
+      const char * verb = "enabled";
 #else
-           "disabled"
+      const char * verb = "disabled";
 #endif
-      );
+      LogTime(MUSCLE_LOG_DEBUG, "The server was compiled with MUSCLE version %s.  IPv6 support is %s.\n", MUSCLE_VERSION_STRING, verb);
+      LogTime(MUSCLE_LOG_DEBUG, "This server's session ID is "UINT64_FORMAT_SPEC".\n", GetServerSessionID());
    }
 
    if (ReadyToRun() != B_NO_ERROR) 
@@ -318,7 +300,7 @@ ServerProcessLoop()
    TCHECKPOINT;
 
    // Print an informative startup message
-   if (_doLogging)
+   if ((_doLogging)&&(GetMaxLogLevel() >= MUSCLE_LOG_DEBUG))
    {
       if (_factories.HasItems())
       {
@@ -341,7 +323,10 @@ ServerProcessLoop()
             if ((GetNetworkInterfaceInfos(ifs) == B_NO_ERROR)&&(ifs.HasItems()))
             {
                LogTime(MUSCLE_LOG_DEBUG, "This host's network interface addresses are as follows:\n");
-               for (uint32 i=0; i<ifs.GetNumItems(); i++) LogTime(MUSCLE_LOG_DEBUG, "- %s (%s)\n", Inet_NtoA(ifs[i].GetLocalAddress())(), ifs[i].GetName()());
+               for (uint32 i=0; i<ifs.GetNumItems(); i++) 
+               {
+                  LogTime(MUSCLE_LOG_DEBUG, "- %s (%s)\n", Inet_NtoA(ifs[i].GetLocalAddress())(), ifs[i].GetName()());
+               }
             }
             else LogTime(MUSCLE_LOG_ERROR, "Couldn't retrieve this server's network interface addresses list.\n"); 
          }
@@ -765,7 +750,7 @@ void ReflectServer :: LogAcceptFailed(int lvl, const char * desc, const char * i
    if (_doLogging)
    {
       if (iap.GetIPAddress() == invalidIP) LogTime(lvl, "%s for [%s] on port %u.\n", desc, ipbuf?ipbuf:"???", iap.GetPort());
-                                      else LogTime(lvl, "%s for [%s] on port %u on interface %s.\n", desc, ipbuf?ipbuf:"???", iap.GetPort(), Inet_NtoA(iap.GetIPAddress())());
+                                      else LogTime(lvl, "%s for [%s] on port %u on interface [%s].\n", desc, ipbuf?ipbuf:"???", iap.GetPort(), Inet_NtoA(iap.GetIPAddress())());
    }
 }
 
@@ -1009,11 +994,7 @@ ReflectServer ::
 FinalizeAsyncConnect(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * session = ref();
-#ifdef MUSCLE_AVOID_NAMESPACES
-   if ((session)&&(::FinalizeAsyncConnect(session->GetSessionSelectSocket()) == B_NO_ERROR))
-#else
    if ((session)&&(muscle::FinalizeAsyncConnect(session->GetSessionSelectSocket()) == B_NO_ERROR))
-#endif
    {
       session->_connectingAsync = false;  // we're legit now!  :^)
       session->_isConnected = session->_wasConnected = true;
@@ -1081,94 +1062,4 @@ AddLameDuckSession(AbstractReflectSession * who)
    }
 }
 
-class SignalHandler : public PulseNode
-{
-public:
-   SignalHandler() : _server(NULL) {/* empty */}
-
-   virtual uint64 GetPulseTime(const PulseArgs & args)
-   {
-      return _server ? (_signalCaught ? 0 : (args.GetCallbackTime()+1000000)) : MUSCLE_TIME_NEVER;
-   }
-
-   virtual void Pulse(const PulseArgs &)
-   {
-      if ((_signalCaught)&&(_server))
-      {
-         LogTime(MUSCLE_LOG_INFO, "SignalHandler:  Signal caught, shutting down server!\n");
-         _server->EndServer();
-      }
-   }
-
-   void SetServer(ReflectServer * s) {_server = s;}
-   ReflectServer * GetServer() const {return _server;}
-
-private:
-   ReflectServer * _server;
-};
-static SignalHandler _signalHandler;
-
-status_t ReflectServer :: SetSignalHandlingEnabled(bool enabled)
-{
-   _signalCaught = false;
-   _setSignalHandlingEnabledWasCalled = true;
-
-#if defined(WIN32)
-   if (enabled == (_signalHandler.GetServer() != NULL)) return B_NO_ERROR;
-   else
-   {
-      if (SetConsoleCtrlHandler( (PHANDLER_ROUTINE) Win32SignalHandlerCallbackFunc, enabled))
-      {
-         if (enabled)
-         {
-            _signalHandler.SetServer(this);
-            (void) PutPulseChild(&_signalHandler);
-         }
-         else
-         {
-            (void) RemovePulseChild(&_signalHandler);
-            _signalHandler.SetServer(NULL);
-         }
-         return B_NO_ERROR;
-      }
-      else return B_ERROR;
-   }
-#elif defined(__linux__) || defined(__APPLE__)
-   struct sigaction newact;
-   sigemptyset(&newact.sa_mask);           /*no other signals blocked*/
-   newact.sa_flags=0;                      /*no special options*/
-
-   if (enabled)
-   {
-      if (_signalHandler.GetServer() == NULL)
-      {
-         newact.sa_handler = MuscleSignalHandlerCallbackFunc;  /*set the new handler*/
-         if (sigaction(SIGINT,  &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGINT signal handler\n");
-         if (sigaction(SIGTERM, &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGTERM signal handler\n");
-         if (sigaction(SIGHUP,  &newact, NULL) == -1) LogTime(MUSCLE_LOG_WARNING, "Couldn't install SIGHUP signal handler\n");
-      }
-      _signalHandler.SetServer(this);
-      (void) PutPulseChild(&_signalHandler);
-   }
-   else
-   {
-      (void) RemovePulseChild(&_signalHandler);
-      if (_signalHandler.GetServer())
-      {
-         newact.sa_handler = NULL;
-         (void) sigaction(SIGINT,  NULL, NULL);
-         (void) sigaction(SIGTERM, NULL, NULL);
-         (void) sigaction(SIGHUP,  NULL, NULL);
-      }
-      _signalHandler.SetServer(NULL);
-   }
-   return B_NO_ERROR;
-#else
-   (void) enabled;
-   return B_ERROR;
-#endif
-}
-
-bool WasSignalCaught() {return _signalCaught;}
-
-END_NAMESPACE(muscle);
+}; // end namespace muscle

@@ -6,7 +6,7 @@
 #include "dataio/DataIO.h"
 #include "util/ByteBuffer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
  
 /** This DataIO is a "wrapper" DataIO that adds an XOR operation to any data
   * that it reads or writes before passing the call on to the DataIO that it
@@ -81,6 +81,6 @@ private:
    ByteBuffer _tempBuf;   // holds the XOR'd bytes temporarily for us
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

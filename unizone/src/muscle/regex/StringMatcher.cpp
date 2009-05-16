@@ -4,7 +4,7 @@
 #include "regex/StringMatcher.h"
 #include "util/String.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 static StringMatcherRef::ItemPool _stringMatcherPool;
 StringMatcherRef::ItemPool * GetStringMatcherPool() {return &_stringMatcherPool;}
@@ -30,7 +30,15 @@ StringMatcher :: StringMatcher(const String & str, bool simple) : _regExpValid(f
 
 StringMatcher :: ~StringMatcher()
 {
+   Reset();
+}
+
+void StringMatcher :: Reset()
+{
    if (_regExpValid) regfree(&_regExp);
+   _regExpValid = _negate = _hasRegexTokens = false;
+   _rangeMin = _rangeMax = MUSCLE_NO_LIMIT;
+   _pattern.Clear();
 }
 
 status_t StringMatcher::SetPattern(const String & s, bool isSimple) 
@@ -230,4 +238,4 @@ bool MakeRegexCaseInsensitive(String & str)
    return changed;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

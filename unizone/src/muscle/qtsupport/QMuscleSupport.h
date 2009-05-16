@@ -15,9 +15,7 @@
 # include "util/Hashtable.h"
 #endif
 
-#ifndef MUSCLE_AVOID_NAMESPACES
 namespace muscle {
-#endif
 
 #ifndef MUSCLE_USING_OLD_MICROSOFT_COMPILER
 template <class T> class HashFunctor;
@@ -41,8 +39,6 @@ public:
    }
 };
 
-#ifndef MUSCLE_AVOID_NAMESPACES
 };  // end namespace muscle
-#endif
 
 #endif

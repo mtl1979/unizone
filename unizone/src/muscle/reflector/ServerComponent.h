@@ -8,7 +8,7 @@
 #include "util/PulseNode.h"
 #include "util/NetworkUtilityFunctions.h"  // for ip_address
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class AbstractReflectSession;
 class ReflectServer;
@@ -86,6 +86,9 @@ public:
 protected:
    /** Returns the number of milliseconds that the server has been running. */
    uint64 GetServerUptime() const;
+
+   /** Returns a number that is unique (hopefully) to our ReflectServer object in this process */
+   uint64 GetServerSessionID() const;
 
    /** Returns the number of bytes that are currently available to be allocated */
    uint32 GetNumAvailableBytes() const;
@@ -232,6 +235,6 @@ private:
    ReflectServer * _owner;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

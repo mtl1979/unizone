@@ -10,7 +10,7 @@
 # include <sys/ipc.h>
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This class is a simple platform-independent API wrapper around the native OS's shared-memory facilities.
   * It can be used to create and access shared memory areas from different processes.
@@ -134,6 +134,6 @@ private:
    bool _isCreatedLocally;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

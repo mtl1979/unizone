@@ -1,6 +1,9 @@
+#ifndef MuscleCPULoadMeter_h 
+#define MuscleCPULoadMeter_h 
+
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This class knows how to measure the total load on the host computer's CPU.
   * Note that the internal implementation of this class is OS-specific and so
@@ -48,4 +51,6 @@ private:
 #endif
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
+
+#endif

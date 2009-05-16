@@ -5,7 +5,7 @@
 
 #include "regex/StringMatcher.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Similar to a StringMatcher, but this version segments both the wild card expression and
   * the paths to be matched against into sections.  For example, if the wild card expression
@@ -94,6 +94,6 @@ SegmentedStringMatcherRef GetSegmentedStringMatcherFromPool();
   */
 SegmentedStringMatcherRef GetSegmentedStringMatcherFromPool(const String & matchString, bool isSimpleFormat = true, const char * segmentSeparatorChars = "/");
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

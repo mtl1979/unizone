@@ -7,7 +7,7 @@
 # include <sys/shm.h>
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifndef WIN32
 static const short LARGEST_SEMAPHORE_DELTA = 10000;  // I'm assuming there will never be this many processes
@@ -290,4 +290,4 @@ status_t SharedMemory :: AdjustSemaphore(short delta)
 }
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

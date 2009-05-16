@@ -6,7 +6,7 @@
 #include "dataio/DataIO.h"
 #include "util/Queue.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
  
 class FailoverDataIO;
 
@@ -127,6 +127,6 @@ private:
    IFailoverNotifyTarget * _target;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

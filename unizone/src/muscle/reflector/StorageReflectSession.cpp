@@ -5,7 +5,7 @@
 #include "reflector/StorageReflectSession.h"
 #include "iogateway/MessageIOGateway.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #define DEFAULT_PATH_PREFIX "*/*"  // when we get a path name without a leading '/', prepend this
 #define DEFAULT_MAX_SUBSCRIPTION_MESSAGE_SIZE   50   // no more than 50 items/update message, please
@@ -75,7 +75,7 @@ InitSharedData()
 
    Message & state = GetCentralState();
 
-   void * sp = NULL; (void) state.FindPointer(SRS_SHARED_DATA, &sp);
+   void * sp = NULL; (void) state.FindPointer(SRS_SHARED_DATA, sp);
    StorageReflectSession::StorageReflectSessionSharedData * sd = (StorageReflectSession::StorageReflectSessionSharedData *) sp;
    if (sd) return sd;
   
@@ -162,7 +162,7 @@ AttachedToServer()
       // Get our node-creation limit.  For now, this is the same for all sessions.
       // (someday maybe I'll work out a way to give different limits to different sessions)
       uint32 nodeLimit;
-      if (state.FindInt32(PR_NAME_MAX_NODES_PER_SESSION, (int32*)&nodeLimit) == B_NO_ERROR) _maxNodeCount = nodeLimit;
+      if (state.FindInt32(PR_NAME_MAX_NODES_PER_SESSION, nodeLimit) == B_NO_ERROR) _maxNodeCount = nodeLimit;
    
       return B_NO_ERROR;
    }
@@ -432,8 +432,8 @@ bool
 StorageReflectSession ::
 HasPrivilege(int priv) const
 {
-   int32 privBits;
-   return (_parameters.FindInt32(PR_NAME_PRIVILEGE_BITS, &privBits) == B_NO_ERROR) ? ((privBits & (1L<<priv)) != 0L) : false;
+   uint32 privBits;
+   return (_parameters.FindInt32(PR_NAME_PRIVILEGE_BITS, privBits) == B_NO_ERROR) ? ((privBits & (1L<<priv)) != 0L) : false;
 }
 
 void
@@ -481,7 +481,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
             {
                if (msg.HasName(PR_NAME_KEYS, B_STRING_TYPE)) 
                {
-                  int32 maxDepth = -1;  (void) msg.FindInt32(PR_NAME_MAXDEPTH, &maxDepth);
+                  int32 maxDepth = -1;  (void) msg.FindInt32(PR_NAME_MAXDEPTH, maxDepth);
 
                   NodePathMatcher matcher;
                   matcher.PutPathsFromMessage(PR_NAME_KEYS, PR_NAME_FILTERS, msg, DEFAULT_PATH_PREFIX);
@@ -609,7 +609,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                }
                else if (*fn == PR_NAME_MAX_UPDATE_MESSAGE_ITEMS)
                {
-                  (void) msg.FindInt32(PR_NAME_MAX_UPDATE_MESSAGE_ITEMS, (int32*)&_maxSubscriptionMessageItems);
+                  (void) msg.FindInt32(PR_NAME_MAX_UPDATE_MESSAGE_ITEMS, _maxSubscriptionMessageItems);
                }
                else if (*fn == PR_NAME_PRIVILEGE_BITS)
                {
@@ -620,7 +620,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                else if (*fn == PR_NAME_REPLY_ENCODING)
                {
                   int32 enc;
-                  if (msg.FindInt32(PR_NAME_REPLY_ENCODING, &enc) != B_NO_ERROR) enc = MUSCLE_MESSAGE_ENCODING_DEFAULT;
+                  if (msg.FindInt32(PR_NAME_REPLY_ENCODING, enc) != B_NO_ERROR) enc = MUSCLE_MESSAGE_ENCODING_DEFAULT;
                   MessageIOGateway * gw = dynamic_cast<MessageIOGateway *>(GetGateway()());
                   if (gw) gw->SetOutgoingEncoding(enc);
                }
@@ -657,11 +657,14 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   resultMessage()->AddInt64(PR_NAME_SERVER_MEM_MAX, (uint64) GetMaxNumBytes());
 
                   resultMessage()->RemoveName(PR_NAME_SERVER_UPTIME);
-                  resultMessage()->AddInt64(PR_NAME_SERVER_UPTIME, (uint64) GetServerUptime());
+                  resultMessage()->AddInt64(PR_NAME_SERVER_UPTIME, GetServerUptime());
 
                   resultMessage()->RemoveName(PR_NAME_MAX_NODES_PER_SESSION);
                   resultMessage()->AddInt64(PR_NAME_MAX_NODES_PER_SESSION, _maxNodeCount);
         
+                  resultMessage()->RemoveName(PR_NAME_SERVER_SESSION_ID);
+                  resultMessage()->AddInt64(PR_NAME_SERVER_SESSION_ID, GetServerSessionID());
+
                   MessageReceivedFromSession(*this, resultMessage, NULL);
                }
                else WARN_OUT_OF_MEMORY;
@@ -1741,5 +1744,5 @@ status_t StorageReflectSession :: RemoveParameter(const String & paramName, bool
    return B_NO_ERROR;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 

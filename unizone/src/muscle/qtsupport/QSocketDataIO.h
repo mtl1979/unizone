@@ -6,7 +6,7 @@
 #include <qsocket.h>
 #include "dataio/DataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This class was contributed to the MUSCLE archive by Jonathon Padfield
   * (jpadfield@hotkey.net.au).  It's a good alternative to the QMessageTransceiverThread
@@ -94,6 +94,6 @@ private:
    QSocket * _socket;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

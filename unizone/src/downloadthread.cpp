@@ -463,7 +463,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 		{
 			WDownloadEvent *q = new WDownloadEvent(WDownloadEvent::FileBlocked);
 			uint64 timeleft = (uint64) -1;
-			(void) msg()->FindInt64("timeleft", (int64 *) &timeleft);
+                        (void) msg()->FindInt64("timeleft", timeleft);
 			if (q)
 			{
 				if (timeleft != (uint64) -1)
@@ -518,7 +518,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 						
 			// I only care to get the size and name
 			QString fname;
-			if ((msg()->FindInt64("beshare:File Size", (int64 *)&fFileSize) == B_OK) && 
+                        if ((msg()->FindInt64("beshare:File Size", fFileSize) == B_OK) &&
 				(GetStringFromMessage(msg, "beshare:File Name", fname) == B_OK))
 			{
 				if (GetStringFromMessage(msg, "beshare:FromSession", fFromSession) == B_OK)
@@ -540,7 +540,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 							
 				bool append = false;
 							
-				if (msg()->FindInt64("beshare:StartOffset", (int64 *)&fCurrentOffset) == B_OK)
+                                if (msg()->FindInt64("beshare:StartOffset", fCurrentOffset) == B_OK)
 				{
 					if (fCurrentOffset > 0)
 					{
@@ -699,7 +699,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 					// But I want to check anyway, just in case.
 					bufsize = buf()->GetNumBytes();
 					uint32 checksum;
-					if (msg()->FindInt32("chk", (int32*)&checksum) == B_NO_ERROR)
+                                        if (msg()->FindInt32("chk", checksum) == B_NO_ERROR)
 					{
                   uint32 myChecksum = CalculateFileChecksum(buf);  // a little paranoia (people keep getting munged data -> download-resume failures, why?)
 						if (myChecksum != checksum)

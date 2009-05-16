@@ -7,7 +7,7 @@
 #include "system/Thread.h"
 #include "util/ByteBuffer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /**
  * This class can be used to "wrap" a streaming I/O object (e.g. a FileDataIO) in order to make 
@@ -93,6 +93,6 @@ private:
    Queue<AsyncCommand> _asyncCommands;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

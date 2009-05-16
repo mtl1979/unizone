@@ -7,7 +7,7 @@
 #include "reflector/StorageReflectSession.h"
 #include "reflector/ReflectServer.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class ThreadSupervisorSession;
 class MessageTransceiverThread;
@@ -538,7 +538,7 @@ private:
    String _defaultDistributionPath;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif
 

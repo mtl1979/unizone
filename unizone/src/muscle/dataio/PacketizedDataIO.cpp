@@ -1,6 +1,6 @@
 #include "dataio/PacketizedDataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 PacketizedDataIO :: PacketizedDataIO(const DataIORef & slaveIO, uint32 maxTransferUnit) : _slaveIO(slaveIO), _maxTransferUnit(maxTransferUnit), _inputBufferSize(0), _inputBufferSizeBytesRead(0), _inputBufferBytesRead(0), _outputBufferBytesSent(0)
 {
@@ -105,4 +105,4 @@ status_t PacketizedDataIO :: WriteBufferedOutputAux()
    return B_NO_ERROR;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

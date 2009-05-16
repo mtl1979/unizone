@@ -247,8 +247,8 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				
 				GetStringFromMessage(file, "beshare:Kind", qkind);
 				GetStringFromMessage(file, "beshare:Path", qpath);
-				file()->FindInt32("beshare:Modification Time", (int32 *)&mod);
-				file()->FindInt64("beshare:File Size", (int64 *)&size);
+                                file()->FindInt32("beshare:Modification Time", mod);
+                                file()->FindInt64("beshare:File Size", size);
 				
 				WFileInfo * info = new WFileInfo;
 				Q_CHECK_PTR(info);

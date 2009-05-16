@@ -7,7 +7,7 @@
 #include "reflector/AbstractSessionIOPolicy.h"
 #include "regex/PathMatcher.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This is a convenience decorator factory; whenever it is asked to create a session,
   * it will open the shared-memory area with the specified name (using the MUSCLE
@@ -69,6 +69,6 @@ private:
    bool _defaultPass;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

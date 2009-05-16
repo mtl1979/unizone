@@ -3919,52 +3919,52 @@ Date: %4</translation>
 <context>
     <name>WUniListItem</name>
     <message>
-        <location filename="ulistview.cpp" line="355"/>
+        <location filename="ulistview.cpp" line="359"/>
         <source>B</source>
         <translation>B</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="373"/>
+        <location filename="ulistview.cpp" line="377"/>
         <source>TB</source>
         <translation>TB</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="376"/>
+        <location filename="ulistview.cpp" line="380"/>
         <source>GB</source>
         <translation>GB</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="379"/>
+        <location filename="ulistview.cpp" line="383"/>
         <source>MB</source>
         <translation>MB</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="382"/>
+        <location filename="ulistview.cpp" line="386"/>
         <source>kB</source>
         <translation>kB</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="410"/>
+        <location filename="ulistview.cpp" line="414"/>
         <source>B/s</source>
         <translation>B/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="428"/>
+        <location filename="ulistview.cpp" line="432"/>
         <source>TB/s</source>
         <translation>TB/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="431"/>
+        <location filename="ulistview.cpp" line="435"/>
         <source>GB/s</source>
         <translation>GB/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="434"/>
+        <location filename="ulistview.cpp" line="438"/>
         <source>MB/s</source>
         <translation>MB/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="437"/>
+        <location filename="ulistview.cpp" line="441"/>
         <source>kB/s</source>
         <translation>kB/s</translation>
     </message>
@@ -4446,7 +4446,7 @@ Date: %4</translation>
     <name>WinShareWindow</name>
     <message>
         <location filename="winshare_network.cpp" line="72"/>
-        <location filename="winsharewindow.cpp" line="2330"/>
+        <location filename="winsharewindow.cpp" line="2335"/>
         <source>Already scanning!</source>
         <translation>Schon gescannt!</translation>
     </message>
@@ -4454,15 +4454,15 @@ Date: %4</translation>
         <location filename="winshare_network.cpp" line="82"/>
         <location filename="winshare_network.cpp" line="377"/>
         <location filename="winshare_network.cpp" line="3095"/>
-        <location filename="winshare_slots.cpp" line="135"/>
-        <location filename="winshare_slots.cpp" line="465"/>
+        <location filename="winshare_slots.cpp" line="136"/>
+        <location filename="winshare_slots.cpp" line="466"/>
         <location filename="winsharewindow.cpp" line="1002"/>
         <source>Not connected.</source>
         <translation>Nicht verbunden.</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="88"/>
-        <location filename="winsharewindow.cpp" line="2318"/>
+        <location filename="winsharewindow.cpp" line="2323"/>
         <source>File sharing not enabled.</source>
         <translation>Gemeinsame Dateinutzung nicht aktiviert.</translation>
     </message>
@@ -4495,7 +4495,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="372"/>
-        <location filename="winsharewindow.cpp" line="2415"/>
+        <location filename="winsharewindow.cpp" line="2420"/>
         <source>Logged In: %1</source>
         <translation>Eingeloggt: %1</translation>
     </message>
@@ -4697,7 +4697,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="2489"/>
-        <location filename="winshare_slots.cpp" line="470"/>
+        <location filename="winshare_slots.cpp" line="471"/>
         <source>Connection to server failed!</source>
         <translation>Verbindung mit Server fehlgeschlagen!</translation>
     </message>
@@ -4752,32 +4752,32 @@ Date: %4</translation>
         <translation type="obsolete">Keine Adresse Info für %1</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="154"/>
+        <location filename="winshare_slots.cpp" line="155"/>
         <source>Disconnected from server.</source>
         <translation>Vom Server getrennt.</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="269"/>
+        <location filename="winshare_slots.cpp" line="270"/>
         <source>Private Chat With %1</source>
         <translation>Privater Chat mit %1</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="273"/>
+        <location filename="winshare_slots.cpp" line="274"/>
         <source>List All Files</source>
         <translation>Liste aller Dateien</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="275"/>
+        <location filename="winshare_slots.cpp" line="276"/>
         <source>Get IP Address</source>
         <translation>Hole IP Addresse</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="277"/>
+        <location filename="winshare_slots.cpp" line="278"/>
         <source>Get Address Info</source>
         <translation>Hole Adresse Info</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="278"/>
+        <location filename="winshare_slots.cpp" line="279"/>
         <source>Ping %1</source>
         <translation>Ping %1</translation>
     </message>
@@ -4790,7 +4790,7 @@ Date: %4</translation>
         <translation type="obsolete">/ping %1</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="613"/>
+        <location filename="winshare_slots.cpp" line="614"/>
         <source>Trying to resume file %1 from user %2</source>
         <translation>Versuche Datei %1 von Benutzer %2 wieder aufzunehmen</translation>
     </message>
@@ -4942,7 +4942,7 @@ Date: %4</translation>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1833"/>
+        <location filename="winsharewindow.cpp" line="1838"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Warte auf Dateiscan...</translation>
     </message>
@@ -4951,37 +4951,37 @@ Date: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2150"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>here</source>
         <translation>hier</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2151"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>away</source>
         <translation>abwesend</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2152"/>
+        <location filename="winsharewindow.cpp" line="2157"/>
         <source>idle</source>
         <translation>bereit</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2153"/>
+        <location filename="winsharewindow.cpp" line="2158"/>
         <source>busy</source>
         <translation>beschäftigt</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2154"/>
+        <location filename="winsharewindow.cpp" line="2159"/>
         <source>at work</source>
         <translation>auf Arbeit</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2155"/>
+        <location filename="winsharewindow.cpp" line="2160"/>
         <source>around</source>
         <translation>in der Nähe</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2156"/>
+        <location filename="winsharewindow.cpp" line="2161"/>
         <source>sleeping</source>
         <translation>schlafend</translation>
     </message>
@@ -4990,12 +4990,12 @@ Date: %4</translation>
         <translation type="obsolete">/ suchen %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2341"/>
+        <location filename="winsharewindow.cpp" line="2346"/>
         <source>Rescanning shared files...</source>
         <translation>Rescannen gemeinsamer Dateien...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2346"/>
+        <location filename="winsharewindow.cpp" line="2351"/>
         <source>Scanning shares...</source>
         <translation>Scanning gemeinsamer...</translation>
     </message>
@@ -5112,12 +5112,12 @@ Date: %4</translation>
         <translation type="obsolete">Verbundene Benutzer:</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="405"/>
+        <location filename="winshare_slots.cpp" line="406"/>
         <source>Logging disabled.</source>
         <translation>Loggen deaktiviert.</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="419"/>
+        <location filename="winshare_slots.cpp" line="420"/>
         <source>Logging enabled.</source>
         <translation>Loggen aktiviert.</translation>
     </message>
@@ -5136,58 +5136,58 @@ Date: %4</translation>
         <translation type="obsolete">Benutzer existiert nicht!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1098"/>
+        <location filename="winsharewindow.cpp" line="1102"/>
         <source>1 week</source>
         <translation>1 Woche</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1103"/>
+        <location filename="winsharewindow.cpp" line="1107"/>
         <source>%1 weeks</source>
         <translation>%1 Wochen</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1109"/>
+        <location filename="winsharewindow.cpp" line="1113"/>
         <source>1 day</source>
         <translation>1 Tag</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1114"/>
+        <location filename="winsharewindow.cpp" line="1118"/>
         <source>%1 days</source>
         <translation>%1 Tage</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1120"/>
+        <location filename="winsharewindow.cpp" line="1124"/>
         <source>1 hour</source>
         <translation>1 Stunde</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1125"/>
+        <location filename="winsharewindow.cpp" line="1129"/>
         <source>%1 hours</source>
         <translation>%1 Stunden</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1131"/>
+        <location filename="winsharewindow.cpp" line="1135"/>
         <source>1 minute</source>
         <translation>1 Minute</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1136"/>
+        <location filename="winsharewindow.cpp" line="1140"/>
         <source>%1 minutes</source>
         <translation>%1 Minuten</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1142"/>
+        <location filename="winsharewindow.cpp" line="1146"/>
         <source>1 second</source>
         <translation>1 Sekunde</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1086"/>
-        <location filename="winsharewindow.cpp" line="1147"/>
+        <location filename="winsharewindow.cpp" line="1090"/>
+        <location filename="winsharewindow.cpp" line="1151"/>
         <source>%1 seconds</source>
         <translation>%1 Sekunden</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1160"/>
+        <location filename="winsharewindow.cpp" line="1164"/>
         <source>and</source>
         <translation>und</translation>
     </message>
@@ -5201,28 +5201,28 @@ Date: %4</translation>
         <translation>Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1320"/>
-        <location filename="winsharewindow.cpp" line="1329"/>
+        <location filename="winsharewindow.cpp" line="1324"/>
+        <location filename="winsharewindow.cpp" line="1333"/>
         <source>Testing Unizone (English)</source>
         <translation>Test Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="383"/>
+        <location filename="winshare_slots.cpp" line="384"/>
         <source>File Scan</source>
         <translation>Datei Scan</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="383"/>
+        <location filename="winshare_slots.cpp" line="384"/>
         <source>Scan your shared files now?</source>
         <translation>Scannen Deiner anteiligen Dateien?</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="383"/>
+        <location filename="winshare_slots.cpp" line="384"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="winshare_slots.cpp" line="383"/>
+        <location filename="winshare_slots.cpp" line="384"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
@@ -5860,12 +5860,12 @@ Date: %4</translation>
         <translation>Verbunden:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1997"/>
+        <location filename="winsharewindow.cpp" line="2002"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Datei %1 von User #%2 beendet.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2024"/>
+        <location filename="winsharewindow.cpp" line="2029"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Lade Datei %1 von User #%2 herunter.</translation>
     </message>
@@ -6002,7 +6002,7 @@ Date: %4</translation>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für QNX Neutrino!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2157"/>
+        <location filename="winsharewindow.cpp" line="2162"/>
         <source>wandering</source>
         <translation>wandering</translation>
     </message>
@@ -6023,7 +6023,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2043"/>
+        <location filename="winsharewindow.cpp" line="2048"/>
         <source>Failed to create log file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6156,7 +6156,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1844"/>
+        <location filename="winsharewindow.cpp" line="1849"/>
         <source>Waiting for file list thread to finish...</source>
         <translation type="unfinished"></translation>
     </message>

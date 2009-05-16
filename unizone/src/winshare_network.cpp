@@ -1878,11 +1878,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			uint32 port;
 			if (
 				(GetStringFromMessage(msg, PR_NAME_SESSION, from) == B_NO_ERROR) &&
-				(msg()->FindInt32("port", (int32 *) &port) == B_NO_ERROR)
+                                (msg()->FindInt32("port", port) == B_NO_ERROR)
 				)
 			{
 				uint64 timeLeft = (uint64) -1;
-				(void) msg()->FindInt64("timeleft", (int64 *)&timeLeft);
+                                (void) msg()->FindInt64("timeleft", timeLeft);
 				TransferCallbackRejected(from, timeLeft, port);
 			}
 			break;
@@ -1946,7 +1946,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			const char * session;
 			int32 port = 0;
-			if ((msg()->FindString(PR_NAME_SESSION, &session) == B_OK) && (msg()->FindInt32("port", &port) == B_OK))
+                        if ((msg()->FindString(PR_NAME_SESSION, session) == B_OK) && (msg()->FindInt32("port", port) == B_OK))
 			{
 				WUserRef user = fNetClient->FindUser(session);
 				if (user())
@@ -1979,7 +1979,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			if (msg()->FindFlat("picture", data) == B_OK)
 			{
 				uint32 myChecksum, chk;
-				if (msg()->FindInt32("chk", (int32 *) &chk) == B_OK)
+                                if (msg()->FindInt32("chk", chk) == B_OK)
 				{
 					myChecksum = CalculateFileChecksum(data);
 					if (myChecksum != chk)
@@ -2011,7 +2011,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
-			msg()->FindInt64("my_id", &hisID);
+                        msg()->FindInt64("my_id", hisID);
 
 			WUserRef uref = FindUser(userID);
 
@@ -2065,8 +2065,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
-			msg()->FindInt64("my_id", &hisID);
-			msg()->FindInt64("tunnel_id", &myID);
+                        msg()->FindInt64("my_id", hisID);
+                        msg()->FindInt64("tunnel_id", myID);
 
 			WUserRef uref = FindUser(userID);
 
@@ -2089,7 +2089,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
-			msg()->FindInt64("tunnel_id", &myID);
+                        msg()->FindInt64("tunnel_id", myID);
 
 			WUserRef uref = FindUser(userID);
 
@@ -2114,9 +2114,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 			
 			GetStringFromMessage(msg, PR_NAME_SESSION, userID);		// from user (their session id)
 
-			msg()->FindInt64("tunnel_id", &myID);
+                        msg()->FindInt64("tunnel_id", myID);
 
-			msg()->FindBool("upload", &upload);
+                        msg()->FindBool("upload", upload);
 			msg()->FindMessage("message", tmsg);
 
 			WUserRef uref = FindUser(userID);
@@ -2172,9 +2172,9 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					const char * strTemp;
 					
 					// <postmaster@raasu.org> 20021001 -- Convert from UTF-8 to Unicode
-					if (msg()->FindString("text", &strTemp) == B_OK)
+                                        if (msg()->FindString("text", strTemp) == B_OK)
 						text = QString::fromUtf8(strTemp);	
-					else if (msg()->FindString("enctext", &strTemp) == B_OK)
+                                        else if (msg()->FindString("enctext", strTemp) == B_OK)
 					{
 						QString tmp = QString::fromUtf8(strTemp);
 						text = wdecrypt2(tmp);
@@ -2184,7 +2184,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				bool priv = false;
 				{
 					bool _priv;
-					if (msg()->FindBool("private", &_priv) == B_OK)
+                                        if (msg()->FindBool("private", _priv) == B_OK)
 						priv = _priv;
 				}
 
@@ -2232,7 +2232,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				int64 rtime = 0;
 				if (
 					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
-					(msg()->FindInt64("registertime", &rtime) == B_OK) &&
+                                        (msg()->FindInt64("registertime", rtime) == B_OK) &&
 					(msg()->FindString("name", repname) == B_OK)
 					)
 				{
@@ -2341,7 +2341,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				if (fSettings->GetInfo())
 				{
 					if ((GetStringFromMessage(msg, PR_NAME_SESSION, session) == B_OK) && 
-						(msg()->FindInt64("when", (int64 *) &when) == B_OK))
+                                                (msg()->FindInt64("when", when) == B_OK))
 					{
 						WUserRef user = fNetClient->FindUser(session);
 						if (user())
@@ -2363,8 +2363,8 @@ WinShareWindow::HandleMessage(MessageRef msg)
 								PrintText(pong);
 								
 								uint64 uptime, onlinetime = 0;
-								if ((msg()->FindInt64("uptime", (int64 *) &uptime) == B_OK) && 
-									(msg()->FindInt64("onlinetime", (int64 *) &onlinetime) == B_OK))
+                                                                if ((msg()->FindInt64("uptime", uptime) == B_OK) &&
+                                                                        (msg()->FindInt64("onlinetime", onlinetime) == B_OK))
 								{
 									pong = pre;
 									pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
@@ -2391,7 +2391,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					char zone[64];
 					
 					bool g = false;
-					(void) msg()->FindBool("gmt",&g);
+                                        (void) msg()->FindBool("gmt", g);
 
 					if (g)
 						gmtime_r(&currentTime, &myTime);
@@ -3103,7 +3103,7 @@ WinShareWindow::GotParams(const MessageRef &msg)
 
 	SendSystemEvent(tr("Connected."));
 	
-	if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, &enc) == B_NO_ERROR)
+        if (msg()->FindInt32(PR_NAME_REPLY_ENCODING, enc) == B_NO_ERROR)
 		setStatus(tr( "Current compression: %1" ).arg(enc - MUSCLE_MESSAGE_ENCODING_DEFAULT), 1);
 	
 	setStatus(tr( "Logging in..."), 0);

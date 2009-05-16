@@ -5,7 +5,7 @@
 
 #include "iogateway/AbstractMessageIOGateway.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This is the name of the string field used to hold text lines. */
 #define PR_NAME_TEXT_LINE "tl"
@@ -68,6 +68,6 @@ private:
    bool _flushPartialIncomingLines;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

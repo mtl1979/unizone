@@ -4,7 +4,7 @@
 #include <openssl/ssl.h>
 #include "dataio/TCPSocketDataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This class lets you communicate over a TCP socket with SSL encryption enabled on it. */
 class SSLSocketDataIO : public TCPSocketDataIO
@@ -42,6 +42,6 @@ private:
    BIO * _sbio;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

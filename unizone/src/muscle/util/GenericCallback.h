@@ -5,7 +5,7 @@
 
 #include "util/RefCount.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Interface class representing a functor object whose GenericCallback() method can be called.  
   * The exact semantics of what the call does are not defined here; it can be used for different
@@ -62,6 +62,6 @@ private:
    void * _arg;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

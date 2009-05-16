@@ -5,11 +5,11 @@
 #include "zlib/ZLibCodec.h"
 #include "system/GlobalMemoryAllocator.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef MUSCLE_ENABLE_MEMORY_TRACKING
-static void * muscleZLibAlloc(void *, uInt items, uInt size) {USING_NAMESPACE(muscle); return muscleAlloc(items*size);}
-static void muscleZLibFree(void *, void * address) {USING_NAMESPACE(muscle); muscleFree(address);}
+static void * muscleZLibAlloc(void *, uInt items, uInt size) {using namespace muscle; return muscleAlloc(items*size);}
+static void muscleZLibFree(void *, void * address) {using namespace muscle; muscleFree(address);}
 # define MUSCLE_ZLIB_ALLOC muscleZLibAlloc
 # define MUSCLE_ZLIB_FREE  muscleZLibFree
 #else
@@ -162,6 +162,6 @@ ByteBufferRef ZLibCodec :: Inflate(const ByteBuffer & compressedData)
    return ret;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

@@ -5,7 +5,7 @@
 
 #include "util/NestCount.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This macro is the best way to declare a BatchGuard object */
 #ifdef _MSC_VER
@@ -173,6 +173,6 @@ public:
    BatchGuardImp GetBatchGuard() {return BatchGuardImp(*this);}
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

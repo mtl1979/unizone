@@ -1,6 +1,6 @@
 /* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(WIN32)
 # include <errno.h>
 # include <io.h> 
 #else
@@ -11,7 +11,7 @@
 #include "system/SystemInfo.h"  // for GetFilePathSeparator()
 #include "util/Directory.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef WIN32
 
@@ -124,8 +124,16 @@ void Directory :: Rewind()
 
 void Directory :: Reset()
 {
-   if (_dirPtr) closedir((DIR *)_dirPtr);
-   _dirPtr = NULL;
+   if (_path) 
+   {
+      delete [] _path;
+      _path = NULL;
+   }
+   if (_dirPtr) 
+   {
+      closedir((DIR *)_dirPtr);
+      _dirPtr = NULL;
+   }
 }
 
 status_t Directory :: SetDir(const char * dirPath)
@@ -133,13 +141,26 @@ status_t Directory :: SetDir(const char * dirPath)
    Reset();
    if (dirPath)
    {
+      int pathLen = strlen(dirPath);
+      const char * sep = GetFilePathSeparator();
+      int sepLen = strlen(sep);
+      int extraBytes = ((pathLen<sepLen)||(strcmp(dirPath+pathLen-sepLen, sep) != 0)) ? sepLen : 0;
+      _path = newnothrow_array(char, pathLen+extraBytes+1);
+      if (_path == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+      strcpy(_path, dirPath);
+      if (extraBytes != 0) strcat(_path, sep);
+
       _dirPtr = opendir(dirPath);
-      if (_dirPtr == NULL) return B_ERROR;
+      if (_dirPtr == NULL) 
+      {
+         Reset();  // to free and null-out _path
+         return B_ERROR;
+      }
 
       (*this)++;   // make the first entry in the directory the current entry.
       return B_NO_ERROR;
    }
-   else return B_ERROR;
+   else return B_NO_ERROR;
 }
 
 status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary)
@@ -177,8 +198,8 @@ status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParent
 
 status_t Directory :: MakeDirectoryForFile(const char * filePath)
 {
-   int slen = strlen(filePath);
-   char * p = newnothrow_array(char,slen+1);
+   int pathLen = strlen(filePath);
+   char * p = newnothrow_array(char,pathLen+1);
    if (p == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
 
    strcpy(p, filePath);
@@ -217,7 +238,7 @@ status_t Directory :: DeleteDirectory(const char * dirPath, bool forceDeleteSubI
             strcpy(catStr+dirPathLen+sepLen, fn);
 
             // First, try to delete the sub-item as a file; if not, as a directory
-#ifdef MSC_VER
+#ifdef _MSC_VER
             int unlinkRet = _unlink(catStr);  // stupid MSVC!
 #else
             int unlinkRet = unlink(catStr);
@@ -235,4 +256,4 @@ status_t Directory :: DeleteDirectory(const char * dirPath, bool forceDeleteSubI
 #endif
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

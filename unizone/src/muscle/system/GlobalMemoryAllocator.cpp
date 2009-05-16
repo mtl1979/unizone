@@ -44,7 +44,7 @@
 #  define RPAREN    )
 # endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 # if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
 
@@ -137,7 +137,7 @@ size_t GetNumAllocatedBytes() {return _currentlyAllocatedBytes;}
 
 void * muscleAlloc(size_t userSize, bool retryOnFailure)
 {
-   USING_NAMESPACE(muscle);
+   using namespace muscle;
 
    size_t internalSize = CONVERT_USER_TO_INTERNAL_SIZE(userSize);
 
@@ -196,7 +196,7 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
 
 void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
 {
-   USING_NAMESPACE(muscle);
+   using namespace muscle;
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
    TCHECKPOINT;
@@ -298,7 +298,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
 
 void muscleFree(void * userPtr)
 {
-   USING_NAMESPACE(muscle);
+   using namespace muscle;
    if (userPtr)
    {
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
@@ -335,11 +335,11 @@ void muscleFree(void * userPtr)
    }
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 void * operator new(size_t s) THROW LPAREN BAD_ALLOC RPAREN
 {
-   USING_NAMESPACE(muscle);
+   using namespace muscle;
    void * ret = muscleAlloc(s);
    if (ret == NULL) {THROW BAD_ALLOC LPAREN RPAREN;}
    return ret;
@@ -347,7 +347,7 @@ void * operator new(size_t s) THROW LPAREN BAD_ALLOC RPAREN
 
 void * operator new[](size_t s) THROW LPAREN BAD_ALLOC RPAREN
 {
-   USING_NAMESPACE(muscle);
+   using namespace muscle;
    void * ret = muscleAlloc(s);
    if (ret == NULL) {THROW BAD_ALLOC LPAREN RPAREN;}
    return ret;
@@ -356,13 +356,13 @@ void * operator new[](size_t s) THROW LPAREN BAD_ALLOC RPAREN
 // Borland, VC++, and OSF don't like separate throw/no-throw operators, it seems
 # ifndef WIN32
 #  ifndef __osf__
-void * operator new(  size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); return muscleAlloc(s);}
-void * operator new[](size_t s, nothrow_t const &) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); return muscleAlloc(s);}
+void * operator new(  size_t s, nothrow_t const &) THROW LPAREN RPAREN {using namespace muscle; return muscleAlloc(s);}
+void * operator new[](size_t s, nothrow_t const &) THROW LPAREN RPAREN {using namespace muscle; return muscleAlloc(s);}
 #  endif
 # endif
 
-void operator delete(  void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}
-void operator delete[](void * p) THROW LPAREN RPAREN {USING_NAMESPACE(muscle); muscleFree(p);}
+void operator delete(  void * p) THROW LPAREN RPAREN {using namespace muscle; muscleFree(p);}
+void operator delete[](void * p) THROW LPAREN RPAREN {using namespace muscle; muscleFree(p);}
 
 #else
 # if MUSCLE_ENABLE_MEMORY_PARANOIA > 0

@@ -7,7 +7,7 @@
 
 #include "message/Message.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Returns true iff the given MessageRef points to a deflated Message.
   * Returns false iff the MessageRef is NULL or not deflated.
@@ -49,7 +49,7 @@ MessageRef InflateMessage(const MessageRef & msgRef);
 // This is the field name that we store deflated data into
 #define MUSCLE_ZLIB_FIELD_NAME "_zlib"
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif
 

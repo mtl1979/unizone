@@ -4,20 +4,21 @@
 #define MuscleDirectory_h
 
 #include "support/MuscleSupport.h"
+#include "util/RefCount.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** A cross-platform API for scanning the contents of a directory. */
-class Directory
+class Directory : public RefCountable
 {
 public:
    /** Default constructor:  creates an invalid Directory object.  */
-   Directory() : _dirPtr(NULL), _currentFileName(NULL) {/* empty */}
+   Directory() : _path(NULL), _dirPtr(NULL), _currentFileName(NULL) {/* empty */}
 
    /** Constructor
      * @param dirPath The path to the directory to open.  This is the same as calling SetDir(dirPath).
      */
-   Directory(const char * dirPath) : _dirPtr(NULL), _currentFileName(NULL) {(void) SetDir(dirPath);}
+   Directory(const char * dirPath) : _path(NULL), _dirPtr(NULL), _currentFileName(NULL) {(void) SetDir(dirPath);}
 
    /** Destructor.  Closes our held directory descriptor, if we have one. */
    ~Directory() {Reset();}
@@ -50,7 +51,7 @@ public:
      * @param forceCreateParentDirsIfNecessary If true, we'll create directories above the new directory also if necessary.
      *                                         Otherwise we'll fail if the new directory's parent director doesn't exist.
      * @note This method was originally called CreateDirectory() but that was causing namespace collisions with
-     *       some #defines in the Microsoft Windows system headers, so I've renamed it to MakeDirectory() to avoid that problem.
+     *       some defines in the Microsoft Windows system headers, so I've renamed it to MakeDirectory() to avoid that problem.
      * @return B_NO_ERROR on success, or B_ERROR on failure (directory already exists, or permission denied).
      */
    static status_t MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary);
@@ -65,18 +66,28 @@ public:
 
    /** Convenience method.  Given a path to a file, this method will create any missing directories
      * along that path, so that the file can be created.
-     * @param a path to a file, including the filename itself (the filename part will be ignored)
+     * @param filePath a path to a file, including the filename itself (the filename part will be ignored)
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory or permission denied?)
      */
    static status_t MakeDirectoryForFile(const char * filePath);
 
+   /** Returns the path string that was passed in to this Directory object, or NULL if
+     * there is no current directory active.  Note that the Direcory object makes an
+     * internal copy of the passed in string, so this pointer will be valid even if
+     * the string passed in to the constructor (or SetDir()) isn't anymore.
+     * @note this string, if non-NULL, will always have a file-path-separator character at the end.
+     */
+   const char * GetPath() const {return _path;}
+
 private:
    Directory(const Directory & rhs);  // deliberately private and unimplemented
 
+   char * _path;
    void * _dirPtr;
    const char * _currentFileName;
 };
+DECLARE_REFTYPES(Directory);
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

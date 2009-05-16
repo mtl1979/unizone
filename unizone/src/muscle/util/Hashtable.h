@@ -13,7 +13,7 @@
 # define MUSCLE_HASHTABLE_DEFAULT_CAPACITY 7
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 // implementation detail; please ignore this!
 static const uint32 MUSCLE_HASHTABLE_INVALID_HASH_CODE = (uint32)-1;
@@ -2217,6 +2217,6 @@ HashtableIterator<KeyType,ValueType,HashFunctorType>::GetNextKeyAndValue(const K
    return (((setKeyPtr = GetNextKey()) != NULL)&&((setValuePtr = GetNextValue()) != NULL)) ? B_NO_ERROR : B_ERROR;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

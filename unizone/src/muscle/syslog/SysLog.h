@@ -6,9 +6,10 @@
 #include <stdarg.h>
 #include "util/TimeUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class String;
+class LogCallbackArgs;
 
 /** log level constants to use with SetLogLevel(), GetLogLevel() */
 enum
@@ -155,6 +156,17 @@ status_t SetConsoleLogLevel(int loglevel);
  */
 status_t Log(int logLevel, const char * fmt, ...);
 
+#ifdef MUSCLE_INCLUDE_SOURCE_LOCATION_IN_LOGTIME
+# if defined(_MSC_VER)
+#  define LogTime(logLevel, ...)     _LogTime(__FILE__, __FUNCTION__, __LINE__, logLevel, __VA_ARGS__)
+# elif defined(__GNUC__)
+#  define LogTime(logLevel, args...) _LogTime(__FILE__, __FUNCTION__, __LINE__, logLevel, args)
+# else
+#  define LogTime(logLevel, args...) _LogTime(__FILE__, "",           __LINE__, logLevel, args)
+# endif
+status_t _LogTime(const char * sourceFile, const char * optSourceFunction, int line, int logLevel, const char * fmt, ...);
+#else
+
 /** Formatted.  Automagically prepends a timestamp and status string to your string.
  *  e.g. LogTime(MUSCLE_LOG_INFO, "Hello %s!", "world") would generate "[I 12/18 12:11:49] Hello world!"
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
@@ -162,6 +174,8 @@ status_t Log(int logLevel, const char * fmt, ...);
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
 status_t LogTime(int logLevel, const char * fmt, ...);
+
+#endif
 
 /** Ensures that all previously logged output is actually sent.  That is, it simply 
  *  calls fflush() on any streams that we are logging to.
@@ -208,14 +222,32 @@ const char * GetLogLevelName(int logLevel);
 const char * GetLogLevelKeyword(int logLevel);
 
 /** Writes a standard text string of the format "[L mm/dd hh:mm:ss]" into (buf).
- *  @param buf Char buffer to write into.  Should be at least 20 chars long.
- *  @param logLevel the MUSCLE_LOG_* token indicating the severity of the notice.
+ *  @param buf Char buffer to write into.  Should be at least 64 chars long.
+ *  @param lca A LogCallbackArgs object containing the time stamp and severity that are appropriate to print.
  *  @param when time/date stamp of the message
  */
-void GetStandardLogLinePreamble(char * buf, int logLevel, time_t when);
+void GetStandardLogLinePreamble(char * buf, const LogCallbackArgs & lca);
+
+/** Given a source location (e.g. as provided by the information in a LogCallbackArgs object),
+  * returns a corresponding uint32 that represents a hash of that location.
+  * The source code location can be later looked up by feeding this hash value
+  * as a command line argument into the muscle/tests/findsourcecodelocations program.
+  */
+uint32 GenerateSourceCodeLocationKey(const char * fileName, uint32 lineNumber);
+
+/** Given a source-code location key (as returned by GenerateSourceCodeLocationKey()),
+  * returns the standard human-readable representation of that value.  (e.g. "7QF2")
+  */
+String SourceCodeLocationKeyToString(uint32 key);
+
+/** Given a standard human-readable representation of a source-code-location
+  * key (e.g. "7EF2"), returns the uint16 key value.  This is the inverse
+  * function of SourceCodeLocationKeyToString().
+  */
+uint32 SourceCodeLocationKeyFromString(const String & s);
 
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

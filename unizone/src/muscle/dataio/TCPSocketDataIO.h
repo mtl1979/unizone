@@ -8,7 +8,7 @@
 #include "dataio/DataIO.h"
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifndef MUSCLE_DEFAULT_TCP_STALL_TIMEOUT
 # define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (3*60*((uint64)1000000))  // 3 minutes is our default timeout period
@@ -128,6 +128,6 @@ private:
    uint64 _stallLimit;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

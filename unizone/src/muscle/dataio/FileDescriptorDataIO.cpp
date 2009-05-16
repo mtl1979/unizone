@@ -14,7 +14,7 @@
 
 #include "dataio/FileDescriptorDataIO.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 FileDescriptorDataIO ::
 FileDescriptorDataIO(const ConstSocketRef & fd, bool blocking) : _fd(fd)
@@ -116,4 +116,4 @@ int64 FileDescriptorDataIO :: GetPosition() const
    return -1;
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

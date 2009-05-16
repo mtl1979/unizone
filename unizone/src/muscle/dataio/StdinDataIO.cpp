@@ -8,7 +8,7 @@
 # include "system/SetupSystem.h"  // for GetGlobalMuscleLock()
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #ifdef USE_WIN32_STDINDATAIO_IMPLEMENTATION
 static uint32 _instanceCount = 0;
@@ -151,4 +151,4 @@ void StdinDataIO :: IOThreadEntry()
 
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

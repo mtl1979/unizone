@@ -6,7 +6,7 @@
 #include "system/Thread.h"
 #include "util/NetworkUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Event message codes returned by this thread */
 enum {

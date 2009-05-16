@@ -5,7 +5,7 @@
 
 #include "util/TimeUtilityFunctions.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 class PulseNode;
 class PulseNodeManager;
@@ -24,7 +24,7 @@ public:
    virtual ~PulseNode();
 
 protected:
-   /** This class is used to encapsule the arguments to GetPulseTime() and Pulse(), so that
+   /** This class is used to encapsulate the arguments to GetPulseTime() and Pulse(), so that
      * there is less data to place on the stack in each callback call.
      */
    class PulseArgs
@@ -229,6 +229,6 @@ protected:
    inline void CallSetCycleStartTime(PulseNode & p, uint64 now) const {p.SetCycleStartTime(now);}
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

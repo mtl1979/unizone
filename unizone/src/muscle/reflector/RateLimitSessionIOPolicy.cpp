@@ -2,7 +2,7 @@
 
 #include "reflector/RateLimitSessionIOPolicy.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 #define CUTOFF (_byteLimit/2)
 
@@ -110,4 +110,4 @@ EndIO(uint64)
    // empty
 }
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle

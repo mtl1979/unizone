@@ -5,7 +5,7 @@
 
 #include "support/MuscleSupport.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** An interface that can be inherited by any class that wants to provide a Clone()
   * method that will return a copy of itself.
@@ -38,6 +38,6 @@ template<typename Item> inline Item * CloneObject(const Item & item)
 }
 #endif
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

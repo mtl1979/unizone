@@ -7,7 +7,7 @@
 #include "reflector/AbstractSessionIOPolicy.h"
 #include "regex/PathMatcher.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This is a convenience decorator factory; it holds a set of "ban patterns", and a
   * set of "require patterns".  It will refuse to grant access to any clients whose host 
@@ -110,6 +110,6 @@ private:
    uint32 _totalMaxSessions;
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

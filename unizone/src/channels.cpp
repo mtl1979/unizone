@@ -728,7 +728,7 @@ Channels::HandleMessage(MessageRef & msg)
 				if (
 					(GetStringFromMessage(msg, PR_NAME_SESSION, qOwner) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
-					(msg()->FindInt64("when", (int64 *) &rtime) == B_OK)
+                                        (msg()->FindInt64("when", rtime) == B_OK)
 					)
 				{
 					ChannelCreated(qChan, qOwner, rtime);
@@ -806,7 +806,7 @@ Channels::HandleMessage(MessageRef & msg)
 				if (
 					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
-					(msg()->FindBool("public", &pub) == B_OK) 
+                                        (msg()->FindBool("public", pub) == B_OK)
 					)
 				{
 					ChannelPublic(qChan, qUser, pub);

@@ -32,7 +32,7 @@
 # error "Thread:  threading support not implemented for this platform.  You'll need to add support for your platform to the MUSCLE Lock and Thread classes for your OS before you can use the Thread class here (or define MUSCLE_USE_PTHREADS or QT_THREAD_SUPPORT to use those threading APIs, respectively)."
 #endif
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** This class is an platform-independent class that creates an internally held thread and executes it.
   * You will want to subclass Thread in order to specify the behaviour of the internally held thread...
@@ -396,6 +396,6 @@ private:
 #endif
 };
 
-END_NAMESPACE(muscle);
+}; // end namespace muscle
 
 #endif

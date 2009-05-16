@@ -6,7 +6,7 @@
 #include "message/Message.h"
 #include "util/Queue.h"
 
-BEGIN_NAMESPACE(muscle);
+namespace muscle {
 
 /** Parses the given arguments into a Message full of string fields.
   * Arguments should be of the form argname or argname=value.
@@ -131,6 +131,25 @@ String UnparseArgs(const Queue<String> & argMsg);
  *  @returns B_NO_ERROR if an argument was parsed, or B_ERROR if it wasn't.
  */
 status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired = false);
+
+/** Same as above, except that instead of looking for the specified string in a Message, in this
+ *  case the string is passed in directly.
+ *  @param arg The connect string (e.g. "localhost:2960")
+ *  @param retHost On successful return, the hostname or IP address to connect to will be written here.
+ *  @param retPort On successful return, if a port number was parsed it will be written here.
+ *  @param portRequired If false, this function will succeed even if no port was specified. 
+ *                      If true, the function will fail if a port was not specified (e.g. "localhost:5555").
+ *                      Defaults to false.
+ *  @returns B_NO_ERROR if an argument was parsed, or B_ERROR if it wasn't.
+ */
+status_t ParseConnectArg(const String & arg, String & retHost, uint16 & retPort, bool portRequired = false);
+
+/** Given a hostname (or IP address) and a port number, returns the associated connect-string (e.g. "localhost:9999")
+  * or ("[ff05::1]:5555")
+  * @param host A hostname or IP address
+  * @param port A port number.
+  */
+String GetConnectString(const String & host, uint16 port);
 
 /** Convenience method:  Looks for a port number in the given field of the Message,
  *  and sets (retPort) if it finds one.
@@ -369,6 +388,23 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir = N
   */
 void RemoveANSISequences(String & s);
 
+/** Given a string, returns that same string except with any symbols that are not illegal
+  * in a DNS label removed.  (According to DNS rules, only letters, digits, and the '-'
+  * character are legal in a DNS label, and the label must be less than 64 characters long).
+  * Note that this string cleans up just a single part of a DNS hostname path.
+  * If you want to clean up a path string (e.g. "www.foo.com"), call CleanupDNSPath() instead.
+  * @param s A string that is presented as a candidate for being a DNS label.
+  * @returns the DNS label that most closely resembles (s).
+  */
+String CleanupDNSLabel(const String & s);
+
+/** Given a DNS path string (e.g. "www.foo.com") runs each dot-separated portion of the
+  * path through CleanupDNSLabel() and returns the cleaned up result.
+  * @param s A string that is presented as a candidate for being a DNS path.
+  * @returns the DNS path that most closely resembles (s).
+  */
+String CleanupDNSPath(const String & s);
+
 /** Convenience function.  Given a buffer of arbitrary data, returns a nybble-ized String
   * that represents that same data using only the ASCII characters 'A' through 'P.  The
   * returned String will be twice the length of the passed-in buffer, and the original
@@ -501,6 +537,49 @@ String HexBytesToString(const uint8 * buf, uint32 numBytes);
   */
 status_t AssembleBatchMessage(MessageRef & batchMsg, const MessageRef & newMsg);
 
-END_NAMESPACE(muscle);
+/** Returns true iff the file with the specified path exists. 
+  * @param filePath Path of the file to check for.
+  * @returns true if the file exists (and is readable), false otherwise.
+  */
+bool FileExists(const char * filePath);
+
+/** Attempts to rename from (oldPath) to (newPath).
+  * @param oldPath the path of an existing file or directory.
+  * @param newPath the new name that the file should have.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t RenameFile(const char * oldPath, const char * newPath);
+
+/** Attempts to copy from (oldPath) to (newPath).
+  * @param oldPath the path of an existing file or directory.
+  * @param newPath the name that the new file should have.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t CopyFile(const char * oldPath, const char * newPath);
+
+/** Attempts to delete the file with the specified file path.
+  * @param filePath Path of the file to delete.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t DeleteFile(const char * filePath);
+
+/** Given argv[0], returns a human-readable program title based on the file name.
+  * For example, "c:\Program Files\Blah.exe" is returned as "Blah", or
+  * "/Users/jaf/MyProg/MyProg.app/Contents/MacOS/MyProg" is returned as "MyProg".
+  * @param argv0 argv[0], as passed to main().
+  * @returns a human-readable title string.
+  */
+String GetHumanReadableProgramNameFromArgv0(const char * argv0);
+
+#ifdef WIN32
+/** This function is only available on Win32, and does the 
+  * standard AllocConsole() and freopen() trick to cause a
+  * Console window to appear and be available for stdin/stdout/stderr
+  * to operate on.
+  */
+void Win32AllocateStdioConsole();
+#endif
+
+}; // end namespace muscle
 
 #endif
