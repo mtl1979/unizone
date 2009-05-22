@@ -135,7 +135,7 @@ protected:
 	friend class WUpload;
 	enum
 	{
-		TunnelData = 'tuda'
+		TunnelData = 1953850465 // tuda
 	};
 //	void MessageReceived(MessageRef msg) { MessageReceived(msg, _sessionID); }
 

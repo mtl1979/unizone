@@ -691,7 +691,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			if (fDownloading && fFile)
 			{
 				ByteBufferRef buf;
-				size_t bufsize = 0;
+				ssize_t bufsize = 0;
 
 				if (msg()->FindFlat("data", buf) == B_OK)
 				{

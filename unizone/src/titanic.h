@@ -2,7 +2,7 @@
 #define TITANIC_H
 
 enum {
-	TTP_START_QUEUE = 'tTsQ',
+	TTP_START_QUEUE = 1951691601, // tTsQ
 	TTP_ADD_FILE
 };
 

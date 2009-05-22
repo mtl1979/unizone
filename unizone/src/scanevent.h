@@ -9,7 +9,7 @@ class ScanEvent : public QCustomEvent
 public:
 	enum Type
 	{
-		ScanDirectory = 'scdr',
+		ScanDirectory = 1935893618, // scdr
 		ScanFile,
 		ScannedDirs,
 		ScannedFiles,

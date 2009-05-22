@@ -14,15 +14,20 @@ namespace WTransfer
 	// transfer commands
 	enum 
 	{
-		TransferConnectedToPeer = 'tshr',	// um... I don't use this one
-		TransferDisconnectedFromPeer,		// nor this one... I have my own events
+		// um... I don't use this one
+		TransferConnectedToPeer = 1953720434,	// tshr
+		// nor this one... I have my own events
+		TransferDisconnectedFromPeer,		
 		TransferFileList,
 		TransferFileHeader,
 		TransferFileData,
-		TransferDeprecated,					// OLD beshare message
+		// OLD BeShare message
+		TransferDeprecated,			
 		TransferNotifyQueued,
-		TransferMD5SendReadDone,			// these are sent by the MD5 looper...
+		// these are sent by the MD5 looper...
+		TransferMD5SendReadDone,		
 		TransferMD5RecvReadDone,
+		//
 		TransferCommandPeerID,
 		TransferNotifyRejected
 	};

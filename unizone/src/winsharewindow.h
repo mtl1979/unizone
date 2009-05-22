@@ -103,7 +103,7 @@ public:
 	// Time Events
 	enum
 	{
-		TimeRequest = 'UsTi',
+		TimeRequest = 1433621609, // UsTi
 		TimeReply
 	};
 

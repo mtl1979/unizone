@@ -13,6 +13,7 @@
 #include "global.h"
 #include "winsharewindow.h"
 #include "settings.h"
+#include "utypes.h"
 #include "wfile.h"
 #include "wstring.h"
 
@@ -626,34 +627,46 @@ struct ConPair
 };
 
 ConPair Bandwidths[] = {
-	{QT_TRANSLATE_NOOP("Connection", "75 baud"),	75},		// For reverse lookup
-	{QT_TRANSLATE_NOOP("Connection", "300 baud"),	75},		// 300 down / 75 up
+	// For reverse lookup
+	{QT_TRANSLATE_NOOP("Connection", "75 baud"),	75},		
+	// 300 down / 75 up
+	{QT_TRANSLATE_NOOP("Connection", "300 baud"),	75},		
 	{QT_TRANSLATE_NOOP("Connection", "9.6 kbps"),	9600},
 	{QT_TRANSLATE_NOOP("Connection", "14.4 kbps"),	14400},
 	{QT_TRANSLATE_NOOP("Connection", "28.8 kbps"),	28800},
 	{QT_TRANSLATE_NOOP("Connection", "33.6 kbps"),	33600},
-	{QT_TRANSLATE_NOOP("Connection", "36.6 kbps"),	33600},	// Misspelled 33.6 kbps
+	// Misspelled 33.6 kbps
+	{QT_TRANSLATE_NOOP("Connection", "36.6 kbps"),	33600},
 	{QT_TRANSLATE_NOOP("Connection", "57.6 kbps"),	57600},
 	{QT_TRANSLATE_NOOP("Connection", "ISDN-64k"),	64000},
 	{QT_TRANSLATE_NOOP("Connection", "ISDN-128k"),	128000},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-256k"),	256000},
-	{QT_TRANSLATE_NOOP("Connection", "EDGE"),		236800},	// 4 timeslots
+	// 4 timeslots
+	{QT_TRANSLATE_NOOP("Connection", "EDGE"),	236800},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-384k"),	384000},
-	{QT_TRANSLATE_NOOP("Connection", "DSL"),		384000},	// Backwards compatibility
+	// Backwards compatibility
+	{QT_TRANSLATE_NOOP("Connection", "DSL"),	384000},
 	{QT_TRANSLATE_NOOP("Connection", "HSDPA"),	384000},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-512k"),	512000},
 	{QT_TRANSLATE_NOOP("Connection", "Cable"),	768000},
-	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1024000},	// Was 1000000
-	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1000000},	// For reverse lookup
+	// Was 1000000
+	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1024000},
+	// For reverse lookup
+	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1000000},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-2M"),	2048000},
 	{QT_TRANSLATE_NOOP("Connection", "T1"),		1500000},
 	{QT_TRANSLATE_NOOP("Connection", "T3"),		4500000},
-	{QT_TRANSLATE_NOOP("Connection", "OC-3"),		155520000}, // 3  * 51840000
-	{QT_TRANSLATE_NOOP("Connection", "HSUPA"),	576000000}, // 5.76 Mbit/s
-	{QT_TRANSLATE_NOOP("Connection", "OC-12"),	622080000}, // 12 * 51840000
-	{QT_TRANSLATE_NOOP("Connection", "Unknown"),	0},		// Unknown speed
-	{"?", 0},									// Dummy entry
-	{NULL, ULONG_MAX}
+	// 3  * 51840000
+	{QT_TRANSLATE_NOOP("Connection", "OC-3"),	155520000},
+	// 5.76 Mbit/s
+	{QT_TRANSLATE_NOOP("Connection", "HSUPA"),	576000000},
+	// 12 * 51840000
+	{QT_TRANSLATE_NOOP("Connection", "OC-12"),	622080000},
+	// Unknown speed
+	{QT_TRANSLATE_NOOP("Connection", "Unknown"),	0},
+	// Dummy entry
+	{"?", 0},
+	{NULL, UINT32_MAX}
 };
 
 uint32
@@ -676,7 +689,7 @@ BandwidthToBytes(const QString & connection)
 	{
 		ConPair bw;
 		int n = 0;
-		while ((bw = Bandwidths[n++]).bw != ULONG_MAX)
+		while ((bw = Bandwidths[n++]).bw != UINT32_MAX)
 		{
 			if (
 				( conn == bw.id ) ||
@@ -700,7 +713,7 @@ BandwidthToString(uint32 bps)
 {
 	ConPair bw;
 	int n = 0;
-	while ((bw = Bandwidths[n++]).bw != ULONG_MAX)
+	while ((bw = Bandwidths[n++]).bw != UINT32_MAX)
 	{
 		if (bps == bw.bw)
 		{

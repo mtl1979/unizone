@@ -1,6 +1,8 @@
 #ifndef UTYPES_H
 #define UTYPES_H
 
+#include <limits.h>
+
 /* We need to implement all typedefs that MUSCLE would define even though we 
 	don't need them explicitly in our classes, because derived class might
 	include one of MUSCLE headers and their typedefs clash if not excluded
@@ -51,4 +53,12 @@ typedef unsigned long	uint32;
 typedef int32						status_t;
 #endif
 #endif
-
+#ifdef __amd64__
+# ifndef UINT32_MAX
+#  define UINT32_MAX				UINT_MAX
+# endif
+#else
+# ifndef UINT32_MAX
+#  define UINT32_MAX				ULONG_MAX
+# endif
+#endif
