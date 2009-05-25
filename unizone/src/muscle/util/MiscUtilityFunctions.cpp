@@ -25,6 +25,8 @@
 
 namespace muscle {
 
+extern bool _mainReflectServerCatchSignals;  // from SetupSystem.cpp
+
 static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<String> * optAddToQueue)
 {
    // Remove any initial dashes
@@ -424,6 +426,27 @@ void HandleStandardDaemonArgs(const Message & args)
 
       if (sched_setscheduler(0, SCHED_RR, &schedparam) == 0) LogTime(MUSCLE_LOG_INFO, "Set process to real-time priority %i\n", pri);
                                                         else LogTime(MUSCLE_LOG_ERROR, "Couldn't invoke real time scheduling priority %i (access denied?)\n", pri);
+   }
+#endif
+
+#ifdef MUSCLE_CATCH_SIGNALS_BY_DEFAULT
+# ifdef MUSCLE_AVOID_SIGNAL_HANDLING
+#  error "MUSCLE_CATCH_SIGNALS_BY_DEFAULT and MUSCLE_AVOID_SIGNAL_HANDLING are mutually exclusive compiler flags... you can't specify both!"
+# endif
+   if (args.HasName("dontcatchsignals"))
+   {
+      _mainReflectServerCatchSignals = false;
+      LogTime(MUSCLE_LOG_DEBUG, "Controlled shutdowns (via Control-C) disabled in the main thread.\n");
+   }
+#else
+   if (args.HasName("catchsignals"))
+   {
+# ifdef MUSCLE_AVOID_SIGNAL_HANDLING
+      LogTime(MUSCLE_LOG_ERROR, "Can't enable controlled shutdowns, MUSCLE_AVOID_SIGNAL_HANDLING was specified during compilation!\n");
+# else
+      _mainReflectServerCatchSignals = true;
+      LogTime(MUSCLE_LOG_DEBUG, "Controlled shutdowns (via Control-C) enabled in the main thread.\n");
+# endif
    }
 #endif
 }

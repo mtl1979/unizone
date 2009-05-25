@@ -24,7 +24,7 @@
 
 namespace muscle {
 
-ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOnClose(true), _waitForChildOnClose(true), _childProcessInheritFileDescriptors(false)
+ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOkay(true), _maxChildWaitTime(0), _signalNumber(-1), _childProcessInheritFileDescriptors(false)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(INVALID_HANDLE_VALUE), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _requestThreadExit(false)
 #else
@@ -58,6 +58,14 @@ status_t ChildProcessDataIO :: LaunchChildProcess(const Queue<String> & argq, bo
    delete [] argv;
    return ret;
 }
+
+void ChildProcessDataIO :: SetChildProcessShutdownBehavior(bool okayToKillChild, int sendSignalNumber, uint64 maxChildWaitTime)
+{
+   _killChildOkay    = okayToKillChild;
+   _signalNumber     = sendSignalNumber;
+   _maxChildWaitTime = maxChildWaitTime;
+}
+
 
 status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args, bool usePty)
 {
@@ -281,6 +289,19 @@ status_t ChildProcessDataIO :: KillChildProcess()
    return B_ERROR;
 }
 
+status_t ChildProcessDataIO :: SignalChildProcess(int sigNum)
+{
+   TCHECKPOINT;
+
+#ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
+   (void) sigNum;   // to shut the compiler up
+   return B_ERROR;  // Not implemented under Windows!
+#else
+   // Yes, kill() is a misnomer.  Silly Unix people!
+   return ((_childPID >= 0)&&(kill(_childPID, sigNum) == 0)) ? B_NO_ERROR : B_ERROR;
+#endif
+}
+
 void ChildProcessDataIO :: Close()
 {
    TCHECKPOINT;
@@ -299,30 +320,51 @@ void ChildProcessDataIO :: Close()
    SafeCloseHandle(_wakeupSignal);
    SafeCloseHandle(_readFromStdout);
    SafeCloseHandle(_writeToStdin);
-   if (_childProcess != INVALID_HANDLE_VALUE)
-   {
-      if (_killChildOnClose)    (void) TerminateProcess(_childProcess, 0);
-      if (_waitForChildOnClose) WaitForChildProcessToExit();
-   }
+   if (_childProcess != INVALID_HANDLE_VALUE) DoGracefulChildShutdown();
    SafeCloseHandle(_childProcess);
    SafeCloseHandle(_childThread);
 #else
    _handle.Reset();
-   if (_childPID >= 0)
-   {
-      if (_killChildOnClose)    (void) kill(_childPID, SIGKILL);
-      if (_waitForChildOnClose) WaitForChildProcessToExit();
-      _childPID = -1;
-   }
+   if (_childPID >= 0) DoGracefulChildShutdown();
+   _childPID = -1;
 #endif
 }
 
-void ChildProcessDataIO :: WaitForChildProcessToExit()
+void ChildProcessDataIO :: DoGracefulChildShutdown()
+{
+   if (_signalNumber >= 0) (void) SignalChildProcess(_signalNumber);
+   if ((WaitForChildProcessToExit(_maxChildWaitTime) == false)&&(_killChildOkay)) (void) KillChildProcess();
+}
+
+bool ChildProcessDataIO :: WaitForChildProcessToExit(uint64 maxWaitTimeMicros)
 {
 #ifdef WIN32
-   if (_childProcess != INVALID_HANDLE_VALUE) (void) WaitForSingleObject(_childProcess, INFINITE);
+   return ((_childProcess == INVALID_HANDLE_VALUE)||(WaitForSingleObject(_childProcess, (maxWaitTimeMicros==MUSCLE_TIME_NEVER)?INFINITE:(maxWaitTimeMicros/1000)) == WAIT_OBJECT_0));
 #else
-   if (_childPID >= 0) (void) waitpid(_childPID, NULL, 0);
+   if (_childPID < 0) return true;   // a non-existent child process is an exited child process, if you ask me.
+   if (maxWaitTimeMicros == MUSCLE_TIME_NEVER) return (waitpid(_childPID, NULL, 0) == _childPID);
+   else
+   {
+      // The tricky case... waiting for the child process to exit, with a timeout.
+      // I'm implementing it via a polling loop, which is a sucky wait to implement
+      // it but the only alternative would involve mucking about with signal handlers,
+      // and doing it that way would be unreliable in multithreaded environments.
+      uint64 endTime = GetRunTime64()+maxWaitTimeMicros;
+      uint64 pollInterval = 0;  // we'll start quickly, and work our way up.
+      while(1)
+      {
+         int r = waitpid(_childPID, NULL, WNOHANG);  // WNOHANG should guarantee that this call will not block
+              if (r  == _childPID) return true;  // yay, he exited!
+         else if (r == -1) return false;         // fail on error
+
+         int64 microsLeft = endTime-GetRunTime64();
+         if (microsLeft <= 0) return false;  // we're out of time!
+
+         // At this point, r was probably zero because the child wasn't ready to exit
+         if (pollInterval < (200*1000)) pollInterval += (10*1000);
+         Snooze64(muscleMin(pollInterval, (uint64)microsLeft));
+      }
+   }
 #endif
 }
 

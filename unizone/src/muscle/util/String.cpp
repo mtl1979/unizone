@@ -105,7 +105,7 @@ String::operator-=(const String &other)
 }
 
 String &
-String::operator -= (const char * other)
+String::operator-=(const char * other)
 {
    int otherLen = ((other)&&(*other)) ? strlen(other) : 0;
    if (otherLen > 0)

@@ -77,6 +77,7 @@ SOURCES =	aboutdlgimpl.cpp \
                 muscle/reflector/RateLimitSessionIOPolicy.cpp \
                 muscle/reflector/ReflectServer.cpp \
                 muscle/reflector/ServerComponent.cpp \
+                muscle/reflector/SignalHandlerSession.cpp \
                 muscle/reflector/StorageReflectSession.cpp \
                 muscle/regex/PathMatcher.cpp \
                 muscle/regex/QueryFilter.cpp \
@@ -86,6 +87,7 @@ SOURCES =	aboutdlgimpl.cpp \
                 muscle/system/GlobalMemoryAllocator.cpp \
                 muscle/system/MessageTransceiverThread.cpp \
                 muscle/system/SetupSystem.cpp \
+                muscle/system/SignalMultiplexer.cpp \
                 muscle/system/SystemInfo.cpp \
                 muscle/system/Thread.cpp \
                 muscle/util/ByteBuffer.cpp \

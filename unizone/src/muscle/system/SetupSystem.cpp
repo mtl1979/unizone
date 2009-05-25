@@ -39,12 +39,26 @@
 # include <CoreServices/CoreServices.h>
 #endif
 
+#if !defined(MUSCLE_SINGLE_THREAD_ONLY) && defined(MUSCLE_QT_HAS_THREADS)
+# if QT_VERSION >= 0x040000
+#  include <QThread>
+# else
+#  include <qthread.h>
+# endif
+#endif
+
 namespace muscle {
 
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
 bool _muscleSingleThreadOnly = true;
 #else
 bool _muscleSingleThreadOnly = false;
+#endif
+
+#ifdef MUSCLE_CATCH_SIGNALS_BY_DEFAULT
+bool _mainReflectServerCatchSignals = true;
+#else
+bool _mainReflectServerCatchSignals = false;
 #endif
 
 static Mutex * _muscleLock = NULL;
@@ -56,6 +70,9 @@ static Mutex * _atomicMutexes = NULL;
 #endif
 
 static uint32 _threadSetupCount = 0;
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+static uint32 _mainThreadID;
+#endif
 
 static int swap_memcmp(const void * vp1, const void * vp2, uint32 numBytes)
 {
@@ -225,6 +242,27 @@ MathSetupSystem :: ~MathSetupSystem()
    // empty
 }
 
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+static uint32 Muscle_GetCurrentThreadID()
+{
+# if defined(MUSCLE_USE_PTHREADS)
+   return (uint32) pthread_self();
+# elif defined(WIN32)
+   return (uint32) GetCurrentThreadId();
+# elif defined(MUSCLE_QT_HAS_THREADS)
+#  if QT_VERSION >= 0x040000
+   return (uint32) QThread::currentThreadId();
+#  else
+   return (uint32) QThread::currentThread();
+#  endif
+# elif defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__)
+   find_thread(NULL);
+# else
+    #error "Muscle_GetCurrentThreadID():  No implementation found for this OS!"
+# endif
+}
+#endif
+
 ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
 {
    if (++_threadSetupCount == 1)
@@ -232,6 +270,7 @@ ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       (void) muscleSingleThreadOnly;  // shut the compiler up
 #else
+      _mainThreadID = Muscle_GetCurrentThreadID();
       _muscleSingleThreadOnly = muscleSingleThreadOnly;
       if (_muscleSingleThreadOnly) _lock.Neuter();  // if we're single-thread, then this Mutex can be a no-op!
 #endif
@@ -1040,5 +1079,19 @@ void DebugTimer :: SetMode(uint32 newMode)
       _startTime = MUSCLE_DEBUG_TIMER_CLOCK;
    }
 }
+
+#ifdef MUSCLE_SINGLE_THREAD_ONLY
+bool IsCurrentThreadMainThread() {return true;}
+#else
+bool IsCurrentThreadMainThread() 
+{
+   if (_threadSetupCount > 0) return (Muscle_GetCurrentThreadID() == _mainThreadID);
+   else 
+   {
+      MCRASH("IsCurrentThreadMainThread() cannot be called unless there is a CompleteSetupSystem object on the stack!");
+      return false;  // to shut the compiler up
+   }
+}
+#endif
 
 }; // end namespace muscle

@@ -193,6 +193,12 @@ private:
  */
 Mutex * GetGlobalMuscleLock();
 
+/** Returns true iff the current thread is the process's main thread (i.e. the flow
+  * of execution that started at main() and placed a SetupSystem object on the stack).
+  * If MUSCLE_SINGLE_THREAD_ONLY is defined, then this function always returns true.
+  */
+bool IsCurrentThreadMainThread();
+
 }; // end namespace muscle
 
 #endif

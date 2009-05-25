@@ -70,6 +70,10 @@ of your Makefile to alter muscle's behaviour:
 -DMUSCLE_AVOID_ASSERTIONS 
    makes MASSERT statements into no-ops
 
+-DMUSCLE_AVOID_SIGNAL_HANDLING
+   Disables the built-in support for catching signals and doing an orderly shutdown of
+   the ReflectServer event loop in response.
+
 -DMUSCLE_AVOID_INLINE_ASSEMBLY
    tells muscle to use boring old C/C++ code and avoid using any clever assembly-language code
 

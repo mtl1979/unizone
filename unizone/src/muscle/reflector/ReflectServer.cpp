@@ -1,7 +1,11 @@
 /* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/ReflectServer.h"
-#include "reflector/StorageReflectConstants.h"
+# include "reflector/StorageReflectConstants.h"
+#ifndef MUSCLE_AVOID_SIGNAL_HANDLING
+#include "reflector/SignalHandlerSession.h"
+#include "system/SetupSystem.h"  // for IsCurrentThreadMainThread()
+#endif
 #include "util/NetworkUtilityFunctions.h"
 #include "util/MemoryAllocator.h"
 
@@ -10,6 +14,8 @@
 #endif
 
 namespace muscle {
+
+extern bool _mainReflectServerCatchSignals;  // from SetupSystem.cpp
 
 status_t
 ReflectServer ::
@@ -290,6 +296,19 @@ ServerProcessLoop()
       LogTime(MUSCLE_LOG_DEBUG, "The server was compiled with MUSCLE version %s.  IPv6 support is %s.\n", MUSCLE_VERSION_STRING, verb);
       LogTime(MUSCLE_LOG_DEBUG, "This server's session ID is "UINT64_FORMAT_SPEC".\n", GetServerSessionID());
    }
+
+#ifndef MUSCLE_AVOID_SIGNAL_HANDLING
+   if ((_mainReflectServerCatchSignals)&&(IsCurrentThreadMainThread()))
+   {
+      SignalHandlerSession * shs = newnothrow SignalHandlerSession;
+      if (shs == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+      if (AddNewSession(AbstractReflectSessionRef(shs)) != B_NO_ERROR)
+      {
+         LogTime(MUSCLE_LOG_CRITICALERROR, "ReflectServer::ReadyToRun:  Couldn't install SignalHandlerSession!\n");
+         return B_ERROR;
+      }
+   }
+#endif
 
    if (ReadyToRun() != B_NO_ERROR) 
    {

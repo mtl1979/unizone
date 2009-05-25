@@ -83,43 +83,45 @@ public:
    /** Doesn't return until all outgoing have been sent */
    virtual void FlushOutput();
 
-   /** Kills the child process */
+   /** Kills the child process, using the sequence described at SetChildProcessShutdownBehavior(). */
    virtual void Shutdown();
 
    /** Returns a socket that can be select()'d on for notifications of read/write availability.
     *  Even works under Windows (in non-blocking mode, anyway), despite Microsoft's best efforts 
-    *  to make such a thing impossible :^P Note that you should only use this socket with select(); 
-    *  to read or write to/from the child process, call Read() and Write() instead.
+    *  to make such a thing impossible :^P Note that you should only pass this socket to select(); 
+    *  to read or write to/from the child process, call Read() and Write() on this object but don't
+    *  try to recv()/send()/etc on this socket directly!
     */
    virtual const ConstSocketRef & GetSelectSocket() const;
 
    /** Returns true iff the child process is available (i.e. if startup succeeded). */
    bool IsChildProcessAvailable() const;
 
-   /** Set whether or not we should forcibly kill the child process
-     * when this DataIO object is shut down or deleted.  Default value 
-     * is true.
+   /** Specify the series of actions we should take to gracefully shutdown the child process 
+     * when this object is closed.  
+     *
+     * The shutdown sequence we use is the following:
+     *   1) Close the socket to the child process
+     *   2) (optional) send a signal to the child process (note:  this step is not available under Windows)
+     *   3) (optional) wait up to a specified amount of time for the child process to exit voluntarily
+     *   4) (optional) forcibly kill the child process if it hasn't exited by this time
+     *
+     * @param okayToKillChild If true, we are allowed to violently terminate the child if he still 
+     *                        hasn't exited by the time we are done waiting for him to exit.  If false,
+     *                        we will just let the child continue running if he feels he must.
+     * @param sendSignalNumber If non-negative, we will prompt the child process to exit by
+     *                         sending him this signal before beginning to wait.  Note that
+     *                         this argument is not used under Windows.
+     *                         Defaults to -1.
+     * @param maxWaitTimeMicros If specified, this is the maximum amount of time (in microseconds) 
+     *                          that we should wait for the child process to exit before continuing.
+     *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
+     *                          for the child to exit, if necessary.
+     *
+     * Note that if this method is never called, then the default behavior is to immediately 
+     * kill the child (with no signal sent and no wait time elapsed).
      */
-   void SetKillChildOnClose(bool kcoc) {_killChildOnClose = kcoc;}
-
-   /** Returns true iff we will kill our child process when this DataIO is 
-     * shut down or destroyed.  Default value is true.
-     */
-   bool GetKillChildOnClose() const {return _killChildOnClose;}
-
-   /** Set whether or not we should block (waiting until the child process
-     * is gone) inside this DataIO object's destructor or Shutdown()
-     * call.  Default value is true.  Note that this flag will be
-     * ignored if the kill-child-on-close flag is set to true.
-     */
-   void SetWaitForChildOnClose(bool wcoc) {_waitForChildOnClose = wcoc;}
-
-   /** Returns true iff we will wait for our child process to exit
-     * when this DataIO object is shut down or destroyed.  Default
-     * value is true.  Note that this flag will be ignored if the
-     * kill-child-on-close flag is set to true.
-     */
-   bool GetWaitForChildOnClose() const {return _waitForChildOnClose;}
+   void SetChildProcessShutdownBehavior(bool okayToKillChild, int sendSignalNumber = -1, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
 
    /** Set whether or not the child process we spawn should inherit our
      * open file descriptors.  Default value is false.
@@ -149,10 +151,23 @@ public:
      */
    status_t KillChildProcess();
 
+   /** Sends the specified signal to the child process.
+     * Note that this method is not currently implemented under Windows, 
+     * and thus under Windows this method is a no-op that just returns B_ERROR.
+     * @param sigNum a signal number, e.g. SIGINT or SIGHUP.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure.
+     */
+   status_t SignalChildProcess(int sigNum);
+
    /** Will not return until our child process has exited.
      * If the child process is not currently running, returns immediately.
+     * @param maxWaitTime The maximum amount of time to wait, in microseconds.
+     *                    Defaults to MUSCLE_TIME_NEVER, indicating no timeout.
+     * @returns true iff the child process is known to be gone, or false 
+     *          otherwise (e.g. our timeout period elapsed and the child
+     *          process still hadn't exited)
      */
-   void WaitForChildProcessToExit();
+   bool WaitForChildProcessToExit(uint64 maxWaitTime = MUSCLE_TIME_NEVER);
 
    /** Convenience method:  acts similar to the POSIX system() call, but
      * implemented internally via a ChildProcessDataIO object.  In particular,
@@ -194,10 +209,14 @@ public:
 private:
    void Close();
    status_t LaunchChildProcessAux(int argc, const void * argv, bool usePty);
+   void DoGracefulChildShutdown();
 
    bool _blocking;
-   bool _killChildOnClose;
-   bool _waitForChildOnClose;
+
+   bool _killChildOkay;
+   uint64 _maxChildWaitTime;
+   int _signalNumber;
+
    bool _childProcessInheritFileDescriptors;
 
 #if defined(WIN32) || defined(CYGWIN)
