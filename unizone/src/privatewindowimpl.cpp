@@ -1,3 +1,5 @@
+#include "privatewindowimpl.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -9,21 +11,21 @@
 #include <Q3ValueList>
 #include <Q3PopupMenu>
 
-#include "privatewindowimpl.h"
+#include "util/String.h"
+
 #include "ui_privatewindow.h"
 #include "gotourl.h"
-#include "formatting.h"
 #include "chatevent.h"
 #include "textevent.h"
 #include "global.h"
 #include "settings.h"
-#include "util/String.h"
 #include "platform.h"
 #include "util.h"
 #include "wstring.h"
 #include "wpwevent.h"
 #include "nicklist.h"
 #include "netclient.h"
+#include "debugimpl.h"
 
 /* 
  *  Constructs a privatewindow which is a child of 'parent', with the 
@@ -140,7 +142,7 @@ WPrivateWindow::UserDisconnected(const WUserRef & uref)
 		{
 			if (Settings()->GetUserEvents())
 			{
-				QString msg = WFormat::UserDisconnected(uref()->GetUserID(), FixString(name)); 
+				QString msg = FormatUserDisconnected(uref()->GetUserID(), FixString(name)); 
 				PrintSystem(msg);
 			}
 			uref()->RemoveFromListView(fPrivateUsers);
@@ -191,11 +193,11 @@ WPrivateWindow::PutChatText(const QString & fromsid, const QString & message)
 				QString s;
 				if ( IsAction(message, name) ) // simulate action?
 				{
-					s = WFormat::Action(FormatNameSaid(message));
+					s = FormatAction(FormatNameSaid(message));
 				}
 				else
 				{
-					s = WFormat::ReceivePrivMsg(fromsid, name, FormatNameSaid(message));
+					s = FormatReceivePrivMsg(fromsid, name, FormatNameSaid(message));
 				}
 				PrintText(s);
 				if (Settings()->GetSounds())
@@ -331,7 +333,7 @@ WPrivateWindow::customEvent(QEvent * event)
 											user()->RemoveFromListView(fPrivateUsers);
 											if (Settings()->GetUserEvents())
 											{
-												PrintSystem(WFormat::PrivateRemoved(user()->GetUserID(), FixString(user()->GetUserName())));
+												PrintSystem(FormatPrivateRemoved(user()->GetUserID(), FixString(user()->GetUserName())));
 											}
 											fUsers.Remove(uid);
 										}
@@ -363,9 +365,9 @@ WPrivateWindow::customEvent(QEvent * event)
 												if (Settings()->GetError())
 												{
 													if (ref()->IsBot())
-														PrintError(WFormat::PrivateIsBot(ref()->GetUserID(), FixString(ref()->GetUserName())));
+														PrintError(FormatPrivateIsBot(ref()->GetUserID(), FixString(ref()->GetUserName())));
 													else
-														PrintError(WFormat::PrivateIsBot(sid, FixString(user()->GetUserName())));
+														PrintError(FormatPrivateIsBot(sid, FixString(user()->GetUserName())));
 												}
 												err = true;
 												break;
@@ -549,7 +551,7 @@ WPrivateWindow::PopupActivated(int id)
 		} 
 		else if (id == 3) 
 		{
-			QString qTemp = WFormat::UserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
+			QString qTemp = FormatUserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
 		}
 	}

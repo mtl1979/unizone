@@ -1,21 +1,25 @@
+#include "user.h"
+
 #include <qapplication.h>
 #include <q3listview.h>
 #include <qstring.h>
 
-#include "user.h"
+#include "regex/PathMatcher.h"
+
 #include "netclient.h"
 #include "debugimpl.h"
 #include "global.h"
 #include "botitem.h"
 #include "userlistitem.h"
-#include "regex/PathMatcher.h"
+#include "listutil.h"
+#include "messageutil.h"
 #include "util.h"
 #include "wstring.h"
 #include "winsharewindow.h"
 
 WUser::WUser(const QString & sid)
 {
-	fUserName = qApp->translate("WUser", "Unknown");
+	fUserName = tr("Unknown");
 	fUserStatus = "?";
 	fHostName = "?";
 	fHostOS = QString::null;
@@ -38,6 +42,19 @@ WUser::~WUser()
 {
 	PRINT("~WUser()\n");
 	RemoveFromListView();
+}
+
+bool
+WUser::CheckName(const QString &name)
+{
+	QString temp = name.stripWhiteSpace();
+	if (temp.isEmpty())
+		return false;
+	if (temp == qApp->translate("WUser", "Unknown")) // static methods can't use tr()
+		return false;
+	if (temp == "Unknown")
+		return false;
+	return true;
 }
 
 void
@@ -473,7 +490,7 @@ WUser::SetClient(const QString &s)
 		{
 			if (fHostOS == QString::null)
 			{
-				fHostOS = qApp->translate("WUser", p.tag);
+				fHostOS = tr(p.tag);
 			}
 			// try to strip host os from client string
 			if ((pos > 0) && (fClient[pos-1] == '('))
@@ -485,3 +502,10 @@ WUser::SetClient(const QString &s)
 		}
 	}
 }
+
+QString
+WUser::tr(const char *s)
+{
+	return qApp->translate("WUser", s);
+}
+

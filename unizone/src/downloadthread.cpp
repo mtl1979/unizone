@@ -14,6 +14,7 @@
 #include "global.h"
 #include "platform.h"
 #include "settings.h"
+#include "messageutil.h"
 #include "util.h"
 #include "debugimpl.h"
 #include "resolver.h"

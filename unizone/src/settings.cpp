@@ -9,6 +9,7 @@
 #include "global.h"
 #include "wfile.h"
 #include "wstring.h"
+#include "messageutil.h"
 #include "util.h"
 #include "iogateway/MessageIOGateway.h"
 #include "debugimpl.h"

@@ -1,7 +1,7 @@
 #ifndef WCRYPT_H
 #define WCRYPT_H
 
-#include <qstring.h>
+class QString;
 
 QByteArray wencrypt(const QString &, int * = NULL);
 QString wdecrypt(const QByteArray &, int);

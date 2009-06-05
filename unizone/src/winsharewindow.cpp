@@ -1,3 +1,5 @@
+#include "winsharewindow.h"
+
 #include <qapplication.h>
 #include <q3mainwindow.h>
 #include <q3stylesheet.h>
@@ -43,15 +45,18 @@
 #include <QCustomEvent>
 #include <Q3PopupMenu>
 
+#include "util/StringTokenizer.h"
+#include "iogateway/PlainTextMessageIOGateway.h"
+#include "system/SystemInfo.h"
+#include "zlib/ZLibUtilityFunctions.h"
+
 #include "downloadimpl.h"
 #include "downloadqueue.h"
 #include "uploadimpl.h"
-#include "winsharewindow.h"
 #include "events.h"
 #include "version.h"
 #include "debugimpl.h"
 #include "chattext.h"
-#include "formatting.h"
 #include "textevent.h"
 #include "htmlview.h"
 #include "privatewindowimpl.h"
@@ -63,15 +68,12 @@
 #include "werrorevent.h"
 #include "combo.h"
 #include "menubar.h"
-#include "util/StringTokenizer.h"
-#include "iogateway/PlainTextMessageIOGateway.h"
-#include "system/SystemInfo.h"
-#include "zlib/ZLibUtilityFunctions.h"
 #include "settings.h"
 #include "filethread.h"
 #include "listthread.h"
 #include "resolverthread.h"
 #include "tokenizer.h"								// <postmaster@raasu.org> 20021114
+#include "listutil.h"
 #include "util.h"
 #include "wstring.h"
 #include "nicklist.h"
@@ -791,7 +793,7 @@ WinShareWindow::StatusChanged(const QString & newStatus)
 	fNetClient->SetUserStatus(newStatus); // <postmaster@raasu.org> 20021001
 	fUserStatus = newStatus;
 
-	QString status = WFormat::StatusChanged( FixString( TranslateStatus( fUserStatus ) ) );
+	QString status = FormatStatusChanged( FixString( TranslateStatus( fUserStatus ) ) );
 	PrintSystem(status);
 }
 
@@ -820,7 +822,7 @@ WinShareWindow::NameChanged(const QString & newName)
 	{
 		if (newName != fUserName)
 		{
-			QString status = WFormat::NameChanged(FixString(newName));
+			QString status = FormatNameChanged(FixString(newName));
 			SendSystemEvent(status);
 			fUserName = newName;
 		}

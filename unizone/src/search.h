@@ -3,7 +3,6 @@
 
 #include <qapplication.h>
 #include <qdialog.h>
-#include <qstring.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qregexp.h>
@@ -22,6 +21,7 @@
 using namespace muscle;
 
 class NetClient;
+class QString;
 
 struct WFileInfo
 {

@@ -1,13 +1,14 @@
+#include "chattext.h"
+
 #include <q3dragobject.h>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QKeyEvent>
 
-#include "chattext.h"
 #include "textevent.h"
 #include "debugimpl.h"
 #include "global.h"
-#include "util.h"
+#include "listutil.h"
 #include "winsharewindow.h"
 
 

@@ -2,7 +2,8 @@
 #define SCANEVENT_H
 
 #include <qevent.h>
-#include <qstring.h>
+
+class QString;
 
 class ScanEvent : public QCustomEvent
 {

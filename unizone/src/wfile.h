@@ -42,4 +42,16 @@ private:
 	int TranslateMode(int);
 	int file;
 };
+
+// Close file if necessary and delete the object
+inline void CloseFile(WFile * & file) {
+	if (file)
+	{
+		file->Close();
+		delete file;
+		file = NULL;
+	}
+}
+
+
 #endif

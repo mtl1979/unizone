@@ -1,15 +1,4 @@
 #include "netclient.h"
-#include "downloadimpl.h"
-#include "events.h"
-#include "version.h"
-#include "debugimpl.h"
-#include "settings.h"
-#include "util.h"
-#include "wstring.h"
-#include "werrorevent.h"
-#include "wmessageevent.h"
-#include "wcrypt.h"
-#include "resolver.h"
 
 #include "regex/PathMatcher.h"
 #include "util/TimeUtilityFunctions.h"
@@ -20,6 +9,19 @@
 #include <QTimerEvent>
 #include <QCustomEvent>
 #include <QEvent>
+
+#include "downloadimpl.h"
+#include "events.h"
+#include "version.h"
+#include "debugimpl.h"
+#include "settings.h"
+#include "messageutil.h"
+#include "util.h"
+#include "wstring.h"
+#include "werrorevent.h"
+#include "wmessageevent.h"
+#include "wcrypt.h"
+#include "resolver.h"
 
 // forward declaration
 WinShareWindow * GetWindow(QObject *);

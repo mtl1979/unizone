@@ -1,22 +1,24 @@
+#include "channelimpl.h"
+
 #include <QCustomEvent>
 #include <QResizeEvent>
 #include <Q3ValueList>
 #include <QLabel>
 
-#include "channelimpl.h"
+#include "reflector/StorageReflectConstants.h"
+
 #include "ui_channel.h"
 #include "global.h"
 #include "wpwevent.h"
 #include "gotourl.h"
 #include "settings.h"
-#include "formatting.h"
 #include "nicklist.h"
 #include "textevent.h"
+#include "messageutil.h"
 #include "util.h"
 #include "wstring.h"
 #include "netclient.h"
-
-#include "reflector/StorageReflectConstants.h"
+#include "debugimpl.h"
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, Qt::WFlags /* fl */)
 : QDialog(/* parent */ NULL, name, modal, Qt::WDestructiveClose | Qt::WStyle_Minimize | 
@@ -624,7 +626,7 @@ Channel::SendChannelText(const QString & message)
 			fNet->SendMessageToSessions(chat);
 		}
 	}
-	QString fmt = WFormat::LocalText(fNet->LocalSessionID(), FixString(gWin->GetUserName()), FixString(message));
+	QString fmt = FormatLocalText(fNet->LocalSessionID(), FixString(gWin->GetUserName()), FixString(message));
 	PrintText(fmt);
 }
 
@@ -659,7 +661,7 @@ Channel::NewChannelText(const QString &channel, const QString &user, const QStri
 		if (uref())
 		{
 			// NOTE: Can't use FixString(text)
-			QString fmt = WFormat::RemoteText(user, FixString(uref()->GetUserName()), FormatNameSaid(text));
+			QString fmt = FormatRemoteText(user, FixString(uref()->GetUserName()), FormatNameSaid(text));
 			PrintText(fmt);
 		}
 	}
@@ -730,7 +732,7 @@ Channel::UserDisconnected(const WUserRef &user)
 		{
 			if (gWin->fSettings->GetUserEvents())
 			{
-				QString msg = WFormat::UserDisconnected(sid, FixString(user()->GetUserName())); 
+				QString msg = FormatUserDisconnected(sid, FixString(user()->GetUserName())); 
 				PrintSystem(msg);
 			}
 			user()->RemoveFromListView(fChannelUsers);

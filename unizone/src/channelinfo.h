@@ -2,11 +2,12 @@
 #define CHANNELINFO_H
 
 #include <q3listview.h>
-#include <qstring.h>
 
 #include "util/Queue.h"
 
 using namespace muscle;
+
+class QString;
 
 typedef Queue<QString> WAdminList;
 typedef Queue<QString> WUserList;

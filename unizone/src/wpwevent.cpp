@@ -1,9 +1,10 @@
+#include "wpwevent.h"
+
 #include <qapplication.h>
 #include <QCustomEvent>
 
-#include "wpwevent.h"
 #include "user.h"
-#include "util.h"
+#include "listutil.h"
 #include "privatewindowimpl.h"
 #include "debugimpl.h"
 #include "wstring.h"

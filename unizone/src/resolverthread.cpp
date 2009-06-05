@@ -77,7 +77,7 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 				out += "\n" + tr("Aliases: %1").arg(aliases);
 			}
 		}
-		SystemEvent(gWin, FixString(out));
+		SystemEvent(gWin, gWin->FixString(out));
 	}					
 	else if (gWin->fSettings->GetError())
 	{
@@ -153,7 +153,7 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 		}
 		if (found)
 		{
-			SystemEvent(gWin, FixString(out));
+			SystemEvent(gWin, gWin->FixString(out));
 		}
 	}
 	return found;

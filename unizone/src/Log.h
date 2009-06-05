@@ -1,7 +1,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <qstring.h>
+class QString;
 class WFile;
 
 class WLog

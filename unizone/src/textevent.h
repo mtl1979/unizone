@@ -2,7 +2,8 @@
 #define TEXTEVENT_H
 
 #include <qcoreevent.h>
-#include <qstring.h>
+
+class QString;
 
 /** This event is sent when the user pressed enter in
   *	the text input area.

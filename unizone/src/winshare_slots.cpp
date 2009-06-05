@@ -6,7 +6,6 @@
 
 #include "winsharewindow.h"
 #include "aboutdlgimpl.h"
-#include "formatting.h"
 #include "colors.h"
 #include "debugimpl.h"
 #include "chattext.h"
@@ -75,7 +74,7 @@ WinShareWindow::UserConnected(const WUserRef & uref)
 	QString sid = uref()->GetUserID();
 	if (fSettings->GetUserEvents())
 	{
-		QString text = WFormat::UserConnected(sid);
+		QString text = FormatUserConnected(sid);
 		SendSystemEvent(text);
 	}
 	uref()->AddToListView(fUsers);
@@ -87,7 +86,7 @@ WinShareWindow::UserDisconnected(const WUserRef & uref)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString msg = WFormat::UserDisconnected(uref()->GetUserID(), FixString(uref()->GetUserName())); 
+		QString msg = FormatUserDisconnected(uref()->GetUserID(), FixString(uref()->GetUserName())); 
 		SendSystemEvent(msg);
 	}
 	uref()->RemoveFromListView(fUsers);
@@ -102,17 +101,17 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 		// <postmaster@raasu.org> 20030622
 		QString sid = uref()->GetUserID();
 		QString nameformat;
-		if (CheckName(newname))
+		if (WUser::CheckName(newname))
 		{
-			if (CheckName(old))
+			if (WUser::CheckName(old))
 			{
 				// <postmaster@raasu.org> 20021112, 20030622
-				nameformat = WFormat::UserNameChanged(sid, FixString(old), FixString(newname));  
+				nameformat = FormatUserNameChanged(sid, FixString(old), FixString(newname));  
 			}
 			else
 			{
 				// <postmaster@raasu.org> 20021112, 20030622
-				nameformat = WFormat::UserNameChangedNoOld(sid, FixString(newname)); 
+				nameformat = FormatUserNameChangedNoOld(sid, FixString(newname)); 
 			}
 			SendSystemEvent(nameformat);
 			SendTextEvent(newname, WTextEvent::ResumeType);
@@ -120,7 +119,7 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 		else
 		{
 			// <postmaster@raasu.org> 20030819
-			nameformat = WFormat::UserNameChangedNoNew(sid);  
+			nameformat = FormatUserNameChangedNoNew(sid);  
 			SendSystemEvent(nameformat);
 		}
 	}
@@ -179,7 +178,7 @@ WinShareWindow::UserStatusChanged(const WUserRef & uref, const QString &n, const
 			return;
 
 		// <postmaster@raasu.org> 20021112
-		QString nameformat = WFormat::UserStatusChanged(uref()->GetUserID(), FixString(n), FixString(status)); 
+		QString nameformat = FormatUserStatusChanged(uref()->GetUserID(), FixString(n), FixString(status)); 
 		SendSystemEvent(nameformat);
 	}
 }
@@ -190,7 +189,7 @@ WinShareWindow::UserHostName(const WUserRef & uref, const QString &host)
 	QString sid = uref()->GetUserID();
 	if (fSettings->GetIPAddresses())
 	{
-		QString ip = WFormat::UserIPAddress2(sid, host);
+		QString ip = FormatUserIPAddress2(sid, host);
 		SendSystemEvent(ip);
 	}
 }
@@ -315,7 +314,7 @@ WinShareWindow::PopupActivated(int id)
 			break;
 		case 3: 
 			{
-				QString qTemp = WFormat::UserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
+				QString qTemp = FormatUserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 				SendSystemEvent(qTemp);
 			}
 			break;

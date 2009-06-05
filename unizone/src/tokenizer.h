@@ -1,4 +1,4 @@
-#include <qstring.h>
+class QString;
 
 /** String tokenizer class, similar to Java's java.util.StringTokenizer */
 class QStringTokenizer
@@ -11,49 +11,10 @@ public:
     *  @param separators ASCII string representing a list of characters to interpret a word separators.
     *                    Defaults to ", \t" (where \t is of course the tab character)
     */
-   QStringTokenizer(const QString &tokenizeMe, const QString &separators = ", \t")
-   {
-      _seps = separators;
-      _next = 0;   
-	  _tokenizeMe = tokenizeMe;
-   }
+   QStringTokenizer(const QString &tokenizeMe, const QString &separators = ", \t");
 
    /** Returns the next token in the parsed string, or NULL if there are no more tokens left */
-   QString GetNextToken()
-   {
-      if (!_seps.isEmpty())
-      {
-         // Move until first non-sep char
-         while	(
-					(_next < _tokenizeMe.length()) &&
-					(_seps.find( _tokenizeMe.at(_next) ) >= 0)
-				) 
-		 {
-				_next++;
-		 }
-         if (_next < _tokenizeMe.length())
-         {
-            QString ret = _tokenizeMe.mid(_next);
-			int prev = _next;
-            // Move until next sep-char
-            while	( 
-						(_next < _tokenizeMe.length()) && 
-						( _seps.find( _tokenizeMe.at(_next) ) < 0) 
-					)
-			{
-				_next++;
-			}
-
-            if (_next < _tokenizeMe.length()) 
-            {
-               ret = _tokenizeMe.mid(prev,_next-prev);
-               _next++;
-            }
-            return ret;
-         }
-      }
-      return QString::null;
-   }
+   QString GetNextToken();
 
    /** Convenience synonym for GetNextToken() */
    QString operator()() {return GetNextToken();}
@@ -62,16 +23,7 @@ public:
     *  or NULL if there are no more tokens in the string.
     *  Doesn't affect the next return value of GetNextToken(), though.
     */
-   QString GetRemainderOfString()
-   {
-      if (!_seps.isEmpty())
-      {
-         // Move until first non-sep char
-         while((_next<_tokenizeMe.length())&&(_seps.find(_tokenizeMe.at(_next)) >= 0)) _next++;
-         return (_next<_tokenizeMe.length()) ? _tokenizeMe.mid(_next) : QString::null;  // and return from there
-      }
-      return QString::null;
-   }
+   QString GetRemainderOfString();
 
 private:
    QStringTokenizer(const QStringTokenizer &);   // unimplemented on purpose

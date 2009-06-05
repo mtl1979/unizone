@@ -12,21 +12,13 @@ class WFile;
 
 #include "util/String.h"
 #include "util/ByteBuffer.h"
-#include "message/Message.h"
 
 using namespace muscle;
 
 #include <qregexp.h>
 
-// this is a whole different type of parse... it looks for URL's etc.
-QString ParseChatText(const QString & str);		
-
-QString ParseString(const QString & str);
-
 // RUN THIS BEFORE ParseString()
 QString EscapeHTML(const QString & str);
-
-QString FixString(const QString & str);
 
 //
 // <postmaster@raasu.org> 20021021
@@ -77,12 +69,6 @@ bool HasRegexTokens(const QString & s);
 // Localize Month Names
 QString TranslateMonth(const QString & m);
 
-// Get nice time stamp ;)
-QString GetTimeStamp();
-QString GetTimeStamp2();
-QString GetTimeStampAux(const QString & stamp);
-QString GetDateStampAux(const QString & stamp);
-
 // Calculate percentage and return string representation
 QString ComputePercentString(int64 cur, int64 max);
 
@@ -114,9 +100,6 @@ QString UniqueName(const QString & file, int index); // build up unique name usi
 // Save picture to file, makes sure file doesn't exist before writing...
 void SavePicture(QString & file, const ByteBufferRef & buf);
 
-// Close file if necessary and delete the object
-void CloseFile(WFile * & file);
-
 uint64 toULongLong(const QString &, bool * = NULL);
 QString fromULongLong(const uint64 &);
 QString hexFromULongLong(const uint64 &, int);
@@ -135,20 +118,9 @@ QString BINDecode(const QString &);
 QString OCTEncode(const QString &);
 QString OCTDecode(const QString &);
 
-void AddToList(QString &slist, const QString &entry);
-void AddToList(String &slist, const String &entry);
-
-void RemoveFromList(QString &slist, const QString &entry);
-void RemoveFromList(String &slist, const String &entry);
-
-bool Contains(const QString &slist, const QString &entry); 
-
 int Match(const QString &string, const QRegExp &exp);
 
 int64 ConvertPtr(void *);
-
-bool startsWith(const QString &str1, const QChar &str2, bool cs = true);
-bool endsWith(const QString &str1, const QChar &str2, bool cs = true);
 
 bool BinkyCheck(const QString &user);
 
@@ -158,16 +130,8 @@ QString imageFormats();
 QString WikiEscape(const QString &page);
 QString URLEscape(const QString &page);
 
-status_t GetStringFromMessage(const MessageRef &msg, const String key, QString &value);
-status_t GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QString &value);
-status_t GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value);
-status_t GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value);
-
-status_t AddStringToMessage(const MessageRef &msg, const String key, const QString &value);
-
-status_t ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, const QString &value);
-status_t ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, uint32 index, const QString &value);
-
 QString SimplifyPath(const QString &path);
+
+QString TranslateDay(const QString & d);
 
 #endif

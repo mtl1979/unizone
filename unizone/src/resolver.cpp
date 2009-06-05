@@ -1,11 +1,4 @@
 #include "resolver.h"
-#include "util.h"
-#include "tokenizer.h"
-
-#include "util/Queue.h"
-#include "util/NetworkUtilityFunctions.h"
-
-using muscle::Queue;
 
 #ifndef _WIN32
 #include <sys/types.h>
@@ -17,6 +10,15 @@ typedef hostent *LPHOSTENT;
 #endif
 
 #include <qstringlist.h>
+
+#include "util/Queue.h"
+#include "util/NetworkUtilityFunctions.h"
+
+#include "listutil.h"
+#include "tokenizer.h"
+
+using muscle::Queue;
+
 
 // Expire in 1 hour
 #ifdef WIN32
@@ -41,7 +43,7 @@ ParseIP4(const QString &address, uint32 &result)
 {
 	// Borrowed from QHostAddress ;)
 	QStringList ipv4 = QStringList::split(".", address, false);
-    if (ipv4.count() == 4) {
+	if (ipv4.count() == 4) {
 		bool ok = true;
 		for (int i = 0; i < 4; i++) 
 		{
@@ -53,8 +55,8 @@ ParseIP4(const QString &address, uint32 &result)
 			result = (result << 8) + byteValue;
 		}
 		return true;
-    }
-    return false;
+	}
+	return false;
 }
 
 void

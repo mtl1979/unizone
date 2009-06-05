@@ -2,7 +2,6 @@
 #define FILETHREAD_H
 
 #include <qapplication.h>
-#include <qstring.h>
 #include <qobject.h>
 
 #include <list>
@@ -23,6 +22,7 @@ using namespace muscle;
 class ScanProgress;
 #endif
 class NetClient;
+class QString;
 
 // This class runs through a list of paths and parses each
 // directory for files to search

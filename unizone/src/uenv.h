@@ -1,7 +1,7 @@
 #ifndef UENV_H
 #define UENV_H
 
-#include <qstring.h>
+class QString;
 
 QString EnvironmentVariable(const QString &name);
 

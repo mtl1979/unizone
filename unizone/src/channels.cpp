@@ -10,7 +10,7 @@
 #include "global.h"
 #include "wstring.h"
 #include "netclient.h"
-#include "util.h"
+#include "messageutil.h"
 
 #include <qinputdialog.h>
 #include <qmessagebox.h>

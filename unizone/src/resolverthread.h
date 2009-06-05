@@ -2,7 +2,6 @@
 #define RESOLVERTHREAD_H
 
 #include <qapplication.h>
-#include <qstring.h>
 #include <qobject.h>
 #include <qthread.h>
 #include <qwaitcondition.h>
@@ -13,6 +12,8 @@
 #include "util/Queue.h"
 
 using namespace muscle;
+
+class QString;
 
 struct ResolverEntry
 {

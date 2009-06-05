@@ -1,15 +1,18 @@
+#include "search.h"
+
 #include <qpushbutton.h>
 #include <QLabel>
 #include <QCustomEvent>
 #include <Q3GridLayout>
 
-#include "search.h"
 #include "netclient.h"
 #include "debugimpl.h"
 #include "wstring.h"
 #include "global.h"
 #include "winsharewindow.h"
 #include "settings.h"
+#include "listutil.h"
+#include "messageutil.h"
 #include "util.h"
 #include "downloadimpl.h"
 #include "downloadqueue.h"

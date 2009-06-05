@@ -3,7 +3,6 @@
 
 #include <qapplication.h>
 #include <qobject.h>
-#include <qstring.h>
 #include <qfile.h>
 #include <qdatetime.h>
 
@@ -17,6 +16,7 @@
 
 using namespace muscle;
 
+class QString;
 class WFileThread;
 class WUploadEvent;
 

@@ -1,7 +1,7 @@
 #include "channelinfo.h"
 #include "channelimpl.h"
+#include "listutil.h"
 #include "tokenizer.h"
-#include "util.h"
 
 ChannelInfo::ChannelInfo(const QString &name, const QString &owner)
 {

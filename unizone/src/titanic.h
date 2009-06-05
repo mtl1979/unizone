@@ -6,8 +6,9 @@ enum {
 	TTP_ADD_FILE
 };
 
-#include <qstring.h>
 #include <qbytearray.h>
+
+class QString;
 
 struct TTPInfo
 {

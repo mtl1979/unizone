@@ -19,12 +19,13 @@ SOURCES =	aboutdlgimpl.cpp \
                 events.cpp \
                 fileinfo.cpp \
                 filethread.cpp \
-                formatting.cpp \
                 htmlview.cpp \
                 listthread.cpp \
+                listutil.cpp \
                 main.cpp \
                 md5.cpp \
                 menubar.cpp \
+                messageutil.cpp \
                 netclient.cpp \
                 nicklist.cpp \
                 picviewerimpl.cpp \
@@ -39,6 +40,7 @@ SOURCES =	aboutdlgimpl.cpp \
                 settings.cpp \
                 textevent.cpp \
                 titanic.cpp \
+                tokenizer.cpp \
                 transferitem.cpp \
                 uenv.cpp \
                 ulistview.cpp \
@@ -114,7 +116,6 @@ HEADERS =       aboutdlgimpl.h \
                 downloadimpl.h \
                 downloadthread.h \
                 filethread.h \
-                formatting.h \
                 htmlview.h \
                 listthread.h \
                 menubar.h \

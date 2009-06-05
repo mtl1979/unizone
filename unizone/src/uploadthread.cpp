@@ -16,6 +16,7 @@
 #include "wstring.h"
 #include "filethread.h"
 #include "debugimpl.h"
+#include "messageutil.h"
 #include "util.h"
 #include "resolver.h"
 #include "wtransfer.h"

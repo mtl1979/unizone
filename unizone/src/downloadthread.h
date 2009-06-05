@@ -3,7 +3,6 @@
 
 #include <qapplication.h>
 #include <qfile.h>
-#include <qstring.h>
 #include <qdatetime.h>
 #include <qtimer.h>
 
@@ -27,6 +26,7 @@ using namespace muscle;
 
 #define PARTIAL_RESUME_SIZE (64 * 1024)
 
+class QString;
 class WDownloadEvent;
 
 class WDownloadThread : public QObject

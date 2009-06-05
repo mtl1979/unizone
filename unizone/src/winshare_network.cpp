@@ -1,20 +1,32 @@
 // An extension of the main WinShare class
 // Contains all the networking related methods
 
+#include "winsharewindow.h"
+
+#include <time.h>				//                                 -- for /time
 #include <qapplication.h>
 #include <q3filedialog.h>
 #include <qregexp.h>
 #include <QDesktopWidget>
 #include <QPixmap>
 
-#include "winsharewindow.h"
+#include "util/TimeUtilityFunctions.h"
+#include "util/StringTokenizer.h"
+#include "iogateway/PlainTextMessageIOGateway.h"
+#include "iogateway/MessageIOGateway.h"
+#ifdef MUSCLE_ENABLE_MEMORY_TRACKING
+#include "system/GlobalMemoryAllocator.h"
+#endif
+#include "system/SystemInfo.h"
+
 #include "global.h"
 #include "version.h"
 #include "settings.h"
 #include "debugimpl.h"
-#include "formatting.h"
 #include "platform.h"
 #include "picviewerimpl.h"
+#include "listutil.h"
+#include "messageutil.h"
 #include "util.h"
 #include "wstring.h"
 #include "wcrypt.h"
@@ -36,17 +48,6 @@
 #include "textevent.h"
 #include "wmessageevent.h"
 #include "wpwevent.h"
-
-#include "util/TimeUtilityFunctions.h"
-#include "util/StringTokenizer.h"
-#include "iogateway/PlainTextMessageIOGateway.h"
-#include "iogateway/MessageIOGateway.h"
-#ifdef MUSCLE_ENABLE_MEMORY_TRACKING
-#include "system/GlobalMemoryAllocator.h"
-#endif
-#include "system/SystemInfo.h"
-
-#include <time.h>				//                                 -- for /time
 
 void
 WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
@@ -644,7 +645,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 							}
 							if (fSettings->GetInfo())
 							{
-								QString treqMsg = WFormat::TimeRequest(tu()->GetUserID(), FixString(tu()->GetUserName()));
+								QString treqMsg = FormatTimeRequest(tu()->GetUserID(), FixString(tu()->GetUserName()));
 								PrintSystem(treqMsg);
 							}
 						
@@ -1487,7 +1488,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				*reply = true;
 				// format an error string
-				sendText = WFormat::Error( tr("Unknown command!") );
+				sendText = FormatError( tr("Unknown command!") );
 				e->SetText(sendText);
 			}
 			else
@@ -1511,7 +1512,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt)
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalText(GetUserID(), FixString(GetUserName()), FixString(txt));
+			QString chat = FormatLocalText(GetUserID(), FixString(GetUserName()), FixString(txt));
 			PrintText(chat);
 		}
 	}
@@ -1533,7 +1534,7 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 	{
 		if (fSettings->GetChat())
 		{
-			QString chat = WFormat::LocalText(GetUserID(), FixString(GetUserName()), out);
+			QString chat = FormatLocalText(GetUserID(), FixString(GetUserName()), out);
 			PrintText(chat);
 		}
 	}
@@ -1551,11 +1552,11 @@ WinShareWindow::SendChatText(const QString & sid, const QString & txt, const WUs
 					PRINT("Appending to chat\n");
 					if ( IsAction(txt, me) ) // simulate action?
 					{
-						chat = WFormat::Action(out);
+						chat = FormatAction(out);
 					}
 					else
 					{
-						chat = WFormat::SendPrivMsg(GetUserID(), me, FixString(priv()->GetUserName()), out);
+						chat = FormatSendPrivMsg(GetUserID(), me, FixString(priv()->GetUserName()), out);
 					}
 					PRINT("Printing\n");
 					PrintText(chat);
@@ -1593,7 +1594,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 					{
 						*reply = true;
 						// this will put an error message in the private window
-						text = WFormat::Error(tr("User(s) not found!"));
+						text = FormatError(tr("User(s) not found!"));
 					}
 				}
 				else
@@ -1624,7 +1625,7 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 				{
 					if (fSettings->GetInfo())
 					{
-						QString pingMsg = WFormat::PingSent(sid, FixString(user()->GetUserName())); // <postmaster@raasu.org> 20021112
+						QString pingMsg = FormatPingSent(sid, FixString(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 						PrintSystem(pingMsg);
 					}
 					fNetClient->SendPing(sid);
@@ -1648,11 +1649,11 @@ WinShareWindow::SendPingOrMsg(QString & text, bool isping, bool * reply, bool en
 					QString fmt;
 					if (IsAction(qsendtext, name)) // simulate action?
 					{
-						fmt = WFormat::Action(qsendtext);
+						fmt = FormatAction(qsendtext);
 					}
 					else
 					{
-						fmt = WFormat::LocalText(GetUserID(), name, qsendtext);
+						fmt = FormatLocalText(GetUserID(), name, qsendtext);
 					}
 					text = fmt;
 				}
@@ -1821,11 +1822,11 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				QString uname = FixString(userName);
 				if (IsAction(nameText, uname)) // simulate action?
 				{
-					chat = WFormat::Action(nameText);
+					chat = FormatAction(nameText);
 				}
 				else
 				{
-					chat = WFormat::ReceivePrivMsg(userID, uname, nameText);
+					chat = FormatReceivePrivMsg(userID, uname, nameText);
 				}
 				
 				if (fSettings->GetSounds())
@@ -1848,9 +1849,9 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 			
 				PRINT("Name said\n");
 				if (MatchUserFilter(from, fWatch))
-					chat += WFormat::RemoteWatch(userID, FixString(userName), FormatNameSaid(text));
+					chat += FormatRemoteWatch(userID, FixString(userName), FormatNameSaid(text));
 				else
-					chat += WFormat::RemoteText(userID, FixString(userName), FormatNameSaid(text));
+					chat += FormatRemoteText(userID, FixString(userName), FormatNameSaid(text));
 		
 				SendTextEvent(chat, WTextEvent::ChatTextEvent); 
 			}
@@ -2295,7 +2296,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						if (fSettings->GetInfo())
 						{
 							PRINT("Print ping\n");
-							QString system = WFormat::GotPinged(repto.Cstr(), FixString(user()->GetUserName())); // <postmaster@raasu.org> 20021112
+							QString system = FormatGotPinged(repto.Cstr(), FixString(user()->GetUserName())); // <postmaster@raasu.org> 20021112
 							SendSystemEvent(system);
 						}
 					}
@@ -2355,11 +2356,11 @@ WinShareWindow::HandleMessage(MessageRef msg)
 							}
 							else
 							{
-								QString pre = WFormat::RemoteName(session, FixString(user()->GetUserName()));
+								QString pre = FormatRemoteName(session, FixString(user()->GetUserName()));
 								uint32 time = (uint32) ((GetCurrentTime64() - when) / 10000L);
 								
 								QString pong(pre);
-								pong += WFormat::PingText(time, versionString);
+								pong += FormatPingText(time, versionString);
 								PrintText(pong);
 								
 								uint64 uptime, onlinetime = 0;
@@ -2367,7 +2368,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
                                                                         (msg()->FindInt64("onlinetime", onlinetime) == B_OK))
 								{
 									pong = pre;
-									pong += WFormat::PingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
+									pong += FormatPingUptime(MakeHumanTime(uptime), MakeHumanTime(onlinetime));
 									
 									PrintText(pong);
 								}
@@ -2439,7 +2440,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 						{
 							QString userName = user()->GetUserName();
 							QString qstamp = tr("Current time: %1 %2").arg(qTime).arg(qZone);
-							QString qTime = WFormat::RemoteText(session, FixString(userName), qstamp);
+							QString qTime = FormatRemoteText(session, FixString(userName), qstamp);
 							PrintText(qTime);
 						}
 					}

@@ -1,12 +1,14 @@
 #include "winsharewindow.h"
+
+#include <qregexp.h>
+
 #include "debugimpl.h"
 #include "wstring.h"
 #include "netclient.h"
 #include "tokenizer.h"
 #include "settings.h"
+#include "listutil.h"
 #include "util.h"
-
-#include <qregexp.h>
 
 bool
 WinShareWindow::IsIgnoredIP(const QString & ip)

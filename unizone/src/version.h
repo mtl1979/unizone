@@ -1,7 +1,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#include <qstring.h>
+class QString;
 
 QString WinShareVersionString();
 

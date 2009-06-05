@@ -31,6 +31,7 @@ using std::iterator;
 #include "wstring.h"
 #include "transferitem.h"
 #include "gotourl.h"
+#include "messageutil.h"
 #include "util.h"
 #include "netclient.h"
 

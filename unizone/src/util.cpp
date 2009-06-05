@@ -1,3 +1,5 @@
+#include "util.h"
+
 #include <qapplication.h>
 #include <qregexp.h>
 #include <q3dns.h>
@@ -7,9 +9,12 @@
 #include <QByteArray>
 #include <fcntl.h>
 
-#include "util.h"
+#include "util/Queue.h"
+#include "util/StringTokenizer.h"
+using namespace muscle;
+
+#include "debugimpl.h"
 #include "tokenizer.h"
-#include "formatting.h"
 #include "global.h"
 #include "winsharewindow.h"
 #include "settings.h"
@@ -17,311 +22,11 @@
 #include "wfile.h"
 #include "wstring.h"
 
-#include "util/Queue.h"
-#include "util/StringTokenizer.h"
-using namespace muscle;
 
 #ifdef _WIN32
 extern QString gDataDir;
 #endif
 
-QString
-ParseChatText(const QString & str)
-{
-	// <postmaster@raasu.org> 20021106,20021114 -- Added support for URL labels, uses QStringTokenizer now ;)
-	Queue<QString> qUrls;
-	Queue<QString> qLabels;  // in this list, null means no label
-
-	QString qText = str;
-	bool lastWasURL = false, inLabel = false;
-	QStringTokenizer qTok(qText, " \t\n");
-	QString qToken;
-
-	while ((qToken = qTok.GetNextToken()) != QString::null)
-	{
-		bool bInTag = false;	// <postmaster@raasu.org> 20021012,20021114
-
-		if (inLabel)			// label contains space(s) ???
-		{
-			if (qToken.endsWith("]"))
-			{
-				qLabels.Tail() += qToken.left(qToken.length() - 1);
-				inLabel = false;
-			}
-			else if (qToken.find("]") >= 0)
-			{
-				qLabels.Tail() += qToken.left(qToken.find("]") - 1);
-				inLabel = false;
-			}
-			else
-				qLabels.Tail() += qToken + " ";
-		}
-		else if (IsURL(qToken))
-		{
-			if (
-				(qToken.startsWith("beshare:", false)) ||
-				(qToken.startsWith("share:", false))
-				)
-			{
-				// Remove html tag after the url...
-				if (qToken.endsWith(">"))
-				{
-					bool bInTag = true;
-					while (bInTag)
-					{
-						if (qToken.endsWith("<"))
-							bInTag = false;
-						qToken.truncate(qToken.length() - 1);
-						if (qToken.endsWith(">"))
-							bInTag = true;
-					}
-				}
-				// ...and ensure that URL doesn't end with a dot, comma or colon
-				bool cont = true;
-				while (!qToken.isEmpty() && cont)
-				{
-					unsigned int pos = qToken.length() - 1;
-					switch (qToken.at(pos).unicode())
-					{
-					case '.':
-					case ',':
-					case ':':
-							qToken.truncate(pos);
-							break;
-					default:
-							cont = false;
-							break;
-					}
-				}
-			}
-			else
-			{
-				while (qToken.length() > 1)
-				{
-					QChar last = qToken.at(qToken.length() - 1);
-
-					// <postmaster@raasu.org> 20021012,20021114,20030203
-					//
-
-					if (last == '>')
-					{
-						bInTag = true;
-
-						// Skip html tags that are just after the url
-						//
-						while (bInTag)
-						{
-							if (qToken.endsWith("<"))
-								bInTag = false;
-
-							qToken.truncate(qToken.length() - 1);
-
-							// another tag?
-							if (qToken.endsWith(">"))
-								bInTag = true;
-						}
-
-						last = qToken.at(qToken.length() - 1);
-					}
-
-					// <postmaster@raasu.org> Apr 11th 2004
-					// Make sure there is same amount of ( and ) characters
-					//
-
-					if (qToken.endsWith(")"))
-					{
-						if (qToken.contains("(") == qToken.contains(")"))
-							break;
-					}
-
-					if 	(
-						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||
-						muscleInRange(last.unicode(), (unichar) 'a', (unichar) 'z') ||
-						muscleInRange(last.unicode(), (unichar) 'A', (unichar) 'Z') ||
-						(last == '/')
-						)
-					{
-						break;
-					}
-					else
-						qToken.truncate(qToken.length() - 1);
-				}
-			}
-			if (IsURL(qToken))
-			{
-				qUrls.AddTail(qToken);
-				qLabels.AddTail(QString::null);
-				lastWasURL = true;
-			}
-		}
-		else if (lastWasURL)
-		{
-			lastWasURL = false; // clear in all cases, might contain trash between url and possible label
-
-			if (qToken.startsWith("[")) // Start of label?
-			{
-				if (qToken.endsWith("]"))
-					qLabels.Tail() = qToken.mid(1, qToken.length() - 2);
-				else if (qToken.find("]") >= 0)
-					qLabels.Tail() = qToken.mid(1, qToken.find("]") - 1);
-				else
-				{
-					qLabels.Tail() += qToken.mid(1) + " ";
-					inLabel = true;
-				}
-			}
-		}
-	}
-
-	if (inLabel)
-		qText += "]";
-
-	if (qUrls.GetNumItems() > 0)
-	{
-		QString output = QString::null;
-
-		QString qUrl;
-		QString qLabel;
-
-		while ((qUrls.RemoveHead(qUrl) == B_OK) && (qLabels.RemoveHead(qLabel) == B_OK))
-		{
-			int urlIndex = qText.find(qUrl); // position in QString
-
-			if (urlIndex > 0) // Not in start of string?
-			{
-				output += qText.left(urlIndex);
-				qText = qText.mid(urlIndex);
-			}
-
-			// now the url...
-			QString urltmp = "<a href=\"";
-			if ( qUrl.startsWith("www.") )		urltmp += "http://";
-			if ( qUrl.startsWith("ftp.") )		urltmp += "ftp://";
-			if ( qUrl.startsWith("beshare.") )	urltmp += "server://";
-			if ( qUrl.startsWith("irc.") )		urltmp += "irc://";
-			urltmp += qUrl;
-			urltmp += "\">";
-			// Display URL label or link address, if label doesn't exist
-			int lb = qText.find("\n"); // check for \n between url and label (Not allowed!!!)
-			int le = qText.find(qLabel);
-			if ( qLabel.isEmpty() || muscleInRange(lb, 0, le) )
-				urltmp += qUrl;
-			else
-				urltmp += qLabel.stripWhiteSpace(); // remove surrounding spaces before adding
-			urltmp += "</a>";
-			QString urlfmt = WFormat::URL(urltmp);
-			output += urlfmt;
-			// strip url from original text
-			qText = qText.mid(qUrl.length());
-			// strip label from original text, if exists
-			if (!qLabel.isEmpty())
-			{
-				lb = qText.find("\n");
-				le = qText.find("]");
-				if (!muscleInRange(lb, 0, le))
-				{
-					qText = qText.mid(le + 1);
-					if (qText.startsWith("]"))	// Fix for ']' in end of label
-						qText = qText.mid(1);
-				}
-			}
-
-		}
-		// Still text left?
-		if (!qText.isEmpty())
-			output += qText;
-
-		return output;		// <postmaster@raasu.org> 20021107,20021114 -- Return modified string
-	}
-	else
-		return str; 		// <postmaster@raasu.org> 20021107 -- Return unmodified
-}
-
-QString
-ParseString(const QString & str)
-{
-	QString s;
-	bool space = true;
-	bool first = false; // make first always be &nbsp;
-
-	unsigned int len = str.length();
-	// Remove trailing line feeds
-	while (str[len - 1] == '\n')
-		len--;
-
-	for (unsigned int i = 0; i < len; i++)
-	{
-		if (str[i] == ' ')
-		{
-			if (space)
-			{
-				// alternate inserting non-breaking space and real space
-				if (first)
-					s += " ";
-				else
-					s += "&nbsp;";
-				first = !first;
-			}
-			else
-				s += " ";
-		}
-		else if (str[i] == '<')
-		{
-			space = false;
-			s += "<";
-		}
-		else if (str[i] == '>')
-		{
-			space = true;
-			s += ">";
-		}
-		else if (str[i] == '\n')
-		{
-			// change newlines to <br> (html)
-			if (space)
-				s += "<br>";
-			else
-				s += "\n";
-		}
-		else if (str.mid(i,2) == "\r\n")
-		{
-			if (!space)
-				s += "\r\n";
-		}
-		else if (str[i] == '\r') // Only 13
-		{
-			// change single carriage returns to <br> (html)
-			if (space)
-				s += "<br>";
-			else
-				s += "\r";
-		}
-		else if (str[i] == '\t')
-		{
-			if (space)
-			{
-				// <postmaster@raasu.org> 20030623 -- follow 'first' used in spaces here too...
-				if (first)
-					s += " &nbsp; &nbsp;";
-				else
-					s += "&nbsp; &nbsp; ";
-			}
-			else
-				s += "\t";
-		}
-		else if (( (unichar) str[i].unicode() ) < 32) 			// control character?
-		{
-			// Do Nothing!
-		}
-		else
-		{
-			// other character
-			first = true;
-			s += str[i];
-		}
-	}
-	return s;
-}
 
 QString
 EscapeHTML(const QString & str)
@@ -337,12 +42,6 @@ EscapeHTML(const QString & str)
 			s += str[i];
 	}
 	return s;
-}
-
-QString
-FixString(const QString & str)
-{
-	return ParseString(ParseChatText(EscapeHTML(str.stripWhiteSpace())));
 }
 
 QString
@@ -913,87 +612,6 @@ QString TranslateDay(const QString & d)
 }
 
 QString
-InitTimeStamp()
-{
-	time_t currentTime = time(NULL);
-	return QString::fromLocal8Bit( ctime(&currentTime) );
-}
-
-QString
-GetTimeStampAux(const QString &stamp)
-{
-	QString qCurTime;
-
-	qCurTime = stamp;
-	qCurTime = qCurTime.left(qCurTime.findRev(" ", -1));
-	qCurTime = qCurTime.mid(qCurTime.findRev(" ", -1) + 1);
-
-	return qCurTime;
-}
-
-QString
-GetDateStampAux(const QString &stamp)
-{
-	QString qCurTime = stamp;
-
-	// Strip off year
-	QString qYear = qCurTime.mid(qCurTime.findRev(" ") + 1);
-	qYear.truncate(4);
-	qCurTime.truncate(qCurTime.findRev(" "));
-
-	// ... and day of week
-	QString qDOW = qCurTime.left(qCurTime.find(" "));
-	qDOW = TranslateDay(qDOW);
-	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
-
-	// Strip Month and translate it
-	QString qMonth = qCurTime.left(qCurTime.find(" "));
-	qMonth = TranslateMonth(qMonth);
-
-	qCurTime = qCurTime.mid(qCurTime.find(" ") + 1);
-
-	// Strip Day
-	if (qCurTime.startsWith(" "))
-		qCurTime = qCurTime.mid(1);
-	QString qDay = qCurTime.left(qCurTime.find(" "));
-	return qDOW + " " + qMonth + " " + qDay + " " + qYear;
-}
-
-QString
-GetTimeStamp2()
-{
-	QString stamp = InitTimeStamp();
-	return GetDateStampAux(stamp) + " " + GetTimeStampAux(stamp);
-}
-
-QString
-GetTimeStamp()
-{
-	static QString _day = QString::null;
-
-	QString ret;
-	QString qCurTime;
-	// Is this first time today?
-
-	QString stamp = InitTimeStamp();
-	QString qDate = GetDateStampAux(stamp);
-	if (qDate != _day)
-	{
-		_day = qDate;
-		qDate.prepend(" ");
-		qDate.prepend(qApp->translate("Date", "Date:"));
-		ret = WFormat::TimeStamp(qDate);
-		ret += "<br>";
-	}
-
-	qCurTime = GetTimeStampAux(stamp);
-	qCurTime.prepend("[").append("] ");
-
-	ret += WFormat::TimeStamp(qCurTime);
-	return ret;
-}
-
-QString
 ComputePercentString(int64 cur, int64 max)
 {
 	QString ret;
@@ -1054,7 +672,7 @@ String MakePath(const String &dir, const String &file)
 QString MakePath(const QString &dir, const QString &file)
 {
 	QString ret = QDir::convertSeparators(dir);
-	if (!endsWith(ret, QChar(QDir::separator())))
+	if (!ret.endsWith(QDir::separator()))
 		ret += QDir::separator();
 
 	ret += file;
@@ -1207,16 +825,6 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 	SavePicture(file, data, bufsize);
 }
 
-void CloseFile(WFile * & file)
-{
-	if (file)
-	{
-		file->Close();
-		delete file;
-		file = NULL;
-	}
-}
-
 uint64
 toULongLong(const QString &in, bool *ok)
 {
@@ -1344,89 +952,6 @@ QString hexFromLongLong(const int64 &in, int length)
 	uint64 i;
 	memcpy(&i, &in, sizeof(int64));
 	return hexFromULongLong(i, length);
-}
-
-void
-AddToList(String & slist, const String &item)
-{
-	if (slist.Length() == 0)
-		slist = item.Trim();
-	else
-	{
-		slist += ",";
-		slist += item.Trim();
-	}
-}
-
-void
-AddToList(String & slist, const char *item)
-{
-	AddToList(slist, String(item));
-}
-
-void AddToList(QString &slist, const QString &entry)
-{
-	if (slist.isEmpty())
-		slist = entry.stripWhiteSpace();
-	else
-	{
-		slist += ",";
-		slist += entry.stripWhiteSpace();
-	}
-}
-
-void RemoveFromList(QString &slist, const QString &entry)
-{
-	if (slist == entry.stripWhiteSpace())
-	{
-		slist = QString::null;
-		return;
-	}
-
-	QStringList list = QStringList::split(",", slist);
-	QStringList::Iterator iter = list.begin();
-	while (iter != list.end())
-	{
-		if ((*iter).lower() == entry.stripWhiteSpace().lower())
-		{
-			list.remove(iter);
-			break;
-		}
-		iter++;
-	}
-	slist = list.join(",");
-}
-
-void RemoveFromList(String &slist, const String &entry)
-{
-	if (slist == entry.Trim())
-	{
-		slist = "";
-		return;
-	}
-
-	StringTokenizer tok(slist.Cstr(), ",");
-	String out;
-	const char * tmp;
-	while ((tmp = tok.GetNextToken()) != NULL)
-	{
-		if (!entry.Trim().EqualsIgnoreCase(tmp))
-			AddToList(out, tmp);
-	}
-	slist = out;
-}
-
-bool
-Contains(const QString &slist, const QString &entry)
-{
-	QStringTokenizer tok(slist,",");
-	QString t;
-	while ((t = tok.GetNextToken()) != QString::null)
-	{
-		if (t == entry)
-			return true;
-	}
-	return false;
 }
 
 void HEXClean(QString &in)
@@ -1645,24 +1170,6 @@ ConvertPtr(void *ptr)
 		return (int64) ((intptr_t) ptr);
 }
 
-bool
-startsWith(const QString &str, const QChar &c, bool cs)
-{
-   if (cs)
-      return (str.left(1) == c);
-   else
-      return (str.left(1).lower() == c.lower());
-}
-
-bool
-endsWith(const QString &str, const QChar &c, bool cs)
-{
-   if (cs)
-      return (str.right(1) == c);
-   else
-      return (str.right(1).lower() == c.lower());
-}
-
 bool BinkyCheck(const QString &user)
 {
 	if (user.find(QString("binky"), 0, false) >= 0)
@@ -1790,74 +1297,18 @@ QString URLEscape(const QString &page)
 	return out;
 }
 
-status_t
-GetStringFromMessage(const MessageRef &msg, const String key, QString &value)
-{
-	return GetStringFromMessage(msg, key, 0, value);
-}
-
-status_t
-GetStringFromMessage(const MessageRef &msg, const String key, uint32 index, QString &value)
-{
-	const char * val;
-        status_t ret = msg()->FindString(key, index, val);
-	if (ret == B_OK)
-		value = QString::fromUtf8(val);
-	return ret;
-}
-
-status_t
-AddStringToMessage(const MessageRef &msg, const String key, const QString &value)
-{
-	QByteArray val = value.utf8();
-	return msg()->AddString(key, (const char *) val);
-}
-
-status_t
-ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, const QString &value)
-{
-	return ReplaceStringInMessage(msg, okayToAdd, key, 0, value);
-}
-
-status_t
-ReplaceStringInMessage(const MessageRef &msg, bool okayToAdd, const String key, uint32 index, const QString &value)
-{
-	QByteArray val = value.utf8();
-	return msg()->ReplaceString(okayToAdd, key, index, (const char *) val);
-}
-
-status_t
-GetInt32FromMessage(const MessageRef &msg, const String key, int32 &value)
-{
-	int32 val;
-        status_t ret = msg()->FindInt32(key, val);
-	if (ret == B_OK)
-		value = val;
-	return ret;
-}
-
-status_t
-GetUInt32FromMessage(const MessageRef &msg, const String key, uint32 &value)
-{
-	uint32 val;
-        status_t ret = msg()->FindInt32(key, val);
-	if (ret == B_OK)
-		value = val;
-	return ret;
-}
-
 QString SimplifyPath(const QString &path)
 {
 	QString old = QDir::convertSeparators(path);
 #ifdef _WIN32
 	QString data = QDir::convertSeparators(gDataDir);
-	if (!endsWith(data, QDir::separator()))
+	if (!data.endsWith(QDir::separator()))
 		data += QDir::separator();
 	if (old.startsWith(data, false))
 		old = old.mid(data.length());
 #else
 	QString app = QDir::convertSeparators(gAppDir);
-	if (!endsWith(app, QDir::separator()))
+	if (!app.endsWith(QDir::separator()))
 		app += QDir::separator();
 	if (old.startsWith(app))
 		old = old.mid(app.length());

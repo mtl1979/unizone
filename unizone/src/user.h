@@ -6,20 +6,21 @@
 #include "util/Queue.h"
 using namespace muscle;
 
-#include <qstring.h>
-
 class Q3ListView;
 class Q3ListViewItem;
+class QString;
 
-/** A work in progress class
-  *	As the user message becomes more revealed, add more
-  * methods to it.
+/**  A work in progress class
+  *  As the user message becomes more revealed, add more
+  *  methods to it.
   */
 class WUser : public RefCountable
 {
 public:
 	WUser(const QString & sid);
 	~WUser();
+
+	static bool CheckName(const QString &name);
 
 	// <postmaster@raasu.org> 20021001
 	void SetUserName(const QString & name);
@@ -79,6 +80,8 @@ public:
 	void SetLastLine(const QString & channel, const QString & line);
 
 private:
+	QString tr(const char *);
+
 	QString fHostName;
 	QString fHostOS;
 	QString fUserID;

@@ -19,7 +19,8 @@
 #endif
 #include "scanevent.h"
 #include "netclient.h"
-#include "util.h"		// for startsWith()/endsWith()
+#include "messageutil.h" // for AddStringToMessage();
+#include "util.h"		// for SimplifyPath()
 
 WFileThread::WFileThread(NetClient *net, QObject *owner, bool *optShutdownFlag)
 	: QObject(owner), Thread(), fLocker()

@@ -5,13 +5,14 @@
 #include <qapplication.h>
 #include <qregexp.h>
 
+#include "util/StringTokenizer.h"
+
 #include "winsharewindow.h"
 #include "global.h"
-#include "util/StringTokenizer.h"
 #include "debugimpl.h"
 #include "settings.h"
-#include "formatting.h"
 #include "netclient.h"
+#include "messageutil.h"
 #include "util.h"
 #include "wstring.h"
 #include "tokenizer.h" // <postmaster@raasu.org> 20021128

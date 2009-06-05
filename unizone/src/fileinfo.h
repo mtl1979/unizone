@@ -2,9 +2,10 @@
 #define UFILEINFO_H
 
 #include <qfileinfo.h>
-#include <qstring.h>
 
 #include "support/MuscleSupport.h"
+
+class QString;
 
 class UFileInfo
 {

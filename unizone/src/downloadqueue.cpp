@@ -3,7 +3,7 @@
 #include "winsharewindow.h"
 #include "settings.h"
 #include "downloadimpl.h"
-#include "util.h"
+#include "messageutil.h"
 
 DownloadQueue::DownloadQueue()
 {

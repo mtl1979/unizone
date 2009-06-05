@@ -7,7 +7,7 @@
 #include "wsystemevent.h"
 #include "resolver.h"
 #include "settings.h"
-#include "util.h"
+#include "messageutil.h"
 #include "wstring.h"
 
 #include "iogateway/PlainTextMessageIOGateway.h"
