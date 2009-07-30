@@ -380,6 +380,14 @@ protected:
    /** Returns true iff our "subscriptions enabled" flag is set.  Default state is of this flag is true.  */
    bool GetSubscriptionsEnabled() const {return _subscriptionsEnabled;}
 
+   /** Called when a PR_COMMAND_GETPARAMETERS Message is received from our client.   After filling the usual
+     * data into the PR_RESULTS_PARAMETERS reply Message, the StorageReflectSession class will call this method,
+     * giving the subclass an opportunity to add additional (application-specific) data to the Message if it wants to.
+     * Default implementation is a no-op.
+     * @param parameterResultsMsg The PR_RESULT_PARAMETERS Message that is about to be sent back to the client.
+     */
+   virtual void AddApplicationSpecificParametersToParametersResultMessage(Message & parameterResultsMsg) const;
+
    /**
     * Convenience method:  Uses the given path to lookup a single node in the node tree
     * and return it.  As of MUSCLE v4.11, wildcarding is supported in the path argument.

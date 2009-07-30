@@ -448,6 +448,9 @@ public:
      */
    bool IsNormalized() const {return ((_itemCount == 0)||(_headIndex <= _tailIndex));}
 
+   /** Returns a read-only reference to a default-constructed item of this Queue's type.  This item will be valid as long as this Queue is valid. */
+   const ItemType & GetDefaultItem() const {return _defaultItem;}
+
 private:
    const ItemType * GetArrayPointerAux(uint32 whichArray, uint32 & retLength) const;
    void SwapContentsAux(Queue<ItemType> & that);

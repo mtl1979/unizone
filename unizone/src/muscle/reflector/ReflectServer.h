@@ -233,9 +233,9 @@ protected:
    void EndSession(AbstractReflectSession * which);
 
    /** Called by a session to force its TCP connection to be closed
-     * @ param which The session to force-disconnect.
-     * @ returns true iff the session has decided to terminate itself, or false if it decided to continue
-     *                hanging around the server even though its client connection has been severed.
+     * @param which The session to force-disconnect.
+     * @returns true iff the session has decided to terminate itself, or false if it decided to continue
+     *               hanging around the server even though its client connection has been severed.
      * @see AbstractReflectSession::ClientConnectionClosed().
      */
    bool DisconnectSession(AbstractReflectSession * which);

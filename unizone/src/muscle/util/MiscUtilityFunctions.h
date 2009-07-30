@@ -346,6 +346,23 @@ String GetHumanReadableTimeString(uint64 timeVal, uint32 timeType = MUSCLE_TIMEZ
   */
 uint64 ParseHumanReadableTimeString(const String & str, uint32 timeType = MUSCLE_TIMEZONE_UTC);
 
+/** Given a string that represents a time interval, returns the equivalent value in microsends.
+  * A time interval should be expressed as a non-negative integer, optionally followed by
+  * any of the following suffixes:
+  *   us = microseconds
+  *   ms = milliseconds
+  *   s  = seconds
+  *   m  = minutes
+  *   h  = hours
+  *   d  = days
+  *   w  = weeks
+  * As a special case, the string "forever" will parse to MUSCLE_TIME_NEVER.
+  * If no suffix is supplied, the units are presumed to be in seconds.
+  * @param str The string to parse 
+  * @returns a time interval value, in microseconds.
+  */
+uint64 ParseHumanReadableTimeIntervalString(const String & str);
+
 /** Similar to the standard exit() call, except that no global object destructors will
   * be called.  This is sometimes useful, e.g. in fork() situations where you want the
   * parent process to just go away without any chance of a crash during cleanup.

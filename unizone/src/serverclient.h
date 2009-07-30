@@ -36,7 +36,7 @@ private slots:
 
 	void MessageReceived(const MessageRef & msg, const String & sessionID);
 
-	void SessionConnected(const String & sessionID);
+	void SessionConnected(const String & sessionID, const IPAddressAndPort & connectedTo);
 	void SessionDetached(const String & sessionID);
 };
 

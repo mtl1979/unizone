@@ -71,7 +71,7 @@ static Mutex * _atomicMutexes = NULL;
 
 static uint32 _threadSetupCount = 0;
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
-static uint32 _mainThreadID;
+static unsigned long _mainThreadID;
 #endif
 
 static int swap_memcmp(const void * vp1, const void * vp2, uint32 numBytes)
@@ -243,22 +243,22 @@ MathSetupSystem :: ~MathSetupSystem()
 }
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
-static uint32 Muscle_GetCurrentThreadID()
+static unsigned long Muscle_GetCurrentThreadID()
 {
 # if defined(MUSCLE_USE_PTHREADS)
-   return (uint32) pthread_self();
+   return (unsigned long) pthread_self();
 # elif defined(WIN32)
-   return (uint32) GetCurrentThreadId();
+   return (unsigned long) GetCurrentThreadId();
 # elif defined(MUSCLE_QT_HAS_THREADS)
 #  if QT_VERSION >= 0x040000
-   return (uint32) QThread::currentThreadId();
+   return (unsigned long) QThread::currentThreadId();
 #  else
-   return (uint32) QThread::currentThread();
+   return (unsigned long) QThread::currentThread();
 #  endif
 # elif defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__)
-   find_thread(NULL);
+   return (unsigned long) find_thread(NULL);
 # else
-    #error "Muscle_GetCurrentThreadID():  No implementation found for this OS!"
+#  error "Muscle_GetCurrentThreadID():  No implementation found for this OS!"
 # endif
 }
 #endif
@@ -340,19 +340,18 @@ static inline uint32 get_tbu() {uint32 tbu; asm volatile("mftbu %0" : "=r" (tbu)
 #endif
 
 // For BeOS, this is an in-line function, defined in util/TimeUtilityFunctions.h
-#if !defined(__BEOS__) && !defined(__HAIKU__)
-
+#if !(defined(__BEOS__) || defined(__HAIKU__) || defined(TARGET_PLATFORM_XENOMAI))
 /** Defined here since every MUSCLE program will have to include this file anyway... */
 uint64 GetRunTime64()
 {
-#ifdef WIN32
+# ifdef WIN32
    TCHECKPOINT;
 
    uint64 ret = 0;
    static Mutex _rtMutex;
    if (_rtMutex.Lock() == B_NO_ERROR)
    {
-#ifdef MUSCLE_USE_QUERYPERFORMANCECOUNTER
+#  ifdef MUSCLE_USE_QUERYPERFORMANCECOUNTER
       TCHECKPOINT;
 
       static int64 _brokenQPCOffset = 0;
@@ -393,7 +392,7 @@ uint64 GetRunTime64()
             _lastCheckQPCTime = ret;
          }
       }
-#endif
+#  endif
       if (ret == 0)
       {
          static uint32 _prevVal    = 0;
@@ -407,11 +406,11 @@ uint64 GetRunTime64()
       _rtMutex.Unlock();
    }
    return ret;
-#elif defined(__APPLE__)
+# elif defined(__APPLE__)
    UnsignedWide uw = AbsoluteToNanoseconds(UpTime());
    return ((((uint64)uw.hi)<<32)|(uw.lo))/1000;
-#else
-# if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined(MUSCLE_POWERPC_TIMEBASE_HZ)
+# else
+#  if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined(MUSCLE_POWERPC_TIMEBASE_HZ)
    TCHECKPOINT;
    while(1)
    {
@@ -425,11 +424,11 @@ uint64 GetRunTime64()
          return ((cycles/MUSCLE_POWERPC_TIMEBASE_HZ)*1000000)+(((cycles%MUSCLE_POWERPC_TIMEBASE_HZ)*((uint64)1000000))/MUSCLE_POWERPC_TIMEBASE_HZ);
       }
    }
-# else
-#  if defined(MUSCLE_USE_LIBRT) && defined(_POSIX_MONOTONIC_CLOCK)
+#  else
+#   if defined(MUSCLE_USE_LIBRT) && defined(_POSIX_MONOTONIC_CLOCK)
    struct timespec ts;
    return (clock_gettime(CLOCK_MONOTONIC, &ts) == 0) ? ((((uint64)ts.tv_sec)*1000000)+(((uint64)ts.tv_nsec)/1000)) : 0; 
-#  else
+#   else
    // default implementation:  use POSIX API
    static clock_t _ticksPerSecond = 0;
    if (_ticksPerSecond <= 0) _ticksPerSecond = sysconf(_SC_CLK_TCK);
@@ -462,11 +461,13 @@ uint64 GetRunTime64()
       }
    }
    return 0;  // Oops?
+#   endif
 #  endif
 # endif
-#endif
 }
+#endif
 
+#if !(defined(__BEOS__) || defined(__HAIKU__))
 status_t Snooze64(uint64 micros)
 {
 #if __ATHEOS__

@@ -118,6 +118,9 @@ enum
 #define PR_NAME_SERVER_MEM_MAX       "!Mmx"   // uint64 indicating how the maximum number of bytes the MUSCLE server may have allocated at once.
 #define PR_NAME_SERVER_VERSION       "!Msv"   // String indicating version of MUSCLE that the server was compiled from
 #define PR_NAME_SERVER_UPTIME        "!Mup"   // uint64 indicating how many microseconds the server has been running for
+#define PR_NAME_SERVER_CURRENTTIMEUTC   "!Mct"   // uint64 indicating the server's current wall-clock (microseconds since 1970), in UTC format
+#define PR_NAME_SERVER_CURRENTTIMELOCAL "!Mcl"   // uint64 indicating the server's current wall-clock (microseconds since 1970), in the server's local timezone format
+#define PR_NAME_SERVER_RUNTIME       "!Mrt"   // uint64 indicating the server's current run-time clock (microseconds)
 #define PR_NAME_SERVER_SESSION_ID    "!Ssi"   // uint64 that is unique to this particular instance of the server in this particular process
 #define PR_NAME_MAX_NODES_PER_SESSION "!Mns"  // uint32 indicating the maximum number of nodes uploadable by a session
 #define PR_NAME_SESSION               "session"  // this field will be replaced with the sender's session number for any client-to-client message (named "session" for BeShare backwards compatibility)

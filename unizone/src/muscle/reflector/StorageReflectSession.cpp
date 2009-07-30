@@ -344,7 +344,7 @@ NodeChangedAux(DataNode & modifiedNode, bool isBeingRemoved)
          }
          else _nextSubscriptionMessage()->AddMessage(np, modifiedNode.GetData());
       }
-      if (_nextSubscriptionMessage()->CountNames() >= _maxSubscriptionMessageItems) PushSubscriptionMessages(); 
+      if (_nextSubscriptionMessage()->GetNumNames() >= _maxSubscriptionMessageItems) PushSubscriptionMessages(); 
    }
    else WARN_OUT_OF_MEMORY;
 }
@@ -659,11 +659,22 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   resultMessage()->RemoveName(PR_NAME_SERVER_UPTIME);
                   resultMessage()->AddInt64(PR_NAME_SERVER_UPTIME, GetServerUptime());
 
+                  resultMessage()->RemoveName(PR_NAME_SERVER_CURRENTTIMEUTC);
+                  resultMessage()->AddInt64(PR_NAME_SERVER_CURRENTTIMEUTC, GetCurrentTime64(MUSCLE_TIMEZONE_UTC));
+
+                  resultMessage()->RemoveName(PR_NAME_SERVER_CURRENTTIMELOCAL);
+                  resultMessage()->AddInt64(PR_NAME_SERVER_CURRENTTIMELOCAL, GetCurrentTime64(MUSCLE_TIMEZONE_LOCAL));
+
+                  resultMessage()->RemoveName(PR_NAME_SERVER_RUNTIME);
+                  resultMessage()->AddInt64(PR_NAME_SERVER_RUNTIME, GetRunTime64());
+
                   resultMessage()->RemoveName(PR_NAME_MAX_NODES_PER_SESSION);
                   resultMessage()->AddInt64(PR_NAME_MAX_NODES_PER_SESSION, _maxNodeCount);
         
                   resultMessage()->RemoveName(PR_NAME_SERVER_SESSION_ID);
                   resultMessage()->AddInt64(PR_NAME_SERVER_SESSION_ID, GetServerSessionID());
+
+                  AddApplicationSpecificParametersToParametersResultMessage(*resultMessage());
 
                   MessageReceivedFromSession(*this, resultMessage, NULL);
                }
@@ -1170,7 +1181,7 @@ GetDataCallback(DataNode & node, void * userData)
       if ((resultMsg())&&(node.GetNodePath(np) == B_NO_ERROR))
       {
          (void) resultMsg()->AddMessage(np, node.GetData());
-         if (resultMsg()->CountNames() >= _maxSubscriptionMessageItems) SendGetDataResults(resultMsg);
+         if (resultMsg()->GetNumNames() >= _maxSubscriptionMessageItems) SendGetDataResults(resultMsg);
       }
       else 
       {      
@@ -1199,7 +1210,7 @@ GetDataCallback(DataNode & node, void * userData)
                sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", INDEX_OP_ENTRYINSERTED, i, (*index)[i]->Cstr());
                (void) indexUpdateMsg()->AddString(np, temp);
             }
-            if (indexUpdateMsg()->CountNames() >= _maxSubscriptionMessageItems) SendGetDataResults(messageArray[1]);
+            if (indexUpdateMsg()->GetNumNames() >= _maxSubscriptionMessageItems) SendGetDataResults(messageArray[1]);
          }
          else 
          {
@@ -1549,7 +1560,7 @@ JettisonOutgoingResults(const NodePathMatcher * matcher)
             }
             else msg->Clear();
 
-            if (msg->CountNames() == 0) (void) oq.RemoveItemAt(i);
+            if (msg->HasNames() == false) (void) oq.RemoveItemAt(i);
          }
       }
    }
@@ -1742,6 +1753,11 @@ status_t StorageReflectSession :: RemoveParameter(const String & paramName, bool
       retUpdateDefaultMessageRoute = true;
    }
    return B_NO_ERROR;
+}
+
+void StorageReflectSession :: AddApplicationSpecificParametersToParametersResultMessage(Message & msg) const
+{
+   (void) msg;
 }
 
 }; // end namespace muscle

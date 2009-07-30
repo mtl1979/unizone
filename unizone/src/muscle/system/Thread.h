@@ -3,23 +3,25 @@
 #ifndef MuscleThread_h
 #define MuscleThread_h
 
-#include "support/MuscleSupport.h"  // first to avoid MUSCLE_FD_SETSIZE ordering problems
-#include "system/Mutex.h"           // needed first, for MUSCLE_PREFER_QT_OVER_WIN32 logic
+#include "system/Mutex.h"
 #include "message/Message.h"
 #include "util/Queue.h"
+
+#ifdef MUSCLE_SINGLE_THREAD_ONLY
+# error "You're not allowed use the Thread class if you have the MUSCLE_SINGLE_THREAD_ONLY compiler constant defined!"
+#endif
 
 #if defined(MUSCLE_USE_PTHREADS)
 # include <pthread.h>
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
 # // empty
 #elif defined(MUSCLE_QT_HAS_THREADS)
+# define MUSCLE_USE_QT_THREADS
 # if QT_VERSION >= 0x040000
 #  include <QThread>
-#  include <QWaitCondition>
 #  define QT_HAS_THREAD_PRIORITIES
 # else
 #  include <qthread.h>
-#  include <qwaitcondition.h>
 #  if QT_VERSION >= 0x030200
 #   define QT_HAS_THREAD_PRIORITIES
 #  endif
@@ -68,6 +70,11 @@ public:
 
    /** Returns true iff the calling thread is the internal thread, or false if the caller is any other thread. */
    bool IsCallerInternalThread() const;
+
+   /** If the current thread is the internal thread of a Thread object, returns a pointer to that object.
+     * Otherwise, returns NULL.
+     */
+   static Thread * GetCurrentThread();
 
    /** Tells the internal thread to quit by sending it a NULL MessageRef, and then optionally 
      * waits for it to go away by calling WaitForInternalThreadToExit().  
@@ -345,38 +352,22 @@ private:
    ::HANDLE _thread;
    DWORD _threadID;
    static DWORD WINAPI InternalThreadEntryFunc(LPVOID This) {((Thread*)This)->InternalThreadEntryAux(); return 0;}
-#elif defined(MUSCLE_QT_HAS_THREADS)
+#elif defined(MUSCLE_USE_QT_THREADS)
    class MuscleQThread : public QThread
    {
    public:
       MuscleQThread() : _owner(NULL) {/* empty */}  // _owner not set here, for VC++6 compatibility
-
-      virtual void run() 
-      {
-#if QT_VERSION >= 0x040000
-         _owner->_internalThreadHandle = QThread::currentThreadId(); // for use by IsCallerInternalThread()
-#else
-         _owner->_internalThreadHandle = QThread::currentThread(); // for use by IsCallerInternalThread()
-#endif
-         _owner->_waitForHandleMutex->lock();   // won't return until owner is inside wait()
-         _owner->_waitForHandleSet->wakeOne();  // let main thread know we have set the _internalThreadHandle
-         _owner->_waitForHandleMutex->unlock(); // clean up
-         _owner->InternalThreadEntryAux();      // and go on to do our thing
-      }
-
       void SetOwner(Thread * owner) {_owner = owner;}
+      virtual void run() {_owner->InternalThreadEntryAux();}
 
    private:
       Thread * _owner;
    };
    MuscleQThread _thread;
-   Qt::HANDLE _internalThreadHandle;
-   QWaitCondition * _waitForHandleSet;  // only valid during thread startup!
-   QMutex * _waitForHandleMutex;
    friend class MuscleQThread;
 
 protected:
-#ifdef QT_HAS_THREAD_PRIORITIES
+# ifdef QT_HAS_THREAD_PRIORITIES
    /** Returns the priority that the internal thread should be launched under.  Only available
     *  when using Qt 3.2 or higher, so you may want to wrap your references to this method in an 
     *  #ifdef QT_HAS_THREAD_PRIORITIES test, to make sure your code remains portable.
@@ -384,16 +375,29 @@ protected:
     *           implementation always returns QThread::InheritPriority.
     */
    virtual QThread::Priority GetInternalQThreadPriority() const {return QThread::InheritPriority;}
+# endif
 #endif
 
 private:
+#if defined(MUSCLE_USE_PTHREADS)
+   typedef pthread_t muscle_thread_key;
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+   typedef DWORD muscle_thread_key;
+#elif defined(MUSCLE_USE_QT_THREADS)
+   typedef QThread * muscle_thread_key;
 #elif defined(__BEOS__) || defined(__HAIKU__)
+   typedef thread_id muscle_thread_key;
    thread_id _thread;
    static int32 InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux(); return 0;}
 #elif defined(__ATHEOS__)
+   typedef thread_id muscle_thread_key;
    thread_id _thread;
    static void InternalThreadEntryFunc(void * This) {((Thread *)This)->InternalThreadEntryAux();}
 #endif
+
+   static muscle_thread_key GetCurrentThreadKey();
+   static Mutex _curThreadsMutex;
+   static Hashtable<muscle_thread_key, Thread *> _curThreads;
 };
 
 }; // end namespace muscle

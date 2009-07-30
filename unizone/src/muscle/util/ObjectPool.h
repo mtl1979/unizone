@@ -3,7 +3,6 @@
 #ifndef MuscleObjectPool_h
 #define MuscleObjectPool_h
 
-#include "util/Queue.h"
 #include "system/Mutex.h"
 
 namespace muscle {
@@ -141,50 +140,18 @@ public:
    {
 #ifdef DISABLE_OBJECT_POOLING
       Object * ret = newnothrow Object;
-      if (ret) 
-      {
-         ret->SetManager(this);
-         if (_initObjectFunc) _initObjectFunc(ret, _initObjectUserData);
-      }
-      else WARN_OUT_OF_MEMORY;
+      if (ret) InitObjectAux(ret);
+          else WARN_OUT_OF_MEMORY;
       return ret;
 #else
       Object * ret = NULL;
       if (_mutex.Lock() == B_NO_ERROR)
       {
-         if ((_firstSlab)&&(_firstSlab->HasAvailableNodes()))
-         {
-            ret = _firstSlab->ObtainObjectNode();
-            if ((_firstSlab->HasAvailableNodes() == false)&&(_firstSlab != _lastSlab))
-            {
-               // Move _firstSlab out of the way (to the end of the slab list) for next time
-               ObjectSlab * tmp = _firstSlab;  // use temp var since _firstSlab will change
-               tmp->RemoveFromSlabList();
-               tmp->AppendToSlabList();
-            }
-         }
-         else
-         {
-            // Hmm, we must have run out out of non-full slabs.  Create a new slab and use it.
-            ObjectSlab * slab = newnothrow ObjectSlab(this);
-            if (slab)
-            {
-               ret = slab->ObtainObjectNode();  // guaranteed not to fail, since slab is new
-               if (slab->HasAvailableNodes()) slab->PrependToSlabList();
-                                         else slab->AppendToSlabList();  // could happen, if NUM_OBJECTS_PER_SLAB==1
-               _curPoolSize += NUM_OBJECTS_PER_SLAB;
-            }
-            // we'll do the WARN_OUT_OF_MEMORY below, outside the mutex lock
-         }
-         if (ret) --_curPoolSize;
+         ret = ObtainObjectAux();
          _mutex.Unlock();
       }
-      if (ret)
-      {
-         ret->SetManager(this);
-         if (_initObjectFunc) _initObjectFunc(ret, _initObjectUserData);
-      }
-      else WARN_OUT_OF_MEMORY;
+      if (ret) InitObjectAux(ret);
+          else WARN_OUT_OF_MEMORY;
       return ret;
 #endif
    }
@@ -207,25 +174,8 @@ public:
 #else
          if (_mutex.Lock() == B_NO_ERROR)
          {
-            ObjectSlab * slabToDelete = NULL;
-            ObjectNode * objNode = static_cast<ObjectNode *>(obj);
-            ObjectSlab * objSlab = objNode->GetSlab();
-
-            objSlab->ReleaseNode(objNode);  // guaranteed to work, since we know (obj) is in use in (objSlab)
-
-            if ((++_curPoolSize > (_maxPoolSize+NUM_OBJECTS_PER_SLAB))&&(objSlab->IsInUse() == false))
-            {
-               _curPoolSize -= NUM_OBJECTS_PER_SLAB;
-               objSlab->RemoveFromSlabList();
-               slabToDelete = objSlab;
-            }
-            else if (objSlab != _firstSlab) 
-            {
-               objSlab->RemoveFromSlabList();
-               objSlab->PrependToSlabList();
-            }
+            ObjectSlab * slabToDelete = ReleaseObjectAux(obj);
             _mutex.Unlock();
-
             delete slabToDelete;  // do this outside the critical section, for better concurrency
          }
          else WARN_OUT_OF_MEMORY;  // critical error -- not really out of memory but still
@@ -448,6 +398,68 @@ private:
       uint32 _numNodesInUse;
       ObjectNode _nodes[NUM_OBJECTS_PER_SLAB];
    };
+
+   // Must be called with _mutex locked!   Returns either NULL, or a pointer to a
+   // newly allocated Object.
+   Object * ObtainObjectAux()
+   {
+      Object * ret = NULL;
+      if ((_firstSlab)&&(_firstSlab->HasAvailableNodes()))
+      {
+         ret = _firstSlab->ObtainObjectNode();
+         if ((_firstSlab->HasAvailableNodes() == false)&&(_firstSlab != _lastSlab))
+         {
+            // Move _firstSlab out of the way (to the end of the slab list) for next time
+            ObjectSlab * tmp = _firstSlab;  // use temp var since _firstSlab will change
+            tmp->RemoveFromSlabList();
+            tmp->AppendToSlabList();
+         }
+      }
+      else
+      {
+         // Hmm, we must have run out out of non-full slabs.  Create a new slab and use it.
+         ObjectSlab * slab = newnothrow ObjectSlab(this);
+         if (slab)
+         {
+            ret = slab->ObtainObjectNode();  // guaranteed not to fail, since slab is new
+            if (slab->HasAvailableNodes()) slab->PrependToSlabList();
+                                      else slab->AppendToSlabList();  // could happen, if NUM_OBJECTS_PER_SLAB==1
+            _curPoolSize += NUM_OBJECTS_PER_SLAB;
+         }
+         // we'll do the WARN_OUT_OF_MEMORY below, outside the mutex lock
+      }
+      if (ret) --_curPoolSize;
+      return ret;
+   }
+
+   // Must be called with _mutex locked!   Returns either NULL, or a pointer 
+   // an ObjectSlab that should be deleted outside of the critical section.
+   ObjectSlab * ReleaseObjectAux(Object * obj)
+   {
+      ObjectNode * objNode = static_cast<ObjectNode *>(obj);
+      ObjectSlab * objSlab = objNode->GetSlab();
+
+      objSlab->ReleaseNode(objNode);  // guaranteed to work, since we know (obj) is in use in (objSlab)
+
+      if ((++_curPoolSize > (_maxPoolSize+NUM_OBJECTS_PER_SLAB))&&(objSlab->IsInUse() == false))
+      {
+         _curPoolSize -= NUM_OBJECTS_PER_SLAB;
+         objSlab->RemoveFromSlabList();
+         return objSlab;
+      }
+      else if (objSlab != _firstSlab) 
+      {
+         objSlab->RemoveFromSlabList();
+         objSlab->PrependToSlabList();
+      }
+      return NULL;
+   }
+
+   void InitObjectAux(Object * o)
+   {
+      o->SetManager(this);
+      if (_initObjectFunc) _initObjectFunc(o, _initObjectUserData);
+   }
 
    uint32 _curPoolSize;  // tracks the current number of "available" objects
    uint32 _maxPoolSize;  // the maximum desired number of "available" objects

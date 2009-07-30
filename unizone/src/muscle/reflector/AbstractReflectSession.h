@@ -308,6 +308,16 @@ public:
     */
    uint16 GetAsyncConnectPort() const {return _asyncConnectDest.GetPort();}
 
+   /** Returns the destination we connected to asynchronously. */
+   const IPAddressAndPort & GetAsyncConnectDestination() const {return _asyncConnectDest;}
+
+   /** Sets the async-connect-destination (as returned by GetAsyncConnectIP() and GetAsyncConnectPort())
+     * manually.  Typically you don't need to call this; so only call this method if you really know
+     * what you are doing and why you need to. 
+     * @param iap The IP address and port that this session connected to asynchronously.
+     */
+   void SetAsyncConnectDestination(const IPAddressAndPort & iap) {_asyncConnectDest = iap;}
+
    /** Returns the node path of the node representing this session (e.g. "/192.168.1.105/17") */
    virtual const String & GetSessionRootPath() const {return _sessionRootPath;}
 

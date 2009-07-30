@@ -15,9 +15,6 @@
 
 namespace muscle {
 
-/*-----------------------------------------------------------------------*/
-/*----- Rect class ----------------------------------------------*/
-
 /** A portable version of Be's BRect class. */
 class Rect : public Flattenable, public Tuple<4,float>
 {

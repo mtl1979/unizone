@@ -49,8 +49,15 @@ status_t SegmentedStringMatcher::SetPattern(const String & s, bool isSimple, con
    const char * t;
    while((t = tok()) != NULL)
    {
-      StringMatcherRef subMatcherRef = GetStringMatcherFromPool(t, isSimple);
-      if ((subMatcherRef() == NULL)||(_segments.AddTail(subMatcherRef) != B_NO_ERROR)) {Clear(); return B_ERROR;}
+      if ((isSimple)&&(strcmp(t, "*") == 0))
+      {
+         if (_segments.AddTail(StringMatcherRef()) != B_NO_ERROR) {Clear(); return B_ERROR;}
+      }
+      else
+      {
+         StringMatcherRef subMatcherRef = GetStringMatcherFromPool(t, isSimple);
+         if ((subMatcherRef() == NULL)||(_segments.AddTail(subMatcherRef) != B_NO_ERROR)) {Clear(); return B_ERROR;}
+      }
    }
    _pattern = s;
    _sepChars = sc;
@@ -63,9 +70,24 @@ bool SegmentedStringMatcher::MatchAux(const char * const str) const
    for (uint32 i=0; i<_segments.GetNumItems(); i++) 
    {
       const char * t = tok();
-      if ((t == NULL)||(_segments[i]()->Match(t) == false)) return false;
+      if (t == NULL) return false;
+
+      const StringMatcher * sm = _segments[i]();
+      if ((sm)&&(sm->Match(t) == false)) return false;
    }
    return true;
+}
+
+String SegmentedStringMatcher :: ToString() const
+{
+   String ret;
+   for (uint32 i=0; i<_segments.GetNumItems(); i++)
+   {
+      if (ret.HasChars()) ret += '/'; 
+      const StringMatcher * sm = _segments[i]();
+      ret += sm ? sm->ToString() : "*";
+   }
+   return ret; 
 }
 
 }; // end namespace muscle

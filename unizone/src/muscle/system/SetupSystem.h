@@ -6,6 +6,7 @@
 #include "system/AtomicCounter.h"
 #include "system/Mutex.h"
 #include "util/GenericCallback.h"
+#include "util/Queue.h"
 
 namespace muscle {
 

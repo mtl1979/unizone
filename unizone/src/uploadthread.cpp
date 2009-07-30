@@ -84,15 +84,15 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	connect(qmtt, SIGNAL(OutputQueuesDrained(const MessageRef &)),
 			this, SLOT(OutputQueuesDrained(const MessageRef &)));
 	
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
+	connect(qmtt, SIGNAL(SessionConnected(const String &, const IPAddressAndPort &)),
+			this, SLOT(SessionConnected(const String &, const IPAddressAndPort &)));
 
 	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
 			this, SLOT(SessionDisconnected(const String &)));
 
 	connect(qmtt, SIGNAL(SessionAttached(const String &)),
 			this, SLOT(SessionAttached(const String &)));
-    
+
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
 
@@ -384,7 +384,7 @@ WUploadThread::SessionAttached(const String &sessionID)
 {
 	// If you aren't firewalled
 
-	SessionConnected(sessionID);
+	_SessionConnected(sessionID);
 }
 
 void
@@ -394,7 +394,13 @@ WUploadThread::SessionDetached(const String &sessionID)
 }
 
 void
-WUploadThread::SessionConnected(const String &sessionID)
+WUploadThread::SessionConnected(const String &sessionID, const IPAddressAndPort & /* connectedTo */)
+{
+	_SessionConnected(sessionID);
+}
+
+void
+WUploadThread::_SessionConnected(const String &sessionID)
 {
 	// If you are firewalled
 
@@ -533,11 +539,11 @@ void
 WUploadThread::OutputQueuesDrained(const MessageRef &/* msg */)
 {
 	PRINT2("\tMTT_EVENT_OUTPUT_QUEUES_DRAINED\n");
-	OutputQueuesDrained();
+	_OutputQueuesDrained();
 }
 
 void
-WUploadThread::OutputQueuesDrained()
+WUploadThread::_OutputQueuesDrained()
 {
 	fIdles = 0;
 
@@ -658,15 +664,15 @@ WUploadThread::SendRejectedNotification(bool direct)
 void
 WUploadThread::_nobuffer()
 {
-   WUploadEvent *status = new WUploadEvent(WUploadEvent::FileError);
-   if (status)
-   {
-      status->SetFile(SimplifyPath(fFileUl));
-      status->SetError( QT_TR_NOOP( "Critical error: Upload buffer allocation failed!" ) );
-      SendReply(status);
-   }
-   
-   NextFile();
+	WUploadEvent *status = new WUploadEvent(WUploadEvent::FileError);
+	if (status)
+	{
+		status->SetFile(SimplifyPath(fFileUl));
+		status->SetError( QT_TR_NOOP( "Critical error: Upload buffer allocation failed!" ) );
+		SendReply(status);
+	}
+
+	NextFile();
 }
 
 QString
@@ -930,7 +936,7 @@ WUploadThread::DoUpload()
 				SetFinished(true);
 				if (fTunneled)
 				{
-					OutputQueuesDrained();
+					_OutputQueuesDrained();
 				}
 				else
 				{
@@ -1107,7 +1113,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 					int64 offset = 0L;
 					ByteBufferRef hisDigest;
 					uint32 numBytes = 0L;
-                                        if (msg()->FindInt64("offsets", i, offset) == B_OK &&
+					if (msg()->FindInt64("offsets", i, offset) == B_OK &&
 						msg()->FindFlat("md5", i, hisDigest) == B_OK && 
 						numBytes == MD5_DIGEST_SIZE)
 					{
@@ -1118,7 +1124,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 						for (uint32 j = 0; j < ARRAYITEMS(myDigest); j++)
 							myDigest[j] = 'x';
 						
-                                                if ((msg()->FindInt64("numbytes", i, readLen) == B_OK) && (readLen > 0))
+						if ((msg()->FindInt64("numbytes", i, readLen) == B_OK) && (readLen > 0))
 						{
 							PRINT("\t\tULT: peer requested partial resume\n");
 							int64 temp = readLen;
@@ -1180,7 +1186,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 				{
 					// Check file size if is smaller than minimum size wanted for queue
 					int64 filesize;
-                                        if (fref()->FindInt64("beshare:File Size", filesize) == B_OK)
+					if (fref()->FindInt64("beshare:File Size", filesize) == B_OK)
 					{
 						if (filesize < gWin->fSettings->GetMinQueuedSize())
 						{

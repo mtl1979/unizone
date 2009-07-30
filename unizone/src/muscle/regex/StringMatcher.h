@@ -80,6 +80,9 @@ public:
    /** Resets this StringMatcher to the state it would be in if created with default arguments. */
    void Reset();
 
+   /** Returns a human-readable string representing this StringMatcher, for debugging purposes. */
+   String ToString() const;
+
 private:
    bool _regExpValid;
    bool _negate;

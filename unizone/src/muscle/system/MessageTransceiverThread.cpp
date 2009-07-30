@@ -184,7 +184,7 @@ status_t MessageTransceiverThread :: SetDefaultDistributionPath(const String & p
    return B_NO_ERROR;
 }
 
-int32 MessageTransceiverThread :: GetNextEventFromInternalThread(uint32 & code, MessageRef * optRetRef, String * optFromSession, uint32 * optFromFactoryID)
+int32 MessageTransceiverThread :: GetNextEventFromInternalThread(uint32 & code, MessageRef * optRetRef, String * optFromSession, uint32 * optFromFactoryID, IPAddressAndPort * optLocation)
 {
    // First, default values for everyone
    if (optRetRef)        optRetRef->Reset();
@@ -201,6 +201,11 @@ int32 MessageTransceiverThread :: GetNextEventFromInternalThread(uint32 & code, 
          if (optRetRef)        (void) msgRef()->FindMessage(MTT_NAME_MESSAGE, *optRetRef);
          if (optFromSession)   (void) msgRef()->FindString(MTT_NAME_FROMSESSION, *optFromSession);
          if (optFromFactoryID) (void) msgRef()->FindInt32(MTT_NAME_FACTORY_ID, optFromFactoryID);
+         if (optLocation)
+         {
+            const String * s;
+            if (msgRef()->FindString(MTT_NAME_LOCATION, &s) == B_NO_ERROR) optLocation->SetFromString(*s, 0, false);
+         }
       }
       else ret = -1;  // NULL event message should never happen, but just in case
    }
@@ -339,7 +344,7 @@ AbstractReflectSessionRef ThreadWorkerSessionFactory :: CreateSession(const Stri
    ThreadWorkerSessionRef tws = CreateThreadWorkerSession(clientHostIP, iap);
    if ((tws())&&(SetMaxIncomingMessageSizeFor(tws()) == B_NO_ERROR))
    {
-      tws()->_sendAcceptedMessage = true;  // gotta send the MTT_EVENT_SESSION_ACCEPTED Message from within AttachedToServer()
+      tws()->_acceptedIAP = iap;  // gotta send the MTT_EVENT_SESSION_ACCEPTED Message from within AttachedToServer()
       return AbstractReflectSessionRef(tws.GetRefCountableRef(), true);
    }
    return AbstractReflectSessionRef();
@@ -355,7 +360,7 @@ void MessageTransceiverThread :: InternalThreadEntry()
    SendMessageToOwner(GetMessageFromPool(MTT_EVENT_SERVER_EXITED));
 }
 
-ThreadWorkerSession :: ThreadWorkerSession() : _sendAcceptedMessage(false)
+ThreadWorkerSession :: ThreadWorkerSession()
 {
    // empty
 }
@@ -368,17 +373,19 @@ ThreadWorkerSession :: ~ThreadWorkerSession()
 void ThreadWorkerSession :: AsyncConnectCompleted()
 {
    StorageReflectSession::AsyncConnectCompleted();
-   BroadcastToAllSessions(GetMessageFromPool(MTT_EVENT_SESSION_CONNECTED));
+
+   MessageRef msg = GetMessageFromPool(MTT_EVENT_SESSION_CONNECTED);
+   if ((msg())&&(msg()->AddString(MTT_NAME_LOCATION, IPAddressAndPort(GetAsyncConnectIP(), GetAsyncConnectPort()).ToString()) == B_NO_ERROR)) BroadcastToAllSessions(msg);
 }
 
 status_t ThreadWorkerSession :: AttachedToServer()
 {
    if (StorageReflectSession::AttachedToServer() == B_NO_ERROR)
    {
-      if (_sendAcceptedMessage)
+      if (_acceptedIAP.IsValid())
       {
-         _sendAcceptedMessage = false;
-         BroadcastToAllSessions(GetMessageFromPool(MTT_EVENT_SESSION_ACCEPTED));
+         MessageRef msg = GetMessageFromPool(MTT_EVENT_SESSION_ACCEPTED);
+         if ((msg())&&(msg()->AddString(MTT_NAME_LOCATION, _acceptedIAP.ToString()) == B_NO_ERROR)) BroadcastToAllSessions(msg);
       }
       BroadcastToAllSessions(GetMessageFromPool(MTT_EVENT_SESSION_ATTACHED));
       return B_NO_ERROR;

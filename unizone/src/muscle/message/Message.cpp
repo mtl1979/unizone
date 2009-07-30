@@ -1012,7 +1012,7 @@ public:
             if (msg)
             {
                char tcbuf[5]; MakePrettyTypeCodeString(msg->what, tcbuf);
-               sprintf(buf, "[what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), flattenedSize="UINT32_FORMAT_SPEC", numFields="UINT32_FORMAT_SPEC"]\n", tcbuf, msg->what, msg->what, itemSize, msg->CountNames());
+               sprintf(buf, "[what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), flattenedSize="UINT32_FORMAT_SPEC", numFields="UINT32_FORMAT_SPEC"]\n", tcbuf, msg->what, msg->what, itemSize, msg->GetNumNames());
                s += buf;
 
                if (recurse) msg->AddToString(s, recurse, indent+3);
@@ -1244,7 +1244,7 @@ status_t Message :: GetInfo(const String & fieldName, uint32 * type, uint32 * c,
    return B_NO_ERROR;
 }
 
-uint32 Message :: CountNames(uint32 type) const 
+uint32 Message :: GetNumNames(uint32 type) const 
 {
    if (type == B_ANY_TYPE) return _entries.GetNumItems();
 
@@ -1280,7 +1280,7 @@ void Message :: AddToString(String & s, bool recurse, int indent) const
 
    char buf[128];
    DoIndents(indent,s); 
-   sprintf(buf, "Message:  what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", prettyTypeCodeBuf, what, what, CountNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
+   sprintf(buf, "Message:  what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", prettyTypeCodeBuf, what, what, GetNumNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
    s += buf;
 
    for (HashtableIterator<String, RefCountableRef> iter(_entries, HTIT_FLAG_NOREGISTER); iter.HasMoreKeys(); iter++)
@@ -2311,7 +2311,7 @@ status_t Message :: CopyFromImplementation(const Flattenable & copyFrom)
 
 bool Message :: operator == (const Message & rhs) const
 {
-   return ((this == &rhs)||((what == rhs.what)&&(CountNames() == rhs.CountNames())&&(FieldsAreSubsetOf(rhs, true))));
+   return ((this == &rhs)||((what == rhs.what)&&(GetNumNames() == rhs.GetNumNames())&&(FieldsAreSubsetOf(rhs, true))));
 }
 
 bool Message :: FieldsAreSubsetOf(const Message & rhs, bool compareContents) const

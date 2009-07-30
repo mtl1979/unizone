@@ -12,6 +12,8 @@ namespace muscle {
 class ThreadSupervisorSession;
 class MessageTransceiverThread;
 
+// MTT_EVENT_SESSION_CONNECTED events, this field contains a string representation of the IPAddressAndPort object
+
 /** These are reply codes returned by MessageTransceiverThread::GetNextEventFromInternalThread() 
   * @see MessageTransceiverThread::GetNextEventFromInternalThread()
   */
@@ -60,6 +62,7 @@ enum {
 #define MTT_NAME_ENCODING    "enco"  // field containing the MUSCLE_MESSAGE_ENCODING_* value
 #define MTT_NAME_EXPANDLOCALHOST "expl" // boolean field indicating whether localhost IP should be expanded to primary IP
 #define MTT_NAME_AUTORECONNECTDELAY "arcd" // int64 indicating how long after disconnect before an auto-reconnect should occur
+#define MTT_NAME_LOCATION    "loc" // String field representing an IPAddressAndPort of where the session connected to (or was accepted from)
 
 /** This little class is used to help us track when workers' output queues are empty.
   * When it gets deleted (inside the internal thread), it triggers the supervisor session
@@ -130,7 +133,7 @@ public:
 private:
    friend class ThreadWorkerSessionFactory;
    Queue<DrainTagRef> _drainedNotifiers;
-   bool _sendAcceptedMessage;
+   IPAddressAndPort _acceptedIAP;  // if valid, this is the location where the client is connecting from
 };
 DECLARE_REFTYPES(ThreadWorkerSession);
 
@@ -437,9 +440,12 @@ public:
      *                       the source AbstractReflectSession written into it (e.g. "/192.168.1.105/17").
      * @param optFromFactoryID If non-NULL, the uint32 that this arguments points to will have the factory ID of the 
      *                         source ReflectSessionFactory object written into it.
+     * @param optLocation If non-NULL, the IPAddressAndPort value that this points to will be filled with the IP address
+     *                    and port that the event is associated with.  Note that currently only MTT_EVENT_SESSION_CONNECTED
+     *                    and MTT_EVENT_SESSION_ACCEPTED events have an associated IPAddressAndPort value.
      * @returns The number of events left in the event queue (after our having removed one) on success, or -1 on failure.
      */
-   int32 GetNextEventFromInternalThread(uint32 & retEventCode, MessageRef * optRetMsgRef = NULL, String * optFromSession = NULL, uint32 * optFromFactoryID = NULL);
+   int32 GetNextEventFromInternalThread(uint32 & retEventCode, MessageRef * optRetMsgRef = NULL, String * optFromSession = NULL, uint32 * optFromFactoryID = NULL, IPAddressAndPort * optLocation = NULL);
 
    /**
      * Requests that the MessageTranceiverThread object send us a MTT_EVENT_OUTPUT_QUEUES_DRAINED event

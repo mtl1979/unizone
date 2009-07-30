@@ -66,7 +66,6 @@ void ChildProcessDataIO :: SetChildProcessShutdownBehavior(bool okayToKillChild,
    _maxChildWaitTime = maxChildWaitTime;
 }
 
-
 status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args, bool usePty)
 {
    TCHECKPOINT;

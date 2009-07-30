@@ -853,6 +853,39 @@ public:
      */
    ValueType * PutAndGet(const KeyType & key) {return PutAndGet(key, _defaultValue);}
 
+   /** Convenience method:  If (value) is the different from (defaultValue), then (key/value) is placed into the table and a pointer
+     *                      to the placed value object is returned.
+     *                      If (value) is equal to (defaultValue), on the other hand, (key) will be removed from the table, and NULL will be returned.
+     * @param key The key value to affect.
+     * @param value The value to possibly place into the table.
+     * @param defaultValue The value to compare (value) with to decide whether to Put() or Remove() the key.
+     * @returns A pointer to the placed value if a value was placed, or a NULL pointer if the value was removed (or on error).
+     */
+   ValueType * PutOrRemove(const KeyType & key, const ValueType & value, const ValueType & defaultValue)
+   {
+      if (value == defaultValue)
+      {
+         (void) Remove(key);
+         return NULL;
+      }
+      else return PutAndGet(key, value);
+   }
+
+   /** As above, except no (defaultValue) is specified.  The default-constructed ValueType is assumed.
+     * @param key The key value to affect.
+     * @param value The value to possibly place into the table.
+     * @returns A pointer to the placed value if a value was placed, or a NULL pointer if the value was removed (or on out of memory)
+     */
+   ValueType * PutOrRemove(const KeyType & key, const ValueType & value)
+   {
+      if (value == _defaultValue)
+      {
+         (void) Remove(key);
+         return NULL;
+      }
+      else return PutAndGet(key, value);
+   }
+
    /** Convenience method.  If the given key already exists in the Hashtable, this method returns NULL.
     *  Otherwise, this method puts a copy of specified value into the table and returns a pointer to the 
     *  just-placed value.
@@ -920,6 +953,12 @@ public:
     *  greater than the value returned by GetNumItems().  It will never be less than that value.
     */
    uint32 GetNumAllocatedSlots() const {return _tableSize;}
+
+   /** Returns a reference to a default-constructed Key item.  The reference will remain valid for as long as this Hashtable is valid. */
+   const KeyType & GetDefaultKey() const {return _defaultKey;}
+
+   /** Returns a reference to a default-constructed VAlue item.  The reference will remain valid for as long as this Hashtable is valid. */
+   const ValueType & GetDefaultValue() const {return _defaultValue;}
 
 private:
    /** Our hashtable iterator class needs access to our internals to register itself with us. */

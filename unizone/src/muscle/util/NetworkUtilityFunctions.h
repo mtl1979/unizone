@@ -25,6 +25,24 @@ namespace muscle {
 #ifdef MUSCLE_USE_IPV6
 /* IPv6 addressing support */
 
+/** This function sets a global flag that indicates whether or not automatic translation of
+  * IPv4-compatible IPv6 addresses (e.g. ::192.168.0.1) to IPv4-mapped IPv6 addresses (e.g. ::ffff:192.168.0.1)
+  * should be enabled.  This flag is set to true by default; if you want to set it to false you
+  * would typically do so only at the top of main() and then not set it again.
+  * This automatic remapping is useful if you want your software to handle both IPv4 and IPv6
+  * traffic without having to open separate IPv4 and IPv6 sockets and without having to do any 
+  * special modification of IPv4 addresses.   The only time you'd need to set this flag to false
+  * is if you need to run IPv6 traffic over non-IPv6-aware routers, in which case you'd need
+  * to use the :::x.y.z.w address space for actual IPv6 traffic instead.
+  * @param enabled True if the transparent remapping should be enabled (the default state), or false to disable it.
+  */
+void SetAutomaticIPv4AddressMappingEnabled(bool enabled);
+
+/** Returns true iff automatic translation of IPv4-compatible IPv6 addresses to IPv4-mapped IPv6 address is enabled.
+  * @see SetAutomaticIPv4AddressMappingEnabled() for details.
+  */
+bool GetAutomaticIPv4AddressMappingEnabled();
+
 /** This class represents an IPv6 network address, including the 128-bit IP
   * address and the interface index field (necessary for connecting to link-local addresses)
   */
@@ -646,6 +664,26 @@ bool IsStandardLoopbackDeviceAddress(const ip_address & ip);
   */
 bool IsMulticastIPAddress(const ip_address & ip);
 
+/** Returns true iff (ip) is a non-zero IP address.
+  * @param ip an IP adress.
+  * @returns true iff (ip) is not all zeroes.  (Note: In IPv6 mode, the interface index is not considered here)
+  */
+bool IsValidAddress(const ip_address & ip);
+
+/** Returns true iff (ip) is an IPv4-style (32-bits-only) or IPv4-mapped
+  * (32-bits-only plus ffff prefix) address.
+  * @param ip The IP address to examine.
+  * @returns treu if (ip) is an IPv4 or IPv4-mapped address, else false.
+  */
+bool IsIPv4Address(const ip_address & ip);
+
+/** Returns true iff (ip) is an IPv4-style (32-bits-only) or IPv4-mapped
+  * (32-bits-only plus ffff prefix) address.
+  * @param ip The IP address to examine.
+  * @returns treu if (ip) is an IPv4 or IPv4-mapped address, else false.
+  */
+bool IsIPv6Address(const ip_address & ip);
+
 /** This little container class is used to return data from the GetNetworkInterfaceInfos() function, below */
 class NetworkInterfaceInfo
 {
@@ -696,18 +734,33 @@ private:
    ip_address _broadcastIP;
 };
 
+/** Bits that can be passed to GetNetworkInterfaceInfos() or GetNetworkInterfaceAddresses(). */
+enum {
+   GNII_INCLUDE_ALL_INTERFACES      = 0x01, // If set, all interfaces will be returned (and other bits will be ignore)
+   GNII_INCLUDE_IPV4_INTERFACES     = 0x02, // If set, IPv4-specific interfaces will be returned
+   GNII_INCLUDE_IPV6_INTERFACES     = 0x04, // If set, IPv6-specific interfaces will be returned
+   GNII_INCLUDE_LOOPBACK_INTERFACES = 0x08, // If set, loopback interfaces (e.g. lo0/127.0.0.1) will be returned
+   GNII_INCLUDE_LOOPBACK_INTERFACES_ONLY_AS_LAST_RESORT = 0x10, // If set, loopback interfaces will be returned only if no other interfaces are found
+
+   // For convenience, GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES will specify interfaces of the family specified by MUSCLE_USE_IPV6's presence/abscence.
+#ifdef MUSCLE_USE_IPV6
+   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV6_INTERFACES
+#else
+   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV4_INTERFACES
+#endif
+};
+
 /** This function queries the local OS for information about all available network
   * interfaces.  Note that this method is only implemented for some OS's (Linux,
   * MacOS/X, Windows), and that on other OS's it may just always return B_ERROR.
   * @param results On success, zero or more NetworkInterfaceInfo objects will
   *                be added to this Queue for you to look at.
-  * @param includeLocalhost If true (the default), then localhost/loopback interfaces
-  *                         will be included in this list.  If set false, then only
-  *                         "real" network interfaces will be included.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory,
-  *          call not implemented for the current OS, etc)
+  * @param includeBits A chord of GNII_INCLUDE_* bits indicating which types of network interface you want to be
+  *                    included in the returned list.  Defaults to GNII_INCLUDE_ALL_INTERFACES, which indicates that
+  *                    no filtering of the returned list should be done.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory, call not implemented for the current OS, etc)
   */
-status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool includeLocalhost = true);
+status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 includeBits = GNII_INCLUDE_ALL_INTERFACES);
 
 /** This is a more limited version of GetNetworkInterfaceInfos(), included for convenience.
   * Instead of returning all information about the local host's network interfaces, this
@@ -715,13 +768,13 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
   * and then iterating the returned list to assemble a list only of the IP addresses returned
   * by GetBroadcastAddress().
   * @param results On success, zero or more ip_addresses will be added to this Queue for you to look at.
-  * @param includeLocalhost If true (the default), then localhost/loopback interfaces
-  *                         will be included in this list.  If set false, then only
-  *                         "real" network interfaces will be included.
+  * @param includeBits A chord of GNII_INCLUDE_* bits indicating which types of network interface you want to be
+  *                    included in the returned list.  Defaults to GNII_INCLUDE_ALL_INTERFACES, which indicates that
+  *                    no filtering of the returned list should be done.
   * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory,
   *          call not implemented for the current OS, etc)
   */
-status_t GetNetworkInterfaceAddresses(Queue<ip_address> & retAddresses, bool includeLocalhost = true);
+status_t GetNetworkInterfaceAddresses(Queue<ip_address> & retAddresses, uint32 includeBits = GNII_INCLUDE_ALL_INTERFACES);
 
 #ifdef MUSCLE_ENABLE_MULTICAST_API
 

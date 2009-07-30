@@ -71,6 +71,12 @@ public:
      */
    static status_t MakeDirectoryForFile(const char * filePath);
 
+   /** Returns true iff the specified directory exists. 
+     * @param dirPath Path to check to see if it refers to an existing directory.
+     * @returns true iff (dirPath) does in fact refer to an existing directory.
+     */
+   static bool Exists(const char * dirPath);
+
    /** Returns the path string that was passed in to this Directory object, or NULL if
      * there is no current directory active.  Note that the Direcory object makes an
      * internal copy of the passed in string, so this pointer will be valid even if

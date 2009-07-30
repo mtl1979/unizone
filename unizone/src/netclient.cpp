@@ -94,11 +94,11 @@ NetClient::Connect(const QString & server, uint16 port)
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
 
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32)),
-			this, SLOT(SessionAccepted(const String &, uint32)));
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32, const IPAddressAndPort &)),
+			this, SLOT(SessionAccepted(const String &, uint32, const IPAddressAndPort &)));
 
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
+	connect(qmtt, SIGNAL(SessionConnected(const String &, const IPAddressAndPort &)),
+			this, SLOT(SessionConnected(const String &, const IPAddressAndPort &)));
 
 	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
 			this, SLOT(SessionDisconnected(const String &)));
@@ -532,7 +532,7 @@ NetClient::RemoveChannel(const QString &sid, const QString &channel)
 	if ( fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
 		mChannel()->RemoveName((const char *) sid.utf8());
-		if (mChannel()->CountNames(B_MESSAGE_TYPE) == 0)
+		if (mChannel()->GetNumNames(B_MESSAGE_TYPE) == 0)
 		{
 			// Last user parted, remove channel entry
 			fChannels()->RemoveName((const char *) channel.utf8());
@@ -545,7 +545,7 @@ QString *
 NetClient::GetChannelList()
 {
 	fChannelLock.Lock();
-	int n = fChannels()->CountNames(B_MESSAGE_TYPE);
+	int n = fChannels()->GetNumNames(B_MESSAGE_TYPE);
 	QString * qChannels = new QString[n];
 	int i = 0;
 	String channel;
@@ -566,7 +566,7 @@ NetClient::GetChannelUsers(const QString & channel)
 	QString * users = NULL;
 	if (fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
-		int n = mChannel()->CountNames(B_BOOL_TYPE);
+		int n = mChannel()->GetNumNames(B_BOOL_TYPE);
 		users = new QString[n];
 		int i = 0;
 		String user;
@@ -584,7 +584,7 @@ int
 NetClient::GetChannelCount()
 {
 	fChannelLock.Lock();
-	int n = fChannels()->CountNames(B_MESSAGE_TYPE);
+	int n = fChannels()->GetNumNames(B_MESSAGE_TYPE);
 	fChannelLock.Unlock();
 	return n;
 }
@@ -597,7 +597,7 @@ NetClient::GetUserCount(const QString & channel)
 	MessageRef mChannel;
 	if (fChannels()->FindMessage((const char *) channel.utf8(), mChannel) == B_OK)
 	{
-		n = mChannel()->CountNames(B_BOOL_TYPE);
+		n = mChannel()->GetNumNames(B_BOOL_TYPE);
 	}
 	fChannelLock.Unlock();
 	return n;
@@ -1113,7 +1113,7 @@ NetClient::MessageReceived(const MessageRef &msg, const String & /* sessionID */
 }
 
 void
-NetClient::SessionAccepted(const String & /* sessionID */, uint32 /* port */)
+NetClient::SessionAccepted(const String & /* sessionID */, uint32 /* factoryID */, const IPAddressAndPort & /*iap*/)
 {
 	PRINT("MTT_EVENT_SESSION_ACCEPTED\n");
 }
@@ -1126,7 +1126,7 @@ NetClient::SessionAttached(const String & /* sessionID */)
 }
 
 void
-NetClient::SessionConnected(const String & /* sessionID */)
+NetClient::SessionConnected(const String & /* sessionID */, const IPAddressAndPort & /* connectedTo */)
 {
 	PRINT("MTT_EVENT_SESSION_CONNECTED\n");
 

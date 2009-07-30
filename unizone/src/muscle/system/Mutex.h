@@ -3,6 +3,8 @@
 #ifndef MuscleMutex_h
 #define MuscleMutex_h
 
+#include "support/MuscleSupport.h"  // needed for WIN32 defines, etc
+
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
 
 #if defined(QT_CORE_LIB)  // is Qt4 available?
@@ -17,7 +19,9 @@
 #  if defined(MUSCLE_QT_HAS_THREADS) && defined(MUSCLE_PREFER_QT_OVER_WIN32)
     /* empty - we don't have to do anything for this case. */
 #  else
-#   define MUSCLE_PREFER_WIN32_OVER_QT
+#   ifndef MUSCLE_PREFER_WIN32_OVER_QT
+#    define MUSCLE_PREFER_WIN32_OVER_QT
+#   endif
 #  endif
 # endif
 # if defined(MUSCLE_USE_PTHREADS)

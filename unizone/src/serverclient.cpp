@@ -27,8 +27,8 @@ ServerClient::ServerClient(QObject *owner)
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
 			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
+	connect(qmtt, SIGNAL(SessionConnected(const String &, const IPAddressAndPort &)),
+			this, SLOT(SessionConnected(const String &, const IPAddressAndPort &)));
 
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
@@ -71,7 +71,7 @@ ServerClient::MessageReceived(const MessageRef & msg, const String & /* sessionI
 }
 
 void
-ServerClient::SessionConnected(const String & /* sessionID */)
+ServerClient::SessionConnected(const String & /* sessionID */, const IPAddressAndPort & /* connectedTo */)
 {
 	MessageRef msgref(GetMessageFromPool());
 	if (msgref())

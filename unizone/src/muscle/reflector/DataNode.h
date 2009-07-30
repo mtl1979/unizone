@@ -86,7 +86,7 @@ public:
    DataNodeRefIterator GetChildIterator(uint32 flags = 0) const {return _children ? _children->GetIterator(flags) : DataNodeRefIterator();}
 
    /** Returns the number of child nodes this node contains. */
-   uint32 CountChildren() const {return _children ? _children->GetNumItems() : 0;}
+   uint32 GetNumChildren() const {return _children ? _children->GetNumItems() : 0;}
 
    /** Returns true iff this node contains any child nodes. */
    bool HasChildren() const {return ((_children)&&(_children->HasItems()));}
@@ -172,7 +172,7 @@ public:
    uint32 GetMaxKnownChildIDHint() const {return _maxChildIDHint;}
 
    /** You can manually set the max-known-child-ID hint here if you want to. */
-   void SetMaxKnownChildID(uint32 maxID) {_maxChildIDHint = maxID;}
+   void SetMaxKnownChildIDHint(uint32 maxID) {_maxChildIDHint = maxID;}
 
    /** Convenience method:  Returns true iff (ancestor) exists
      * anywhere along the path between this node and the root node.

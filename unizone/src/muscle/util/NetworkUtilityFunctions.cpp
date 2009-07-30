@@ -67,16 +67,28 @@ typedef size_t muscle_socklen_t;
 namespace muscle {
 
 #ifdef MUSCLE_USE_IPV6
+static bool _automaticIPv4AddressMappingEnabled = true;   // if true, we automatically translate IPv4-compatible addresses (e.g. ::192.168.0.1) to IPv4-mapped-IPv6 addresses (e.g. ::ffff:192.168.0.1) and back
+void SetAutomaticIPv4AddressMappingEnabled(bool e) {_automaticIPv4AddressMappingEnabled = e;}
+bool GetAutomaticIPv4AddressMappingEnabled()       {return _automaticIPv4AddressMappingEnabled;}
+
 # define MUSCLE_SOCKET_FAMILY AF_INET6
 static inline void GET_SOCKADDR_IP(const struct sockaddr_in6 & sockAddr, ip_address & ipAddr) 
 {
    uint32 tmp = sockAddr.sin6_scope_id;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
    ipAddr.ReadFromNetworkArray(sockAddr.sin6_addr.s6_addr, &tmp);
+   if ((_automaticIPv4AddressMappingEnabled)&&(ipAddr != localhostIP)&&(IsValidAddress(ipAddr))&&(IsIPv4Address(ipAddr))) ipAddr.SetLowBits(ipAddr.GetLowBits() & ((uint64)0xFFFFFFFF));  // remove IPv4-mapped-IPv6-bits
 }
 static inline void SET_SOCKADDR_IP(struct sockaddr_in6 & sockAddr, const ip_address & ipAddr) 
 {
    uint32 tmp;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
-   ipAddr.WriteToNetworkArray(sockAddr.sin6_addr.s6_addr, &tmp);
+   if ((_automaticIPv4AddressMappingEnabled)&&(ipAddr != localhostIP)&&(IsValidAddress(ipAddr))&&(IsIPv4Address(ipAddr)))
+   {
+      ip_address tmpAddr = ipAddr;
+      tmpAddr.SetLowBits(tmpAddr.GetLowBits() | (((uint64)0xFFFF)<<32));  // add IPv4-mapped-IPv6-bits
+      tmpAddr.WriteToNetworkArray(sockAddr.sin6_addr.s6_addr, &tmp);
+   }
+   else ipAddr.WriteToNetworkArray(sockAddr.sin6_addr.s6_addr, &tmp);
+
    sockAddr.sin6_scope_id = tmp;
 }
 static inline uint16 GET_SOCKADDR_PORT(const struct sockaddr_in6 & addr) {return ntohs(addr.sin6_port);}
@@ -548,7 +560,7 @@ static void ExpandLocalhostAddress(ip_address & ipAddress)
          if (_cachedLocalhostAddress == invalidIP)
          {
             Queue<NetworkInterfaceInfo> ifs;
-            (void) GetNetworkInterfaceInfos(ifs, false);  // just to set _cachedLocalhostAddress
+            (void) GetNetworkInterfaceInfos(ifs, GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES);  // just to set _cachedLocalhostAddress
          }
          altRet = _cachedLocalhostAddress;
       }
@@ -853,6 +865,27 @@ static ip_address SockAddrToIPAddr(const struct sockaddr * a)
 }
 #endif
 
+bool IsIPv4Address(const ip_address & ip)
+{
+#ifdef MUSCLE_USE_IPV6
+   if (ip.GetHighBits() != 0) return false;
+   uint64 lb = (ip.GetLowBits()>>32);
+   return ((lb == 0)||(lb == 0xFFFF));  // 32-bit and IPv4-mapped, respectively
+#else
+   (void) ip;
+   return true;
+#endif
+}
+
+bool IsValidAddress(const ip_address & ip)
+{
+#ifdef MUSCLE_USE_IPV6
+   return ((ip.GetHighBits() != 0)||(ip.GetLowBits() != 0));
+#else
+   return (ip != 0);
+#endif
+}
+
 bool IsMulticastIPAddress(const ip_address & ip)
 {
 #ifdef MUSCLE_USE_IPV6
@@ -877,8 +910,24 @@ bool IsStandardLoopbackDeviceAddress(const ip_address & ip)
 #endif
 }
 
-status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool includeLocalhost)
+static bool IsGNIIBitMatch(const ip_address & ip, uint32 includeBits)
 {
+   if ((includeBits & GNII_INCLUDE_ALL_INTERFACES) == 0)
+   {
+      if (((includeBits & GNII_INCLUDE_LOOPBACK_INTERFACES) == 0)&&(IsStandardLoopbackDeviceAddress(ip))) return false;
+
+      bool isIPv4 = IsIPv4Address(ip);
+      if (( isIPv4)&&((includeBits & GNII_INCLUDE_IPV4_INTERFACES) == 0)) return false;
+      if ((!isIPv4)&&((includeBits & GNII_INCLUDE_IPV6_INTERFACES) == 0)) return false;
+   }
+   return true;
+}
+
+status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 includeBits)
+{
+   uint32 origResultsSize = results.GetNumItems();
+   status_t ret = B_ERROR;
+
 #if defined(USE_GETIFADDRS)
    /////////////////////////////////////////////////////////////////////////////////////////////
    // "Apparently, getifaddrs() is gaining a lot of traction at becoming the One True Standard
@@ -892,15 +941,15 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
 
    if (getifaddrs(&ifap) == 0)
    {
-      status_t ret = B_NO_ERROR;
+      ret = B_NO_ERROR;
       {
          struct ifaddrs * p = ifap;
          while(p)
          {
-            ip_address unicastIP  = SockAddrToIPAddr(p->ifa_addr);
-            ip_address netmask = SockAddrToIPAddr(p->ifa_netmask);
-            ip_address broadcastIP  = SockAddrToIPAddr(p->ifa_broadaddr);
-            if ((unicastIP != invalidIP)&&((includeLocalhost)||(IsStandardLoopbackDeviceAddress(unicastIP) == false)))
+            ip_address unicastIP   = SockAddrToIPAddr(p->ifa_addr);
+            ip_address netmask     = SockAddrToIPAddr(p->ifa_netmask);
+            ip_address broadcastIP = SockAddrToIPAddr(p->ifa_broadaddr);
+            if ((unicastIP != invalidIP)&&(IsGNIIBitMatch(unicastIP, includeBits)))
             {
 #ifdef MUSCLE_USE_IPV6
                unicastIP.SetInterfaceIndex(if_nametoindex(p->ifa_name));  // so the user can find out; it will be ignore by the TCP stack
@@ -919,7 +968,6 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
          }
       }
       freeifaddrs(ifap);
-      return ret;
    }
 #elif defined(WIN32)
    // IPv6 implementation, adapted from
@@ -939,7 +987,7 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
 
    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
    ULONG outBufLen = 0;
-   while(1)
+   while(ret == B_ERROR)  // keep going until we succeeded (on failure we'll return directly)
    {
       DWORD flags = GAA_FLAG_INCLUDE_PREFIX|GAA_FLAG_SKIP_ANYCAST|GAA_FLAG_SKIP_MULTICAST|GAA_FLAG_SKIP_DNS_SERVER;
       switch(GetAdaptersAddresses(AF_UNSPEC, flags, NULL, pAddresses, &outBufLen))
@@ -967,7 +1015,7 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
                while(ua)
                {
                   ip_address unicastIP = SockAddrToIPAddr(ua->Address.lpSockaddr);
-                  if ((includeLocalhost) || (IsStandardLoopbackDeviceAddress(unicastIP) == false))
+                  if (IsGNIIBitMatch(unicastIP, includeBits))
                   {
                      ip_address broadcastIP, netmask;
                      uint32 numLocalAddrs = (bytesReturned/sizeof(INTERFACE_INFO));
@@ -1003,7 +1051,8 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
                }
             }
             if (pAddresses) muscleFree(pAddresses);
-         return B_NO_ERROR;
+            ret = B_NO_ERROR;  // this will drop us out of the loop
+         break;
 
          default:
            if (pAddresses) muscleFree(pAddresses);
@@ -1014,13 +1063,13 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, bool in
    (void) results;  // for other OS's, this function isn't implemented.
 #endif
 
-   return B_ERROR;
+   return ((ret == B_NO_ERROR)&&(results.GetNumItems() == origResultsSize)&&(includeBits & GNII_INCLUDE_LOOPBACK_INTERFACES_ONLY_AS_LAST_RESORT)) ? GetNetworkInterfaceInfos(results, (includeBits|GNII_INCLUDE_LOOPBACK_INTERFACES)&~(GNII_INCLUDE_LOOPBACK_INTERFACES_ONLY_AS_LAST_RESORT)) : ret; 
 }
 
-status_t GetNetworkInterfaceAddresses(Queue<ip_address> & results, bool includeLocalhost)
+status_t GetNetworkInterfaceAddresses(Queue<ip_address> & results, uint32 includeBits)
 {
    Queue<NetworkInterfaceInfo> infos;
-   if ((GetNetworkInterfaceInfos(infos, includeLocalhost) != B_NO_ERROR)||(results.EnsureSize(infos.GetNumItems()) != B_NO_ERROR)) return B_ERROR;
+   if ((GetNetworkInterfaceInfos(infos, includeBits) != B_NO_ERROR)||(results.EnsureSize(infos.GetNumItems()) != B_NO_ERROR)) return B_ERROR;
 
    for (uint32 i=0; i<infos.GetNumItems(); i++) (void) results.AddTail(infos[i].GetLocalAddress());  // guaranteed not to fail
    return B_NO_ERROR;
@@ -1032,7 +1081,7 @@ String Inet_NtoA(const ip_address & ipAddress, bool preferIPv4)
 
 #ifdef MUSCLE_USE_IPV6
    String ret = buf;
-   if ((preferIPv4)&&(ret.StartsWith("::"))&&(ret.IndexOf(':', 2) < 0)&&((ret.IndexOf('.'), 2) >= 0)) ret = ret.Substring(2); 
+   if ((preferIPv4)&&(ret.StartsWith("::"))&&(ret.IndexOf(':', 2) < 0)&&((ret.IndexOf('.'), 2) >= 0)) ret = ret.Substring(2).Substring(0, "@"); 
    return ret;
 #else
    (void) preferIPv4;

@@ -136,6 +136,12 @@ void Directory :: Reset()
    }
 }
 
+bool Directory :: Exists(const char * dirPath)
+{
+   Directory d;
+   return ((dirPath)&&(d.SetDir(dirPath) == B_NO_ERROR));
+}
+
 status_t Directory :: SetDir(const char * dirPath)
 {
    Reset();

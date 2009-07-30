@@ -655,6 +655,32 @@ uint64 ParseHumanReadableTimeString(const String & s, uint32 timeType)
 #endif
 }
 
+uint64 ParseHumanReadableTimeIntervalString(const String & s)
+{
+   /** Find first digit */
+   const char * d = s();
+   while((*d)&&(muscleInRange(*d, '0', '9') == false)) d++;
+   if (*d == '\0') return 0;
+
+   /** Find first letter */
+   const char * l = s();
+   while((*l)&&(muscleInRange(*l, 'A', 'Z') == false)&&(muscleInRange(*l, 'a', 'z') == false)) l++;
+   if (*l == '\0') return 0;
+
+   const uint64 MICROS_PER_SECOND = 1000000;
+   uint64 multiplier = MICROS_PER_SECOND;   // default units is seconds
+   String tmp(l); tmp = tmp.ToLowerCase();
+        if ((tmp.StartsWith("us"))||(tmp.StartsWith("micro"))) multiplier =                            1;  // micros -> micros
+   else if ((tmp.StartsWith("ms"))||(tmp.StartsWith("milli"))) multiplier =                         1000;  // millis -> micros
+   else if (tmp.StartsWith("s"))                               multiplier =            MICROS_PER_SECOND;  // secs   -> micros
+   else if (tmp.StartsWith("m"))                               multiplier =         60*MICROS_PER_SECOND;  // mins   -> micros
+   else if (tmp.StartsWith("h"))                               multiplier =      60*60*MICROS_PER_SECOND;  // hours  -> micros
+   else if (tmp.StartsWith("d"))                               multiplier =   24*60*60*MICROS_PER_SECOND;  // days  -> micros
+   else if (tmp.StartsWith("w"))                               multiplier = 7*24*60*60*MICROS_PER_SECOND;  // days  -> micros
+
+   return Atoull(d)*multiplier;
+}
+
 static bool _isDaemonProcess = false;
 bool IsDaemonProcess() {return _isDaemonProcess;}
 

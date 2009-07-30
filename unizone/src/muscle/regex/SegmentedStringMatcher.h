@@ -72,6 +72,9 @@ public:
    /** Clears this SegmentedStringMatcher to its default state. */
    void Clear();
 
+   /** Returns a human-readable string representing this StringMatcher, for debugging purposes. */
+   String ToString() const;
+
 private:
    bool MatchAux(const char * const matchString) const;
 

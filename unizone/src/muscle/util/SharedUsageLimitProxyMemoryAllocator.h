@@ -59,9 +59,13 @@ public:
     *  @param retCounts on success, the bytes used by each member of our group will
     *                   be written into this array.  This array must have enough space
     *                   for the number of items specified by (groupSize) in our constructor.
+    *  @param optRetTotal If non-NULL, then on success the shared memory area's current total-bytes-allocated value
+    *                     will be placed here.  This value should always be the sum of the values returned in (retCounts).
+    *                     (although it is possible it might not be if the shared memory area becomes inconsistent).
+    *                     Defaults to NULL.
     *  @returns B_NO_ERROR on success, or B_ERROR if the information could not be accessed.
     */
-   status_t GetCurrentMemoryUsage(size_t * retCounts) const;
+   status_t GetCurrentMemoryUsage(size_t * retCounts, size_t * optRetTotal = NULL) const;
 
    /** Returns true iff our shared memory area setup worked and we are ready for use.
      * Returns false if there was a problem setting up and we aren't usable.

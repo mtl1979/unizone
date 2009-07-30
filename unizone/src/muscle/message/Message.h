@@ -246,13 +246,13 @@ public:
     *  @param type The type of field to count, or B_ANY_TYPE to count all field types.
     *  @return The number of matching fields
     */
-   uint32 CountNames(uint32 type = B_ANY_TYPE) const;
+   uint32 GetNumNames(uint32 type = B_ANY_TYPE) const;
 
    /** Returns true if there are any fields of the given type in the Message.
     *  @param type The type of field to check for, or B_ANY_TYPE to check for any field type.
     *  @return True iff any fields of the given type exist.
     */
-   bool HasNames(uint32 type = B_ANY_TYPE) const {return (CountNames(type) > 0);}
+   bool HasNames(uint32 type = B_ANY_TYPE) const {return (GetNumNames(type) > 0);}
 
    /** @return true iff there are no fields in this Message. */
    bool IsEmpty() const {return (_entries.IsEmpty());}
@@ -1340,6 +1340,30 @@ public:
      */ 
    void BecomeLightweightCopyOf(const Message & rhs) {what = rhs.what; _entries = rhs._entries;}
 
+   /** Convenience method for retrieving a C-string pointer to a string data item inside a Message.
+     * @param fn The field name to look for the string under.
+     * @param defVal The pointer to return if no data item can be found.  Defaults to NULL.
+     * @param idx The index to look under inside the field.  Defaults to zero.
+     * @returns a Pointer to the String data item's Nul-terminated C string array on success, or (defVal) if the item could not be found.
+     */
+   inline const char * GetCstr(const String & fn, const char * defVal = NULL, uint32 idx = 0) const {const char * r; return (FindString( fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
+
+   /** Convenience method for retrieving a pointer to a pointer data item inside a Message.
+     * @param fn The field name to look for the pointer under.
+     * @param defVal The pointer to return if no data item can be found.  Defaults to NULL.
+     * @param idx The index to look under inside the field.  Defaults to zero.
+     * @returns The requested pointer on success, or (defVal) on failure.
+     */
+   inline void * GetPointer(const String & fn, void * defVal = NULL, uint32 idx = 0) const {void * r; return (FindPointer(fn, idx,  r) == B_NO_ERROR) ? r : defVal;}
+
+   /** Convenience method for retrieving a pointer to A String data item inside a Message.
+     * @param fn The field name to look for the String under.
+     * @param defVal The pointer to return if no data item can be found.  Defaults to NULL.
+     * @param idx The index to look under inside the field.  Defaults to zero.
+     * @returns a Pointer to the String data item on success, or (defVal) if the item could not be found.
+     */
+   inline const String * GetStringPointer(const String & fn, const String * defVal=NULL, uint32 idx= 0) const {const String * r;return (FindString(fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
+
 #define DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(bw)                                                                                               \
    inline status_t FindInt##bw (const String & fieldName, uint32 index, uint##bw & val) const {return FindInt##bw (fieldName, index, (int##bw &)val);} \
    inline status_t FindInt##bw (const String & fieldName,               uint##bw & val) const {return FindInt##bw (fieldName,        (int##bw &)val);}
@@ -1366,27 +1390,23 @@ public:
    DECLARE_MUSCLE_POINTER_FIND_METHODS(Rect,    Rect);         ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
    DECLARE_MUSCLE_POINTER_FIND_METHODS(String,  const char *); ///< This macro defines old-style Find methods with pointer value arguments, for backwards compatibility.
 
-#define DECLARE_MUSCLE_GET_METHODS(name, type)                                                                                                                              \
-   inline type Get##name(const String & fieldName, const type & defVal = type(), uint32 idx = 0) const {type r; return (Find##name (fieldName, idx, r) == B_NO_ERROR) ? (const type &)r : defVal;}
-   DECLARE_MUSCLE_GET_METHODS(Bool,    bool);            ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Double,  double);          ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Float,   float);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Int8,    int8);            ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Int16,   int16);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Int32,   int32);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Int64,   int64);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Point,   Point);           ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Rect,    Rect);            ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(String,  String);          ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Message, MessageRef);      ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Flat,    ByteBufferRef);   ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-   DECLARE_MUSCLE_GET_METHODS(Tag,     RefCountableRef); ///< This macro defines a Get() method that is easier to use in cases where you have a default value.
-
-   inline const char * GetCstr(        const String & fn, const char * defVal = NULL, uint32 idx = 0) const {const char * r; return (FindString( fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
-   inline       void * GetPointer(     const String & fn,       void * defVal = NULL, uint32 idx = 0) const {void       * r; return (FindPointer(fn, idx,  r) == B_NO_ERROR) ? r : defVal;}
-   inline const void * GetConstPointer(const String & fn, const void * defVal = NULL, uint32 idx = 0) const {void       * r; return (FindPointer(fn, idx,  r) == B_NO_ERROR) ? r : defVal;}
-   inline const String * GetStringPointer(const String & fn, const String * defVal=NULL, uint32 idx= 0) const {const String * r;return (FindString(fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
-
+#define DECLARE_MUSCLE_CONVENIENCE_METHODS(name, type) \
+   inline type Get##name(const String & fieldName, const type & defVal = type(), uint32 idx = 0) const {type r; return (Find##name (fieldName, idx, r) == B_NO_ERROR) ? (const type &)r : defVal;} \
+   inline status_t CAdd##name(    const String & fieldName, const type & value, const type & defVal = type())   {return (value == defVal) ? B_NO_ERROR : Add##name     (fieldName, value);}        \
+   inline status_t CPrepend##name(const String & fieldName, const type & value, const type & defVal = type())   {return (value == defVal) ? B_NO_ERROR : Prepend##name (fieldName, value);}
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Bool,    bool);            ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Double,  double);          ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Float,   float);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int8,    int8);            ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int16,   int16);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int32,   int32);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int64,   int64);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Point,   Point);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Rect,    Rect);            ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(String,  String);          ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Message, MessageRef);      ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Flat,    ByteBufferRef);   ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Tag,     RefCountableRef); ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
    DECLARE_STANDARD_CLONE_METHOD(Message);  ///< implements the standard Clone() method to copy a Message object.
 
 protected:

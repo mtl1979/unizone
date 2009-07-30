@@ -44,7 +44,14 @@ void SharedUsageLimitProxyMemoryAllocator :: ResetDaemonCounter()
          size_t & mySize = sa[_memberID+1];
          if (mySize > 0)
          {
-            sa[0] -= mySize;
+            size_t & cumSize = sa[0];
+            if (mySize > cumSize)
+            {
+               LogTime(MUSCLE_LOG_WARNING, "SharedUsageLimitProxyMemoryAllocator::ResetDaemonCounter():  Daemon size %u was greater than cumulative size %u\n", mySize, cumSize);
+               cumSize = 0;
+            }
+            else cumSize -= mySize;
+
             mySize = 0;
          }
       }
@@ -77,11 +84,22 @@ status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounter(int32 byteD
    return B_NO_ERROR;
 }
 
-// FogBugz #4494:  Don't let the counters fall below zero, ever!
-static inline void AdjustValue(size_t & v, int32 byteDelta)
+static inline void AdjustValue(uint32 which, size_t * arr, int32 byteDelta)
 {
-   if ((byteDelta >= 0)||(v >= ((size_t)(-byteDelta)))) v += byteDelta;
-                                                   else v = 0;
+   size_t & v = arr[which];
+
+   if (byteDelta >= 0) v += byteDelta;
+   else
+   {
+      uint32 reduceBy = -byteDelta;
+      if (v >= reduceBy) v -= reduceBy;
+      else
+      {
+         printf("Error, Attempted to reduce slot "INT32_FORMAT_SPEC"'s counter (currently "UINT32_FORMAT_SPEC") by "UINT32_FORMAT_SPEC"!  Setting counter at zero instead.\n", ((int32)which)-1, (uint32) v, reduceBy);
+PrintStackTrace();
+         v = 0;
+      }
+   }
 }
 
 // Locks the shared memory region and adjusts our counter there.  This is a bit expensive,
@@ -97,9 +115,9 @@ status_t SharedUsageLimitProxyMemoryAllocator :: ChangeDaemonCounterAux(int32 by
          size_t gs = _shared.GetAreaSize() / sizeof(size_t);
          if (((size_t)(_memberID+1) < gs)&&((byteDelta <= 0)||(sa[0] + byteDelta <= _maxBytes)))
          {
-            AdjustValue(sa[0],           byteDelta);
-            AdjustValue(sa[_memberID+1], byteDelta);
-//printf("delta("INT32_FORMAT_SPEC"): slot "INT32_FORMAT_SPEC" is now %u, total is now %u/%u\n", byteDelta, _memberID, sa[_memberID+1], sa[0], _maxBytes);
+            AdjustValue(0,           sa, byteDelta);
+            AdjustValue(_memberID+1, sa, byteDelta);
+//printf("delta("INT32_FORMAT_SPEC"): slot "INT32_FORMAT_SPEC" is now "UINT32_FORMAT_SPEC", total is now "UINT32_FORMAT_SPEC"/"UINT32_FORMAT_SPEC"\n", byteDelta, _memberID, (uint32) sa[_memberID+1], (uint32) sa[0], (uint32) _maxBytes);
             ret = B_NO_ERROR;
          }
       }
@@ -137,7 +155,7 @@ size_t SharedUsageLimitProxyMemoryAllocator :: GetNumAvailableBytes(size_t alloc
    return muscleMin((_maxBytes>totalUsed)?(_maxBytes-totalUsed):0, ProxyMemoryAllocator::GetNumAvailableBytes(allocated));
 }
 
-status_t SharedUsageLimitProxyMemoryAllocator :: GetCurrentMemoryUsage(size_t * retCounts) const
+status_t SharedUsageLimitProxyMemoryAllocator :: GetCurrentMemoryUsage(size_t * retCounts, size_t * optRetTotal) const
 {
    status_t ret = B_ERROR;
    if (_shared.LockAreaReadOnly() == B_NO_ERROR)
@@ -149,6 +167,7 @@ status_t SharedUsageLimitProxyMemoryAllocator :: GetCurrentMemoryUsage(size_t * 
          for (uint32 i=0; i<_groupSize; i++) retCounts[i] = (i+1<num) ? sa[i+1] : 0;
          ret = B_NO_ERROR;
       }
+      if (optRetTotal) *optRetTotal = sa[0];
       _shared.UnlockArea();
    }
    return ret;

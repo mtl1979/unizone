@@ -116,12 +116,15 @@ private slots:
 
 	void MessageReceived(const MessageRef & msg, const String & sessionID);
 
-	void SessionAccepted(const String &sessionID, uint32 port);
+	void SessionAccepted(const String &sessionID, uint32 factoryID, const IPAddressAndPort &connectedTo);
 	void SessionDetached(const String &sessionID);
-	void SessionConnected(const String &sessionID);
+	void SessionConnected(const String &sessionID, const IPAddressAndPort &connectedTo);
 	void SessionDisconnected(const String &sessionID);
 
 	void ServerExited();
+
+private:
+	void _SessionConnected(const String &sessionID);
 
 	// --------------------------------------------------------------------------------------------
 

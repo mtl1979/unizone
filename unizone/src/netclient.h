@@ -246,9 +246,9 @@ private slots:
 	void SessionAttached(const String & sessionID);
 	void SessionDetached(const String & sessionID);
    
-	void SessionAccepted(const String & sessionID, uint32 port);
+	void SessionAccepted(const String & sessionID, uint32 factoryID, const IPAddressAndPort & iap);
 
-	void SessionConnected(const String & sessionID);
+	void SessionConnected(const String & sessionID, const IPAddressAndPort & connectedTo);
 	void SessionDisconnected(const String & sessionID);
 
 	void FactoryAttached(uint32 port);

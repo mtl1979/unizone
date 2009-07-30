@@ -89,14 +89,14 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	connect(qmtt, SIGNAL(MessageReceived(const MessageRef &, const String &)),
 			this, SLOT(MessageReceived(const MessageRef &, const String &)));
 
-	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32)),
-			this, SLOT(SessionAccepted(const String &, uint32)));
+	connect(qmtt, SIGNAL(SessionAccepted(const String &, uint32, const IPAddressAndPort &)),
+			this, SLOT(SessionAccepted(const String &, uint32, const IPAddressAndPort &)));
 
 	connect(qmtt, SIGNAL(SessionDetached(const String &)),
 			this, SLOT(SessionDetached(const String &)));
 
-	connect(qmtt, SIGNAL(SessionConnected(const String &)),
-			this, SLOT(SessionConnected(const String &)));
+	connect(qmtt, SIGNAL(SessionConnected(const String &, const IPAddressAndPort &)),
+			this, SLOT(SessionConnected(const String &, const IPAddressAndPort &)));
 
 	connect(qmtt, SIGNAL(SessionDisconnected(const String &)),
 			this, SLOT(SessionDisconnected(const String &)));
@@ -793,18 +793,18 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 }
 
 void 
-WDownloadThread::SessionAccepted(const String &sessionID, uint32 /* port */)
+WDownloadThread::SessionAccepted(const String &sessionID, uint32 /* factoryID */, const IPAddressAndPort &iap)
 {
 	// no need to accept anymore
 	qmtt->RemoveAcceptFactory((int16) fAcceptingOn);
-	SessionConnected(sessionID);
+	SessionConnected(sessionID, iap);
 }
 
 void
 WDownloadThread::Accepted(int64 id)
 {
 	hisID = id;
-	SessionConnected((const char *) fFromSession.utf8());
+	_SessionConnected((const char *) fFromSession.utf8());
 }
 
 void
@@ -816,7 +816,13 @@ WDownloadThread::Rejected()
 }
 
 void
-WDownloadThread::SessionConnected(const String &sessionID)
+WDownloadThread::SessionConnected(const String &sessionID, const IPAddressAndPort & /* connectedTo */)
+{
+	_SessionConnected(sessionID);
+}
+
+void
+WDownloadThread::_SessionConnected(const String &sessionID)
 {
 	fConnecting = false;
 	CTimer->stop();

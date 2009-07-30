@@ -61,13 +61,14 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
    String sessionID;
    uint32 factoryID;
    bool seenIncomingMessage = false;
+   IPAddressAndPort iap;
 
    // Check for any new messages from our internal thread
-   while(GetNextEventFromInternalThread(code, &next, &sessionID, &factoryID) >= 0)
+   while(GetNextEventFromInternalThread(code, &next, &sessionID, &factoryID, &iap) >= 0)
    {
       switch(code)
       {
-         case MTT_EVENT_INCOMING_MESSAGE:      
+         case MTT_EVENT_INCOMING_MESSAGE:
             if (seenIncomingMessage == false)
             {
                seenIncomingMessage = true;
@@ -75,15 +76,15 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
             }
             emit MessageReceived(next, sessionID); 
          break;
-         case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, factoryID); break;
-         case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);            break;
-         case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID);           break;
-         case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);        break;
-         case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);            break;
-         case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(factoryID);            break;
-         case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(factoryID);            break;
-         case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);             break;
-         case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                        break;
+         case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, factoryID, iap); break;
+         case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);                 break;
+         case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID, iap);           break;
+         case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected(sessionID);             break;
+         case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached(sessionID);                 break;
+         case MTT_EVENT_FACTORY_ATTACHED:      emit FactoryAttached(factoryID);                 break;
+         case MTT_EVENT_FACTORY_DETACHED:      emit FactoryDetached(factoryID);                 break;
+         case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueuesDrained(next);                  break;
+         case MTT_EVENT_SERVER_EXITED:         emit ServerExited();                             break;
       }
       emit InternalThreadEvent(code, next, sessionID, factoryID);  // these get emitted for any event
 
@@ -105,7 +106,7 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
                }
                handler->EmitBeginMessageBatch();
             }
-            handler->HandleIncomingEvent(code, next);
+            handler->HandleIncomingEvent(code, next, iap);
          }
       }
    }
@@ -340,13 +341,13 @@ void QMessageTransceiverHandler :: Reset(bool emitEndBatchIfNecessary)
    }
 }
 
-void QMessageTransceiverHandler :: HandleIncomingEvent(uint32 code, const MessageRef & next)
+void QMessageTransceiverHandler :: HandleIncomingEvent(uint32 code, const MessageRef & next, const IPAddressAndPort & iap)
 {
    switch(code)
    {
       case MTT_EVENT_INCOMING_MESSAGE:      emit MessageReceived(next);    break;
       case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached();        break;
-      case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected();       break;
+      case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(iap);    break;
       case MTT_EVENT_SESSION_DISCONNECTED:  emit SessionDisconnected();    break;
       case MTT_EVENT_SESSION_DETACHED:      emit SessionDetached();        break;
       case MTT_EVENT_OUTPUT_QUEUES_DRAINED: emit OutputQueueDrained(next); break;

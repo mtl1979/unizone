@@ -111,8 +111,9 @@ signals:
    /** Emitted when a new Session object is accepted by one of the factories being operated by our internal thread
      * @param sessionID Session ID string of the newly accepted Session object.
      * @param factoryID Factory ID of the ReflectSessionFactory that accepted the new session.
+     * @param iap The location of the peer that we are accepting a connection from.
      */ 
-   void SessionAccepted(const String & sessionID, uint32 factoryID);
+   void SessionAccepted(const String & sessionID, uint32 factoryID, const IPAddressAndPort & iap);
 
    /** Emitted when a session object is attached to the internal thread's ReflectServer */
    void SessionAttached(const String & sessionID);
@@ -120,8 +121,9 @@ signals:
    /** Emitted when a session object connects to its remote peer (only used by sessions that were
      * created using AddNewConnectSession())
      * @param sessionID Session ID string of the newly connected Session object.
+     * @param connectedTo the IP address and port that the session is connected to.
      */
-   void SessionConnected(const String & sessionID);
+   void SessionConnected(const String & sessionID, const IPAddressAndPort & connectedTo);
 
    /** Emitted when a session object is disconnected from its remote peer
      * @param sessionID Session ID string of the newly disconnected Session object.
@@ -453,8 +455,9 @@ signals:
 
    /** Emitted when this handler's session object has connected to its remote peer 
      * (only used by sessions that were created in connect-mode)
+     * The IP address and port that the session is connected to.
      */
-   void SessionConnected();
+   void SessionConnected(const IPAddressAndPort & connectedTo);
 
    /** Emitted when this handler's session object has disconnected from its remote peer */
    void SessionDisconnected();
@@ -509,7 +512,7 @@ private:
    friend class QMessageTransceiverThreadPool;
 
    // These methods will be called by our QMessageTransceiverThread only
-   void HandleIncomingEvent(uint32 code, const MessageRef & msgRef);
+   void HandleIncomingEvent(uint32 code, const MessageRef & msgRef, const IPAddressAndPort & iap);
    inline void EmitBeginMessageBatch() {emit BeginMessageBatch();}
    inline void EmitEndMessageBatch() {emit EndMessageBatch();}
 

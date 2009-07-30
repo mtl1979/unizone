@@ -15,6 +15,10 @@
 # include <kernel/OS.h>
 #endif
 
+#if defined(TARGET_PLATFORM_XENOMAI)
+# include "native/timer.h"
+#endif
+
 namespace muscle {
 
 /** A value that GetPulseTime() can return to indicate that Pulse() should never be called. */
@@ -105,6 +109,8 @@ uint64 GetCurrentTime64(uint32 timeType=MUSCLE_TIMEZONE_UTC);
  */
 #if defined(__BEOS__) || defined(__HAIKU__)
 inline uint64 GetRunTime64() {return system_time();}
+#elif defined(TARGET_PLATFORM_XENOMAI)
+inline uint64 GetRunTime64() {return rt_timer_ticks2ns(rt_timer_read())/1000;}
 #else
 uint64 GetRunTime64();
 #endif

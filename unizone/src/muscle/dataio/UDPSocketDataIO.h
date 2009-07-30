@@ -26,6 +26,7 @@ public:
    UDPSocketDataIO(const ConstSocketRef & sock, bool blocking) : _sock(sock)
    {
       (void) SetBlockingIOEnabled(blocking);
+      _sendTo.AddTail();  // so that by default, Write() will just call send() on our socket
    }
 
    /** Destructor.
@@ -46,7 +47,18 @@ public:
       return ret;
    }
 
-   virtual int32 Write(const void * buffer, uint32 size) {return SendDataUDP(_sock, buffer, size, _blocking, _sendTo.GetIPAddress(), _sendTo.GetPort());}
+   virtual int32 Write(const void * buffer, uint32 size) 
+   {
+      int32 ret = 0;
+      for (uint32 i=0; i<_sendTo.GetNumItems(); i++)
+      {
+         const IPAddressAndPort & iap = _sendTo[i];
+         int32 r = SendDataUDP(_sock, buffer, size, _blocking, iap.GetIPAddress(), iap.GetPort());
+         if (r < (int32)size) return r;
+                         else ret = r;
+      }
+      return ret;
+   }
 
    /**
     *  This method implementation always returns B_ERROR, because you can't seek on a socket!
@@ -71,12 +83,18 @@ public:
      * destination address and port.  Calling this with (invalidIP, 0) will
      * revert us to our default behavior of just calling() send on our UDP socket.
      */
-   void SetSendDestination(const IPAddressAndPort & dest) {_sendTo = dest;}
+   void SetSendDestination(const IPAddressAndPort & dest) {(void) _sendTo.EnsureSize(1, true); _sendTo.Head() = dest;}
 
    /** Returns the IP address and port that Write() will send to, as was
      * previously specified in SetSendDestination().
      */
-   const IPAddressAndPort & GetSendDestination() const {return _sendTo;}
+   const IPAddressAndPort & GetSendDestination() const {return _sendTo.HasItems() ? _sendTo.Head() : _sendTo.GetDefaultItem();}
+
+   /** Returns read/write access to our list of send-destinations. */
+   Queue<IPAddressAndPort> & GetSendDestinations() {return _sendTo;}
+
+   /** Returns read-only access to our list of send-destinations. */
+   const Queue<IPAddressAndPort> & GetSendDestinations() const {return _sendTo;}
 
    /**
     * Enables or diables blocking I/O on this socket.
@@ -107,7 +125,7 @@ private:
    bool _blocking;
 
    IPAddressAndPort _recvFrom;
-   IPAddressAndPort _sendTo;
+   Queue<IPAddressAndPort> _sendTo;
 };
 
 }; // end namespace muscle

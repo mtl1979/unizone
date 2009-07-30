@@ -16,11 +16,7 @@ namespace muscle {
 
 Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 {
-#if defined(MUSCLE_USE_PTHREADS)
-   // do nothing
-#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-   // do nothing
-#elif defined(MUSCLE_QT_HAS_THREADS)
+#if defined(MUSCLE_USE_QT_THREADS)
    _thread.SetOwner(this);
 #endif
 }
@@ -81,18 +77,12 @@ status_t Thread :: StartInternalThreadAux()
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       typedef unsigned (__stdcall *PTHREAD_START) (void *);
       if ((_thread = (::HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&_threadID)) != NULL) return B_NO_ERROR;
-#elif defined(MUSCLE_QT_HAS_THREADS)
-      QWaitCondition waitCondition;
-      QMutex mutex; mutex.lock();
-      _waitForHandleSet = &waitCondition;  // used as a temporary parameter only
-      _waitForHandleMutex = &mutex;  // used as a temporary parameter only
-#ifdef QT_HAS_THREAD_PRIORITIES
+#elif defined(MUSCLE_USE_QT_THREADS)
+# ifdef QT_HAS_THREAD_PRIORITIES
       _thread.start(GetInternalQThreadPriority());
-#else
+# else
       _thread.start();
-#endif
-      waitCondition.wait(&mutex);  // wait until the internal thread signal us that it's okay to continue
-      mutex.unlock();
+# endif
       return B_NO_ERROR;
 #elif defined(__BEOS__) || defined(__HAIKU__)
       if ((_thread = spawn_thread(InternalThreadEntryFunc, "MUSCLE Thread", B_NORMAL_PRIORITY, this)) >= 0)
@@ -110,29 +100,6 @@ status_t Thread :: StartInternalThreadAux()
       _threadRunning = false;  // oops, nevermind, thread spawn failed
    }
    return B_ERROR;
-}
-
-bool Thread :: IsCallerInternalThread() const
-{
-   if (IsInternalThreadRunning() == false) return false;  // we can't be him if he doesn't exist!
-
-#if defined(MUSCLE_USE_PTHREADS)
-   return pthread_equal(pthread_self(), _thread);
-#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-   return (_threadID == GetCurrentThreadId());
-#elif defined(MUSCLE_QT_HAS_THREADS)
-# if QT_VERSION >= 0x040000
-   return (QThread::currentThreadId() == _internalThreadHandle);
-# else
-   return (QThread::currentThread() == _internalThreadHandle);
-# endif
-#elif defined(__BEOS__) || defined(__HAIKU__)
-   return (_thread == find_thread(NULL));
-#elif defined(__ATHEOS__)
-   return (_thread == find_thread(NULL));
-#else
-   return false;  // should never get here, but just in case
-#endif
 }
 
 void Thread :: ShutdownInternalThread(bool waitForThread)
@@ -350,12 +317,75 @@ status_t Thread :: UnlockReplyQueue()
    return _threadData[MESSAGE_THREAD_OWNER]._queueLock.Unlock();
 }
 
+Hashtable<Thread::muscle_thread_key, Thread *> Thread::_curThreads;
+Mutex Thread::_curThreadsMutex;
+
+Thread * Thread :: GetCurrentThread()
+{
+   muscle_thread_key key = GetCurrentThreadKey();
+
+   Thread * ret = NULL; 
+   if (_curThreadsMutex.Lock() == B_NO_ERROR)
+   {
+      (void) _curThreads.Get(key, ret);
+      _curThreadsMutex.Unlock();
+   }
+   return ret;
+}
+
 // This method is here to 'wrap' the internal thread's virtual method call with some standard setup/tear-down code of our own
 void Thread::InternalThreadEntryAux()
 {
+   muscle_thread_key curThreadKey = GetCurrentThreadKey();
+   if (_curThreadsMutex.Lock() == B_NO_ERROR)
+   {
+      (void) _curThreads.Put(curThreadKey, this);
+      _curThreadsMutex.Unlock();
+   }
+
    if (_threadData[MESSAGE_THREAD_OWNER]._messages.HasItems()) SignalOwner();
    InternalThreadEntry();
    _threadData[MESSAGE_THREAD_INTERNAL]._messageSocket.Reset();  // this will wake up the owner thread with EOF on socket
+
+   if (_curThreadsMutex.Lock() == B_NO_ERROR)
+   {
+      (void) _curThreads.Remove(curThreadKey);
+      _curThreadsMutex.Unlock();
+   }
+}
+
+Thread::muscle_thread_key Thread :: GetCurrentThreadKey()
+{
+#if defined(MUSCLE_USE_PTHREADS)
+   return pthread_self();
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+   return GetCurrentThreadId();
+#elif defined(MUSCLE_QT_HAS_THREADS)
+   return QThread::currentThread();
+#elif defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__)
+   return find_thread(NULL);
+#else
+   #error "Thread::GetCurrentThreadKey():  Unsupported platform?"
+#endif
+}
+
+bool Thread :: IsCallerInternalThread() const
+{
+   if (IsInternalThreadRunning() == false) return false;  // we can't be him if he doesn't exist!
+
+#if defined(MUSCLE_USE_PTHREADS)
+   return pthread_equal(pthread_self(), _thread);
+#elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+   return (_threadID == GetCurrentThreadId());
+#elif defined(MUSCLE_QT_HAS_THREADS)
+   return (QThread::currentThread() == static_cast<const QThread *>(&_thread));
+#elif defined(__BEOS__) || defined(__HAIKU__)
+   return (_thread == find_thread(NULL));
+#elif defined(__ATHEOS__)
+   return (_thread == find_thread(NULL));
+#else
+   #error "Thread::IsCallerInternalThread():  Unsupported platform?"
+#endif
 }
 
 }; // end namespace muscle

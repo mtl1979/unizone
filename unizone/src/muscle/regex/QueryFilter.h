@@ -350,6 +350,15 @@ public:
      */
    AndOrQueryFilter(uint32 minMatches = MUSCLE_NO_LIMIT) : _minMatches(minMatches) {/* empty */}
 
+   /** Convenience constructor.  Note that you usually want to manually add at least one more child as well.
+     * @param child First argument to the operation
+     * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
+     */
+   AndOrQueryFilter(const QueryFilterRef & child, bool isAnd) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
+   {
+      GetChildren().AddTail(child);
+   }
+
    /** Convenience constructor for simple binary 'or' or 'and' operations.
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation

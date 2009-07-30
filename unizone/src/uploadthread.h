@@ -119,16 +119,17 @@ private slots:
 	void MessageReceived(const MessageRef & msg, const String &sessionID);
 	void OutputQueuesDrained(const MessageRef & msg);
 	
-	void SessionConnected(const String &sessionID);
+	void SessionConnected(const String &sessionID, const IPAddressAndPort &connectedTo);
 	void SessionDisconnected(const String &sessionID);
 
-    void SessionAttached(const String & sessionID);
-	void SessionDetached(const String & sessionID);
+	void SessionAttached(const String &sessionID);
+	void SessionDetached(const String &sessionID);
 
 	void ServerExited();
 
 private:
-	void OutputQueuesDrained(); //Auxiliary function for tunneled transfers
+	void _OutputQueuesDrained(); //Auxiliary function for tunneled transfers
+	void _SessionConnected(const String &sessionID);
 
 protected:
 

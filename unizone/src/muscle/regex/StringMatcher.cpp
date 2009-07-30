@@ -41,7 +41,7 @@ void StringMatcher :: Reset()
    _pattern.Clear();
 }
 
-status_t StringMatcher::SetPattern(const String & s, bool isSimple) 
+status_t StringMatcher :: SetPattern(const String & s, bool isSimple) 
 {
    TCHECKPOINT;
 
@@ -124,8 +124,7 @@ status_t StringMatcher::SetPattern(const String & s, bool isSimple)
    else return B_NO_ERROR;  // for range queries, we don't need a valid regex
 }
 
-
-bool StringMatcher::Match(const char * const str) const
+bool StringMatcher :: Match(const char * const str) const
 {
    TCHECKPOINT;
 
@@ -143,6 +142,18 @@ bool StringMatcher::Match(const char * const str) const
    return _negate ? (!ret) : ret;
 }
 
+String StringMatcher :: ToString() const
+{
+   String s;
+   if (_negate) s = '~';
+
+   if (_rangeMin == MUSCLE_NO_LIMIT) return s+_pattern;
+   else
+   {
+      char buf[128]; sprintf(buf, "<"UINT32_FORMAT_SPEC"-"UINT32_FORMAT_SPEC">", _rangeMin, _rangeMax);
+      return s + buf;
+   }
+}
 
 bool IsRegexToken(char c, bool isFirstCharInString)
 {
