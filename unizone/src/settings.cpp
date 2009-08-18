@@ -864,7 +864,7 @@ WSettings::SetSoundFile(const QString &fn)
 QString
 WSettings::GetSoundFile() const
 {
-	return GetStringItem(fSet(), SOUND_FILE);
+	return GetStringItem(fSet, SOUND_FILE);
 }
 
 void
@@ -1046,7 +1046,7 @@ WSettings::GetIgnorePattern() const
 void
 WSettings::SetIgnorePattern(const QString & p)
 {
-	ReplaceStringInMessage(fSet(), true, IGNORE_PATTERN, p);
+	ReplaceStringInMessage(fSet, true, IGNORE_PATTERN, p);
 }
 
 QString
@@ -1118,7 +1118,7 @@ WSettings::SetWhiteListPattern(const QString & p)
 void
 WSettings::SetFilterListPattern(const QString & p)
 {
-	ReplaceStringInMessage(fSet(), true, FILTERLIST, p);
+	ReplaceStringInMessage(fSet, true, FILTERLIST, p);
 }
 
 QString
