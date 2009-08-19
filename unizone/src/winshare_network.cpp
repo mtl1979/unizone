@@ -1867,7 +1867,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 	case TTP_START_QUEUE:
 		{
 			QString from;
-			if (GetStringFromMessage(msg(), PR_NAME_SESSION, from) == B_NO_ERROR)
+			if (GetStringFromMessage(msg, PR_NAME_SESSION, from) == B_NO_ERROR)
 			{
 				StartQueue(from);
 			}
