@@ -244,6 +244,10 @@ ChatWindow::ParseString(const QString & str)
 	bool first = false; // make first always be &nbsp;
 
 	unsigned int len = str.length();
+
+	if (len == 0)
+		return str;
+
 	// Remove trailing line feeds
 	while (str[len - 1] == '\n')
 		len--;
