@@ -1003,7 +1003,7 @@ ChatWindow::FormatUserStatusChanged(const QString &session, const QString &user,
 QString 
 ChatWindow::FormatUserIPAddress(const QString &user, const QString &ip)
 {
-	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "ip_prefix"));
+	QString temp = tr2(QT_TRANSLATE_NOOP("ChatWindow", "ip_prefix"));
 	temp += FormatUserName(user.stripWhiteSpace(), GetColor(WColors::RemoteName));
 	if (tr("ip_space","Need space after username in IP address string?") == QString("yes")) 
 		temp += " ";
@@ -1072,7 +1072,7 @@ ChatWindow::FormatWarning(const QString &text)
 QString 
 ChatWindow::FormatStatusChanged(const QString &status)
 {
-	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "You are now"));
+	QString temp = tr2(QT_TRANSLATE_NOOP("ChatWindow", "You are now"));
 	temp += status;
 	temp += tr3(tr(".", "'You are now' suffix"));
 	return temp.stripWhiteSpace();
@@ -1081,7 +1081,7 @@ ChatWindow::FormatStatusChanged(const QString &status)
 QString
 ChatWindow::FormatNameChanged(const QString &name)
 {
-	QString temp = tr2(QT_TRANSLATE_NOOP("WFormat", "Name changed to"));
+	QString temp = tr2(QT_TRANSLATE_NOOP("ChatWindow", "Name changed to"));
 	temp += FormatUserName(name.stripWhiteSpace(), GetColor(WColors::LocalName));
 	temp += tr3(tr(".", "'Name changed to' suffix"));
 	return temp.stripWhiteSpace();

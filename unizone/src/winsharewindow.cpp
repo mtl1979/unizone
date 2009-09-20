@@ -861,9 +861,8 @@ WinShareWindow::InitGUI()
 	//
 
 #ifndef __APPLE__
-	fTBMenu = new Q3ToolBar( this );
+	fTBMenu = new Q3ToolBar( this, tr( "Menubar" ) );
 	Q_CHECK_PTR(fTBMenu);
-	addToolBar( fTBMenu, tr( "Menubar" ), Qt::DockTop, FALSE );
 
 	fMenus = new MenuBar(this, fTBMenu);
 #else
@@ -888,9 +887,9 @@ WinShareWindow::InitGUI()
 	// Server
 	//
 
-	fTBServer = new Q3ToolBar( this );
+	fTBServer = new Q3ToolBar( this, tr( "Server bar" ) );
 	Q_CHECK_PTR(fTBServer);
-	addToolBar( fTBServer, tr( "Server bar" ), Qt::DockTop, TRUE );
+	fTBServer->setNewLine(true);
 
 	fServerLabel = new QLabel(tr("Server:"), fTBServer);
 	Q_CHECK_PTR(fServerLabel);
@@ -904,9 +903,8 @@ WinShareWindow::InitGUI()
 	// Nick
 	//
 
-	fTBNick = new Q3ToolBar( this );
+	fTBNick = new Q3ToolBar( this, tr( "Nickbar" ) );
 	Q_CHECK_PTR(fTBNick);
-	addToolBar( fTBNick, tr( "Nickbar" ), Qt::DockTop, FALSE );
 
 	fUserLabel = new QLabel(tr("Nick:"), fTBNick);
 	Q_CHECK_PTR(fUserLabel);
@@ -920,9 +918,8 @@ WinShareWindow::InitGUI()
 	// Status
 	//
 
-	fTBStatus = new Q3ToolBar( this );
+	fTBStatus = new Q3ToolBar( this, tr( "Statusbar" ) );
 	Q_CHECK_PTR(fTBStatus);
-	addToolBar( fTBStatus, tr( "Statusbar" ), Qt::DockTop, FALSE );
 
 	fStatusLabel = new QLabel(tr("Status:"), fTBStatus);
 	Q_CHECK_PTR(fStatusLabel);

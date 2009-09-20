@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="en_US">
 <defaultcodec>UTF-8</defaultcodec>
 <context>
     <name></name>
@@ -137,7 +137,7 @@ Version %1</translation>
     <message>
         <location filename="aboutdlgimpl.cpp" line="25"/>
         <source>Unizone (English)</source>
-        <translation type="unfinished">Unizone (31337 English)</translation>
+        <translation>Unizone (31337 English)</translation>
     </message>
     <message>
         <location filename="aboutdlgimpl.cpp" line="27"/>
@@ -150,27 +150,27 @@ Version %1</translation>
     <message>
         <location filename="aboutdlg.ui" line="34"/>
         <source>About Unizone</source>
-        <translation type="unfinished">Gurus</translation>
+        <translation>Gurus</translation>
     </message>
     <message>
         <location filename="aboutdlg.ui" line="184"/>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;Rulz</translation>
+        <translation>&amp;Rulz</translation>
     </message>
     <message>
         <location filename="aboutdlg.ui" line="103"/>
         <source>Written by Mika T. Lindqvist</source>
-        <translation type="unfinished">Rip-off by the great guru Mika T. Lindqvist</translation>
+        <translation>Rip-off by the great guru Mika T. Lindqvist</translation>
     </message>
     <message>
         <location filename="aboutdlg.ui" line="116"/>
         <source>Based upon the Windows MUSCLE client Ozone</source>
-        <translation type="unfinished">Some stuff ripped from Ozone</translation>
+        <translation>Some stuff ripped from Ozone</translation>
     </message>
     <message>
         <location filename="aboutdlg.ui" line="129"/>
         <source>Which was written by Vitaliy Mikitchenko</source>
-        <translation type="unfinished">Which was screwed up by Vitaliy Mikitchenko</translation>
+        <translation>Which was screwed up by Vitaliy Mikitchenko</translation>
     </message>
     <message>
         <source>Unizone is Copyright (C) 2003 by Mika T. Lindqvist</source>
@@ -385,7 +385,7 @@ Version %1</translation>
     <message>
         <location filename="channel.ui" line="16"/>
         <source>Channel Window</source>
-        <translation type="unfinished">Channel Window</translation>
+        <translation>Channel Window</translation>
     </message>
 </context>
 <context>
@@ -509,164 +509,164 @@ Version %1</translation>
 <context>
     <name>ChatWindow</name>
     <message>
-        <location filename="chatwindow.cpp" line="557"/>
+        <location filename="chatwindow.cpp" line="561"/>
         <source>Name</source>
         <translation>Namez</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="558"/>
+        <location filename="chatwindow.cpp" line="562"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="559"/>
+        <location filename="chatwindow.cpp" line="563"/>
         <source>Status</source>
         <translation>Stats</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="560"/>
+        <location filename="chatwindow.cpp" line="564"/>
         <source>Files</source>
         <translation>Filez</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="561"/>
+        <location filename="chatwindow.cpp" line="565"/>
         <source>Connection</source>
         <translation>Pipe</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="562"/>
+        <location filename="chatwindow.cpp" line="566"/>
         <source>Load</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="563"/>
+        <location filename="chatwindow.cpp" line="567"/>
         <source>Client</source>
         <translation>Client</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="564"/>
+        <location filename="chatwindow.cpp" line="568"/>
         <source>OS</source>
         <translation>OS</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="762"/>
-        <location filename="chatwindow.cpp" line="769"/>
-        <location filename="chatwindow.cpp" line="800"/>
-        <location filename="chatwindow.cpp" line="838"/>
-        <location filename="chatwindow.cpp" line="860"/>
-        <location filename="chatwindow.cpp" line="871"/>
-        <location filename="chatwindow.cpp" line="883"/>
-        <location filename="chatwindow.cpp" line="894"/>
-        <location filename="chatwindow.cpp" line="907"/>
+        <location filename="chatwindow.cpp" line="766"/>
+        <location filename="chatwindow.cpp" line="773"/>
+        <location filename="chatwindow.cpp" line="804"/>
+        <location filename="chatwindow.cpp" line="842"/>
+        <location filename="chatwindow.cpp" line="864"/>
+        <location filename="chatwindow.cpp" line="875"/>
+        <location filename="chatwindow.cpp" line="887"/>
+        <location filename="chatwindow.cpp" line="898"/>
         <location filename="chatwindow.cpp" line="911"/>
-        <location filename="chatwindow.cpp" line="1022"/>
-        <location filename="chatwindow.cpp" line="1034"/>
-        <location filename="chatwindow.cpp" line="1045"/>
-        <location filename="chatwindow.cpp" line="1048"/>
-        <location filename="chatwindow.cpp" line="1059"/>
-        <location filename="chatwindow.cpp" line="1062"/>
-        <location filename="chatwindow.cpp" line="1111"/>
-        <location filename="chatwindow.cpp" line="1134"/>
-        <location filename="chatwindow.cpp" line="1144"/>
+        <location filename="chatwindow.cpp" line="915"/>
+        <location filename="chatwindow.cpp" line="1026"/>
+        <location filename="chatwindow.cpp" line="1038"/>
+        <location filename="chatwindow.cpp" line="1049"/>
+        <location filename="chatwindow.cpp" line="1052"/>
+        <location filename="chatwindow.cpp" line="1063"/>
+        <location filename="chatwindow.cpp" line="1066"/>
+        <location filename="chatwindow.cpp" line="1115"/>
+        <location filename="chatwindow.cpp" line="1138"/>
         <location filename="chatwindow.cpp" line="1148"/>
-        <location filename="chatwindow.cpp" line="1167"/>
-        <location filename="chatwindow.cpp" line="1178"/>
-        <location filename="chatwindow.cpp" line="1217"/>
+        <location filename="chatwindow.cpp" line="1152"/>
+        <location filename="chatwindow.cpp" line="1171"/>
+        <location filename="chatwindow.cpp" line="1182"/>
+        <location filename="chatwindow.cpp" line="1221"/>
         <source>&lt;font color=&quot;%1&quot;&gt;</source>
-        <translation type="unfinished">&lt;font color=&quot;%1&quot;&gt;</translation>
+        <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="792"/>
-        <location filename="chatwindow.cpp" line="810"/>
-        <location filename="chatwindow.cpp" line="826"/>
-        <location filename="chatwindow.cpp" line="848"/>
-        <location filename="chatwindow.cpp" line="872"/>
-        <location filename="chatwindow.cpp" line="884"/>
-        <location filename="chatwindow.cpp" line="906"/>
-        <location filename="chatwindow.cpp" line="1021"/>
-        <location filename="chatwindow.cpp" line="1033"/>
-        <location filename="chatwindow.cpp" line="1044"/>
-        <location filename="chatwindow.cpp" line="1058"/>
-        <location filename="chatwindow.cpp" line="1094"/>
-        <location filename="chatwindow.cpp" line="1121"/>
-        <location filename="chatwindow.cpp" line="1143"/>
-        <location filename="chatwindow.cpp" line="1177"/>
-        <location filename="chatwindow.cpp" line="1216"/>
-        <source>&lt;font size=&quot;%1&quot;&gt;</source>
-        <translation type="unfinished">&lt;font size=&quot;%1&quot;&gt;</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="811"/>
-        <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;(%1)&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="908"/>
-        <source>&lt;b&gt;System:&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;System:&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="923"/>
-        <source>User #%1 is now connected.</source>
-        <translation type="unfinished">Loser #%1 is now on pipe.</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="932"/>
-        <location filename="chatwindow.cpp" line="966"/>
-        <location filename="chatwindow.cpp" line="984"/>
+        <location filename="chatwindow.cpp" line="796"/>
+        <location filename="chatwindow.cpp" line="814"/>
+        <location filename="chatwindow.cpp" line="830"/>
+        <location filename="chatwindow.cpp" line="852"/>
+        <location filename="chatwindow.cpp" line="876"/>
+        <location filename="chatwindow.cpp" line="888"/>
+        <location filename="chatwindow.cpp" line="910"/>
+        <location filename="chatwindow.cpp" line="1025"/>
+        <location filename="chatwindow.cpp" line="1037"/>
+        <location filename="chatwindow.cpp" line="1048"/>
+        <location filename="chatwindow.cpp" line="1062"/>
+        <location filename="chatwindow.cpp" line="1098"/>
+        <location filename="chatwindow.cpp" line="1125"/>
+        <location filename="chatwindow.cpp" line="1147"/>
         <location filename="chatwindow.cpp" line="1181"/>
-        <location filename="chatwindow.cpp" line="1249"/>
-        <location filename="chatwindow.cpp" line="1267"/>
-        <source>User #%1 (a.k.a</source>
-        <translation type="unfinished">Loser #%1 (a.k.a</translation>
+        <location filename="chatwindow.cpp" line="1220"/>
+        <source>&lt;font size=&quot;%1&quot;&gt;</source>
+        <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="935"/>
-        <location filename="chatwindow.cpp" line="969"/>
-        <location filename="chatwindow.cpp" line="987"/>
-        <location filename="chatwindow.cpp" line="1184"/>
-        <location filename="chatwindow.cpp" line="1204"/>
-        <location filename="chatwindow.cpp" line="1205"/>
-        <location filename="chatwindow.cpp" line="1234"/>
-        <location filename="chatwindow.cpp" line="1235"/>
-        <location filename="chatwindow.cpp" line="1252"/>
-        <location filename="chatwindow.cpp" line="1270"/>
+        <location filename="chatwindow.cpp" line="815"/>
+        <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
+        <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="912"/>
+        <source>&lt;b&gt;System:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;System:&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="927"/>
+        <source>User #%1 is now connected.</source>
+        <translation>Loser #%1 is now on pipe.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="936"/>
+        <location filename="chatwindow.cpp" line="970"/>
+        <location filename="chatwindow.cpp" line="988"/>
+        <location filename="chatwindow.cpp" line="1185"/>
+        <location filename="chatwindow.cpp" line="1253"/>
+        <location filename="chatwindow.cpp" line="1271"/>
+        <source>User #%1 (a.k.a</source>
+        <translation>Loser #%1 (a.k.a</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="939"/>
+        <location filename="chatwindow.cpp" line="973"/>
+        <location filename="chatwindow.cpp" line="991"/>
+        <location filename="chatwindow.cpp" line="1188"/>
+        <location filename="chatwindow.cpp" line="1208"/>
+        <location filename="chatwindow.cpp" line="1209"/>
+        <location filename="chatwindow.cpp" line="1238"/>
+        <location filename="chatwindow.cpp" line="1239"/>
+        <location filename="chatwindow.cpp" line="1256"/>
+        <location filename="chatwindow.cpp" line="1274"/>
         <source>)</source>
         <comment>aka suffix</comment>
-        <translation type="unfinished">)</translation>
+        <translation>)</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="938"/>
-        <location filename="chatwindow.cpp" line="947"/>
-        <location filename="chatwindow.cpp" line="990"/>
-        <location filename="chatwindow.cpp" line="1187"/>
-        <location filename="chatwindow.cpp" line="1255"/>
-        <location filename="chatwindow.cpp" line="1273"/>
+        <location filename="chatwindow.cpp" line="942"/>
+        <location filename="chatwindow.cpp" line="951"/>
+        <location filename="chatwindow.cpp" line="994"/>
+        <location filename="chatwindow.cpp" line="1191"/>
+        <location filename="chatwindow.cpp" line="1259"/>
+        <location filename="chatwindow.cpp" line="1277"/>
         <source>User #%1</source>
-        <translation type="unfinished">Loser #%1</translation>
+        <translation>Loser #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="940"/>
+        <location filename="chatwindow.cpp" line="944"/>
         <source>has disconnected.</source>
-        <translation type="unfinished">has closed the pipe.</translation>
+        <translation>has closed the pipe.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="949"/>
-        <location filename="chatwindow.cpp" line="971"/>
+        <location filename="chatwindow.cpp" line="953"/>
+        <location filename="chatwindow.cpp" line="975"/>
         <source>is now known as</source>
-        <translation type="unfinished">decided to be</translation>
+        <translation>decided to be</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="952"/>
-        <location filename="chatwindow.cpp" line="974"/>
+        <location filename="chatwindow.cpp" line="956"/>
+        <location filename="chatwindow.cpp" line="978"/>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="959"/>
+        <location filename="chatwindow.cpp" line="963"/>
         <source>User #%1 is now nameless.</source>
-        <translation type="unfinished">Loser #%1 went in tha closet.</translation>
+        <translation>Loser #%1 went in tha closet.</translation>
     </message>
     <message>
         <source>User #%1 is now</source>
@@ -682,107 +682,122 @@ Version %1</translation>
         <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="992"/>
+        <location filename="chatwindow.cpp" line="996"/>
         <source>is now</source>
-        <translation type="unfinished">went in</translation>
+        <translation>went in</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="995"/>
+        <location filename="chatwindow.cpp" line="999"/>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
-        <translation type="unfinished">.</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="1004"/>
-        <source>ip_space</source>
-        <comment>Need space after username in IP address string?</comment>
-        <translation type="unfinished">no</translation>
+        <translation>.</translation>
     </message>
     <message>
         <location filename="chatwindow.cpp" line="1006"/>
+        <source>ip_prefix</source>
+        <translation> </translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1008"/>
+        <source>ip_space</source>
+        <comment>Need space after username in IP address string?</comment>
+        <translation>no</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1010"/>
         <source>&apos;s IP address is %1.</source>
-        <translation type="unfinished">&apos;s IP address is %1.</translation>
+        <translation>&apos;s IP address is %1.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1013"/>
+        <location filename="chatwindow.cpp" line="1017"/>
         <source>User #%1&apos;s IP address is %2.</source>
-        <translation type="unfinished">Loser #%1&apos;s IP address is %2.</translation>
+        <translation>Loser #%1&apos;s IP address is %2.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1023"/>
+        <location filename="chatwindow.cpp" line="1027"/>
         <source>Ping returned in %1 milliseconds</source>
-        <translation type="unfinished">Ping ponged in %1 milliseconds</translation>
+        <translation>Ping ponged in %1 milliseconds</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1035"/>
+        <location filename="chatwindow.cpp" line="1039"/>
         <source>Uptime: %1, Logged on for %2</source>
-        <translation type="unfinished">Uptime: %1, Logged on for %2</translation>
+        <translation>Uptime: %1, Logged on for %2</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1046"/>
+        <location filename="chatwindow.cpp" line="1050"/>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Error:&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Error:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1060"/>
+        <location filename="chatwindow.cpp" line="1064"/>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Warning:&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Warning:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1082"/>
+        <location filename="chatwindow.cpp" line="1075"/>
+        <source>You are now</source>
+        <translation>You decided to be</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1084"/>
+        <source>Name changed to</source>
+        <translation>Namez changed to</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1086"/>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1145"/>
+        <location filename="chatwindow.cpp" line="1149"/>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Action:&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Action:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1189"/>
+        <location filename="chatwindow.cpp" line="1193"/>
         <source>pinged you.</source>
-        <translation type="unfinished">pinged you.</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="1197"/>
-        <source>Ping sent to</source>
-        <translation type="unfinished">Ping pong</translation>
+        <translation>pinged you.</translation>
     </message>
     <message>
         <location filename="chatwindow.cpp" line="1201"/>
-        <location filename="chatwindow.cpp" line="1231"/>
+        <source>Ping sent to</source>
+        <translation>Ping pong</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1205"/>
+        <location filename="chatwindow.cpp" line="1235"/>
         <source>user #%1 (a.k.a</source>
         <comment>Ping sent to user...</comment>
-        <translation type="unfinished">loser #%1 (a.k.a</translation>
+        <translation>loser #%1 (a.k.a</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1208"/>
-        <location filename="chatwindow.cpp" line="1238"/>
+        <location filename="chatwindow.cpp" line="1212"/>
+        <location filename="chatwindow.cpp" line="1242"/>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
-        <translation type="unfinished">loser #%1</translation>
+        <translation>loser #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1227"/>
+        <location filename="chatwindow.cpp" line="1231"/>
         <source>Time request sent to</source>
-        <translation type="unfinished">Time request sent to</translation>
+        <translation>Time request sent to</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1257"/>
+        <location filename="chatwindow.cpp" line="1261"/>
         <source>is a bot!</source>
-        <translation type="unfinished">is a bot!</translation>
+        <translation>is a bot!</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1275"/>
+        <location filename="chatwindow.cpp" line="1279"/>
         <source>was removed from the private chat window.</source>
-        <translation type="unfinished">was booted my buziness chat.</translation>
+        <translation>was booted my buziness chat.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1073"/>
+        <location filename="chatwindow.cpp" line="1077"/>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
 </context>
 <context>
@@ -1021,7 +1036,7 @@ Version %1</translation>
         <translation>Sun</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="712"/>
+        <location filename="chatwindow.cpp" line="716"/>
         <source>Date:</source>
         <translation>Date:</translation>
     </message>
@@ -1061,22 +1076,22 @@ Date: %4</translation>
     <message>
         <location filename="util.cpp" line="294"/>
         <source>B</source>
-        <translation type="unfinished">B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="util.cpp" line="298"/>
         <source>kB</source>
-        <translation type="unfinished">kB</translation>
+        <translation>kB</translation>
     </message>
     <message>
         <location filename="util.cpp" line="303"/>
         <source>MB</source>
-        <translation type="unfinished">MB</translation>
+        <translation>MB</translation>
     </message>
     <message>
         <location filename="util.cpp" line="308"/>
         <source>GB</source>
-        <translation type="unfinished">GB</translation>
+        <translation>GB</translation>
     </message>
 </context>
 <context>
@@ -1650,45 +1665,45 @@ Date: %4</translation>
     <message>
         <location filename="scanprogress.ui" line="16"/>
         <source>Scan Progress</source>
-        <translation type="unfinished">Scan Progress</translation>
+        <translation>Scan Progress</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="51"/>
         <source>Current directory:</source>
-        <translation type="unfinished">Current directory:</translation>
+        <translation>Current directory:</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="67"/>
         <location filename="scanprogress.ui" line="109"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="93"/>
         <source>Current file:</source>
-        <translation type="unfinished">Current file:</translation>
+        <translation>Current file:</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="135"/>
         <source>Files scanned:</source>
-        <translation type="unfinished">Filez scanned:</translation>
+        <translation>Filez scanned:</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="151"/>
         <location filename="scanprogress.ui" line="193"/>
         <location filename="scanprogress.ui" line="235"/>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="177"/>
         <source>Directories scanned:</source>
-        <translation type="unfinished">Directoriez scanned:</translation>
+        <translation>Directoriez scanned:</translation>
     </message>
     <message>
         <location filename="scanprogress.ui" line="219"/>
         <source>Directories left:</source>
-        <translation type="unfinished">Directoriez left:</translation>
+        <translation>Directoriez left:</translation>
     </message>
 </context>
 <context>
@@ -2162,7 +2177,7 @@ Date: %4</translation>
     <message>
         <location filename="downloadimpl.cpp" line="74"/>
         <source>Downloads</source>
-        <translation type="unfinished">Leeches</translation>
+        <translation>Leeches</translation>
     </message>
 </context>
 <context>
@@ -2201,12 +2216,12 @@ Date: %4</translation>
         <translation>Couldn&apos;t fscking write file data!</translation>
     </message>
     <message>
-        <location filename="downloadthread.cpp" line="883"/>
+        <location filename="downloadthread.cpp" line="889"/>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
         <translation>MD5 hashing fscking crapped! Can&apos;t resume.</translation>
     </message>
     <message>
-        <location filename="downloadthread.cpp" line="1463"/>
+        <location filename="downloadthread.cpp" line="1469"/>
         <source>Connection timed out!</source>
         <translation>Connecting fscking timed out!</translation>
     </message>
@@ -2297,14 +2312,12 @@ Date: %4</translation>
         <translation type="obsolete">Uptime: %1, Logged on for %2</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1071"/>
         <source>You are now</source>
-        <translation>You decided to be</translation>
+        <translation type="obsolete">You decided to be</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1080"/>
         <source>Name changed to</source>
-        <translation>Namez changed to</translation>
+        <translation type="obsolete">Namez changed to</translation>
     </message>
     <message>
         <source>Time request sent to</source>
@@ -2381,11 +2394,6 @@ Date: %4</translation>
         <translation type="obsolete">loser #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1002"/>
-        <source>ip_prefix</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>ip_space</source>
         <comment>Need space after username in IP address string?</comment>
         <translation type="obsolete">no</translation>
@@ -2419,13 +2427,13 @@ Date: %4</translation>
     <message>
         <location filename="picviewerimpl.cpp" line="317"/>
         <source>%1/%2</source>
-        <translation type="unfinished">%1/%2</translation>
+        <translation>%1/%2</translation>
     </message>
     <message>
         <location filename="picviewerimpl.cpp" line="295"/>
         <location filename="picviewerimpl.cpp" line="302"/>
         <source>Picture Viewer</source>
-        <translation type="unfinished">Pr0n Viewer</translation>
+        <translation>Pr0n Viewer</translation>
     </message>
     <message>
         <location filename="picviewerimpl.cpp" line="434"/>
@@ -2443,7 +2451,7 @@ Date: %4</translation>
     <message>
         <location filename="picviewer.ui" line="25"/>
         <source>Picture Viewer</source>
-        <translation type="unfinished">Pr0n Viewer</translation>
+        <translation>Pr0n Viewer</translation>
     </message>
     <message>
         <location filename="picviewer.ui" line="100"/>
@@ -2482,7 +2490,7 @@ Date: %4</translation>
     <message>
         <location filename="picviewer.ui" line="141"/>
         <source>Close</source>
-        <translation type="unfinished">Close</translation>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="picviewer.ui" line="134"/>
@@ -2617,67 +2625,67 @@ Date: %4</translation>
     <message>
         <location filename="prefsimpl.cpp" line="74"/>
         <source>Warning text</source>
-        <translation type="unfinished"></translation>
+        <translation>Warning text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="110"/>
         <source>Local Name</source>
-        <translation type="unfinished">Local Namez</translation>
+        <translation>Local Namez</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="111"/>
         <source>Remote Name</source>
-        <translation type="unfinished">Remote Namez</translation>
+        <translation>Remote Namez</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="112"/>
         <source>Regular Text</source>
-        <translation type="unfinished">Regular Text</translation>
+        <translation>Regular Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="113"/>
         <source>System Text</source>
-        <translation type="unfinished">System Text</translation>
+        <translation>System Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="114"/>
         <source>Ping Text</source>
-        <translation type="unfinished">Ping Pong Text</translation>
+        <translation>Ping Pong Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="115"/>
         <source>Error Text</source>
-        <translation type="unfinished">Error Text</translation>
+        <translation>Error Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="116"/>
         <source>Error Message Text</source>
-        <translation type="unfinished">Error Message Text</translation>
+        <translation>Error Message Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="117"/>
         <source>Private Text</source>
-        <translation type="unfinished">My Buziness Text</translation>
+        <translation>My Buziness Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="118"/>
         <source>Action Text</source>
-        <translation type="unfinished">Action Text</translation>
+        <translation>Action Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="119"/>
         <source>URL Text</source>
-        <translation type="unfinished">URL Text</translation>
+        <translation>URL Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="120"/>
         <source>&apos;Name Said&apos; Text</source>
-        <translation type="unfinished">&apos;Namez Said&apos; Text</translation>
+        <translation>&apos;Namez Said&apos; Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="121"/>
         <source>Warning Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Warning Text</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="122"/>
@@ -2687,12 +2695,12 @@ Date: %4</translation>
     <message>
         <location filename="prefsimpl.cpp" line="162"/>
         <source>CDE</source>
-        <translation type="unfinished">CDE</translation>
+        <translation>CDE</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="166"/>
         <source>Motif</source>
-        <translation type="unfinished">Motif</translation>
+        <translation>Motif</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="170"/>
@@ -2702,7 +2710,7 @@ Date: %4</translation>
     <message>
         <location filename="prefsimpl.cpp" line="174"/>
         <source>Windows</source>
-        <translation type="unfinished">Windoze</translation>
+        <translation>Windoze</translation>
     </message>
     <message>
         <location filename="prefsimpl.cpp" line="178"/>
@@ -2725,103 +2733,103 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="32"/>
         <source>Preferences</source>
-        <translation type="unfinished">Gurus Only</translation>
+        <translation>Gurus Only</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="72"/>
         <source>OK</source>
-        <translation type="unfinished">Rulz</translation>
+        <translation>Rulz</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="98"/>
         <source>Cancel</source>
-        <translation type="unfinished">Give Up</translation>
+        <translation>Give Up</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="180"/>
         <source>Auto Away:</source>
-        <translation type="unfinished">Auto Away:</translation>
+        <translation>Auto Away:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="213"/>
         <location filename="prefs.ui" line="1843"/>
         <source>Disabled</source>
-        <translation type="unfinished">Disabled</translation>
+        <translation>Disabled</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="218"/>
         <source>2 Minutes</source>
-        <translation type="unfinished">2 Minutez</translation>
+        <translation>2 Minutez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="223"/>
         <source>5 Minutes</source>
-        <translation type="unfinished">5 Minutez</translation>
+        <translation>5 Minutez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="228"/>
         <source>10 Minutes</source>
-        <translation type="unfinished">10 Minutez</translation>
+        <translation>10 Minutez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="233"/>
         <source>15 Minutes</source>
-        <translation type="unfinished">15 Minutez</translation>
+        <translation>15 Minutez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="238"/>
         <source>20 Minutes</source>
-        <translation type="unfinished">20 Minutez</translation>
+        <translation>20 Minutez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="243"/>
         <source>30 Minutes</source>
-        <translation type="unfinished">30 Minutez</translation>
+        <translation>30 Minutez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="248"/>
         <source>1 Hour</source>
-        <translation type="unfinished">1 Hour</translation>
+        <translation>1 Hour</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="253"/>
         <source>2 Hours</source>
-        <translation type="unfinished">2 Hours</translation>
+        <translation>2 Hours</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="297"/>
         <source>Multi-color ListViews</source>
-        <translation type="unfinished">Multi-color ListViews</translation>
+        <translation>Multi-color ListViews</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="290"/>
         <source>Enable Logging</source>
-        <translation type="unfinished">Enable Logging</translation>
+        <translation>Enable Logging</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="277"/>
         <source>Login On Startup</source>
-        <translation type="unfinished">Login On Startup</translation>
+        <translation>Login On Startup</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="270"/>
         <source>Check For New Versions</source>
-        <translation type="unfinished">Check For New Versionz</translation>
+        <translation>Check For New Versionz</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="263"/>
         <source>Auto Update Server List</source>
-        <translation type="unfinished">Auto Update Server List</translation>
+        <translation>Auto Update Server List</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="137"/>
         <source>General</source>
-        <translation type="unfinished">General</translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="481"/>
         <source>Upload Bandwidth:</source>
-        <translation type="unfinished">Upping Pipe:</translation>
+        <translation>Upping Pipe:</translation>
     </message>
     <message>
         <source>300 baud</source>
@@ -2830,32 +2838,32 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="524"/>
         <source>14.4 kbps</source>
-        <translation type="unfinished">14.4 kbps</translation>
+        <translation>14.4 kbps</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="529"/>
         <source>28.8 kbps</source>
-        <translation type="unfinished">28.8 kbps</translation>
+        <translation>28.8 kbps</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="534"/>
         <source>36.6 kbps</source>
-        <translation type="unfinished">36.6 kbps</translation>
+        <translation>36.6 kbps</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="539"/>
         <source>57.6 kbps</source>
-        <translation type="unfinished">57.6 kbps</translation>
+        <translation>57.6 kbps</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="544"/>
         <source>ISDN-64k</source>
-        <translation type="unfinished">ISDN-64k</translation>
+        <translation>ISDN-64k</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="549"/>
         <source>ISDN-128k</source>
-        <translation type="unfinished">ISDN-128k</translation>
+        <translation>ISDN-128k</translation>
     </message>
     <message>
         <source>DSL</source>
@@ -2864,97 +2872,97 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="584"/>
         <source>Cable</source>
-        <translation type="unfinished">Cable</translation>
+        <translation>Cable</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="599"/>
         <source>T1</source>
-        <translation type="unfinished">T1</translation>
+        <translation>T1</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="604"/>
         <source>T3</source>
-        <translation type="unfinished">T3</translation>
+        <translation>T3</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="609"/>
         <source>OC-3</source>
-        <translation type="unfinished">OC-3</translation>
+        <translation>OC-3</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="614"/>
         <source>OC-12</source>
-        <translation type="unfinished">OC-12</translation>
+        <translation>OC-12</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="624"/>
         <source>I&apos;m Firewalled</source>
-        <translation type="unfinished">I&apos;m Firewalled</translation>
+        <translation>I&apos;m Firewalled</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="438"/>
         <source>Connection</source>
-        <translation type="unfinished">Pipe</translation>
+        <translation>Pipe</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="899"/>
         <source>Warning Messages</source>
-        <translation type="unfinished">Warning Messages</translation>
+        <translation>Warning Messages</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="906"/>
         <source>Error Messages</source>
-        <translation type="unfinished">Error Messages</translation>
+        <translation>Error Messages</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="885"/>
         <source>Private Messages</source>
-        <translation type="unfinished">My Buziness Messages</translation>
+        <translation>My Buziness Messages</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="808"/>
         <source>User Events</source>
-        <translation type="unfinished">Loser Events</translation>
+        <translation>Loser Events</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="829"/>
         <source>Chat</source>
-        <translation type="unfinished">Chat</translation>
+        <translation>Chat</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="892"/>
         <source>Info Messages</source>
-        <translation type="unfinished">Info Messages</translation>
+        <translation>Info Messages</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="815"/>
         <source>Uploads</source>
-        <translation type="unfinished">Ups</translation>
+        <translation>Ups</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="801"/>
         <source>Time Stamps</source>
-        <translation type="unfinished">Time Stamps</translation>
+        <translation>Time Stamps</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="957"/>
         <source>Flash Window When Mentioned</source>
-        <translation type="unfinished">Flash Windoze When Mocked</translation>
+        <translation>Flash Windoze When Mocked</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="964"/>
         <source>Flash Private Windows</source>
-        <translation type="unfinished">Flash My Buziness Windoze</translation>
+        <translation>Flash My Buziness Windoze</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1058"/>
         <source>Font Size</source>
-        <translation type="unfinished">Font Size</translation>
+        <translation>Font Size</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="778"/>
         <source>Display</source>
-        <translation type="unfinished">Display</translation>
+        <translation>Display</translation>
     </message>
     <message>
         <source>Local Name</source>
@@ -3003,22 +3011,22 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="1158"/>
         <source>Description:</source>
-        <translation type="unfinished">Data:</translation>
+        <translation>Data:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1203"/>
         <source>Preview:</source>
-        <translation type="unfinished">Preview:</translation>
+        <translation>Preview:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1268"/>
         <source>Change</source>
-        <translation type="unfinished">Change</translation>
+        <translation>Change</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1106"/>
         <source>Colors</source>
-        <translation type="unfinished">Colors</translation>
+        <translation>Colors</translation>
     </message>
     <message>
         <source>CDE</source>
@@ -3047,122 +3055,122 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="1354"/>
         <source>The selected style will be applied as soon as it is selected.</source>
-        <translation type="unfinished">The selected style will be used asap. Chill out.</translation>
+        <translation>The selected style will be used asap. Chill out.</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1281"/>
         <source>Style</source>
-        <translation type="unfinished">Stylez</translation>
+        <translation>Stylez</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1635"/>
         <location filename="prefs.ui" line="1961"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1640"/>
         <location filename="prefs.ui" line="1966"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1645"/>
         <location filename="prefs.ui" line="1971"/>
         <source>3</source>
-        <translation type="unfinished">3</translation>
+        <translation>3</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1650"/>
         <location filename="prefs.ui" line="1976"/>
         <source>4</source>
-        <translation type="unfinished">4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1655"/>
         <location filename="prefs.ui" line="1981"/>
         <source>5</source>
-        <translation type="unfinished">5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1660"/>
         <location filename="prefs.ui" line="1986"/>
         <source>10</source>
-        <translation type="unfinished">10</translation>
+        <translation>10</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1665"/>
         <location filename="prefs.ui" line="1991"/>
         <source>15</source>
-        <translation type="unfinished">15</translation>
+        <translation>15</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1670"/>
         <location filename="prefs.ui" line="1996"/>
         <source>20</source>
-        <translation type="unfinished">20</translation>
+        <translation>20</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1675"/>
         <location filename="prefs.ui" line="2001"/>
         <source>30</source>
-        <translation type="unfinished">30</translation>
+        <translation>30</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1680"/>
         <location filename="prefs.ui" line="2006"/>
         <source>Unlimited</source>
-        <translation type="unfinished">Unlimited</translation>
+        <translation>Unlimited</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1922"/>
         <source>Maximum Simultaneous Downloads:</source>
-        <translation type="unfinished">Maximum Simultaneous Leeches:</translation>
+        <translation>Maximum Simultaneous Leeches:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1596"/>
         <source>Maximum Simultaneous Uploads:</source>
-        <translation type="unfinished">Maximum Simultaneous Ups:</translation>
+        <translation>Maximum Simultaneous Ups:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1416"/>
         <source>File sharing enabled?</source>
-        <translation type="unfinished">Warez sharing enabled?</translation>
+        <translation>Warez sharing enabled?</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1529"/>
         <source>Block binkies?</source>
-        <translation type="unfinished">Block losers (binkies)?</translation>
+        <translation>Block losers (binkies)?</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1536"/>
         <source>Block disconnected users?</source>
-        <translation type="unfinished">Block disconnected losers?</translation>
+        <translation>Block disconnected losers?</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1387"/>
         <source>File Sharing</source>
-        <translation type="unfinished">Warez Sharing</translation>
+        <translation>Warez Sharing</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2114"/>
         <source>HTTP launcher:</source>
-        <translation type="unfinished">HTTP launcher:</translation>
+        <translation>HTTP launcher:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2143"/>
         <source>FTP launcher:</source>
-        <translation type="unfinished">FTP launcher:</translation>
+        <translation>FTP launcher:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2085"/>
         <source>Mailto: launcher:</source>
-        <translation type="unfinished">Mailto: launcher:</translation>
+        <translation>Mailto: launcher:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2050"/>
         <source>URL Launching</source>
-        <translation type="unfinished">URL Launching</translation>
+        <translation>URL Launching</translation>
     </message>
     <message>
         <source>Uploads (per blacklisted)</source>
@@ -3174,7 +3182,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2569"/>
         <location filename="prefs.ui" line="2725"/>
         <source>No Limit</source>
-        <translation type="unfinished">No Limitz</translation>
+        <translation>No Limitz</translation>
     </message>
     <message>
         <source>128 bytes</source>
@@ -3192,67 +3200,67 @@ Date: %4</translation>
         <location filename="prefs.ui" line="1742"/>
         <location filename="prefs.ui" line="1848"/>
         <source>1 kB</source>
-        <translation type="unfinished">1 kB</translation>
+        <translation>1 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1747"/>
         <location filename="prefs.ui" line="1853"/>
         <source>2 kB</source>
-        <translation type="unfinished">2 kB</translation>
+        <translation>2 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1752"/>
         <location filename="prefs.ui" line="1858"/>
         <source>4 kB</source>
-        <translation type="unfinished">4 kB</translation>
+        <translation>4 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1757"/>
         <location filename="prefs.ui" line="1863"/>
         <source>8 kB</source>
-        <translation type="unfinished">8 kB</translation>
+        <translation>8 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1762"/>
         <location filename="prefs.ui" line="1868"/>
         <source>16 kB</source>
-        <translation type="unfinished">16 kB</translation>
+        <translation>16 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1767"/>
         <location filename="prefs.ui" line="1873"/>
         <source>32 kB</source>
-        <translation type="unfinished">32 kB</translation>
+        <translation>32 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1772"/>
         <location filename="prefs.ui" line="1878"/>
         <source>64 kB</source>
-        <translation type="unfinished">64 kB</translation>
+        <translation>64 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1777"/>
         <location filename="prefs.ui" line="1883"/>
         <source>128 kB</source>
-        <translation type="unfinished">128 kB</translation>
+        <translation>128 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1782"/>
         <location filename="prefs.ui" line="1888"/>
         <source>256 kB</source>
-        <translation type="unfinished">256 kB</translation>
+        <translation>256 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1787"/>
         <location filename="prefs.ui" line="1893"/>
         <source>512 kB</source>
-        <translation type="unfinished">512 kB</translation>
+        <translation>512 kB</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1792"/>
         <location filename="prefs.ui" line="1898"/>
         <source>1 MB</source>
-        <translation type="unfinished">1 MB</translation>
+        <translation>1 MB</translation>
     </message>
     <message>
         <source>2 MB</source>
@@ -3277,7 +3285,7 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="2234"/>
         <source>Chat:</source>
-        <translation type="unfinished">Chat:</translation>
+        <translation>Chat:</translation>
     </message>
     <message>
         <source>Downloads (per download)</source>
@@ -3290,7 +3298,7 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="2205"/>
         <source>Throttling</source>
-        <translation type="unfinished">Strangling</translation>
+        <translation>Strangling</translation>
     </message>
     <message>
         <source>Auto Clear finished transfers?</source>
@@ -3299,37 +3307,37 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="554"/>
         <source>DSL-256k</source>
-        <translation type="unfinished">DSL-256k</translation>
+        <translation>DSL-256k</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="559"/>
         <source>DSL-384k</source>
-        <translation type="unfinished">DSL-384k</translation>
+        <translation>DSL-384k</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="564"/>
         <source>DSL-512k</source>
-        <translation type="unfinished">DSL-512k</translation>
+        <translation>DSL-512k</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2396"/>
         <source>Uploads (per upload):</source>
-        <translation type="unfinished">Ups (per up):</translation>
+        <translation>Ups (per up):</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2698"/>
         <source>Downloads (per download):</source>
-        <translation type="unfinished">Leeches (per leech):</translation>
+        <translation>Leeches (per leech):</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2542"/>
         <source>Uploads (per blacklisted):</source>
-        <translation type="unfinished">Ups (per loser on blacklist):</translation>
+        <translation>Ups (per loser on blacklist):</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2172"/>
         <source>Default launcher:</source>
-        <translation type="unfinished">Default launcher:</translation>
+        <translation>Default launcher:</translation>
     </message>
     <message>
         <source>Upload Packet Size</source>
@@ -3338,17 +3346,17 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="1698"/>
         <source>Upload Packet Size:</source>
-        <translation type="unfinished">Ups Packet Size:</translation>
+        <translation>Ups Packet Size:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="339"/>
         <source>Enable Sound Effects</source>
-        <translation type="unfinished">Use Sound</translation>
+        <translation>Use Sound</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="822"/>
         <source>Downloads</source>
-        <translation type="unfinished">Leeches</translation>
+        <translation>Leeches</translation>
     </message>
     <message>
         <source>Minimum File Size to Queue</source>
@@ -3377,12 +3385,12 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="1437"/>
         <source>Base Port:</source>
-        <translation type="unfinished">Base Port:</translation>
+        <translation>Base Port:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1810"/>
         <source>Minimum File Size to Queue:</source>
-        <translation type="unfinished">Minimum Filez Size to Queue:</translation>
+        <translation>Minimum Filez Size to Queue:</translation>
     </message>
     <message>
         <source>200 kB</source>
@@ -3399,37 +3407,37 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="836"/>
         <source>IP Addresses</source>
-        <translation type="unfinished">IP Addresses</translation>
+        <translation>IP Addresses</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1482"/>
         <source>Number of Ports:</source>
-        <translation type="unfinished">Number of Ports:</translation>
+        <translation>Number of Ports:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="997"/>
         <source>Empty Windows:</source>
-        <translation type="unfinished">Empty Windowz:</translation>
+        <translation>Empty Windowz:</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1008"/>
         <source>Do Nothing</source>
-        <translation type="unfinished">Chill Out</translation>
+        <translation>Chill Out</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1013"/>
         <source>Prompt</source>
-        <translation type="unfinished">Whine</translation>
+        <translation>Whine</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1018"/>
         <source>Automatically Close</source>
-        <translation type="unfinished">Nuke Them</translation>
+        <translation>Nuke Them</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="589"/>
         <source>DSL-1M</source>
-        <translation type="unfinished">DSL-1M</translation>
+        <translation>DSL-1M</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="514"/>
@@ -3459,7 +3467,7 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="594"/>
         <source>DSL-2M</source>
-        <translation type="unfinished"></translation>
+        <translation>DSL-2M</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2266"/>
@@ -3467,7 +3475,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2574"/>
         <location filename="prefs.ui" line="2730"/>
         <source>128 B/s</source>
-        <translation type="unfinished">128 B/s</translation>
+        <translation>128 B/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2271"/>
@@ -3475,7 +3483,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2579"/>
         <location filename="prefs.ui" line="2735"/>
         <source>256 B/s</source>
-        <translation type="unfinished">256 B/s</translation>
+        <translation>256 B/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2276"/>
@@ -3483,7 +3491,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2584"/>
         <location filename="prefs.ui" line="2740"/>
         <source>512 B/s</source>
-        <translation type="unfinished">512 B/s</translation>
+        <translation>512 B/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2281"/>
@@ -3491,7 +3499,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2589"/>
         <location filename="prefs.ui" line="2745"/>
         <source>1 kB/s</source>
-        <translation type="unfinished">1 kB/s</translation>
+        <translation>1 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2286"/>
@@ -3499,7 +3507,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2594"/>
         <location filename="prefs.ui" line="2750"/>
         <source>2 kB/s</source>
-        <translation type="unfinished">2 kB/s</translation>
+        <translation>2 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2291"/>
@@ -3507,7 +3515,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2599"/>
         <location filename="prefs.ui" line="2755"/>
         <source>4 kB/s</source>
-        <translation type="unfinished">4 kB/s</translation>
+        <translation>4 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2296"/>
@@ -3515,7 +3523,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2604"/>
         <location filename="prefs.ui" line="2760"/>
         <source>8 kB/s</source>
-        <translation type="unfinished">8 kB/s</translation>
+        <translation>8 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2301"/>
@@ -3523,7 +3531,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2609"/>
         <location filename="prefs.ui" line="2765"/>
         <source>16 kB/s</source>
-        <translation type="unfinished">16 kB/s</translation>
+        <translation>16 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2306"/>
@@ -3531,7 +3539,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2614"/>
         <location filename="prefs.ui" line="2770"/>
         <source>32 kB/s</source>
-        <translation type="unfinished">32 kB/s</translation>
+        <translation>32 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2311"/>
@@ -3539,7 +3547,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2619"/>
         <location filename="prefs.ui" line="2775"/>
         <source>64 kB/s</source>
-        <translation type="unfinished">64 kB/s</translation>
+        <translation>64 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2316"/>
@@ -3547,7 +3555,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2624"/>
         <location filename="prefs.ui" line="2780"/>
         <source>128 kB/s</source>
-        <translation type="unfinished">128 kB/s</translation>
+        <translation>128 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2321"/>
@@ -3555,7 +3563,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2629"/>
         <location filename="prefs.ui" line="2785"/>
         <source>256 kB/s</source>
-        <translation type="unfinished">256 kB/s</translation>
+        <translation>256 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2326"/>
@@ -3563,7 +3571,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2634"/>
         <location filename="prefs.ui" line="2790"/>
         <source>512 kB/s</source>
-        <translation type="unfinished">512 kB/s</translation>
+        <translation>512 kB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2331"/>
@@ -3571,7 +3579,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2639"/>
         <location filename="prefs.ui" line="2795"/>
         <source>1 MB/s</source>
-        <translation type="unfinished">1 MB/s</translation>
+        <translation>1 MB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2336"/>
@@ -3579,7 +3587,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2644"/>
         <location filename="prefs.ui" line="2800"/>
         <source>2 MB/s</source>
-        <translation type="unfinished">2 MB/s</translation>
+        <translation>2 MB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2341"/>
@@ -3587,7 +3595,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2649"/>
         <location filename="prefs.ui" line="2805"/>
         <source>4 MB/s</source>
-        <translation type="unfinished">4 MB/s</translation>
+        <translation>4 MB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2346"/>
@@ -3595,7 +3603,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2654"/>
         <location filename="prefs.ui" line="2810"/>
         <source>8 MB/s</source>
-        <translation type="unfinished">8 MB/s</translation>
+        <translation>8 MB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2351"/>
@@ -3603,7 +3611,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2659"/>
         <location filename="prefs.ui" line="2815"/>
         <source>16 MB/s</source>
-        <translation type="unfinished">16 MB/s</translation>
+        <translation>16 MB/s</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2356"/>
@@ -3611,7 +3619,7 @@ Date: %4</translation>
         <location filename="prefs.ui" line="2664"/>
         <location filename="prefs.ui" line="2820"/>
         <source>32 MB/s</source>
-        <translation type="unfinished">32 MB/s</translation>
+        <translation>32 MB/s</translation>
     </message>
     <message>
         <source>Aqua</source>
@@ -3630,17 +3638,17 @@ Date: %4</translation>
     <message>
         <location filename="prefs.ui" line="741"/>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="1737"/>
         <source>512 B</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2032"/>
         <source>Automatically clear finished transfers?</source>
-        <translation type="unfinished">Auto Clear finished leeches?</translation>
+        <translation>Auto Clear finished leeches?</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="2039"/>
@@ -3804,7 +3812,7 @@ Date: %4</translation>
     <message>
         <location filename="privatewindow.ui" line="22"/>
         <source>Private</source>
-        <translation type="unfinished">My Buziness</translation>
+        <translation>My Buziness</translation>
     </message>
 </context>
 <context>
@@ -4011,67 +4019,67 @@ Date: %4</translation>
     <message>
         <location filename="uploadimpl.cpp" line="27"/>
         <source>Status</source>
-        <translation type="unfinished">Stats</translation>
+        <translation>Stats</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="28"/>
         <source>Filename</source>
-        <translation type="unfinished">Fileznamez</translation>
+        <translation>Fileznamez</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="29"/>
         <source>Sent</source>
-        <translation type="unfinished">Upped</translation>
+        <translation>Upped</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="30"/>
         <source>Total</source>
-        <translation type="unfinished">Total</translation>
+        <translation>Total</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="31"/>
         <source>Rate</source>
-        <translation type="unfinished">Speed</translation>
+        <translation>Speed</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="32"/>
         <source>ETA</source>
-        <translation type="unfinished">ETA</translation>
+        <translation>ETA</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="33"/>
         <source>Elapsed</source>
-        <translation type="unfinished">Used</translation>
+        <translation>Used</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="34"/>
         <source>User</source>
-        <translation type="unfinished">Loser</translation>
+        <translation>Loser</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="35"/>
         <source>Index</source>
-        <translation type="unfinished">Index</translation>
+        <translation>Index</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="36"/>
         <source>QR</source>
-        <translation type="unfinished">QR</translation>
+        <translation>QR</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="50"/>
         <source>Uploads</source>
-        <translation type="unfinished">Ups</translation>
+        <translation>Ups</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="56"/>
         <source>Queue</source>
-        <translation type="unfinished">Queuez</translation>
+        <translation>Queuez</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="62"/>
         <source>No Limit</source>
-        <translation type="unfinished">No Limiz</translation>
+        <translation>No Limiz</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="68"/>
@@ -4079,7 +4087,7 @@ Date: %4</translation>
         <location filename="uploadimpl.cpp" line="70"/>
         <location filename="uploadimpl.cpp" line="71"/>
         <source>%1 B/s</source>
-        <translation type="unfinished">%1 B/s</translation>
+        <translation>%1 B/s</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="72"/>
@@ -4097,7 +4105,7 @@ Date: %4</translation>
         <location filename="uploadimpl.cpp" line="84"/>
         <location filename="uploadimpl.cpp" line="85"/>
         <source>%1 kB/s</source>
-        <translation type="unfinished">%1 kB/s</translation>
+        <translation>%1 kB/s</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="86"/>
@@ -4107,17 +4115,17 @@ Date: %4</translation>
         <location filename="uploadimpl.cpp" line="90"/>
         <location filename="uploadimpl.cpp" line="91"/>
         <source>%1 MB/s</source>
-        <translation type="unfinished">%1 MB/s</translation>
+        <translation>%1 MB/s</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="96"/>
         <source>Unbanned</source>
-        <translation type="unfinished">Unbanned</translation>
+        <translation>Unbanned</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="100"/>
         <source>1 minute</source>
-        <translation type="unfinished">1 minutez</translation>
+        <translation>1 minutez</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="101"/>
@@ -4126,17 +4134,17 @@ Date: %4</translation>
         <location filename="uploadimpl.cpp" line="104"/>
         <location filename="uploadimpl.cpp" line="105"/>
         <source>%1 minutes</source>
-        <translation type="unfinished">%1 minutez</translation>
+        <translation>%1 minutez</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="106"/>
         <source>1 hour</source>
-        <translation type="unfinished">1 hour</translation>
+        <translation>1 hour</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="107"/>
         <source>Infinite</source>
-        <translation type="unfinished">Till Doomsday</translation>
+        <translation>Till Doomsday</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="113"/>
@@ -4150,12 +4158,12 @@ Date: %4</translation>
         <location filename="uploadimpl.cpp" line="121"/>
         <location filename="uploadimpl.cpp" line="122"/>
         <source>%1 kB</source>
-        <translation type="unfinished">%1 kB</translation>
+        <translation>%1 kB</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="123"/>
         <source>%1 MB</source>
-        <translation type="unfinished">%1 MB</translation>
+        <translation>%1 MB</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="131"/>
@@ -4178,42 +4186,42 @@ Date: %4</translation>
     <message>
         <location filename="uploadimpl.cpp" line="146"/>
         <source>Move Up</source>
-        <translation type="unfinished">Lift</translation>
+        <translation>Lift</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="147"/>
         <source>Move Down</source>
-        <translation type="unfinished">Drop</translation>
+        <translation>Drop</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="148"/>
         <source>Ban IP</source>
-        <translation type="unfinished">Ban Losers IP</translation>
+        <translation>Ban Losers IP</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="149"/>
         <source>Clear Finished</source>
-        <translation type="unfinished">Clear Leeched</translation>
+        <translation>Clear Leeched</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="150"/>
         <source>Cancel</source>
-        <translation type="unfinished">Give up</translation>
+        <translation>Give up</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="152"/>
         <source>Throttle</source>
-        <translation type="unfinished">Strangle</translation>
+        <translation>Strangle</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="153"/>
         <source>Block</source>
-        <translation type="unfinished">Block</translation>
+        <translation>Block</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="154"/>
         <source>Packet Size</source>
-        <translation type="unfinished">Packet Size</translation>
+        <translation>Packet Size</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="155"/>
@@ -4226,89 +4234,89 @@ Date: %4</translation>
         <location filename="uploadimpl.cpp" line="349"/>
         <location filename="uploadimpl.cpp" line="512"/>
         <source>Queued.</source>
-        <translation type="unfinished">Queued.</translation>
+        <translation>Queued.</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="525"/>
         <source>Blocked.</source>
-        <translation type="unfinished">Blocked.</translation>
+        <translation>Blocked.</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="529"/>
         <source>Blocked for %1 minute(s).</source>
-        <translation type="unfinished">Blocked for %1 minutez.</translation>
+        <translation>Blocked for %1 minutez.</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="548"/>
         <source>Examining for resume...</source>
-        <translation type="unfinished">Examining for leech resume...</translation>
+        <translation>Examining for leech resume...</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="555"/>
         <source>Connecting...</source>
-        <translation type="unfinished">Opening Pipe...</translation>
+        <translation>Opening Pipe...</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="563"/>
         <source>Connect failed: %1</source>
-        <translation type="unfinished">Opening Pipe failed: %1</translation>
+        <translation>Opening Pipe failed: %1</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="579"/>
         <source>Negotiating...</source>
-        <translation type="unfinished">Negotiating...</translation>
+        <translation>Negotiating...</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="592"/>
         <source>Disconnected.</source>
-        <translation type="unfinished">Pipe Closed.</translation>
+        <translation>Pipe Closed.</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="596"/>
         <location filename="uploadimpl.cpp" line="622"/>
         <location filename="uploadimpl.cpp" line="757"/>
         <source>Finished.</source>
-        <translation type="unfinished">Done.</translation>
+        <translation>Done.</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="647"/>
         <source>Waiting for stream...</source>
-        <translation type="unfinished">Waiting for stream...</translation>
+        <translation>Waiting for stream...</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="675"/>
         <source>Error: %1</source>
-        <translation type="unfinished">Error: %1</translation>
+        <translation>Error: %1</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="720"/>
         <source>Uploading: [%1%]</source>
-        <translation type="unfinished">Upping: [%1%]</translation>
+        <translation>Upping: [%1%]</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="770"/>
         <source>Shift+F11</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift-F11</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="782"/>
         <source>%1 (%2)</source>
-        <translation type="unfinished">%1 (%2)</translation>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="840"/>
         <source>%1 of %2</source>
-        <translation type="unfinished">%1 of %2</translation>
+        <translation>%1 of %2</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="907"/>
         <source>Canceled.</source>
-        <translation type="unfinished">Given up.</translation>
+        <translation>Given up.</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="112"/>
         <source>%1 B</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 B</translation>
     </message>
 </context>
 <context>
@@ -4318,7 +4326,7 @@ Date: %4</translation>
         <translation type="obsolete">Your leech has been blocked for %1 minute(z)!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="987"/>
+        <location filename="uploadthread.cpp" line="993"/>
         <source>User #%1</source>
         <translation>Loser #%1</translation>
     </message>
@@ -4337,17 +4345,17 @@ Date: %4</translation>
         <translation type="obsolete">Tha connection barfed!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="1517"/>
+        <location filename="uploadthread.cpp" line="1523"/>
         <source>Connection timed out!</source>
         <translation>Connection fscking timed out!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="830"/>
+        <location filename="uploadthread.cpp" line="836"/>
         <source>%1 has finished downloading %2.</source>
         <translation>%1 has finished leeching %2.</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="919"/>
+        <location filename="uploadthread.cpp" line="925"/>
         <source>%1 is downloading %2.</source>
         <translation>%1 is leeching %2.</translation>
     </message>
@@ -4357,7 +4365,7 @@ Date: %4</translation>
         <translation>Internal thread crapped!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="665"/>
+        <location filename="uploadthread.cpp" line="671"/>
         <source>Critical error: Upload buffer allocation failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4365,12 +4373,12 @@ Date: %4</translation>
 <context>
     <name>WUser</name>
     <message>
-        <location filename="chatwindow.cpp" line="1108"/>
-        <location filename="chatwindow.cpp" line="1131"/>
+        <location filename="chatwindow.cpp" line="1112"/>
+        <location filename="chatwindow.cpp" line="1135"/>
         <location filename="user.cpp" line="22"/>
         <location filename="user.cpp" line="53"/>
         <source>Unknown</source>
-        <translation type="unfinished">Unknown</translation>
+        <translation>Unknown</translation>
     </message>
     <message>
         <location filename="user.cpp" line="447"/>
@@ -4483,7 +4491,7 @@ Date: %4</translation>
     <name>WinShareWindow</name>
     <message>
         <location filename="winshare_network.cpp" line="73"/>
-        <location filename="winsharewindow.cpp" line="2337"/>
+        <location filename="winsharewindow.cpp" line="2334"/>
         <source>Already scanning!</source>
         <translation>Already scanning warez!</translation>
     </message>
@@ -4493,13 +4501,13 @@ Date: %4</translation>
         <location filename="winshare_network.cpp" line="3096"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
-        <location filename="winsharewindow.cpp" line="1004"/>
+        <location filename="winsharewindow.cpp" line="1001"/>
         <source>Not connected.</source>
         <translation>Pipe not open.</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="89"/>
-        <location filename="winsharewindow.cpp" line="2325"/>
+        <location filename="winsharewindow.cpp" line="2322"/>
         <source>File sharing not enabled.</source>
         <translation>Warez sharing not enabled.</translation>
     </message>
@@ -4532,7 +4540,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="373"/>
-        <location filename="winsharewindow.cpp" line="2422"/>
+        <location filename="winsharewindow.cpp" line="2419"/>
         <source>Logged In: %1</source>
         <translation>Logged In: %1</translation>
     </message>
@@ -4884,17 +4892,17 @@ Date: %4</translation>
         <translation type="obsolete">Namez changed to &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="895"/>
+        <location filename="winsharewindow.cpp" line="894"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="911"/>
+        <location filename="winsharewindow.cpp" line="909"/>
         <source>Nick:</source>
         <translation>Nick:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="927"/>
+        <location filename="winsharewindow.cpp" line="924"/>
         <source>Status:</source>
         <translation>Stats:</translation>
     </message>
@@ -4979,7 +4987,7 @@ Date: %4</translation>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1840"/>
+        <location filename="winsharewindow.cpp" line="1837"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Waiting for file scan thread to do something...</translation>
     </message>
@@ -4988,37 +4996,37 @@ Date: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2157"/>
+        <location filename="winsharewindow.cpp" line="2154"/>
         <source>here</source>
         <translation>here</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2158"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>away</source>
         <translation>got lost</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2159"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>idle</source>
         <translation>idling</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2160"/>
+        <location filename="winsharewindow.cpp" line="2157"/>
         <source>busy</source>
         <translation>buzy</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2161"/>
+        <location filename="winsharewindow.cpp" line="2158"/>
         <source>at work</source>
         <translation>at buziness</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2162"/>
+        <location filename="winsharewindow.cpp" line="2159"/>
         <source>around</source>
         <translation>hanging around</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2163"/>
+        <location filename="winsharewindow.cpp" line="2160"/>
         <source>sleeping</source>
         <translation>drunk</translation>
     </message>
@@ -5027,12 +5035,12 @@ Date: %4</translation>
         <translation type="obsolete">/search %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2348"/>
+        <location filename="winsharewindow.cpp" line="2345"/>
         <source>Rescanning shared files...</source>
         <translation>Rescanning warez shared...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2353"/>
+        <location filename="winsharewindow.cpp" line="2350"/>
         <source>Scanning shares...</source>
         <translation>Scanning warez shares...</translation>
     </message>
@@ -5173,58 +5181,58 @@ Date: %4</translation>
         <translation type="obsolete">Loser doesn&apos;t exist!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1104"/>
+        <location filename="winsharewindow.cpp" line="1101"/>
         <source>1 week</source>
         <translation>1 week</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1109"/>
+        <location filename="winsharewindow.cpp" line="1106"/>
         <source>%1 weeks</source>
         <translation>%1 weekz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1115"/>
+        <location filename="winsharewindow.cpp" line="1112"/>
         <source>1 day</source>
         <translation>1 day</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1120"/>
+        <location filename="winsharewindow.cpp" line="1117"/>
         <source>%1 days</source>
         <translation>%1 dayz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1126"/>
+        <location filename="winsharewindow.cpp" line="1123"/>
         <source>1 hour</source>
         <translation>1 hour</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1131"/>
+        <location filename="winsharewindow.cpp" line="1128"/>
         <source>%1 hours</source>
         <translation>%1 hourz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1137"/>
+        <location filename="winsharewindow.cpp" line="1134"/>
         <source>1 minute</source>
         <translation>1 minutez</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1142"/>
+        <location filename="winsharewindow.cpp" line="1139"/>
         <source>%1 minutes</source>
         <translation>%1 minutez</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1148"/>
+        <location filename="winsharewindow.cpp" line="1145"/>
         <source>1 second</source>
         <translation>1 second</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1092"/>
-        <location filename="winsharewindow.cpp" line="1153"/>
+        <location filename="winsharewindow.cpp" line="1089"/>
+        <location filename="winsharewindow.cpp" line="1150"/>
         <source>%1 seconds</source>
         <translation>%1 secondz</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1166"/>
+        <location filename="winsharewindow.cpp" line="1163"/>
         <source>and</source>
         <translation>and</translation>
     </message>
@@ -5238,8 +5246,8 @@ Date: %4</translation>
         <translation>Unizone (31337 English)</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1326"/>
-        <location filename="winsharewindow.cpp" line="1335"/>
+        <location filename="winsharewindow.cpp" line="1323"/>
+        <location filename="winsharewindow.cpp" line="1332"/>
         <source>Testing Unizone (English)</source>
         <translation>Testing Unizone (31337 English)</translation>
     </message>
@@ -5829,22 +5837,22 @@ Date: %4</translation>
         <translation>- Local File: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="866"/>
+        <location filename="winsharewindow.cpp" line="864"/>
         <source>Menubar</source>
         <translation>Menubar</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="893"/>
+        <location filename="winsharewindow.cpp" line="890"/>
         <source>Server bar</source>
         <translation>Server bar</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="909"/>
+        <location filename="winsharewindow.cpp" line="906"/>
         <source>Nickbar</source>
         <translation>Nickbar</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="925"/>
+        <location filename="winsharewindow.cpp" line="921"/>
         <source>Statusbar</source>
         <translation>Statusbar</translation>
     </message>
@@ -5893,12 +5901,12 @@ Date: %4</translation>
         <translation>On Connect:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2004"/>
+        <location filename="winsharewindow.cpp" line="2001"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Queued file %1 from loser #%2.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2031"/>
+        <location filename="winsharewindow.cpp" line="2028"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Leeching file %1 from loser #%2.</translation>
     </message>
@@ -6027,7 +6035,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2164"/>
+        <location filename="winsharewindow.cpp" line="2161"/>
         <source>wandering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6048,7 +6056,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2050"/>
+        <location filename="winsharewindow.cpp" line="2047"/>
         <source>Failed to create log file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6181,7 +6189,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1851"/>
+        <location filename="winsharewindow.cpp" line="1848"/>
         <source>Waiting for file list thread to finish...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6279,7 +6287,7 @@ Date: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="2485"/>
         <source>Connecting...</source>
-        <translation type="unfinished">Opening Pipe...</translation>
+        <translation>Opening Pipe...</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1128"/>

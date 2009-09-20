@@ -544,162 +544,162 @@ Version %1</translation>
 <context>
     <name>ChatWindow</name>
     <message>
-        <location filename="chatwindow.cpp" line="557"/>
+        <location filename="chatwindow.cpp" line="561"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="558"/>
+        <location filename="chatwindow.cpp" line="562"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="559"/>
+        <location filename="chatwindow.cpp" line="563"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="560"/>
+        <location filename="chatwindow.cpp" line="564"/>
         <source>Files</source>
         <translation>Dateien</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="561"/>
+        <location filename="chatwindow.cpp" line="565"/>
         <source>Connection</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="562"/>
+        <location filename="chatwindow.cpp" line="566"/>
         <source>Load</source>
         <translation>Lade</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="563"/>
+        <location filename="chatwindow.cpp" line="567"/>
         <source>Client</source>
         <translation>Client</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="564"/>
+        <location filename="chatwindow.cpp" line="568"/>
         <source>OS</source>
         <translation>OS</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="762"/>
-        <location filename="chatwindow.cpp" line="769"/>
-        <location filename="chatwindow.cpp" line="800"/>
-        <location filename="chatwindow.cpp" line="838"/>
-        <location filename="chatwindow.cpp" line="860"/>
-        <location filename="chatwindow.cpp" line="871"/>
-        <location filename="chatwindow.cpp" line="883"/>
-        <location filename="chatwindow.cpp" line="894"/>
-        <location filename="chatwindow.cpp" line="907"/>
+        <location filename="chatwindow.cpp" line="766"/>
+        <location filename="chatwindow.cpp" line="773"/>
+        <location filename="chatwindow.cpp" line="804"/>
+        <location filename="chatwindow.cpp" line="842"/>
+        <location filename="chatwindow.cpp" line="864"/>
+        <location filename="chatwindow.cpp" line="875"/>
+        <location filename="chatwindow.cpp" line="887"/>
+        <location filename="chatwindow.cpp" line="898"/>
         <location filename="chatwindow.cpp" line="911"/>
-        <location filename="chatwindow.cpp" line="1022"/>
-        <location filename="chatwindow.cpp" line="1034"/>
-        <location filename="chatwindow.cpp" line="1045"/>
-        <location filename="chatwindow.cpp" line="1048"/>
-        <location filename="chatwindow.cpp" line="1059"/>
-        <location filename="chatwindow.cpp" line="1062"/>
-        <location filename="chatwindow.cpp" line="1111"/>
-        <location filename="chatwindow.cpp" line="1134"/>
-        <location filename="chatwindow.cpp" line="1144"/>
+        <location filename="chatwindow.cpp" line="915"/>
+        <location filename="chatwindow.cpp" line="1026"/>
+        <location filename="chatwindow.cpp" line="1038"/>
+        <location filename="chatwindow.cpp" line="1049"/>
+        <location filename="chatwindow.cpp" line="1052"/>
+        <location filename="chatwindow.cpp" line="1063"/>
+        <location filename="chatwindow.cpp" line="1066"/>
+        <location filename="chatwindow.cpp" line="1115"/>
+        <location filename="chatwindow.cpp" line="1138"/>
         <location filename="chatwindow.cpp" line="1148"/>
-        <location filename="chatwindow.cpp" line="1167"/>
-        <location filename="chatwindow.cpp" line="1178"/>
-        <location filename="chatwindow.cpp" line="1217"/>
+        <location filename="chatwindow.cpp" line="1152"/>
+        <location filename="chatwindow.cpp" line="1171"/>
+        <location filename="chatwindow.cpp" line="1182"/>
+        <location filename="chatwindow.cpp" line="1221"/>
         <source>&lt;font color=&quot;%1&quot;&gt;</source>
         <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="792"/>
-        <location filename="chatwindow.cpp" line="810"/>
-        <location filename="chatwindow.cpp" line="826"/>
-        <location filename="chatwindow.cpp" line="848"/>
-        <location filename="chatwindow.cpp" line="872"/>
-        <location filename="chatwindow.cpp" line="884"/>
-        <location filename="chatwindow.cpp" line="906"/>
-        <location filename="chatwindow.cpp" line="1021"/>
-        <location filename="chatwindow.cpp" line="1033"/>
-        <location filename="chatwindow.cpp" line="1044"/>
-        <location filename="chatwindow.cpp" line="1058"/>
-        <location filename="chatwindow.cpp" line="1094"/>
-        <location filename="chatwindow.cpp" line="1121"/>
-        <location filename="chatwindow.cpp" line="1143"/>
-        <location filename="chatwindow.cpp" line="1177"/>
-        <location filename="chatwindow.cpp" line="1216"/>
+        <location filename="chatwindow.cpp" line="796"/>
+        <location filename="chatwindow.cpp" line="814"/>
+        <location filename="chatwindow.cpp" line="830"/>
+        <location filename="chatwindow.cpp" line="852"/>
+        <location filename="chatwindow.cpp" line="876"/>
+        <location filename="chatwindow.cpp" line="888"/>
+        <location filename="chatwindow.cpp" line="910"/>
+        <location filename="chatwindow.cpp" line="1025"/>
+        <location filename="chatwindow.cpp" line="1037"/>
+        <location filename="chatwindow.cpp" line="1048"/>
+        <location filename="chatwindow.cpp" line="1062"/>
+        <location filename="chatwindow.cpp" line="1098"/>
+        <location filename="chatwindow.cpp" line="1125"/>
+        <location filename="chatwindow.cpp" line="1147"/>
+        <location filename="chatwindow.cpp" line="1181"/>
+        <location filename="chatwindow.cpp" line="1220"/>
         <source>&lt;font size=&quot;%1&quot;&gt;</source>
         <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="811"/>
+        <location filename="chatwindow.cpp" line="815"/>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
         <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="908"/>
+        <location filename="chatwindow.cpp" line="912"/>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
         <translation>&lt;b&gt;System:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="923"/>
+        <location filename="chatwindow.cpp" line="927"/>
         <source>User #%1 is now connected.</source>
         <translation>Benutzer #%1 ist jetzt verbunden.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="932"/>
-        <location filename="chatwindow.cpp" line="966"/>
-        <location filename="chatwindow.cpp" line="984"/>
-        <location filename="chatwindow.cpp" line="1181"/>
-        <location filename="chatwindow.cpp" line="1249"/>
-        <location filename="chatwindow.cpp" line="1267"/>
+        <location filename="chatwindow.cpp" line="936"/>
+        <location filename="chatwindow.cpp" line="970"/>
+        <location filename="chatwindow.cpp" line="988"/>
+        <location filename="chatwindow.cpp" line="1185"/>
+        <location filename="chatwindow.cpp" line="1253"/>
+        <location filename="chatwindow.cpp" line="1271"/>
         <source>User #%1 (a.k.a</source>
         <translation>Benutzer #%1 (a.k.a</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="935"/>
-        <location filename="chatwindow.cpp" line="969"/>
-        <location filename="chatwindow.cpp" line="987"/>
-        <location filename="chatwindow.cpp" line="1184"/>
-        <location filename="chatwindow.cpp" line="1204"/>
-        <location filename="chatwindow.cpp" line="1205"/>
-        <location filename="chatwindow.cpp" line="1234"/>
-        <location filename="chatwindow.cpp" line="1235"/>
-        <location filename="chatwindow.cpp" line="1252"/>
-        <location filename="chatwindow.cpp" line="1270"/>
+        <location filename="chatwindow.cpp" line="939"/>
+        <location filename="chatwindow.cpp" line="973"/>
+        <location filename="chatwindow.cpp" line="991"/>
+        <location filename="chatwindow.cpp" line="1188"/>
+        <location filename="chatwindow.cpp" line="1208"/>
+        <location filename="chatwindow.cpp" line="1209"/>
+        <location filename="chatwindow.cpp" line="1238"/>
+        <location filename="chatwindow.cpp" line="1239"/>
+        <location filename="chatwindow.cpp" line="1256"/>
+        <location filename="chatwindow.cpp" line="1274"/>
         <source>)</source>
         <comment>aka suffix</comment>
         <translation>)</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="938"/>
-        <location filename="chatwindow.cpp" line="947"/>
-        <location filename="chatwindow.cpp" line="990"/>
-        <location filename="chatwindow.cpp" line="1187"/>
-        <location filename="chatwindow.cpp" line="1255"/>
-        <location filename="chatwindow.cpp" line="1273"/>
+        <location filename="chatwindow.cpp" line="942"/>
+        <location filename="chatwindow.cpp" line="951"/>
+        <location filename="chatwindow.cpp" line="994"/>
+        <location filename="chatwindow.cpp" line="1191"/>
+        <location filename="chatwindow.cpp" line="1259"/>
+        <location filename="chatwindow.cpp" line="1277"/>
         <source>User #%1</source>
         <translation>Benutzer #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="940"/>
+        <location filename="chatwindow.cpp" line="944"/>
         <source>has disconnected.</source>
         <translation>hat die Verbindung getrennt.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="949"/>
-        <location filename="chatwindow.cpp" line="971"/>
+        <location filename="chatwindow.cpp" line="953"/>
+        <location filename="chatwindow.cpp" line="975"/>
         <source>is now known as</source>
         <translation>heißt jetzt</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="952"/>
-        <location filename="chatwindow.cpp" line="974"/>
+        <location filename="chatwindow.cpp" line="956"/>
+        <location filename="chatwindow.cpp" line="978"/>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
         <translation>.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="959"/>
+        <location filename="chatwindow.cpp" line="963"/>
         <source>User #%1 is now nameless.</source>
         <translation>Benutzer #%1 ist jetzt namenslos.</translation>
     </message>
@@ -717,104 +717,119 @@ Version %1</translation>
         <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="992"/>
+        <location filename="chatwindow.cpp" line="996"/>
         <source>is now</source>
         <translation>ist jetzt</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="995"/>
+        <location filename="chatwindow.cpp" line="999"/>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
         <translation>.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1004"/>
+        <location filename="chatwindow.cpp" line="1006"/>
+        <source>ip_prefix</source>
+        <translation> </translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1008"/>
         <source>ip_space</source>
         <comment>Need space after username in IP address string?</comment>
         <translation>no</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1006"/>
+        <location filename="chatwindow.cpp" line="1010"/>
         <source>&apos;s IP address is %1.</source>
         <translation>&apos;s IP Addresse ist %1.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1013"/>
+        <location filename="chatwindow.cpp" line="1017"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1023"/>
+        <location filename="chatwindow.cpp" line="1027"/>
         <source>Ping returned in %1 milliseconds</source>
         <translation>Ping zurück in %1 Milliseconden</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1035"/>
+        <location filename="chatwindow.cpp" line="1039"/>
         <source>Uptime: %1, Logged on for %2</source>
         <translation>Uptime: %1, eingeloggt seit %2</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1046"/>
+        <location filename="chatwindow.cpp" line="1050"/>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Fehler:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1060"/>
+        <location filename="chatwindow.cpp" line="1064"/>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Warnung:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1082"/>
+        <location filename="chatwindow.cpp" line="1075"/>
+        <source>You are now</source>
+        <translation>Sie sind jetzt</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1084"/>
+        <source>Name changed to</source>
+        <translation>Name geändert zu</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1086"/>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
         <translation>.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1145"/>
+        <location filename="chatwindow.cpp" line="1149"/>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Aktion:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1189"/>
+        <location filename="chatwindow.cpp" line="1193"/>
         <source>pinged you.</source>
         <translation>hat dich gepingt.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1197"/>
+        <location filename="chatwindow.cpp" line="1201"/>
         <source>Ping sent to</source>
         <translation>Ping gesendet</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1201"/>
-        <location filename="chatwindow.cpp" line="1231"/>
+        <location filename="chatwindow.cpp" line="1205"/>
+        <location filename="chatwindow.cpp" line="1235"/>
         <source>user #%1 (a.k.a</source>
         <comment>Ping sent to user...</comment>
         <translation>an Benutzer #%1 (a.k.a</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1208"/>
-        <location filename="chatwindow.cpp" line="1238"/>
+        <location filename="chatwindow.cpp" line="1212"/>
+        <location filename="chatwindow.cpp" line="1242"/>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
         <translation>Benutzer #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1227"/>
+        <location filename="chatwindow.cpp" line="1231"/>
         <source>Time request sent to</source>
         <translation>Zeit Nachfrage gesendet an</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1257"/>
+        <location filename="chatwindow.cpp" line="1261"/>
         <source>is a bot!</source>
         <translation>ist ein Bot!</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1275"/>
+        <location filename="chatwindow.cpp" line="1279"/>
         <source>was removed from the private chat window.</source>
         <translation>entfernt vom privaten Chat- Fenster.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1073"/>
+        <location filename="chatwindow.cpp" line="1077"/>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
         <translation>.</translation>
@@ -1056,7 +1071,7 @@ Version %1</translation>
         <translation>So</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="712"/>
+        <location filename="chatwindow.cpp" line="716"/>
         <source>Date:</source>
         <translation>Datum:</translation>
     </message>
@@ -2224,12 +2239,12 @@ Date: %4</translation>
         <translation>Konnt&apos;e Daten nicht schreiben!</translation>
     </message>
     <message>
-        <location filename="downloadthread.cpp" line="883"/>
+        <location filename="downloadthread.cpp" line="889"/>
         <source>MD5 hashing failed! Can&apos;t resume.</source>
         <translation>MD5 hashing fehlgeschlagen! Can&apos;t resume.</translation>
     </message>
     <message>
-        <location filename="downloadthread.cpp" line="1463"/>
+        <location filename="downloadthread.cpp" line="1469"/>
         <source>Connection timed out!</source>
         <translation>Verbindung timed out!</translation>
     </message>
@@ -2392,14 +2407,12 @@ Date: %4</translation>
         <translation type="obsolete">Uptime: %1, eingeloggt seit %2</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1071"/>
         <source>You are now</source>
-        <translation>Sie sind jetzt</translation>
+        <translation type="obsolete">Sie sind jetzt</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1080"/>
         <source>Name changed to</source>
-        <translation>Name geändert zu</translation>
+        <translation type="obsolete">Name geändert zu</translation>
     </message>
     <message>
         <source>) is now</source>
@@ -2478,11 +2491,6 @@ Date: %4</translation>
     <message>
         <source>user #%1</source>
         <translation type="obsolete">Benutzer #%1</translation>
-    </message>
-    <message>
-        <location filename="chatwindow.cpp" line="1002"/>
-        <source>ip_prefix</source>
-        <translation></translation>
     </message>
     <message>
         <source>ip_space</source>
@@ -4394,7 +4402,7 @@ Date: %4</translation>
     <message>
         <location filename="uploadimpl.cpp" line="770"/>
         <source>Shift+F11</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift-F11</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="782"/>
@@ -4424,7 +4432,7 @@ Date: %4</translation>
         <translation type="obsolete">Ihr Download wurde für %1 Minute(n) geblockt!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="987"/>
+        <location filename="uploadthread.cpp" line="993"/>
         <source>User #%1</source>
         <translation>Benutzer #%1</translation>
     </message>
@@ -4443,17 +4451,17 @@ Date: %4</translation>
         <translation type="obsolete">Verbindung wurde zurückgesetzt!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="1517"/>
+        <location filename="uploadthread.cpp" line="1523"/>
         <source>Connection timed out!</source>
         <translation>Verbindung timed out!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="830"/>
+        <location filename="uploadthread.cpp" line="836"/>
         <source>%1 has finished downloading %2.</source>
         <translation>%1 hat Download %2 beendet.</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="919"/>
+        <location filename="uploadthread.cpp" line="925"/>
         <source>%1 is downloading %2.</source>
         <translation>%1 lädt herunter %2.</translation>
     </message>
@@ -4463,7 +4471,7 @@ Date: %4</translation>
         <translation>Kann internen Thread nicht starten!</translation>
     </message>
     <message>
-        <location filename="uploadthread.cpp" line="665"/>
+        <location filename="uploadthread.cpp" line="671"/>
         <source>Critical error: Upload buffer allocation failed!</source>
         <translation>Schwerer Fehler: Upload buffer allocation failed!</translation>
     </message>
@@ -4471,8 +4479,8 @@ Date: %4</translation>
 <context>
     <name>WUser</name>
     <message>
-        <location filename="chatwindow.cpp" line="1108"/>
-        <location filename="chatwindow.cpp" line="1131"/>
+        <location filename="chatwindow.cpp" line="1112"/>
+        <location filename="chatwindow.cpp" line="1135"/>
         <location filename="user.cpp" line="22"/>
         <location filename="user.cpp" line="53"/>
         <source>Unknown</source>
@@ -4589,7 +4597,7 @@ Date: %4</translation>
     <name>WinShareWindow</name>
     <message>
         <location filename="winshare_network.cpp" line="73"/>
-        <location filename="winsharewindow.cpp" line="2337"/>
+        <location filename="winsharewindow.cpp" line="2334"/>
         <source>Already scanning!</source>
         <translation>Schon gescannt!</translation>
     </message>
@@ -4599,13 +4607,13 @@ Date: %4</translation>
         <location filename="winshare_network.cpp" line="3096"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
-        <location filename="winsharewindow.cpp" line="1004"/>
+        <location filename="winsharewindow.cpp" line="1001"/>
         <source>Not connected.</source>
         <translation>Nicht verbunden.</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="89"/>
-        <location filename="winsharewindow.cpp" line="2325"/>
+        <location filename="winsharewindow.cpp" line="2322"/>
         <source>File sharing not enabled.</source>
         <translation>Gemeinsame Dateinutzung nicht aktiviert.</translation>
     </message>
@@ -4638,7 +4646,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="373"/>
-        <location filename="winsharewindow.cpp" line="2422"/>
+        <location filename="winsharewindow.cpp" line="2419"/>
         <source>Logged In: %1</source>
         <translation>Eingeloggt: %1</translation>
     </message>
@@ -4990,17 +4998,17 @@ Date: %4</translation>
         <translation type="obsolete">Name geändert zu &lt;font color=&quot;%2&quot;&gt;%1&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="895"/>
+        <location filename="winsharewindow.cpp" line="894"/>
         <source>Server:</source>
         <translation>Server:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="911"/>
+        <location filename="winsharewindow.cpp" line="909"/>
         <source>Nick:</source>
         <translation>Nick:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="927"/>
+        <location filename="winsharewindow.cpp" line="924"/>
         <source>Status:</source>
         <translation>Status:</translation>
     </message>
@@ -5085,7 +5093,7 @@ Date: %4</translation>
         <translation type="obsolete">%1 %2</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1840"/>
+        <location filename="winsharewindow.cpp" line="1837"/>
         <source>Waiting for file scan thread to finish...</source>
         <translation>Warte auf Dateiscan...</translation>
     </message>
@@ -5094,37 +5102,37 @@ Date: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2157"/>
+        <location filename="winsharewindow.cpp" line="2154"/>
         <source>here</source>
         <translation>hier</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2158"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>away</source>
         <translation>abwesend</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2159"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>idle</source>
         <translation>bereit</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2160"/>
+        <location filename="winsharewindow.cpp" line="2157"/>
         <source>busy</source>
         <translation>beschäftigt</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2161"/>
+        <location filename="winsharewindow.cpp" line="2158"/>
         <source>at work</source>
         <translation>auf Arbeit</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2162"/>
+        <location filename="winsharewindow.cpp" line="2159"/>
         <source>around</source>
         <translation>in der Nähe</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2163"/>
+        <location filename="winsharewindow.cpp" line="2160"/>
         <source>sleeping</source>
         <translation>schlafend</translation>
     </message>
@@ -5133,12 +5141,12 @@ Date: %4</translation>
         <translation type="obsolete">/ suchen %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2348"/>
+        <location filename="winsharewindow.cpp" line="2345"/>
         <source>Rescanning shared files...</source>
         <translation>Rescannen gemeinsamer Dateien...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2353"/>
+        <location filename="winsharewindow.cpp" line="2350"/>
         <source>Scanning shares...</source>
         <translation>Scanning gemeinsamer...</translation>
     </message>
@@ -5279,58 +5287,58 @@ Date: %4</translation>
         <translation type="obsolete">Benutzer existiert nicht!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1104"/>
+        <location filename="winsharewindow.cpp" line="1101"/>
         <source>1 week</source>
         <translation>1 Woche</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1109"/>
+        <location filename="winsharewindow.cpp" line="1106"/>
         <source>%1 weeks</source>
         <translation>%1 Wochen</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1115"/>
+        <location filename="winsharewindow.cpp" line="1112"/>
         <source>1 day</source>
         <translation>1 Tag</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1120"/>
+        <location filename="winsharewindow.cpp" line="1117"/>
         <source>%1 days</source>
         <translation>%1 Tage</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1126"/>
+        <location filename="winsharewindow.cpp" line="1123"/>
         <source>1 hour</source>
         <translation>1 Stunde</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1131"/>
+        <location filename="winsharewindow.cpp" line="1128"/>
         <source>%1 hours</source>
         <translation>%1 Stunden</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1137"/>
+        <location filename="winsharewindow.cpp" line="1134"/>
         <source>1 minute</source>
         <translation>1 Minute</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1142"/>
+        <location filename="winsharewindow.cpp" line="1139"/>
         <source>%1 minutes</source>
         <translation>%1 Minuten</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1148"/>
+        <location filename="winsharewindow.cpp" line="1145"/>
         <source>1 second</source>
         <translation>1 Sekunde</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1092"/>
-        <location filename="winsharewindow.cpp" line="1153"/>
+        <location filename="winsharewindow.cpp" line="1089"/>
+        <location filename="winsharewindow.cpp" line="1150"/>
         <source>%1 seconds</source>
         <translation>%1 Sekunden</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1166"/>
+        <location filename="winsharewindow.cpp" line="1163"/>
         <source>and</source>
         <translation>und</translation>
     </message>
@@ -5344,8 +5352,8 @@ Date: %4</translation>
         <translation>Unizone (Deutsch)</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1326"/>
-        <location filename="winsharewindow.cpp" line="1335"/>
+        <location filename="winsharewindow.cpp" line="1323"/>
+        <location filename="winsharewindow.cpp" line="1332"/>
         <source>Testing Unizone (English)</source>
         <translation>Test Unizone (Deutsch)</translation>
     </message>
@@ -5935,22 +5943,22 @@ Date: %4</translation>
         <translation>- Lokale Datei: %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="866"/>
+        <location filename="winsharewindow.cpp" line="864"/>
         <source>Menubar</source>
         <translation>Menüleiste</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="893"/>
+        <location filename="winsharewindow.cpp" line="890"/>
         <source>Server bar</source>
         <translation>Serverleiste</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="909"/>
+        <location filename="winsharewindow.cpp" line="906"/>
         <source>Nickbar</source>
         <translation>Nick Leiste</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="925"/>
+        <location filename="winsharewindow.cpp" line="921"/>
         <source>Statusbar</source>
         <translation>Statusleiste</translation>
     </message>
@@ -6003,12 +6011,12 @@ Date: %4</translation>
         <translation>Verbunden:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2004"/>
+        <location filename="winsharewindow.cpp" line="2001"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Datei %1 von User #%2 beendet.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2031"/>
+        <location filename="winsharewindow.cpp" line="2028"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Lade Datei %1 von User #%2 herunter.</translation>
     </message>
@@ -6145,7 +6153,7 @@ Date: %4</translation>
         <translation type="obsolete">Willkommen bei Unizone (Deutsch)! &lt;b&gt;DEM&lt;/b&gt; MUSCLE client für QNX Neutrino!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2164"/>
+        <location filename="winsharewindow.cpp" line="2161"/>
         <source>wandering</source>
         <translation>wandering</translation>
     </message>
@@ -6166,7 +6174,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2050"/>
+        <location filename="winsharewindow.cpp" line="2047"/>
         <source>Failed to create log file.</source>
         <translation>Erstellen eines Log Datei fehlgeschlagen.</translation>
     </message>
@@ -6299,7 +6307,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="1851"/>
+        <location filename="winsharewindow.cpp" line="1848"/>
         <source>Waiting for file list thread to finish...</source>
         <translation type="unfinished"></translation>
     </message>
