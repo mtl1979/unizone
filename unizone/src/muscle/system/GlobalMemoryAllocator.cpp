@@ -148,7 +148,7 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
    Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
    if ((glock)&&(glock->Lock() != B_NO_ERROR))
    {
-      printf("Error, muscleAlloc() couldn't lock the global muscle lock!\n");
+      printf("Error, muscleAlloc() could not lock the global muscle lock!\n");
       return NULL;  // serialize access to (ma)
    }
 #endif
@@ -222,7 +222,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
    Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
    if ((glock)&&(glock->Lock() != B_NO_ERROR)) 
    {
-      printf("Error, muscleRealloc() couldn't lock the global muscle lock!\n");
+      printf("Error, muscleRealloc() could not lock the global muscle lock!\n");
       return NULL;  // serialize access to (ma)
    }
 #endif
@@ -312,7 +312,7 @@ void muscleFree(void * userPtr)
       Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
       if ((glock)&&(glock->Lock() != B_NO_ERROR)) 
       {
-         printf("Error, muscleFree() couldn't lock the global muscle lock!!!\n");
+         printf("Error, muscleFree() could not lock the global muscle lock!!!\n");
          return;  // serialize access to (ma)
       }
 #endif

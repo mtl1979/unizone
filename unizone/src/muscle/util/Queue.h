@@ -190,6 +190,21 @@ public:
     */
    ItemType * GetItemAt(uint32 index) const;
 
+   /** Returns a reference to the (index)'th item in the Queue, if such an item exists,
+     * or a reference to a default item if it doesn't.  Unlike the [] operator,
+     * it is okay to call this method with any value of (index).
+     * @param index Which item to return.
+     */
+   const ItemType & GetWithDefault(uint32 index) const {return (index<_itemCount)?(*this)[index]:_defaultItem;}
+
+   /** Returns a reference to the (index)'th item in the Queue, if such an item exists,
+     * or the supplied default item if it doesn't.  Unlike the [] operator,
+     * it is okay to call this method with any value of (index).
+     * @param index Which item to return.
+     * @param defItem An item to return if (index) isn't a valid value.
+     */
+   const ItemType & GetWithDefault(uint32 index, const ItemType & defItem) const {return (index<_itemCount)?(*this)[index]:defItem;}
+
    /** Replaces the (index)'th item in the queue with (newItem).
     *  @param index Which item to replace--can range from zero 
     *               (head of the queue) to (GetNumItems()-1) (tail of the queue).
@@ -314,6 +329,16 @@ public:
     */
    status_t EnsureSize(uint32 numSlots, bool setNumItems = false, uint32 extraReallocItems = 0);
 
+   /** Convenience method -- works the same as IndexOf() but returns a boolean instead of an int32 index.
+    *  @param item The item to look for.
+    *  @param startAt The first index in the list to look at.  Defaults to zero.
+    *  @param endAtPlusOne One more than the final index to look at.  If this value is greater than
+    *               the number of items in the list, it will be clamped internally to be equal 
+    *               to the number of items in the list.  Defaults to MUSCLE_NO_LIMIT.
+    *  @return True if the item was found in the specified range, or false otherwise. 
+    */
+   bool Contains(const ItemType & item, uint32 startAt = 0, uint32 endAtPlusOne = MUSCLE_NO_LIMIT) const {return (IndexOf(item, startAt, endAtPlusOne) >= 0);}
+
    /** Returns the first index of the given (item), or -1 if (item) is not found in the list.  O(n) search time.
     *  @param item The item to look for.
     *  @param startAt The first index in the list to look at.  Defaults to zero.
@@ -354,31 +379,25 @@ public:
    void ReverseItemOrdering(uint32 from=0, uint32 to = MUSCLE_NO_LIMIT); 
 
    /**
-    *  This is the signature of the type of callback function that you must pass 
-    *  into the Sort() method.  This function should work like strcmp(), returning
-    *  a negative value if (item1) is less than item2, or zero if the items are
-    *  equal, or a positive value if (item1) is greater than item2.
-    *  @param item1 The first item
-    *  @param item2 The second item
-    *  @param cookie A user-defined value that was passed in to the Sort() method.
-    *  @return A value indicating which item is "larger", as defined above.
-    */
-   typedef int (*ItemCompareFunc)(const ItemType & item1, const ItemType & item2, void * cookie);
-
-   /**
-    *  Does an in-place, stable sort on a subrange of the contents of this Queue.
-    *  (The sort algorithm is a smart, in-place merge sort).
-    *  @param compareFunc A function that compares two items in this queue and returns
-    *         a value indicating which is "larger".  (negative indicates
-    *         that the second parameter is larger, positive indicate that the
-    *         first is larger, and zero indicates that the two parameters are equal)
+    *  Does an in-place, stable sort on a subrange of the contents of this Queue.  (The sort algorithm is a smart, in-place merge sort)
+    *  @param compareFunctor the item-comparison functor to use when sorting the items in the Queue.
     *  @param from Index of the start of the subrange.  Defaults to zero.
     *  @param to Index of the next item after the end of the subrange.  
     *         If greater than the number of items currently in the queue, 
     *         the subrange will extend to the last item.  Defaults to the largest possible uint32.
-    *  @param optCookie A user-defined value that will be passed to the (compareFunc).
+    *  @param optCookie A user-defined value that will be passed to the comparison functor.
     */
-   void Sort(ItemCompareFunc compareFunc, uint32 from=0, uint32 to = MUSCLE_NO_LIMIT, void * optCookie = NULL);
+   template <class CompareFunctorType> void Sort(const CompareFunctorType & compareFunctor, uint32 from=0, uint32 to = MUSCLE_NO_LIMIT, void * optCookie = NULL);
+
+   /**
+    *  Same as above, except that the default item-comparison functor for our ItemType is implicitly used.
+    *  @param from Index of the start of the subrange.  Defaults to zero.
+    *  @param to Index of the next item after the end of the subrange.  
+    *         If greater than the number of items currently in the queue, 
+    *         the subrange will extend to the last item.  Defaults to the largest possible uint32.
+    *  @param optCookie A user-defined value that will be passed to the comparison functor.
+    */ 
+   void Sort(uint32 from=0, uint32 to = MUSCLE_NO_LIMIT, void * optCookie = NULL) {Sort(CompareFunctor<ItemType>(), from, to, optCookie);}
 
    /**
     *  Swaps our contents with the contents of (that), in an efficient manner.
@@ -462,9 +481,9 @@ private:
    inline uint32 InternalizeIndex(uint32 idx) const {return (_headIndex + idx) % _queueSize;}
 
    // Helper methods, used for sorting (stolen from http://www-ihm.lri.fr/~thomas/VisuTri/inplacestablesort.html)
-   void Merge(ItemCompareFunc compareFunc, uint32 from, uint32 pivot, uint32 to, uint32 len1, uint32 len2, void * cookie);
-   uint32 Lower(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val, void * cookie) const;
-   uint32 Upper(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val, void * cookie) const;
+   template<class CompareFunctorType> void   Merge(const CompareFunctorType & compareFunctor, uint32 from, uint32 pivot, uint32 to, uint32 len1, uint32 len2, void * cookie);
+   template<class CompareFunctorType> uint32 Lower(const CompareFunctorType & compareFunctor, uint32 from, uint32 to, const ItemType & val, void * cookie) const;
+   template<class CompareFunctorType> uint32 Upper(const CompareFunctorType & compareFunctor, uint32 from, uint32 to, const ItemType & val, void * cookie) const;
 
    ItemType _smallQueue[SMALL_QUEUE_SIZE];  // small queues can be stored inline in this array
    ItemType * _queue;                       // points to _smallQueue, or to a dynamically alloc'd array
@@ -962,9 +981,10 @@ Swap(uint32 fromIndex, uint32 toIndex)
 }
 
 template <class ItemType>
+template <class CompareFunctorType>
 void 
 Queue<ItemType>::
-Sort(ItemCompareFunc compareFunc, uint32 from, uint32 to, void * cookie) 
+Sort(const CompareFunctorType & compareFunctor, uint32 from, uint32 to, void * cookie) 
 { 
    uint32 size = GetNumItems();
    if (to > size) to = size;
@@ -979,7 +999,7 @@ Sort(ItemCompareFunc compareFunc, uint32 from, uint32 to, void * cookie)
             {
                for (uint32 j=i; j>from; j--) 
                {
-                  int ret = compareFunc(*(GetItemAt(j)), *(GetItemAt(j-1)), cookie);
+                  int ret = compareFunctor.Compare(*(GetItemAt(j)), *(GetItemAt(j-1)), cookie);
                   if (ret < 0) Swap(j, j-1); 
                           else break; 
                }
@@ -990,9 +1010,9 @@ Sort(ItemCompareFunc compareFunc, uint32 from, uint32 to, void * cookie)
       {
          // Okay, do the real thing
          uint32 middle = (from + to)/2; 
-         Sort(compareFunc, from, middle, cookie); 
-         Sort(compareFunc, middle, to, cookie); 
-         Merge(compareFunc, from, middle, to, middle-from, to-middle, cookie); 
+         Sort(compareFunctor, from, middle, cookie); 
+         Sort(compareFunctor, middle, to, cookie); 
+         Merge(compareFunctor, from, middle, to, middle-from, to-middle, cookie); 
       }
    }
 }
@@ -1057,15 +1077,16 @@ RemoveAllInstancesOf(const ItemType & val)
 }
 
 template <class ItemType>
+template <class CompareFunctorType>
 void 
 Queue<ItemType>::
-Merge(ItemCompareFunc compareFunc, uint32 from, uint32 pivot, uint32 to, uint32 len1, uint32 len2, void * cookie) 
+Merge(const CompareFunctorType & compareFunctor, uint32 from, uint32 pivot, uint32 to, uint32 len1, uint32 len2, void * cookie) 
 {
    if ((len1)&&(len2))
    {
       if (len1+len2 == 2) 
       { 
-         if (compareFunc(*(GetItemAt(pivot)), *(GetItemAt(from)), cookie) < 0) Swap(pivot, from); 
+         if (compareFunctor.Compare(*(GetItemAt(pivot)), *(GetItemAt(from)), cookie) < 0) Swap(pivot, from); 
       } 
       else
       {
@@ -1075,14 +1096,14 @@ Merge(ItemCompareFunc compareFunc, uint32 from, uint32 pivot, uint32 to, uint32 
          { 
             len11      = len1/2; 
             first_cut  = from + len11; 
-            second_cut = Lower(compareFunc, pivot, to, *GetItemAt(first_cut), cookie); 
+            second_cut = Lower(compareFunctor, pivot, to, *GetItemAt(first_cut), cookie); 
             len22      = second_cut - pivot; 
          } 
          else 
          { 
             len22      = len2/2; 
             second_cut = pivot + len22; 
-            first_cut  = Upper(compareFunc, from, pivot, *GetItemAt(second_cut), cookie); 
+            first_cut  = Upper(compareFunctor, from, pivot, *GetItemAt(second_cut), cookie); 
             len11      = first_cut - from; 
          } 
 
@@ -1120,17 +1141,18 @@ Merge(ItemCompareFunc compareFunc, uint32 from, uint32 pivot, uint32 to, uint32 
          }
 
          uint32 new_mid = first_cut+len22; 
-         Merge(compareFunc, from,    first_cut,  new_mid, len11,        len22,        cookie); 
-         Merge(compareFunc, new_mid, second_cut, to,      len1 - len11, len2 - len22, cookie); 
+         Merge(compareFunctor, from,    first_cut,  new_mid, len11,        len22,        cookie); 
+         Merge(compareFunctor, new_mid, second_cut, to,      len1 - len11, len2 - len22, cookie); 
       }
    }
 }
 
 
 template <class ItemType>
+template <class CompareFunctorType>
 uint32 
 Queue<ItemType>::
-Lower(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val, void * cookie) const
+Lower(const CompareFunctorType & compareFunctor, uint32 from, uint32 to, const ItemType & val, void * cookie) const
 {
    if (to > from)
    {
@@ -1139,7 +1161,7 @@ Lower(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val,
       {
          uint32 half = len/2; 
          uint32 mid  = from + half; 
-         if (compareFunc(*(GetItemAt(mid)), val, cookie) < 0) 
+         if (compareFunctor.Compare(*(GetItemAt(mid)), val, cookie) < 0) 
          {
             from = mid+1; 
             len  = len - half - 1; 
@@ -1151,9 +1173,10 @@ Lower(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val,
 } 
 
 template <class ItemType>
+template <class CompareFunctorType>
 uint32 
 Queue<ItemType>::
-Upper(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val, void * cookie) const 
+Upper(const CompareFunctorType & compareFunctor, uint32 from, uint32 to, const ItemType & val, void * cookie) const 
 {
    if (to > from)
    {
@@ -1162,7 +1185,7 @@ Upper(ItemCompareFunc compareFunc, uint32 from, uint32 to, const ItemType & val,
       { 
          uint32 half = len/2; 
          uint32 mid  = from + half; 
-         if (compareFunc(val, *(GetItemAt(mid)), cookie) < 0) len = half; 
+         if (compareFunctor.Compare(val, *(GetItemAt(mid)), cookie) < 0) len = half; 
          else 
          {
             from = mid+1; 

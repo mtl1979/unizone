@@ -152,6 +152,13 @@ bool IsRegexToken(char c, bool isFirstCharInString);
  */
 bool MakeRegexCaseInsensitive(String & str);
 
+/** Given a regular expression, returns a case insensitive version.
+ *  Same as MakeRegexCaseInsensitive(), except the value is returned directly.
+ *  @param str a String to modify to make case-insensitive
+ *  @return the modified String.
+ */
+inline String ToCaseInsensitive(const String & str) {String r = str; MakeRegexCaseInsensitive(r); return r;}
+
 }; // end namespace muscle
 
 

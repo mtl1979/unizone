@@ -105,8 +105,10 @@ status_t
 AbstractMessageIOGateway :: 
 ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod)
 {
-   int fd = GetDataIO()() ? GetDataIO()()->GetSelectSocket().GetFileDescriptor() : -1;
-   if (fd < 0) return B_ERROR;  // no socket to transmit or receive on!
+   int readFD  = GetDataIO()() ? GetDataIO()()->GetReadSelectSocket().GetFileDescriptor()  : -1;
+   int writeFD = GetDataIO()() ? GetDataIO()()->GetWriteSelectSocket().GetFileDescriptor() : -1;
+   if ((readFD < 0)||(writeFD < 0)) return B_ERROR;  // no socket to transmit or receive on!
+   int maxFD = muscleMax(readFD, writeFD);
 
    ScratchProxyReceiver scratchReceiver(this, optReceiver);
    bool hasTimeout = (timeoutPeriod != MUSCLE_TIME_NEVER);
@@ -122,7 +124,7 @@ ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64
       {
          rset = &readSet;
          FD_ZERO(rset);
-         FD_SET(fd, rset);
+         FD_SET(readFD, rset);
       }
 
       fd_set * wset = NULL;
@@ -130,14 +132,14 @@ ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64
       {
          wset = &writeSet;
          FD_ZERO(wset);
-         FD_SET(fd, wset);
+         FD_SET(writeFD, wset);
       }
 
       struct timeval tv; 
       if (hasTimeout) Convert64ToTimeVal(muscleMax((int64)0, (int64)(endTime-now)), tv);
-      if (select(fd+1, rset, wset, NULL, hasTimeout ? &tv : NULL) < 0)  return B_ERROR;
-      if ((wset)&&(FD_ISSET(fd, wset))&&(DoOutput() < 0))               return B_ERROR;
-      if ((rset)&&(FD_ISSET(fd, rset))&&(DoInput(scratchReceiver) < 0)) return B_ERROR;
+      if ((select(maxFD+1, rset, wset, NULL, hasTimeout ? &tv : NULL) < 0) ||
+          ((wset)&&(FD_ISSET(writeFD, wset))&&(DoOutput() < 0))            ||
+          ((rset)&&(FD_ISSET(readFD,  rset))&&(DoInput(scratchReceiver) < 0))) return IsStillAwaitingSynchronousMessagingReply() ? B_ERROR : B_NO_ERROR;
    }
    return B_NO_ERROR;
 }

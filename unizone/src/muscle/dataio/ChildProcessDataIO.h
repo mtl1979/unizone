@@ -86,13 +86,23 @@ public:
    /** Kills the child process, using the sequence described at SetChildProcessShutdownBehavior(). */
    virtual void Shutdown();
 
-   /** Returns a socket that can be select()'d on for notifications of read/write availability.
+   /** Returns a socket that can be select()'d on for notifications of read availability from the 
+    *  child's stdout or stderr streams.
     *  Even works under Windows (in non-blocking mode, anyway), despite Microsoft's best efforts 
     *  to make such a thing impossible :^P Note that you should only pass this socket to select(); 
-    *  to read or write to/from the child process, call Read() and Write() on this object but don't
-    *  try to recv()/send()/etc on this socket directly!
+    *  to read from the child process, call Read() on this object but don't try to recv()/etc on 
+    *  this socket directly!
     */
-   virtual const ConstSocketRef & GetSelectSocket() const;
+   virtual const ConstSocketRef & GetReadSelectSocket() const {return GetChildSelectSocket();}
+
+   /** Returns a socket that can be select()'d on for notifications of write availability to the 
+    *  child's stdin stream.
+    *  Even works under Windows (in non-blocking mode, anyway), despite Microsoft's best efforts 
+    *  to make such a thing impossible :^P Note that you should only pass this socket to select(); 
+    *  to write to the child process, call Write() on this object but don't try to send()/etc on 
+    *  this socket directly!
+    */
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return GetChildSelectSocket();}
 
    /** Returns true iff the child process is available (i.e. if startup succeeded). */
    bool IsChildProcessAvailable() const;
@@ -210,6 +220,7 @@ private:
    void Close();
    status_t LaunchChildProcessAux(int argc, const void * argv, bool usePty);
    void DoGracefulChildShutdown();
+   const ConstSocketRef &GetChildSelectSocket() const;
 
    bool _blocking;
 

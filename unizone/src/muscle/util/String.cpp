@@ -81,7 +81,7 @@ String::operator-=(const char aChar)
    int idx = LastIndexOf(aChar);
    if (idx >= 0)
    {
-      memmove(&_buffer[idx], &_buffer[idx+1], 1+_length-idx);
+      memmove(&_buffer[idx], &_buffer[idx+1], _length-idx);
       --_length;
    }
    return *this;
@@ -515,6 +515,24 @@ String String :: Append(const char * str, uint32 count) const
    }
 }
 
+static uint32 GetNextBufferSize(uint32 bufLen)
+{
+   // For very small strings, we'll try to conserve memory by betting that they won't expand much more
+   if (bufLen < 32) return bufLen+4;
+
+   static const uint32 PAGE_SIZE = 4096;
+   static const uint32 MALLOC_OVERHEAD = 12;  // we assume that malloc() might need as many as 12 bytes for book keeping
+
+   // For medium-length strings, do a geometric expansion to reduce the number of reallocations
+   if (bufLen < (PAGE_SIZE-MALLOC_OVERHEAD)) return bufLen*2;
+
+   // For large (multi-page) allocations, we'll increase by one page.  According to Trolltech, modern implementations
+   // of realloc() don't actually copy the entire large buffer, they just rearrange the memory map and add
+   // a new page to the end, so this will be more efficient than it appears.
+   uint32 curNumPages = (bufLen+MALLOC_OVERHEAD)/PAGE_SIZE; 
+   return ((curNumPages+1)*PAGE_SIZE)-MALLOC_OVERHEAD;
+}
+
 // This method tries to ensure that at least (newBufLen) chars
 // are available for storing data in.  (requestedBufLen) should include
 // the terminating NUL.  If (retainValue) is true, the current string value
@@ -534,7 +552,7 @@ status_t String::EnsureBufferSize(uint32 requestedBufLen, bool retainValue)
       {
          // If we're doing a first-time allocation, allocate exactly the number of the bytes requested.
          // If it's a re-allocation, allocate more than requested as it's more likely to happen yet another time...
-         uint32 newBufLen = (_buffer == NULL) ? requestedBufLen : (requestedBufLen * 2);
+         uint32 newBufLen = (_buffer == NULL) ? requestedBufLen : GetNextBufferSize(requestedBufLen);
          if (retainValue)
          {
             if ((_buffer)&&(_buffer != _smallBuffer))
@@ -654,56 +672,6 @@ const String & GetEmptyString()
    return _empty;
 }
 
-/*--- ElfHash --------------------------------------------------- 
- *  The published hash algorithm used in the UNIX ELF format 
- *  for object files. Accepts a pointer to a string to be hashed 
- *  and returns an unsigned long. 
- *  jaf:  stolen from: http://www.ddj.com/articles/1996/9604/9604b/9604b.htm?topic=algorithms
- *-------------------------------------------------------------*/ 
-uint32 CStringHashFunc(const char * n)
-{
-    uint32 h = 0, g;
-    const unsigned char * name = (const unsigned char *) n;
-    while(*name)
-    {
-        h = (h << 4) + *name++;
-        if ((g = h & 0xF0000000) != 0) h ^= g >> 24;
-        h &= ~g;
-    }
-    return h;
-}
-
-
-/** A version of ElfHash that generates a 64-bit hash */
-uint64 CStringHashFunc64(const char * n)
-{
-    static const uint64 bitMask = ((uint64)0x0F)<<60;
-    uint64 h = 0, g;
-    const unsigned char * name = (const unsigned char *) n;
-    while(*name)
-    {
-        h = (h << 4) + *name++;
-        if ((g = h & bitMask) != 0) h ^= g >> 56;
-        h &= ~g;
-    }
-    return h;
-}
-
-int CStringCompareFunc(const char * const & s1, const char * const & s2, void *)
-{
-    return strcmp(s1, s2);
-}
-
-int StringCompareFunc(const String & s1, const String & s2, void *)
-{
-   return muscleCompare(s1, s2);
-}
-
-int StringCompareFunc(const String * const & s1, const String * const & s2, void *)
-{
-   return muscleCompare(*s1, *s2);
-}
-
 /* strnatcmp.c -- Perform 'natural order' comparisons of strings in C.
    Copyright (C) 2000, 2004 by Martin Pool <mbp sourcefrog net>
 
@@ -819,8 +787,6 @@ static int strnatcmp0(char const *a, char const *b, int fold_case)
 
 int strnatcmp(char const *a, char const *b)     {return strnatcmp0(a, b, 0);}
 int strnatcasecmp(char const *a, char const *b) {return strnatcmp0(a, b, 1);}
-int NumericAwareCStringCompareFunc(const char * const & ss1, const char * const & ss2,  void *) {return strnatcmp(ss1, ss2);}
-int NumericAwareStringCompareFunc(const String & s1,         const String & s2,         void *) {return strnatcmp(s1(), s2());}
-int NumericAwareStringCompareFunc(const String * const & s1, const String * const & s2, void *) {return strnatcmp(s1->Cstr(), s2->Cstr());}
+int NumericAwareStrcmp(const char * s1, const char * s2) {return strnatcmp(s1, s2);}
 
 }; // end namespace muscle

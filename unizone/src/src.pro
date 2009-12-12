@@ -93,6 +93,7 @@ SOURCES =	aboutdlgimpl.cpp \
                 muscle/system/SystemInfo.cpp \
                 muscle/system/Thread.cpp \
                 muscle/util/ByteBuffer.cpp \
+                muscle/util/Directory.cpp \
                 muscle/util/MemoryAllocator.cpp \
                 muscle/util/MiscUtilityFunctions.cpp \
                 muscle/util/NetworkUtilityFunctions.cpp \

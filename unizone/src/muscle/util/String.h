@@ -22,12 +22,6 @@ namespace muscle {
 # define SMALL_MUSCLE_STRING_LENGTH 7  // strings shorter than this length can be stored inline, without requiring an extra new[].
 #endif
 
-/** A nice hashing function for use with (const char *)'s */
-uint32 CStringHashFunc(const char * str); 
-
-/** As above, but this one computes a 64-bit hash. */
-uint64 CStringHashFunc64(const char * str); 
-
 /** A character string class.  Represents a dynamically resizable NUL-terminated string. */
 class String : public Flattenable
 {
@@ -119,13 +113,13 @@ public:
     *  @param rhs A String to append to this string.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator << (const String& rhs) {return (*this += rhs);}
+   String & operator << (const String & rhs) {return (*this += rhs);}
 
    /** Append 'Stream' Operator.
     *  @param rhs A const char* to append to this string.
     *  @return a non const String refrence to 'this' so you can chain appends.
     */
-   String & operator << (const char* rhs) {return (*this += rhs);}
+   String & operator << (const char * rhs) {return (*this += rhs);}
    
    /** Append 'Stream' Operator.
     *  @param rhs An int to append to this string.
@@ -214,6 +208,12 @@ public:
     *  @param index Index of the character to set.  Be sure to only use valid indices!
     */
    char & operator [] (uint32 index) {VerifyIndex(index); return _buffer[index];}
+
+   /** Adds a space to the end of this string. */
+   void operator ++ (int) {(*this) += ' ';}
+
+   /** Remove the last character from the end of this string.  It's a no-op if the string is already empty. */
+   void operator -- (int) {if (_length > 0) _buffer[--_length] = '\0';}
 
    /** Returns the character at the (index)'th position in the string.
     *  @param index A value between 0 and (Length()-1), inclusive.
@@ -393,6 +393,12 @@ public:
 
    /** Returns the number of characters in the string (not including the terminating NUL byte) */
    uint32 Length() const {return _length;}
+
+   /** Returns the number of bytes of storage we have allocated.  Note that this value will often
+     * be greater than the value returned by Length(), since we allocate extra bytes to minimize
+     * the number of reallocations that must be done as data is being added to a String.
+     */
+   uint32 GetNumAllocatedBytes() const {return _bufferLen;}
 
    /** Returns the number of instances of (c) in this string. 
      * @param ch The character to count the number of instances of in this String.
@@ -576,10 +582,10 @@ public:
    bool StartsWithIgnoreCase(const String & s, uint32 o) const {return ToLowerCase().StartsWith(s.ToLowerCase(),o);}
 
    /** Returns a hash code for this string */
-   inline uint32 HashCode() const {return CStringHashFunc(Cstr());}
+   inline uint32 HashCode() const {return CalculateHashCode(Cstr(), Length());}
 
    /** Calculates a 64-bit hash code for this string. */
-   inline uint64 HashCode64() const {return CStringHashFunc64(Cstr());}
+   inline uint64 HashCode64() const {return CalculateHashCode64(Cstr(), Length());}
 
    /** Replaces all instances of (oldChar) in this string with (newChar).
      * @param replaceMe The character to search for.
@@ -705,40 +711,20 @@ private:
 #endif
    }
 };
-DECLARE_HASHTABLE_KEY_CLASS(String);
 
-/** This HashFunctor lets us use (const char *)'s as keys in a Hashtable.  They will be 
-  * hashed based on contents of the string they point to.
-  */
-template <> class HashFunctor<const char *>
+/** A custom compare functor for case-insensitive comparisons of Strings. */
+class CaseInsensitiveStringCompareFunctor
 {
 public:
-   /** Returns a hash code for the given C string.
-     * @param str The C string to compute a hash code for.
-     */
-   uint32 operator () (const char * str) const {return CStringHashFunc(str);}
+   /** Compares the two String's strcmp() style, returning zero if they are equal, a negative value if (item1) comes first, or a positive value if (item2) comes first. */
+   int Compare(const String & s1, const String & s2, void *) {return s1.CompareToIgnoreCase(s2);}
 };
 
 /** Convenience method:  returns a string with no characters in it (a.k.a. "") */
 const String & GetEmptyString();
 
-/** A function for comparing (const String &)'s -- calls muscleCompare() on the two Strings. */
-int StringCompareFunc(const String &, const String &, void *);
-
-/** A function for comparing (const String *)'s -- calls muscleCompare() on the two Strings. */
-int StringCompareFunc(const String * const &, const String * const &, void *);
-
-/** A function for comparing (const char *)'s -- calls strcmp() */
-int CStringCompareFunc(const char * const &, const char * const &, void *);
-
-/** Same as StringCompareFunc(), except that it will sort numbers within the string numerically. */
-int NumericAwareStringCompareFunc(const String &, const String &, void *);
-
-/** Same as StringCompareFunc(), except that it will sort numbers within the string numerically. */
-int NumericAwareStringCompareFunc(const String * const &, const String * const &, void *);
-
-/** Same as CStringCompareFunc(), except that it will sort numbers within the string numerically. */
-int NumericAwareCStringCompareFunc(const char * const &, const char * const &, void *);
+/** Same as strcmp(), except that it will sort numbers within the string numerically rather than lexically. */
+int NumericAwareStrcmp(const char * s1, const char * s2);
 
 inline String operator+(const String & lhs, const String & rhs)  {String ret(lhs); ret += rhs; return ret;}
 inline String operator+(const String & lhs, const char *rhs)     {String ret(lhs); ret += rhs; return ret;}

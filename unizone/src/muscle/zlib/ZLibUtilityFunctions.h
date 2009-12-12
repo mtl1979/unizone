@@ -9,6 +9,45 @@
 
 namespace muscle {
 
+/** @defgroup zlibutilityfunctions The ZLibUtilityFunctions function API
+ *  These functions are all defined in ZLibUtilityFunctions.{cpp,h}, and are stand-alone
+ *  functions that do give an easy-to-use, high-level way to compress and uncompress
+ *  raw data and Message objects.
+ *  @{
+ */
+
+/** Given some data, returns a ByteBuffer containing a compressed version of that date.
+  * @param bytes Pointer to the data to compress
+  * @param numBytes Number of bytes that (bytes) points to
+  * @param compressionLevel The level of ZLib compression to use when creating the
+  *                         compressed Message.  Should be between 0 (no compression)
+  *                         and 9 (maximum compression).  Default value is 6.
+  * @returns a reference to a compressed ByteBuffer on success, or a NULL reference on failure.
+  */
+ByteBufferRef DeflateByteBuffer(const uint8 * bytes, uint32 numBytes, int compressionLevel = 6);
+
+/** Given come compressed data, returns a ByteBuffer containing the original/uncompressed data.
+  * @param bytes Pointer to the data to uncompress
+  * @param numBytes Number of bytes that (bytes) points to
+  * @returns a reference to an uncompressed ByteBuffer on success, or a NULL reference on failure.
+  */
+ByteBufferRef InflateByteBuffer(const uint8 * bytes, uint32 numBytes);
+
+/** Given a ByteBuffer, returns a compressed version of the data.
+  * @param buf a ByteBuffer to compress that you want to get a compressed version of.
+  * @param compressionLevel The level of ZLib compression to use when creating the
+  *                         compressed Message.  Should be between 0 (no compression)
+  *                         and 9 (maximum compression).  Default value is 6.
+  * @returns a reference to a compressed ByteBuffer (not (buf)!) on success, or a NULL reference on failure.
+  */
+static inline ByteBufferRef DeflateByteBuffer(const ByteBuffer & buf, int compressionLevel = 6) {return DeflateByteBuffer(buf.GetBuffer(), buf.GetNumBytes(), compressionLevel);}
+
+/** Given a compressed ByteBuffer, returns the original/uncompressed version of the data.
+  * @param buf a ByteBuffer to compress that you want to get a compressed version of.
+  * @returns a reference to an uncompressed ByteBuffer (not (buf)!) on success, or a NULL reference on failure.
+  */
+static inline ByteBufferRef InflateByteBuffer(const ByteBuffer & buf) {return InflateByteBuffer(buf.GetBuffer(), buf.GetNumBytes());}
+
 /** Returns true iff the given MessageRef points to a deflated Message.
   * Returns false iff the MessageRef is NULL or not deflated.
   * @param msgRef The Message to determine the inflated/deflated status of.
@@ -48,6 +87,8 @@ MessageRef InflateMessage(const MessageRef & msgRef);
 
 // This is the field name that we store deflated data into
 #define MUSCLE_ZLIB_FIELD_NAME "_zlib"
+
+/** @} */ // end of zlibutilityfunctions doxygen group
 
 }; // end namespace muscle
 

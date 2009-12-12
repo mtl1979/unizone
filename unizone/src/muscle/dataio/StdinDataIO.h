@@ -14,7 +14,7 @@
 namespace muscle {
 
 /**
- *  This DataIO handles I/O to and from the STDIN_FILENO file descriptor.
+ *  This DataIO handles I/O input from the STDIN_FILENO file descriptor.
  *  In order to support non-blocking input on stdin without causing loss of
  *  data sent to stdout, this DataIO object will keep its file descriptor in
  *  blocking mode at all times except when it is actually about to read from
@@ -62,7 +62,12 @@ public:
      * socket is only used for select() (call StdinDataIO::Read() to do the 
      * actual data reading)
      */
-   virtual const ConstSocketRef & GetSelectSocket() const;
+   virtual const ConstSocketRef & GetReadSelectSocket() const;
+
+   /** Returns a NULL socket -- since you can't write to stdin, there is no point
+     * in waiting for space to be available for writing on stdin!
+     */
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return GetNullSocket();}
 
    /** Returns the blocking flag that was passed into our constructor */
    bool IsBlockingIOEnabled() const {return _stdinBlocking;}
@@ -73,13 +78,8 @@ private:
    void Close();
 
 #if defined(WIN32) || defined(CYGWIN)
-   void IOThreadEntry();
-   static DWORD WINAPI IOThreadEntryFunc(LPVOID This) {((StdinDataIO*)This)->IOThreadEntry(); return 0;}
-
    ConstSocketRef _masterSocket;
-   ConstSocketRef _slaveSocket;
-   ::HANDLE _ioThread;
-   ::HANDLE _stdinHandle;
+   uint32 _slaveSocketTag;
 #else
    FileDescriptorDataIO _fdIO;
 #endif

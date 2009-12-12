@@ -91,13 +91,13 @@ protected:
    uint64 GetServerSessionID() const;
 
    /** Returns the number of bytes that are currently available to be allocated */
-   uint32 GetNumAvailableBytes() const;
+   uint64 GetNumAvailableBytes() const;
  
    /** Returns the maximum number of bytes that may be allocated at any given time */
-   uint32 GetMaxNumBytes() const;
+   uint64 GetMaxNumBytes() const;
  
    /** Returns the number of bytes that are currently allocated */
-   uint32 GetNumUsedBytes() const;
+   uint64 GetNumUsedBytes() const;
 
    /** Passes through to ReflectServer::PutAcceptFactory() */
    status_t PutAcceptFactory(uint16 port, const ReflectSessionFactoryRef & factoryRef, const ip_address & interfaceIP = invalidIP, uint16 * optRetPort = NULL);
@@ -192,11 +192,11 @@ protected:
    /** Convenience method:  Returns a pointer to the first session of the specified type.  Returns NULL if no session of the specified type is found.
      * @note this method iterates over the session list, so it's not as efficient as one might hope.
      */
-   template <class SessionPointerType> SessionPointerType FindFirstSessionOfType() const
+   template <class SessionType> SessionType * FindFirstSessionOfType() const
    {
       for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasMoreKeys(); iter++)
       {
-         SessionPointerType ret = dynamic_cast<SessionPointerType>(iter.GetValue()());
+         SessionType * ret = dynamic_cast<SessionType *>(iter.GetValue()());
          if (ret) return ret;
       }
       return NULL;
@@ -207,13 +207,13 @@ protected:
      * @param maxSessionsToReturn No more than this many sessions will be placed into the table.  Defaults to MUSCLE_NO_LIMIT.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory)
      */
-   template <class SessionPointerType> status_t FindSessionsOfType(Queue<AbstractReflectSessionRef> & results, uint32 maxSessionsToReturn = MUSCLE_NO_LIMIT) const
+   template <class SessionType> status_t FindSessionsOfType(Queue<AbstractReflectSessionRef> & results, uint32 maxSessionsToReturn = MUSCLE_NO_LIMIT) const
    {
       if (maxSessionsToReturn > 0)
       {
          for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasMoreKeys(); iter++)
          {
-            SessionPointerType ret = dynamic_cast<SessionPointerType>(iter.GetValue()());
+            SessionType * ret = dynamic_cast<SessionType *>(iter.GetValue()());
             if (ret)
             {
                if (results.AddTail(iter.GetValue()) != B_NO_ERROR) return B_ERROR;

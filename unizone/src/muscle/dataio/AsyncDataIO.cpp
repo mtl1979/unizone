@@ -99,19 +99,18 @@ void AsyncDataIO :: InternalThreadEntry()
 
    while(keepGoing)
    {
-      int slaveFD    = _slaveIO()?_slaveIO()->GetSelectSocket().GetFileDescriptor():-1;
-      int fromMainFD = GetInternalThreadWakeupSocket().GetFileDescriptor();
-      int notifyFD   = _ioThreadNotifySocket.GetFileDescriptor();
+      int slaveReadFD  = _slaveIO()?_slaveIO()->GetSelectReadSocket().GetFileDescriptor():-1;
+      int slaveWriteFD = _slaveIO()?_slaveIO()->GetSelectWriteSocket().GetFileDescriptor():-1;
+      int fromMainFD   = GetInternalThreadWakeupSocket().GetFileDescriptor();
+      int notifyFD     = _ioThreadNotifySocket.GetFileDescriptor();
 
-      int maxfd = muscleMax(slaveFD, fromMainFD, notifyFD);
+      int maxfd = muscleMax(slaveReadFD, slaveWriteFD, fromMainFD, notifyFD);
       fd_set readSet, writeSet;
       FD_ZERO(&readSet); FD_ZERO(&writeSet);
       
-      if (slaveFD >= 0)
-      {
-         if (fromSlaveIOBufNumValid < sizeof(fromSlaveIOBuf))       FD_SET(slaveFD, &readSet);
-         if (fromMainThreadBufNumValid > fromMainThreadBufReadIdx)  FD_SET(slaveFD, &writeSet);
-      }
+      if ((slaveReadFD  >= 0)&&(fromSlaveIOBufNumValid    < sizeof(fromSlaveIOBuf)))   FD_SET(slaveReadFD,  &readSet);
+      if ((slaveWriteFD >= 0)&&(fromMainThreadBufNumValid > fromMainThreadBufReadIdx)) FD_SET(slaveWriteFD, &writeSet);
+
       if (fromMainFD >= 0)
       {
          if (fromMainThreadBufNumValid < sizeof(fromMainThreadBuf)) FD_SET(fromMainFD, &readSet);
@@ -146,30 +145,30 @@ void AsyncDataIO :: InternalThreadEntry()
 
       if (bytesUntilNextCommand > 0)
       {
-         if (slaveFD >= 0)
+         // Read the data from the slave FD, into our from-slave buffer
+         if ((slaveReadFD >= 0)&&(fromSlaveIOBufNumValid < sizeof(fromSlaveIOBuf))&&(FD_ISSET(slaveReadFD, &readSet)))
+         {
+            int32 bytesRead = SlaveRead(&fromSlaveIOBuf[fromSlaveIOBufNumValid], sizeof(fromSlaveIOBuf)-fromSlaveIOBufNumValid);
+            if (bytesRead >= 0) fromSlaveIOBufNumValid += bytesRead;
+                           else break;
+         }
+
+         if (slaveWriteFD >= 0)
          {
             // Write the data from our from-main-thread buffer, to our slave I/O
             uint32 bytesToWriteToSlave = muscleMin(bytesUntilNextCommand, fromMainThreadBufNumValid-fromMainThreadBufReadIdx);
-            if ((bytesToWriteToSlave > 0)&&(FD_ISSET(slaveFD, &writeSet)))
+            if ((bytesToWriteToSlave > 0)&&(FD_ISSET(slaveWriteFD, &writeSet)))
             {
                int32 bytesWritten = SlaveWrite(&fromMainThreadBuf[fromMainThreadBufReadIdx], bytesToWriteToSlave);
                if (bytesWritten >= 0)
                {
-                  ioThreadBytesWritten   += bytesWritten;
-                  fromMainThreadBufReadIdx += bytesWritten;
+                  ioThreadBytesWritten         += bytesWritten;
+                  fromMainThreadBufReadIdx     += bytesWritten;
                   if (fromMainThreadBufReadIdx == fromMainThreadBufNumValid) fromMainThreadBufReadIdx = fromMainThreadBufNumValid = 0;
                }
                else break;
             }
             if ((fromMainThreadBufNumValid == fromMainThreadBufReadIdx)&&(exitWhenDoneWriting)) break;
-
-            // Read the data from the slave FD, into our from-slave buffer
-            if ((fromSlaveIOBufNumValid < sizeof(fromSlaveIOBuf))&&(FD_ISSET(slaveFD, &readSet)))
-            {
-               int32 bytesRead = SlaveRead(&fromSlaveIOBuf[fromSlaveIOBufNumValid], sizeof(fromSlaveIOBuf)-fromSlaveIOBufNumValid);
-               if (bytesRead >= 0) fromSlaveIOBufNumValid += bytesRead;
-                              else break;
-            }
          }
 
          if (fromMainFD >= 0)

@@ -228,6 +228,12 @@ public:
       }
       else return B_ERROR;
    }
+
+   /** This is implemented so that if Rect is used as the key in a Hashtable, the Tuple HashCode() method will be 
+     * selected by the AutoChooseHashFunctor template logic, instead of the PODHashFunctor.  (Unfortunately 
+     * AutoChooseHashFunctor doesn't check the superclasses when it looks for a HashCode method)
+     */
+   uint32 HashCode() const {return Tuple<4,float>::HashCode();}
 };
 
 DECLARE_ALL_TUPLE_OPERATORS(Rect,float);

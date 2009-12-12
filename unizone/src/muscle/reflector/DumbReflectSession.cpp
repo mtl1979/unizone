@@ -14,7 +14,7 @@ AbstractReflectSessionRef DumbReflectSessionFactory :: CreateSession(const Strin
 }
 
 DumbReflectSession :: 
-DumbReflectSession() : _reflectToSelf(false) 
+DumbReflectSession() : _defaultRoutingFlags(DEFAULT_MUSCLE_ROUTING_FLAGS_BIT_CHORD)
 {
    // empty
 }
@@ -30,33 +30,15 @@ void
 DumbReflectSession :: 
 MessageReceivedFromGateway(const MessageRef & msgRef, void *) 
 {
-   BroadcastToAllSessions(msgRef, NULL, _reflectToSelf);
+   if (IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_GATEWAY_TO_NEIGHBORS)) BroadcastToAllSessions(msgRef, NULL, IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF));
 }
 
 // Called when a new message is sent to us by one of our server-side neighbors.  We forward it on to our client.
 void 
 DumbReflectSession :: 
-MessageReceivedFromSession(AbstractReflectSession & /*from*/, const MessageRef & msg, void * /*userData*/) 
+MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * /*userData*/) 
 {
-   (void) AddOutgoingMessage(msg);
-}
-
-// Set this true to enable self-reflection:  if true, messages
-// sent by our client will be reflected back to our client as well as everyone else.
-// Default state is false (i.e. messages only go to everyone else)
-void 
-DumbReflectSession :: 
-SetReflectToSelf(bool reflectToSelf) 
-{
-   _reflectToSelf = reflectToSelf;
-}
-
-// Accessor
-bool 
-DumbReflectSession :: 
-GetReflectToSelf() const 
-{
-   return _reflectToSelf;
+   if ((&from == this)||(IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_NEIGHBORS_TO_GATEWAY))) (void) AddOutgoingMessage(msg);
 }
 
 }; // end namespace muscle

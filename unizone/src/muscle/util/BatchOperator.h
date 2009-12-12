@@ -65,17 +65,23 @@ public:
 
    /** You can explicitly call this at the beginning of a batch, although it's safer to instantiate a BatchGuard object
      * to call this method for you; that way its destructor will be sure to call the matching EndOperationBatch() at the proper time.
-     * @param args The arguments to bass to BatchBegins(), if we are the outermost level of batch nesting.
+     * @param args The arguments to pass to BatchBegins(), if we are the outermost level of batch nesting.
      * @returns true iff BatchBegins() was called, or false if it wasn't (because we were already in a batch)
      */
    inline bool BeginOperationBatch(const BatchArgs & args = BatchArgs()) {if (_count.Increment()) {BatchBegins(args); return true;} else return false;}
 
    /** You should explicitly call this at the end of any batch that you explicitly called BeginOperationBatch() for.
      * Note that it's safer to instantiate a BatchGuard object so that its destructor will call this method for you.
-     * @param args The arguments to bass to BatchEnds(), if we are the outermost level of batch nesting.
+     * @param args The arguments to pass to BatchEnds(), if we are the outermost level of batch nesting.
      * @returns true iff BatchEnds() was called, or false if it wasn't (because we were already in a batch)
      */
-   inline bool EndOperationBatch(const BatchArgs & args = BatchArgs()) {if (_count.Decrement()) {BatchEnds(args); return true;} else return false;}
+   inline bool EndOperationBatch(const BatchArgs & args = BatchArgs()) 
+   {
+      bool ret = false;
+      if (_count.IsOutermost()) {BatchEnds(args); ret = true;}  // note that BatchEnds() is called while _count is still non-zero!
+      (void) _count.Decrement();
+      return ret;
+   }
 
 protected:
    /** Called by BeginOperationBatch(), when the outermost level of a batch begins.
@@ -139,9 +145,15 @@ public:
 
    /** You should explicitly call this at the end of any batch that you explicitly called BeginOperationBatch() for.
      * Note that it's safer to instantiate a BatchGuard object so that its destructor will call this method for you.
-     * @returns true iff BatchEnds() was called, or false if it wasn't (because we were already in a batch)
+     * @returns true iff BatchEnds() was called, or false if it wasn't (because the batch was nested and we are therefore still in the batch)
      */
-   inline bool EndOperationBatch() {if (_count.Decrement()) {BatchEnds(); return true;} else return false;}
+   inline bool EndOperationBatch()
+   {
+      bool ret = false;
+      if (_count.IsOutermost()) {BatchEnds(); ret = true;}  // note that BatchEnds() is called while _count is still non-zero!
+      (void) _count.Decrement();
+      return ret;
+   }
 
 protected:
    /** Called by BeginOperationBatch(), when the outermost level of a batch begins.

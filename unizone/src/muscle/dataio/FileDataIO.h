@@ -15,9 +15,9 @@ class FileDataIO : public DataIO
 public:
    /** Constructor.
     *  @param file File to read from or write to.  Becomes property of this FileDataIO object,
-    *         and will be fclose()'d when this object is deleted.
+    *         and will be fclose()'d when this object is deleted.  Defaults to NULL.
     */
-   FileDataIO(FILE * file) : _file(file) {/* empty */}
+   FileDataIO(FILE * file = NULL) : _file(file) {/* empty */}
 
    /** Destructor.
     *  Calls fclose() on the held file.
@@ -111,8 +111,17 @@ public:
     */
    FILE * GetFile() const {return _file;}
 
+   /**
+    * Sets our file pointer to the specified handle, closing any previously held file handle first.
+    * @param fp The new file handle.  If non-NULL, this FileDataIO becomes the owner of (fp).
+    */
+   void SetFile(FILE * fp) {Shutdown(); _file = fp;}
+
    /** Returns a NULL reference;  (can't select on this one, sorry) */
-   virtual const ConstSocketRef & GetSelectSocket() const {return GetNullSocket();}
+   virtual const ConstSocketRef & GetReadSelectSocket() const {return GetNullSocket();}
+
+   /** Returns a NULL reference;  (can't select on this one, sorry) */
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return GetNullSocket();}
 
 private:
    FILE * _file;

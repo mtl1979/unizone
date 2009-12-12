@@ -22,6 +22,12 @@
 
 namespace muscle {
 
+/** @defgroup networkutilityfunctions The NetworkUtilityFunctions function API
+ *  These functions are all defined in NetworkUtilityFunctions.{cpp,h}, and are stand-alone
+ *  functions that do various network-related tasks
+ *  @{
+ */
+
 #ifdef MUSCLE_USE_IPV6
 /* IPv6 addressing support */
 
@@ -97,7 +103,7 @@ public:
    void SetInterfaceIndex(uint32 iidx) {_interfaceIndex = iidx;}
    uint32 GetInterfaceIndex() const    {return _interfaceIndex;}
 
-   uint32 HashCode() const {return _interfaceIndex+((uint32)((_lowBits+_highBits)%((uint32)-1)));}
+   uint32 HashCode() const {return CalculateHashCode(_interfaceIndex)+CalculateHashCode(_lowBits)+CalculateHashCode(_highBits);}
 
    /** Writes our address into the specified uint8 array, in the required network-friendly order.
      * @param networkBuf If non-NULL, the 16-byte network-array to write to.  Typically you would pass in 
@@ -139,7 +145,6 @@ private:
    uint64 _highBits;
    uint32 _interfaceIndex;
 };
-DECLARE_HASHTABLE_KEY_CLASS(ip_address);
 
 /** Given an IP address, returns a 32-bit hash code for it.  For IPv6, this is done by calling the HashCode() method on the ip_address object. */
 inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return ip.HashCode();}
@@ -159,8 +164,8 @@ const ip_address broadcastIP(0x01, ((uint64)0xFF02)<<48);
 
 typedef uint32 ip_address;
 
-/** Given an IP address, returns a 32-bit hash code for it.  For IPv4, this is a pretty trivial function! */
-inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return ip;}
+/** Given an IP address, returns a 32-bit hash code for it.  IPv4 implementation. */
+inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return CalculateHashCode(ip);}
 
 /** IPv4 Numeric representation of a all-zeroes invalid/guard address */
 const ip_address invalidIP = 0;
@@ -289,10 +294,6 @@ private:
    ip_address _ip;
    uint16 _port;
 };
-DECLARE_HASHTABLE_KEY_CLASS(IPAddressAndPort);
-
-/** Function callback used to compare two ip_address objects */
-int IPAddressCompareFunc(const ip_address &, const ip_address &, void *);
 
 /** Given a hostname or IP address (e.g. "mycomputer.be.com" or "192.168.0.1"),
   * performs a hostname lookup and returns the 4-byte IP address that corresponds
@@ -311,16 +312,16 @@ ip_address GetHostByName(const char * name, bool expandLocalhost = false);
  * @param port The port number to connect to.
  * @param debugTitle If non-NULL, debug output to stdout will be enabled and debug output will be prefaced by this string.
  * @param debugOutputOnErrorsOnly if true, debug output will be printed only if an error condition occurs.
- * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
- *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
- *                       to decide when the attempt should time out.
+ * @param maxConnectPeriod The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
+ *                         (the default) then no particular time limit will be enforced, and it will be left up to the operating system
+ *                         to decide when the attempt should time out.
  * @param expandLocalhost If true, then if (name) corresponds to 127.0.0.1, this function
  *                        will attempt to determine the host machine's actual primary IP
  *                        address and return that instead.  Otherwise, 127.0.0.1 will be
  *                        returned in this case.  Defaults to false.
  * @return A non-NULL ConstSocketRef if the connection is successful, or a NULL ConstSocketRef if the connection failed.
  */
-ConstSocketRef Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER, bool expandLocalhost = false);
+ConstSocketRef Connect(const char * hostName, uint16 port, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectPeriod = MUSCLE_TIME_NEVER, bool expandLocalhost = false);
 
 /** Mostly as above, only with the target IP address specified numerically, rather than as an ASCII string. 
  *  This version of connect will never do a DNS lookup.
@@ -329,24 +330,24 @@ ConstSocketRef Connect(const char * hostName, uint16 port, const char * debugTit
  * @param debugHostName If non-NULL, we'll print this host name out when reporting errors.  It isn't used for networking purposes, though.
  * @param debugTitle If non-NULL, debug output to stdout will be enabled and debug output will be prefaced by this string.
  * @param debugOutputOnErrorsOnly if true, debug output will be printed only if an error condition occurs.
- * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
- *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
- *                       to decide when the attempt should time out.
+ * @param maxConnectPeriod The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
+ *                         (the default) then no particular time limit will be enforced, and it will be left up to the operating system
+ *                         to decide when the attempt should time out.
  * @return A non-NULL ConstSocketRef if the connection is successful, or a NULL ConstSocketRef if the connection failed.
  */
-ConstSocketRef Connect(const ip_address & hostIP, uint16 port, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER);
+ConstSocketRef Connect(const ip_address & hostIP, uint16 port, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectPeriod = MUSCLE_TIME_NEVER);
 
 /** As above, only this version of Connect() takes an IPAddressAndPort object instead of separate ip_address and port arguments.
  * @param iap IP address and port to connect to.
  * @param debugHostName If non-NULL, we'll print this host name out when reporting errors.  It isn't used for networking purposes, though.
  * @param debugTitle If non-NULL, debug output to stdout will be enabled and debug output will be prefaced by this string.
  * @param debugOutputOnErrorsOnly if true, debug output will be printed only if an error condition occurs.
- * @param maxConnectTime The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
- *                       (the default) then no particular time limit will be enforced, and it will be left up to the operating system
- *                       to decide when the attempt should time out.
+ * @param maxConnectPeriod The maximum number of microseconds to spend attempting to make this connection.  If left as MUSCLE_TIME_NEVER
+ *                         (the default) then no particular time limit will be enforced, and it will be left up to the operating system
+ *                         to decide when the attempt should time out.
  * @return A non-NULL ConstSocketRef if the connection is successful, or a NULL ConstSocketRef if the connection failed.
  */
-inline ConstSocketRef Connect(const IPAddressAndPort & iap, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectTime = MUSCLE_TIME_NEVER) {return Connect(iap.GetIPAddress(), iap.GetPort(), debugHostName, debugTitle, debugOutputOnErrorsOnly, maxConnectTime);}
+inline ConstSocketRef Connect(const IPAddressAndPort & iap, const char * debugHostName = NULL, const char * debugTitle = NULL, bool debugOutputOnErrorsOnly = true, uint64 maxConnectPeriod = MUSCLE_TIME_NEVER) {return Connect(iap.GetIPAddress(), iap.GetPort(), debugHostName, debugTitle, debugOutputOnErrorsOnly, maxConnectPeriod);}
 
 /** Convenience function for accepting a TCP connection on a given socket.  Has the same semantics as accept().
  *  (This is somewhat better than calling accept() directly, as certain cross-platform issues get transparently taken care of)
@@ -389,7 +390,7 @@ int32 ReceiveDataUDP(const ConstSocketRef & socket, void * buffer, uint32 buffer
  *  @param fd The file descriptor to read from.
  *  @param buffer Location to place the read bytes into.
  *  @param bufferSizeBytes Number of bytes available at the location indicated by (buffer).
- *  @param socketIsBlockingIO Pass in true if the given fd is set to use blocking I/O, or false otherwise.
+ *  @param fdIsBlockingIO Pass in true if the given fd is set to use blocking I/O, or false otherwise.
  *  @return The number of bytes read into (buffer), or a negative value if there was an error.
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
@@ -487,7 +488,7 @@ status_t ShutdownSocket(const ConstSocketRef & socket, bool disableReception = t
  *                        if passed in as (invalidIP), then this socket will listen on all available network interfaces.
  * @return A non-NULL ConstSocketRef if the port was bound successfully, or a NULL ConstSocketRef if the accept failed.
  */
-ConstSocketRef CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * optRetPort = NULL, const ip_address & optInterface = invalidIP);
+ConstSocketRef CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * optRetPort = NULL, const ip_address & optInterfaceIP = invalidIP);
 
 /** Translates the given 4-byte IP address into a string representation.
  *  @param address The 4-byte IP address to translate into text.
@@ -500,8 +501,9 @@ void Inet_NtoA(const ip_address & address, char * outBuf);
 /** A more convenient version of Inet_Ntoa().  Given an IP address, returns a 
   * human-readable String representation of that address (e.g. "192.168.0.1",
   * or IPv6 equivalent if -DMUSCLE_USE_IPV6 is defined).
-  *  @param preferIPv4 If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1".
-  *                    Defaults to false.  If MUSCLE_USE_UPV6 is not defined, this value won't be used.
+  *  @param ipAddress the IP address to return in String form.
+  *  @param preferIPv4Style If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1".
+  *                         Defaults to false.  If MUSCLE_USE_UPV6 is not defined, this value won't be used.
   */
 String Inet_NtoA(const ip_address & ipAddress, bool preferIPv4Style = false);
 
@@ -697,8 +699,9 @@ public:
      * @param ip The local IP address associated with the interface.
      * @param netmask The netmask being used by this interface.
      * @param broadcastIP The broadcast IP address associated with this interface.
+     * @param enabled True iff the interface is currently enabled; false if it is not.
      */
-   NetworkInterfaceInfo(const String & name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP);
+   NetworkInterfaceInfo(const String & name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP, bool enabled);
 
    /** Returns the name of this interface, or "" if the name is not known. */
    const String & GetName() const {return _name;}
@@ -720,6 +723,9 @@ public:
      */
    const ip_address & GetBroadcastAddress() const {return _broadcastIP;}
 
+   /** Returns true iff this interface is currently enabled ("up"). */
+   bool IsEnabled() const {return _enabled;}
+
    /** For debugging.  Returns a human-readable string describing this interface. */
    String ToString() const;
 
@@ -732,22 +738,27 @@ private:
    ip_address _ip;
    ip_address _netmask;
    ip_address _broadcastIP;
+   bool _enabled;
 };
 
 /** Bits that can be passed to GetNetworkInterfaceInfos() or GetNetworkInterfaceAddresses(). */
 enum {
-   GNII_INCLUDE_ALL_INTERFACES      = 0x01, // If set, all interfaces will be returned (and other bits will be ignore)
-   GNII_INCLUDE_IPV4_INTERFACES     = 0x02, // If set, IPv4-specific interfaces will be returned
-   GNII_INCLUDE_IPV6_INTERFACES     = 0x04, // If set, IPv6-specific interfaces will be returned
-   GNII_INCLUDE_LOOPBACK_INTERFACES = 0x08, // If set, loopback interfaces (e.g. lo0/127.0.0.1) will be returned
-   GNII_INCLUDE_LOOPBACK_INTERFACES_ONLY_AS_LAST_RESORT = 0x10, // If set, loopback interfaces will be returned only if no other interfaces are found
+   GNII_INCLUDE_IPV4_INTERFACES        = 0x01, // If set, IPv4-specific interfaces will be returned
+   GNII_INCLUDE_IPV6_INTERFACES        = 0x02, // If set, IPv6-specific interfaces will be returned
+   GNII_INCLUDE_LOOPBACK_INTERFACES    = 0x04, // If set, loopback interfaces (e.g. lo0/127.0.0.1) will be returned
+   GNII_INCLUDE_NONLOOPBACK_INTERFACES = 0x08, // If set, non-loopback interfaces (e.g. en0) will be returned
+   GNII_INCLUDE_ENABLED_INTERFACES     = 0x10, // If set, enabled (aka "up") interfaces will be returned
+   GNII_INCLUDE_DISABLED_INTERFACES    = 0x20, // If set, disabled (aka "down") interfaces will be returned
+   GNII_INCLUDE_LOOPBACK_INTERFACES_ONLY_AS_LAST_RESORT = 0x40, // If set, loopback interfaces will be returned only if no other interfaces are found
 
    // For convenience, GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES will specify interfaces of the family specified by MUSCLE_USE_IPV6's presence/abscence.
 #ifdef MUSCLE_USE_IPV6
-   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV6_INTERFACES
+   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV6_INTERFACES,
 #else
-   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV4_INTERFACES
+   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV4_INTERFACES,
 #endif
+
+   GNII_INCLUDE_ALL_INTERFACES  = 0xFFFFFFFF,  // If set, all interfaces will be returned
 };
 
 /** This function queries the local OS for information about all available network
@@ -767,7 +778,7 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
   * one returns only their IP addresses.  It is the same as calling GetNetworkInterfaceInfos()
   * and then iterating the returned list to assemble a list only of the IP addresses returned
   * by GetBroadcastAddress().
-  * @param results On success, zero or more ip_addresses will be added to this Queue for you to look at.
+  * @param retAddresses On success, zero or more ip_addresses will be added to this Queue for you to look at.
   * @param includeBits A chord of GNII_INCLUDE_* bits indicating which types of network interface you want to be
   *                    included in the returned list.  Defaults to GNII_INCLUDE_ALL_INTERFACES, which indicates that
   *                    no filtering of the returned list should be done.
@@ -888,6 +899,8 @@ status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_ad
 #endif  // IPv4 multicast
 
 #endif  // MUSCLE_ENABLE_MULTICAST_API
+
+/** @} */ // end of networkutilityfunctions doxygen group
 
 }; // end namespace muscle
 

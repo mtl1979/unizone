@@ -20,6 +20,9 @@ public:
      * @param initialSize passed on to the Queue constructor.
      */
    StringMatcherQueue(uint32 initialSize = SMALL_QUEUE_SIZE) : Queue<StringMatcherRef>(initialSize) {/* empty */}
+
+   /** Returns a human-readable string representing this StringMatcherQueue, for easier debugging */
+   String ToString() const;
 };
 
 /** Type for a reference to a queue of StringMatcher objects. */
@@ -62,6 +65,9 @@ public:
       const QueryFilter * filter = GetFilter()();
       return ((filter == NULL)||(optMsg == NULL)||(filter->Matches(*optMsg, optNode)));
    }
+
+   /** Returns a human-readable string representing this PathMatcherEntry, for easier debugging */
+   String ToString() const;
 
 private:
    StringMatcherQueueRef _parser;
@@ -147,6 +153,16 @@ public:
     * @param optPrepend If non-NULL, a string to potentially prepend to (w)
     */
    void AdjustStringPrefix(String & w, const char * optPrepend) const;
+
+   /** Sets the new QueryFilter to be associated with the PathMatcherEntry that has the specified name.
+     * @param path Name of the PathMatcherEntry to update the filter of
+     * @param newFilter The new filter to give to PathMatcherEntry.  May be a NULL ref if no filter is desired.
+     * @note You should always set an entries filter via this method rather than calling SetEntry() on
+     *       the PathMatcherEntry object directly; that way, the PathMatcher class can keep its filters-count 
+     *       up to date.
+     * @returns B_NO_ERROR on success, or B_ERROR if an entry with the given path could not be found. 
+     */
+   status_t SetFilterForEntry(const String & path, const QueryFilterRef & newFilter);
 
    /** Returns a read-only reference to our table of PathMatcherEntries. */
    const Hashtable<String, PathMatcherEntry> & GetEntries() const {return _entries;}

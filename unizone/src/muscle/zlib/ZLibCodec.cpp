@@ -63,13 +63,11 @@ static const uint32 ZLIB_CODEC_HEADER_DEPENDENT   = 2053925218;               //
 static const uint32 ZLIB_CODEC_HEADER_INDEPENDENT = 2053925219;               // 'zlic'
 static const uint32 ZLIB_CODEC_HEADER_SIZE  = sizeof(uint32)+sizeof(uint32);  // 4 bytes of magic, 4 bytes of raw-size
 
-ByteBufferRef ZLibCodec :: Deflate(const ByteBuffer & rawData, bool independent)
+ByteBufferRef ZLibCodec :: Deflate(const uint8 * rawBytes, uint32 numRaw, bool independent)
 {
    TCHECKPOINT;
 
    ByteBufferRef ret; 
-   const uint8 * rawBytes = rawData.GetBuffer();
-   uint32 numRaw = rawData.GetNumBytes();
    if ((rawBytes)&&(_deflateOkay))
    {
       if ((independent)&&(deflateReset(&_deflater) != Z_OK))
@@ -109,12 +107,11 @@ ByteBufferRef ZLibCodec :: Deflate(const ByteBuffer & rawData, bool independent)
    return ret;
 }
 
-int32 ZLibCodec :: GetInflatedSize(const ByteBuffer & compressedData, bool * optRetIsIndependent) const
+int32 ZLibCodec :: GetInflatedSize(const uint8 * compBytes, uint32 numComp, bool * optRetIsIndependent) const
 {
    TCHECKPOINT;
 
-   const uint8 * compBytes = compressedData.GetBuffer();
-   if ((compBytes)&&(compressedData.GetNumBytes() >= ZLIB_CODEC_HEADER_SIZE))
+   if ((compBytes)&&(numComp >= ZLIB_CODEC_HEADER_SIZE))
    {
       uint32 magic; muscleCopyIn(magic, compBytes); magic = B_LENDIAN_TO_HOST_INT32(magic);
       if ((magic == ZLIB_CODEC_HEADER_INDEPENDENT)||(magic == ZLIB_CODEC_HEADER_DEPENDENT))
@@ -127,14 +124,14 @@ int32 ZLibCodec :: GetInflatedSize(const ByteBuffer & compressedData, bool * opt
    return -1;
 }
 
-ByteBufferRef ZLibCodec :: Inflate(const ByteBuffer & compressedData)
+ByteBufferRef ZLibCodec :: Inflate(const uint8 * compBytes, uint32 numComp)
 {
    TCHECKPOINT;
 
    ByteBufferRef ret;
 
    bool independent;
-   int32 rawLen = GetInflatedSize(compressedData, &independent);
+   int32 rawLen = GetInflatedSize(compBytes, numComp, &independent);
    if ((rawLen >= 0)&&(_inflateOkay))
    {
       if ((independent)&&(inflateReset(&_inflater) != Z_OK))
@@ -146,9 +143,9 @@ ByteBufferRef ZLibCodec :: Inflate(const ByteBuffer & compressedData)
       ret = GetByteBufferFromPool(rawLen);
       if (ret())
       {
-         _inflater.next_in   = (Bytef *) (compressedData.GetBuffer()+ZLIB_CODEC_HEADER_SIZE);
+         _inflater.next_in   = (Bytef *) (compBytes+ZLIB_CODEC_HEADER_SIZE);
          _inflater.total_in  = 0;
-         _inflater.avail_in  = compressedData.GetNumBytes()-ZLIB_CODEC_HEADER_SIZE;
+         _inflater.avail_in  = numComp-ZLIB_CODEC_HEADER_SIZE;
 
          _inflater.next_out  = ret()->GetBuffer();
          _inflater.total_out = 0;
@@ -156,7 +153,7 @@ ByteBufferRef ZLibCodec :: Inflate(const ByteBuffer & compressedData)
 
          int zRet = inflate(&_inflater, Z_SYNC_FLUSH);
          if (((zRet != Z_OK)&&(zRet != Z_STREAM_END))||((int32)_inflater.total_out != rawLen)) ret.Reset();  // oopsie!
-//printf("Inflated "UINT32_FORMAT_SPEC" bytes to "UINT32_FORMAT_SPEC" bytes\n", compressedData.GetNumBytes(), rawLen);
+//printf("Inflated "UINT32_FORMAT_SPEC" bytes to "UINT32_FORMAT_SPEC" bytes\n", compBytes, rawLen);
       }
    }
    return ret;

@@ -144,3 +144,8 @@ of your Makefile to alter muscle's behaviour:
    Compiles MUSCLE's and LogTime() function as a macro that includes the
    source code location in the call.  By enabling this it is possible to include
    the source of a message with the messge itself, should your code choose to do so.
+
+-DMUSCLE_COLLECT_HASHTABLE_COLLISION_STATISTICS
+   If defined, a global counter (_totalHashtableCollisions) is incremented every time
+   a Hashtable::Put() call encounters a Hashtable collision.  This can be handy for testing
+   the relative effectiveness of various hash functions on your particular data set.

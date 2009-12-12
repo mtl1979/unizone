@@ -4,6 +4,10 @@
 
 namespace muscle {
 
+static ByteBuffer _emptyBuf;
+static const ByteBufferRef _emptyBufRef(&_emptyBuf, false);
+ByteBufferRef GetEmptyByteBufferRef() {return _emptyBufRef;}
+
 void ByteBuffer :: AdoptBuffer(uint32 numBytes, uint8 * optBuffer)
 {
    Clear(true);  // free any previously held array
@@ -57,6 +61,18 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
       }
    }
    else _numValidBytes = newNumBytes;  // truncating our array is easy!
+
+   return B_NO_ERROR;
+}
+
+status_t ByteBuffer :: AppendBytes(const uint8 * bytes, uint32 numBytes, bool allocExtra)
+{
+   uint32 oldTotalSize = _numValidBytes;  // save this value since SetNumBytes() will change it
+   uint32 newTotalSize = _numValidBytes+numBytes;
+   uint32 allocSize    = ((newTotalSize > _numAllocatedBytes)&&(allocExtra)) ? muscleMax(newTotalSize*4, (uint32)128) : newTotalSize;
+   if (SetNumBytes(allocSize, true) != B_NO_ERROR) return B_ERROR;
+   if (bytes != NULL) memcpy(_buffer+oldTotalSize, bytes, numBytes);
+   _numValidBytes = newTotalSize;
 
    return B_NO_ERROR;
 }

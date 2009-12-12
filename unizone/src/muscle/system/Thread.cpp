@@ -23,7 +23,7 @@ Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
 
 Thread :: ~Thread()
 {
-   MASSERT(IsInternalThreadRunning() == false, "You mustn't delete a Thread object while its internal thread is still running! (i.e. You must call thread.ShutdownInternalThread() or thread.WaitForThreadToExit() before deleting the Thread object)");
+   MASSERT(IsInternalThreadRunning() == false, "You must not delete a Thread object while its internal thread is still running! (i.e. You must call thread.ShutdownInternalThread() or thread.WaitForThreadToExit() before deleting the Thread object)");
    CloseSockets();
 }
 

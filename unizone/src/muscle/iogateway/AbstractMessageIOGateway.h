@@ -103,7 +103,7 @@ protected:
  *  Abstract base class representing an object that can send/receive 
  *  Messages via a DataIO byte-stream.
  */
-class AbstractMessageIOGateway : public RefCountable, public PulseNode
+class AbstractMessageIOGateway : public RefCountable, public AbstractGatewayMessageReceiver, public PulseNode
 {
 public:
    /** Default Constructor. */
@@ -311,6 +311,11 @@ protected:
 
    /** Called by ExecuteSynchronousMessaging() when all Messages in a batch have been received.  Default implementation just passes the call on to the like-named method in (r) */ 
    virtual void SynchronousEndMessageReceivedFromGatewayBatch(AbstractGatewayMessageReceiver & r) {r.EndMessageReceivedFromGatewayBatch();}
+
+   /** Implementation of the AbstracteMessageIOGatewayReceiver interface:  calls AddOutgoingMessage(msg).
+     * This way you can have the input of one gateway go directly to the output of another, without any intermediate step.
+     */
+   virtual void MessageReceivedFromGateway(const MessageRef & msg, void * /*userData*/) {(void) AddOutgoingMessage(msg);}
 
 private:
    friend class ScratchProxyReceiver;

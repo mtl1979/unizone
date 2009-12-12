@@ -71,6 +71,12 @@ public:
     */
    status_t GetChild(const String & key, DataNodeRef & returnChild) const {return ((_children)&&(_children->Get(&key, returnChild) == B_NO_ERROR)) ? B_NO_ERROR : B_ERROR;}
 
+   /** As above, except the reference to the child is returned as the return value rather than in a parameter.
+    *  @param key The name of the child we wish to retrieve
+    *  @return On success, a reference to the specified child node is returned.  On failure, a NULL DataNodeRef is returned.
+    */
+   DataNodeRef GetChild(const String & key) const {DataNodeRef ret; if (_children) (void) _children->Get(&key, ret); return ret;}
+
    /** Removes the child with the given name.
     *  @param key The name of the child we wish to remove.
     *  @param optNotifyWith If non-NULL, the StorageReflectSession that should be used to notify subscribers that the given node has been removed
@@ -103,6 +109,15 @@ public:
      * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
      */
    status_t GetNodePath(String & retPath, uint32 startDepth = 0) const;
+
+   /** A more convenient verseion of the above GetNodePath() implementation.
+     * @param startDepth The depth at which the path should start.  Defaults to zero, meaning the full path.
+     *                   Values greater than zero will return a partial path (e.g. a startDepth of 1 in the
+     *                   above example would return "12.18.240.15/1234/beshare/files/joe", and a startDepth
+     *                   of 2 would return "1234/beshare/files/joe")
+     * @returns this node's node path as a String.
+     */
+   String GetNodePath(uint32 startDepth = 0) const {String ret; (void) GetNodePath(ret, startDepth); return ret;}
 
    /** Returns the name of the node in our path at the (depth) level.
      * @param depth The node name we are interested in.  For example, 0 will return the name of the
@@ -212,6 +227,22 @@ public:
      * traversing parent links up to the top of the tree) 
      */
    DataNode * GetRootNode() const {DataNode * r = const_cast<DataNode *>(this); while(r->GetParent()) r = r->GetParent(); return r;}
+
+   /** Convenience function:  Given a depth value less than or equal to our depth, returns a pointer to our ancestor node at that depth.
+     * @param depth The depth of the node we want returned, relative to the root of the tree.  Zero would be the root node, one would be a child 
+     *              of the root node, and so on.
+     * @returns an ancestor DataNode, or NULL if such a node could not be found (most likely because (depth) is greater than this node's depth)
+     */ 
+   DataNode * GetAncestorNode(uint32 depth) const 
+   {
+      DataNode * r = const_cast<DataNode *>(this); 
+      while((r)&&(depth <= r->GetDepth()))
+      {
+         if (depth == r->GetDepth()) return r;
+         r = r->GetParent();
+      }
+      return NULL;
+   }
 
    /** Returns a checksum representing the state of this node and the nodes
      * beneath it, up to the specified recursion depth.  Each node's checksum

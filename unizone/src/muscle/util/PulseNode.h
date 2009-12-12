@@ -155,7 +155,6 @@ public:
     */
    bool IsSuggestedTimeSliceExpired() const {return ((_timeSlicingSuggested)&&(GetRunTime64() >= (_cycleStartedAt+_maxTimeSlice)));}
 
-protected:
    /**
     * Sets a flag to indicate that GetPulseTime() should be called on this object.
     * Call this whenever you've decided to reschedule your pulse time outside
@@ -166,6 +165,9 @@ protected:
     *                        the prevResult value will be left alone.
     */
    void InvalidatePulseTime(bool clearPrevResult = true); 
+
+   /** Returns a pointer to this PulseNode's parent PulseNode, if any. */
+   PulseNode * GetPulseParent() const {return _parent;}
 
 private:
    void ReschedulePulseChild(PulseNode * child, int toList);

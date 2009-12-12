@@ -38,10 +38,8 @@ public:
 class ThreadSetupSystem : public SetupSystem
 {
 public:
-   /** Constructor.  Currently a no-op except for
-     * when MUSCLE_USE_PTHREADS is defined; in that
-     * case it will set up some mutexes for use
-     * by the AtomicCounter class.
+   /** Constructor.  Records the thread ID of the main
+     * thread and does some other miscellaneous setup work.
      * @param muscleSingleThreadOnly If set to true, the MUSCLE code will assume that
      *                      this process is going to be single-threaded, even if the 
      *                      code was not compiled with the -DMUSCLE_SINGLE_THREAD_ONLY flag!
@@ -49,7 +47,7 @@ public:
      *                      need to compile your code to be multithread-capable but can 
      *                      sometimes promise that this particular process will never 
      *                      spawn multiple threads.
-     *                      If your code is NEVER multi-threaded, then it is more efficient to define
+     *                      If your code is NEVER multi-threaded, then it is even more efficient to define
      *                      -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile, rather than setting this flag to false.
      *                      If -DMUSCLE_SINGLE_THREAD_ONLY is set, then this argument is ignored.
      *                      Note:  DON'T SET THIS TO FLAG TRUE UNLESS YOU REALLY KNOW WHAT YOU ARE DOING!
@@ -124,10 +122,12 @@ public:
 class SanitySetupSystem : public SetupSystem
 {
 public:
-   /** Constructor.  Under Borland C++, this constructor
-     * disables floating point exceptions so that if they
-     * occur, they won't crash the program.  It's a no-op
-     * for all other environments.
+   /** Constructor.  Does some quick sanity checking
+     * to make sure our data types are what they are supposed
+     * to be, the endian-ness is correct, etc.
+     * If any checks fail, this constructor will crash
+     * the program so that the failure will be immediately
+     * obvious.
      */
    SanitySetupSystem();
 

@@ -27,7 +27,7 @@ static uint32 GetNextGlobalID(uint32 & counter)
    }
    else
    {
-      LogTime(MUSCLE_LOG_CRITICALERROR, "Couldn't lock global muscle lock while assigning new ID!!?!\n");
+      LogTime(MUSCLE_LOG_CRITICALERROR, "Could not lock global muscle lock while assigning new ID!!?!\n");
       ret = counter++;  // do it anyway, I guess
    }
    return ret;
@@ -82,7 +82,7 @@ const String &
 AbstractReflectSession ::
 GetHostName() const 
 {
-   MASSERT(IsAttachedToServer(), "Can't call GetHostName() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call GetHostName() while not attached to the server");
    return _hostName;
 }
 
@@ -90,7 +90,7 @@ uint16
 AbstractReflectSession ::
 GetPort() const 
 {
-   MASSERT(IsAttachedToServer(), "Can't call GetPort() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call GetPort() while not attached to the server");
    return _ipAddressAndPort.GetPort();
 }
 
@@ -98,7 +98,7 @@ const ip_address &
 AbstractReflectSession ::
 GetLocalInterfaceAddress() const 
 {
-   MASSERT(IsAttachedToServer(), "Can't call LocalInterfaceAddress() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call LocalInterfaceAddress() while not attached to the server");
    return _ipAddressAndPort.GetIPAddress();
 }
 
@@ -106,7 +106,7 @@ status_t
 AbstractReflectSession ::
 AddOutgoingMessage(const MessageRef & ref) 
 {
-   MASSERT(IsAttachedToServer(), "Can't call AddOutgoingMessage() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call AddOutgoingMessage() while not attached to the server");
    return (_gateway()) ? _gateway()->AddOutgoingMessage(ref) : B_ERROR;
 }
 
@@ -116,7 +116,7 @@ Reconnect()
 {
    TCHECKPOINT;
 
-   MASSERT(IsAttachedToServer(), "Can't call Reconnect() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call Reconnect() while not attached to the server");
    if (_gateway())
    {
       _gateway()->SetDataIO(DataIORef());  // get rid of any existing socket first
@@ -125,7 +125,7 @@ Reconnect()
 
    _isConnected = _wasConnected = _connectingAsync = false;
 
-   bool doTCPConnect = (_asyncConnectDest.GetIPAddress() != invalidIP);
+   bool doTCPConnect = ((_reconnectViaTCP)&&(_asyncConnectDest.GetIPAddress() != invalidIP));
    bool isReady = false;
    ConstSocketRef sock = doTCPConnect ? ConnectAsync(_asyncConnectDest.GetIPAddress(), _asyncConnectDest.GetPort(), isReady) : CreateDefaultSocket();
 
@@ -264,7 +264,7 @@ status_t
 AbstractReflectSession ::
 ReplaceSession(const AbstractReflectSessionRef & replaceMeWithThis)
 {
-   MASSERT(IsAttachedToServer(), "Can't call ReplaceSession() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call ReplaceSession() while not attached to the server");
    return GetOwner()->ReplaceSession(replaceMeWithThis, this);
 }
 
@@ -272,7 +272,7 @@ void
 AbstractReflectSession ::
 EndSession()
 {
-   MASSERT(IsAttachedToServer(), "Can't call EndSession() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call EndSession() while not attached to the server");
    GetOwner()->EndSession(this);
 }
 
@@ -280,7 +280,7 @@ bool
 AbstractReflectSession ::
 DisconnectSession()
 {
-   MASSERT(IsAttachedToServer(), "Can't call DisconnectSession() while not attached to the server");
+   MASSERT(IsAttachedToServer(), "Can not call DisconnectSession() while not attached to the server");
    return GetOwner()->DisconnectSession(this);
 }
 
@@ -367,19 +367,6 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
    }
 }
 
-const ConstSocketRef &
-AbstractReflectSession ::
-GetSessionSelectSocket() const
-{
-   const AbstractMessageIOGateway * gw = GetGateway()();
-   if (gw)
-   {
-      const DataIORef & io = gw->GetDataIO();
-      if (io()) return io()->GetSelectSocket();
-   }
-   return GetNullSocket();
-}
-
 void 
 AbstractReflectSession ::
 PlanForReconnect()
@@ -410,12 +397,35 @@ Pulse(const PulseArgs & args)
          _reconnectTime = MUSCLE_TIME_NEVER;
          if (Reconnect() != B_NO_ERROR)
          {
-            LogTime(MUSCLE_LOG_DEBUG, "%s: Couldn't auto-reconnect, will try again later...\n", GetSessionDescriptionString()());
+            LogTime(MUSCLE_LOG_DEBUG, "%s: Could not auto-reconnect, will try again later...\n", GetSessionDescriptionString()());
             PlanForReconnect();  // okay, we'll try again later!
          }
       }
    }
 }
 
+const DataIORef &
+AbstractReflectSession :: 
+GetDataIO() const
+{
+   static const DataIORef _emptyRef;
+   return _gateway() ? _gateway()->GetDataIO() : _emptyRef;
+}
+
+const ConstSocketRef &
+AbstractReflectSession ::
+GetSessionReadSelectSocket() const
+{
+   const DataIORef & dio = GetDataIO();
+   return dio() ? dio()->GetReadSelectSocket() : GetNullSocket();
+}
+
+const ConstSocketRef &
+AbstractReflectSession ::
+GetSessionWriteSelectSocket() const
+{
+   const DataIORef & dio = GetDataIO();
+   return dio() ? dio()->GetWriteSelectSocket() : GetNullSocket();
+}
 
 }; // end namespace muscle

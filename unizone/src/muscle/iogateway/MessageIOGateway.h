@@ -240,7 +240,8 @@ private:
   * @param targetIAP Where to connect to (via TCP) to send (requestMessage)
   * @param timeoutPeriod The maximum amount of time this function should wait for a reply before returning.
   *                      Defaults to MUSCLE_TIME_NEVER, i.e. no timeout.
-  * @returns A reference to a reply Message, or a NULL MessageRef() on failure (couldn't connect, or no reply received)
+  * @returns A reference to a reply Message, or a NULL MessageRef() if we were unable to connect to the specified
+  *          address, or an empty Message if we connected and send our request okay, but received no reply Message.
   */
 MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
 

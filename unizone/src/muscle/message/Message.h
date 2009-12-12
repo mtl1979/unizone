@@ -1362,7 +1362,7 @@ public:
      * @param idx The index to look under inside the field.  Defaults to zero.
      * @returns a Pointer to the String data item on success, or (defVal) if the item could not be found.
      */
-   inline const String * GetStringPointer(const String & fn, const String * defVal=NULL, uint32 idx= 0) const {const String * r;return (FindString(fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
+   inline const String * GetStringPointer(const String & fn, const String * defVal=NULL, uint32 idx = 0) const {const String * r; return (FindString(fn, idx, &r) == B_NO_ERROR) ? r : defVal;}
 
 #define DECLARE_MUSCLE_UNSIGNED_INTEGER_FIND_METHODS(bw)                                                                                               \
    inline status_t FindInt##bw (const String & fieldName, uint32 index, uint##bw & val) const {return FindInt##bw (fieldName, index, (int##bw &)val);} \

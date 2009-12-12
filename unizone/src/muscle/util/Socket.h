@@ -91,9 +91,8 @@ public:
    int GetFileDescriptor() const {const Socket * s = GetItemPointer(); return s?s->GetFileDescriptor():-1;}
 
    /** When we're being used as a key in a Hashtable, key on the file descriptor we hold */
-   uint32 HashCode() const {return (uint32)GetFileDescriptor();}
+   uint32 HashCode() const {return CalculateHashCode(GetFileDescriptor());}
 };
-DECLARE_HASHTABLE_KEY_CLASS(ConstSocketRef);
 
 /** Returns a ConstSocketRef from our ConstSocketRef pool that references the passed in file descriptor.
   * @param fd The file descriptor that the returned ConstSocketRef should be tracking.

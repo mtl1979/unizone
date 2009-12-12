@@ -343,7 +343,8 @@ Reset()
 
 status_t MessageIOGateway :: ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod)
 {
-   if ((GetDataIO()() == NULL)||(GetDataIO()()->GetSelectSocket().GetFileDescriptor() < 0)) return B_ERROR;
+   const DataIO * dio = GetDataIO()();
+   if ((dio == NULL)||(dio->GetReadSelectSocket().GetFileDescriptor() < 0)||(dio->GetWriteSelectSocket().GetFileDescriptor() < 0)) return B_ERROR;
 
    char buf[64]; sprintf(buf, "mio-sp-"UINT32_FORMAT_SPEC, ++_syncPingCounter);
    _syncPingKey = buf;
@@ -363,13 +364,20 @@ void MessageIOGateway :: SynchronousMessageReceivedFromGateway(const MessageRef 
 
 MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod)
 {
-   ConstSocketRef s = Connect(targetIAP);
+   uint64 timeBeforeConnect = GetRunTime64();
+   ConstSocketRef s = Connect(targetIAP, NULL, NULL, true, timeoutPeriod);
    if (s())
    {
+      if (timeoutPeriod != MUSCLE_TIME_NEVER)
+      {
+         uint64 connectDuration = GetRunTime64()-timeBeforeConnect;
+         timeoutPeriod = (timeoutPeriod > connectDuration) ? (timeoutPeriod-connectDuration) : 0;
+      }
+ 
       TCPSocketDataIO tsdio(s, false);
       MessageIOGateway iog; iog.SetDataIO(DataIORef(&tsdio, false));
       QueueGatewayMessageReceiver receiver;
-      if ((iog.AddOutgoingMessage(MessageRef(const_cast<Message *>(&requestMessage), false)) == B_NO_ERROR)&&(iog.ExecuteSynchronousMessaging(&receiver, timeoutPeriod) == B_NO_ERROR)&&(receiver.HasItems())) return receiver.Head();
+      if ((iog.AddOutgoingMessage(MessageRef(const_cast<Message *>(&requestMessage), false)) == B_NO_ERROR)&&(iog.ExecuteSynchronousMessaging(&receiver, timeoutPeriod) == B_NO_ERROR)) return receiver.HasItems() ? receiver.Head() : GetMessageFromPool();
    }
    return MessageRef();
 }

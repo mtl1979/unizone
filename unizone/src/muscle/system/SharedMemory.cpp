@@ -99,7 +99,7 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
    key_t requestedKey = IPC_PRIVATE;
    if (keyString)
    {
-      requestedKey = (key_t)CStringHashFunc(keyString);
+      requestedKey = (key_t) CalculateHashCode(keyString,strlen(keyString));
       if (requestedKey == IPC_PRIVATE) requestedKey++;
       _areaName = keyString;
    }
@@ -138,7 +138,7 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
             _key = semInfo.sem_perm.key;
 #endif
          }
-         _areaName = "private";  // sorry, it's the best I can do short of figuring out how to invert the CStringHashFunc() !
+         _areaName = "private";  // sorry, it's the best I can do short of figuring out how to invert the hash function!
       }
 
       if ((_key != IPC_PRIVATE)&&(LockAreaReadWrite() == B_NO_ERROR))

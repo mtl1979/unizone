@@ -13,7 +13,7 @@ StringMatcherRef GetStringMatcherFromPool() {return StringMatcherRef(_stringMatc
 
 StringMatcherRef GetStringMatcherFromPool(const String & matchString, bool isSimpleFormat)
 {
-   StringMatcherRef ret = _stringMatcherPool.ObtainObject();
+   StringMatcherRef ret(_stringMatcherPool.ObtainObject());
    if ((ret())&&(ret()->SetPattern(matchString, isSimpleFormat) != B_NO_ERROR)) ret.Reset();
    return ret;
 }

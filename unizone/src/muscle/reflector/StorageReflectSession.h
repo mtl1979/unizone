@@ -266,7 +266,6 @@ protected:
     *  @param filter If non-NULL, only nodes whose data Messages match this filter will have their sessions added 
     *                to the (retSessions) table.
     *  @param retSessions A table that will on return contain the set of matching sessions, keyed by their session ID strings.
-    *                     Make sure you have called SetKeyCompareFunction(StringCompareFunc) on this table!
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
     *  @param maxResults Maximum number of matching sessions to returns.  Defaults to MUSCLE_NO_LIMIT.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)

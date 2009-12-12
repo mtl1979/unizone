@@ -13,7 +13,7 @@ SegmentedStringMatcherRef::ItemPool * GetSegmentedStringMatcherPool() {return &_
 SegmentedStringMatcherRef GetSegmentedStringMatcherFromPool() {return SegmentedStringMatcherRef(_segmentedStringMatcherPool.ObtainObject());}
 SegmentedStringMatcherRef GetSegmentedStringMatcherFromPool(const String & matchString, bool isSimpleFormat, const char * sc)
 {
-   SegmentedStringMatcherRef ret = _segmentedStringMatcherPool.ObtainObject();
+   SegmentedStringMatcherRef ret(_segmentedStringMatcherPool.ObtainObject());
    if ((ret())&&(ret()->SetPattern(matchString, isSimpleFormat, sc) != B_NO_ERROR)) ret.Reset();
    return ret;
 }

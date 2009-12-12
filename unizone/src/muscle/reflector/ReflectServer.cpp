@@ -59,7 +59,7 @@ AddNewSession(const AbstractReflectSessionRef & ref, const ConstSocketRef & ss)
    // Set our hostname (IP address) string if it isn't already set
    if (newSession->_hostName.IsEmpty())
    {
-      const ConstSocketRef & sock = newSession->GetSessionSelectSocket();
+      const ConstSocketRef & sock = newSession->GetSessionReadSelectSocket();
       if (sock.GetFileDescriptor() >= 0)
       {
          ip_address ip = GetPeerIPAddress(sock, true);
@@ -105,6 +105,7 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
       {
          session->_asyncConnectDest = IPAddressAndPort(destIP, port);
          session->_connectingAsync  = ((isHack == false)&&(session->_isConnected == false));
+         session->_reconnectViaTCP  = true;
 
          char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
          session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
@@ -139,6 +140,7 @@ AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_addr
    if (session)
    {
       session->_asyncConnectDest = IPAddressAndPort(destIP, port);
+      session->_reconnectViaTCP  = true;
       char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
       session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
       status_t ret = AddNewSession(ref, ConstSocketRef());
@@ -188,7 +190,6 @@ ReflectServer :: ReflectServer(MemoryAllocator * optMemoryUsageTracker) : _keepS
 
    // make sure _lameDuckSessions has plenty of memory available in advance (we need might need it in a tight spot later!)
    _lameDuckSessions.EnsureSize(256);
-   _sessions.SetKeyCompareFunction(StringCompareFunc);
 }
 
 ReflectServer :: ~ReflectServer()
@@ -304,7 +305,7 @@ ServerProcessLoop()
       if (shs == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
       if (AddNewSession(AbstractReflectSessionRef(shs)) != B_NO_ERROR)
       {
-         LogTime(MUSCLE_LOG_CRITICALERROR, "ReflectServer::ReadyToRun:  Couldn't install SignalHandlerSession!\n");
+         LogTime(MUSCLE_LOG_CRITICALERROR, "ReflectServer::ReadyToRun:  Could not install SignalHandlerSession!\n");
          return B_ERROR;
       }
    }
@@ -347,7 +348,7 @@ ServerProcessLoop()
                   LogTime(MUSCLE_LOG_DEBUG, "- %s (%s)\n", Inet_NtoA(ifs[i].GetLocalAddress())(), ifs[i].GetName()());
                }
             }
-            else LogTime(MUSCLE_LOG_ERROR, "Couldn't retrieve this server's network interface addresses list.\n"); 
+            else LogTime(MUSCLE_LOG_ERROR, "Could not retrieve this server's network interface addresses list.\n"); 
          }
       }
       else LogTime(MUSCLE_LOG_DEBUG, "Server is not listening on any ports.\n");
@@ -415,13 +416,23 @@ ServerProcessLoop()
                   AbstractMessageIOGateway * g = session->GetGateway()();
                   if (g)
                   {
-                     int sfd = session->GetSessionSelectSocket().GetFileDescriptor();
-                     if (sfd >= 0)
+                     int sessionReadFD = session->GetSessionReadSelectSocket().GetFileDescriptor();
+                     if ((sessionReadFD >= 0)&&(session->_connectingAsync == false))
                      {
-                        bool in, out;
+                        session->_maxInputChunk = CheckPolicy(policies, session->GetInputPolicy(), PolicyHolder(session->IsReadyForInput() ? session : NULL, true), now);
+                        if (session->_maxInputChunk > 0)
+                        {
+                           FD_SET(sessionReadFD, &readSet);
+                           maxSocket = muscleMax(maxSocket, sessionReadFD);
+                        }
+                     }
+
+                     int sessionWriteFD = session->GetSessionWriteSelectSocket().GetFileDescriptor();
+                     if (sessionWriteFD >= 0)
+                     {
+                        bool out;
                         if (session->_connectingAsync) 
                         {
-                           in  = false;
                            out = true;  // so we can watch for the async-connect event
 
 #ifdef WIN32
@@ -431,28 +442,25 @@ ServerProcessLoop()
                               FD_ZERO(&exceptionSet);
                               exceptionSetPtr = &exceptionSet;
                            }
-                           FD_SET(sfd, &exceptionSet);
+                           FD_SET(sessionWriteFD, &exceptionSet);
 #endif
                         }
                         else
                         {
-                           session->_maxInputChunk  = CheckPolicy(policies, session->GetInputPolicy(),  PolicyHolder(session->IsReadyForInput()  ? session : NULL, true),  now);
                            session->_maxOutputChunk = CheckPolicy(policies, session->GetOutputPolicy(), PolicyHolder(session->HasBytesToOutput() ? session : NULL, false), now);
-                           in  = (session->_maxInputChunk  > 0);
                            out = ((session->_maxOutputChunk > 0)||((g->GetDataIO()())&&(g->GetDataIO()()->HasBufferedOutput())));
                         }
 
-                        if (in) FD_SET(sfd, &readSet);
                         if (out) 
                         {
-                           FD_SET(sfd, &writeSet);
+                           FD_SET(sessionWriteFD, &writeSet);
                            if (session->_lastByteOutputAt == 0) session->_lastByteOutputAt = now;  // the bogged-session-clock starts ticking when we first want to write...
                            if (session->_outputStallLimit != MUSCLE_TIME_NEVER) nextPulseAt = muscleMin(nextPulseAt, session->_lastByteOutputAt+session->_outputStallLimit);
+                           maxSocket = muscleMax(maxSocket, sessionWriteFD);
                         }
                         else session->_lastByteOutputAt = 0;  // If we no longer want to write, then the bogged-session-clock-timeout is cancelled
-
-                        if (((in)||(out))&&(sfd > maxSocket)) maxSocket = sfd;
                      }
+
                      TCHECKPOINT;
                      CallGetPulseTimeAux(*g, now, nextPulseAt);
                      TCHECKPOINT;
@@ -589,40 +597,45 @@ ServerProcessLoop()
 
                TCHECKPOINT;
 
-               int sock = session->GetSessionSelectSocket().GetFileDescriptor();
-               if (sock >= 0)
+               int readSock = session->GetSessionReadSelectSocket().GetFileDescriptor();
+               if (readSock >= 0)
                {
-                  int32 readBytes = 0, wroteBytes = 0;
-                  if (FD_ISSET(sock, &readSet))
+                  int32 readBytes = 0;
+                  if (FD_ISSET(readSock, &readSet))
                   {
                      readBytes = session->DoInput(*session, session->_maxInputChunk);  // session->MessageReceivedFromGateway() gets called here
+
                      AbstractSessionIOPolicy * p = session->GetInputPolicy()();
                      if ((p)&&(readBytes >= 0)) p->BytesTransferred(PolicyHolder(session, true), (uint32)readBytes);
                   }
 
                   TCHECKPOINT;
 
-                  if (FD_ISSET(sock, &writeSet))
+                  if (readBytes < 0)
+                  {
+                     bool wasConnecting = session->_connectingAsync;
+                     if ((DisconnectSession(session) == false)&&(_doLogging)) LogTime(MUSCLE_LOG_DEBUG, "Connection for %s %s (read error).\n", session->GetSessionDescriptionString()(), wasConnecting?"failed":"was severed");
+                  }
+               }
+
+               int writeSock = session->GetSessionWriteSelectSocket().GetFileDescriptor();
+               if (writeSock >= 0)
+               {
+                  int32 wroteBytes = 0;
+
+                  TCHECKPOINT;
+
+                  if (FD_ISSET(writeSock, &writeSet))
                   {
                      if (session->_connectingAsync) wroteBytes = (FinalizeAsyncConnect(sessionRef) == B_NO_ERROR) ? 0 : -1;
                      else
                      {
-#ifdef MUSCLE_MAX_OUTPUT_CHUNK
-                        // HACK: Certain BeOS configurations (i.e. behind routers??) don't handle large outgoing send()'s very
-                        // well.  If this is the case with your machine, one easy fix is to put -DMUSCLE_MAX_OUTPUT_CHUNK=1000
-                        // or so in your Makefile; that will force all send sizes to be 1000 bytes or less.
-                        // (shatty reports the problem with a net_server -> Ethernet -> linksys -> pppoe -> dsl config)
-                        if (session->_maxOutputChunk > MUSCLE_MAX_OUTPUT_CHUNK) session->_maxOutputChunk = MUSCLE_MAX_OUTPUT_CHUNK;
-#endif
-                        
                         // if the session's DataIO object is still has bytes buffered for output, try to send them now
+                        AbstractMessageIOGateway * g = session->GetGateway()();
+                        if (g)
                         {
-                           AbstractMessageIOGateway * g = session->GetGateway()();
-                           if (g)
-                           {
-                              DataIO * io = g->GetDataIO()();
-                              if (io) io->WriteBufferedOutput();
-                           }
+                           DataIO * io = g->GetDataIO()();
+                           if (io) io->WriteBufferedOutput();
                         }
 
                         wroteBytes = session->DoOutput(session->_maxOutputChunk);
@@ -632,15 +645,15 @@ ServerProcessLoop()
                      }
                   }
 #ifdef WIN32
-                  if ((exceptionSetPtr)&&(FD_ISSET(sock, exceptionSetPtr))) wroteBytes = -1;  // async connect() failed!
+                  if ((exceptionSetPtr)&&(FD_ISSET(writeSock, exceptionSetPtr))) wroteBytes = -1;  // async connect() failed!
 #endif
 
                   TCHECKPOINT;
 
-                  if ((readBytes < 0)||(wroteBytes < 0))
+                  if (wroteBytes < 0)
                   {
                      bool wasConnecting = session->_connectingAsync;
-                     if ((DisconnectSession(session) == false)&&(_doLogging)) LogTime(MUSCLE_LOG_DEBUG, "Connection for %s %s.\n", session->GetSessionDescriptionString()(), wasConnecting?"failed":"was severed");
+                     if ((DisconnectSession(session) == false)&&(_doLogging)) LogTime(MUSCLE_LOG_DEBUG, "Connection for %s %s (write error).\n", session->GetSessionDescriptionString()(), wasConnecting?"failed":"was severed");
                   }
                   else if (session->_lastByteOutputAt > 0)
                   {
@@ -1013,7 +1026,7 @@ ReflectServer ::
 FinalizeAsyncConnect(const AbstractReflectSessionRef & ref)
 {
    AbstractReflectSession * session = ref();
-   if ((session)&&(muscle::FinalizeAsyncConnect(session->GetSessionSelectSocket()) == B_NO_ERROR))
+   if ((session)&&(muscle::FinalizeAsyncConnect(session->GetSessionReadSelectSocket()) == B_NO_ERROR))
    {
       session->_connectingAsync = false;  // we're legit now!  :^)
       session->_isConnected = session->_wasConnected = true;
@@ -1031,26 +1044,26 @@ GetServerUptime() const
    return (_serverStartedAt <= now) ? (now - _serverStartedAt) : 0;
 }
                         
-uint32 
+uint64 
 ReflectServer ::
 GetNumAvailableBytes() const
 {
-   return (_watchMemUsage) ? (uint32)_watchMemUsage->GetNumAvailableBytes(GetNumUsedBytes()) : MUSCLE_NO_LIMIT;
+   return (_watchMemUsage) ? _watchMemUsage->GetNumAvailableBytes(GetNumUsedBytes()) : ((uint64)-1);
 }
  
-uint32 
+uint64 
 ReflectServer ::
 GetMaxNumBytes() const
 {
-   return _watchMemUsage ? (uint32)_watchMemUsage->GetMaxNumBytes() : MUSCLE_NO_LIMIT;
+   return _watchMemUsage ? _watchMemUsage->GetMaxNumBytes() : ((uint64)-1);
 }
  
-uint32 
+uint64 
 ReflectServer ::
 GetNumUsedBytes() const
 {
 #ifdef MUSCLE_ENABLE_MEMORY_TRACKING
-   return (uint32) GetNumAllocatedBytes();
+   return GetNumAllocatedBytes();
 #else
    return 0;  // if we're not tracking, there is no way to know!
 #endif

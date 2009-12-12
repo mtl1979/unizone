@@ -859,7 +859,7 @@ Version %1</translation>
     <message>
         <location filename="util.cpp" line="355"/>
         <source>DSL-2M</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DSL-2M</translation>
     </message>
     <message>
         <location filename="util.cpp" line="356"/>

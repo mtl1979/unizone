@@ -1322,7 +1322,7 @@ Date: %4</translation>
     <message>
         <location filename="menubar.cpp" line="59"/>
         <source>Shift+F11</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Shift-F11</translation>
     </message>
 </context>
 <context>

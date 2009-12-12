@@ -49,6 +49,10 @@
 
 namespace muscle {
 
+#ifdef MUSCLE_COLLECT_HASHTABLE_COLLISION_STATISTICS
+uint32 _totalHashtableCollisions = 0;
+#endif
+
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
 bool _muscleSingleThreadOnly = true;
 #else
@@ -130,7 +134,7 @@ SanitySetupSystem :: SanitySetupSystem()
          uint16 LtoH = B_LENDIAN_TO_HOST_INT16(orig);
          uint16 HtoB = B_HOST_TO_BENDIAN_INT16(orig);  // should be a no-op
          uint16 BtoH = B_BENDIAN_TO_HOST_INT16(orig);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "16-bit swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "16-bit swap macro does not work!");
       }
 
       {
@@ -139,7 +143,7 @@ SanitySetupSystem :: SanitySetupSystem()
          uint32 LtoH = B_LENDIAN_TO_HOST_INT32(orig);
          uint32 HtoB = B_HOST_TO_BENDIAN_INT32(orig);  // should be a no-op
          uint32 BtoH = B_BENDIAN_TO_HOST_INT32(orig);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "32-bit swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "32-bit swap macro does not work!");
       }
 
       {
@@ -148,7 +152,7 @@ SanitySetupSystem :: SanitySetupSystem()
          uint64 LtoH = B_LENDIAN_TO_HOST_INT64(orig);
          uint64 HtoB = B_HOST_TO_BENDIAN_INT64(orig);  // should be a no-op
          uint64 BtoH = B_BENDIAN_TO_HOST_INT64(orig);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "64-bit swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoL, &LtoH, &HtoB, &BtoH, "64-bit swap macro does not work!");
       }
 
       {
@@ -157,8 +161,8 @@ SanitySetupSystem :: SanitySetupSystem()
          float  LtoH = B_LENDIAN_TO_HOST_IFLOAT(HtoL);
          uint32 HtoB = B_HOST_TO_BENDIAN_IFLOAT(orig);  // should be a no-op
          float  BtoH = B_BENDIAN_TO_HOST_IFLOAT(HtoB);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoL, NULL, &HtoB, &BtoH, "float swap macro doesn't work!");
-         CheckOp(sizeof(orig), &orig, NULL,  NULL, &LtoH,  NULL, "float swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoL, NULL, &HtoB, &BtoH, "float swap macro does not work!");
+         CheckOp(sizeof(orig), &orig, NULL,  NULL, &LtoH,  NULL, "float swap macro does not work!");
       }
 
       {
@@ -167,8 +171,8 @@ SanitySetupSystem :: SanitySetupSystem()
          double LtoH = B_LENDIAN_TO_HOST_IDOUBLE(HtoL);
          uint64 HtoB = B_HOST_TO_BENDIAN_IDOUBLE(orig);  // should be a no-op
          double BtoH = B_BENDIAN_TO_HOST_IDOUBLE(HtoB);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoL, NULL, &HtoB, &BtoH, "double swap macro doesn't work!");
-         CheckOp(sizeof(orig), &orig,  NULL, NULL, &LtoH,  NULL, "double swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoL, NULL, &HtoB, &BtoH, "double swap macro does not work!");
+         CheckOp(sizeof(orig), &orig,  NULL, NULL, &LtoH,  NULL, "double swap macro does not work!");
       }
    }
 #else
@@ -180,7 +184,7 @@ SanitySetupSystem :: SanitySetupSystem()
          uint16 BtoH = B_BENDIAN_TO_HOST_INT16(orig);
          uint16 HtoL = B_HOST_TO_LENDIAN_INT16(orig);  // should be a no-op
          uint16 LtoH = B_LENDIAN_TO_HOST_INT16(orig);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "16-bit swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "16-bit swap macro does not work!");
       }
 
       {
@@ -189,7 +193,7 @@ SanitySetupSystem :: SanitySetupSystem()
          uint32 BtoH = B_BENDIAN_TO_HOST_INT32(orig);
          uint32 HtoL = B_HOST_TO_LENDIAN_INT32(orig);  // should be a no-op
          uint32 LtoH = B_LENDIAN_TO_HOST_INT32(orig);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "32-bit swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "32-bit swap macro does not work!");
       }
 
       {
@@ -198,7 +202,7 @@ SanitySetupSystem :: SanitySetupSystem()
          uint64 BtoH = B_BENDIAN_TO_HOST_INT64(orig);
          uint64 HtoL = B_HOST_TO_LENDIAN_INT64(orig);  // should be a no-op
          uint64 LtoH = B_LENDIAN_TO_HOST_INT64(orig);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "64-bit swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoB, &BtoH, &HtoL, &LtoH, "64-bit swap macro does not work!");
       }
 
       {
@@ -207,8 +211,8 @@ SanitySetupSystem :: SanitySetupSystem()
          float  BtoH = B_BENDIAN_TO_HOST_IFLOAT(HtoB);
          uint32 HtoL = B_HOST_TO_LENDIAN_IFLOAT(orig);  // should be a no-op
          float  LtoH = B_LENDIAN_TO_HOST_IFLOAT(HtoL);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoB, NULL, &HtoL, &LtoH, "float swap macro doesn't work!");
-         CheckOp(sizeof(orig), &orig,  NULL, NULL, &BtoH,  NULL, "float swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoB, NULL, &HtoL, &LtoH, "float swap macro does not work!");
+         CheckOp(sizeof(orig), &orig,  NULL, NULL, &BtoH,  NULL, "float swap macro does not work!");
       }
 
       {
@@ -217,8 +221,8 @@ SanitySetupSystem :: SanitySetupSystem()
          double BtoH = B_BENDIAN_TO_HOST_IDOUBLE(HtoB);
          uint64 HtoL = B_HOST_TO_LENDIAN_IDOUBLE(orig);  // should be a no-op
          double LtoH = B_LENDIAN_TO_HOST_IDOUBLE(HtoL);  // should be a no-op
-         CheckOp(sizeof(orig), &orig, &HtoB, NULL, &HtoL, &LtoH, "double swap macro doesn't work!");
-         CheckOp(sizeof(orig), &orig,  NULL, NULL, &BtoH,  NULL, "double swap macro doesn't work!");
+         CheckOp(sizeof(orig), &orig, &HtoB, NULL, &HtoL, &LtoH, "double swap macro does not work!");
+         CheckOp(sizeof(orig), &orig,  NULL, NULL, &BtoH,  NULL, "double swap macro does not work!");
       }
    }
    else GoInsane("MUSCLE is compiled for a little-endian CPU, but host CPU is big-endian!?");
@@ -278,7 +282,7 @@ ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
 
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       _atomicMutexes = newnothrow_array(Mutex, MUTEX_POOL_SIZE);
-      MASSERT(_atomicMutexes, "Couldn't allocate atomic mutexes!");
+      MASSERT(_atomicMutexes, "Could not allocate atomic mutexes!");
 #endif
    }
 }
@@ -316,7 +320,7 @@ NetworkSetupSystem :: NetworkSetupSystem()
       WORD versionWanted = MAKEWORD(1, 1);
       WSADATA wsaData;
       int ret = WSAStartup(versionWanted, &wsaData);
-      MASSERT((ret == 0), "NetworkSetupSystem:  Couldn't initialize Winsock!");
+      MASSERT((ret == 0), "NetworkSetupSystem:  Could not initialize Winsock!");
       (void) ret;  // avoid compiler warning
 #else
       signal(SIGPIPE, SIG_IGN);  // avoid evil SIGPIPE signals from sending on a closed socket
@@ -812,20 +816,6 @@ uint32 CalculateChecksum(const uint8 * buffer, uint32 numBytes)
    return ret; 
 }
 
-/** These compare functions are useful for passing into Hashtables or Queues to keep them sorted */
-int IntCompareFunc(   const int    & i1, const int    & i2, void *) {return muscleCompare(i1, i2);}
-int Int8CompareFunc(  const int8   & i1, const int8   & i2, void *) {return muscleCompare(i1, i2);}
-int Int16CompareFunc( const int16  & i1, const int16  & i2, void *) {return muscleCompare(i1, i2);}
-int Int32CompareFunc( const int32  & i1, const int32  & i2, void *) {return muscleCompare(i1, i2);}
-int Int64CompareFunc( const int64  & i1, const int64  & i2, void *) {return muscleCompare(i1, i2);}
-int UIntCompareFunc(  const unsigned int & i1, const unsigned int & i2, void *) {return muscleCompare(i1, i2);}
-int UInt8CompareFunc( const uint8  & i1, const uint8  & i2, void *) {return muscleCompare(i1, i2);}
-int UInt16CompareFunc(const uint16 & i1, const uint16 & i2, void *) {return muscleCompare(i1, i2);}
-int UInt32CompareFunc(const uint32 & i1, const uint32 & i2, void *) {return muscleCompare(i1, i2);}
-int UInt64CompareFunc(const uint64 & i1, const uint64 & i2, void *) {return muscleCompare(i1, i2);}
-int FloatCompareFunc( const float  & i1, const float  & i2, void *) {return muscleCompare(i1, i2);}
-int DoubleCompareFunc(const double & i1, const double & i2, void *) {return muscleCompare(i1, i2);}
-
 static void FlushAsciiChars(FILE * file, int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
 {
    while(count<numColumns) ascBuf[count++] = ' ';
@@ -1067,6 +1057,46 @@ DebugTimer :: ~DebugTimer()
    }
 }
 
+/** Gotta define this myself, since atoll() isn't standard. :^( 
+  * Note that this implementation doesn't handle negative numbers!
+  */
+uint64 Atoull(const char * str)
+{
+   TCHECKPOINT;
+
+   const char * s = str;
+   if (muscleInRange(*s, '0', '9') == false) return 0;
+
+   uint64 base = 1;
+   uint64 ret  = 0;
+
+   // Move to the last digit in the number
+   while(muscleInRange(*s, '0', '9')) s++;
+
+   // Then iterate back to the beginning, tabulating as we go
+   while((--s >= str)&&(*s >= '0')&&(*s <= '9')) 
+   {
+      ret  += base * ((uint64)(*s-'0'));
+      base *= (uint64)10;
+   }
+   return ret;
+}
+
+int64 Atoll(const char * str)
+{
+   TCHECKPOINT;
+
+   bool negative = false;
+   const char * s = str;
+   while(*s == '-')
+   {
+      negative = (negative == false);
+      s++;
+   }
+   int64 ret = (int64) Atoull(s);
+   return negative ? -ret : ret;
+}
+
 /** Set the timer to record elapsed time to a different mode. */
 void DebugTimer :: SetMode(uint32 newMode)
 {
@@ -1094,5 +1124,208 @@ bool IsCurrentThreadMainThread()
    }
 }
 #endif
+
+uint32 CalculateHashCode(const void * key, uint32 numBytes, uint32 seed)
+{
+#define MURMUR2_MIX(h,k,m) { k *= m; k ^= k >> r; k *= m; h *= m; h ^= k; }
+   const uint32 m = 0x5bd1e995;
+   const int32  r = 24;
+
+   const unsigned char * data = (const unsigned char *)key;
+   uint32 h = seed ^ numBytes;
+   uint32 align = ((long)data) & 3;
+   if ((align!=0)&&(numBytes >= 4))
+   {
+      // Pre-load the temp registers
+      uint32 t = 0, d = 0;
+      switch(align)
+      {
+         case 1: t |= data[2] << 16;
+         case 2: t |= data[1] << 8;
+         case 3: t |= data[0];
+      }
+
+      t <<= (8 * align);
+      data     += 4-align;
+      numBytes -= 4-align;
+
+      int32 sl = 8 * (4-align);
+      int32 sr = 8 * align;
+
+      // Mix
+      while(numBytes >= 4)
+      {
+         d = *(uint32 *)data;
+         t = (t >> sr) | (d << sl);
+
+         uint32 k = t;
+         MURMUR2_MIX(h,k,m);
+         t = d;
+
+         data += 4;
+         numBytes -= 4;
+      }
+
+      // Handle leftover data in temp registers
+      d = 0;
+      if(numBytes >= align)
+      {
+         switch(align)
+         {
+            case 3: d |= data[2] << 16;
+            case 2: d |= data[1] << 8;
+            case 1: d |= data[0];
+         }
+
+         uint32 k = (t >> sr) | (d << sl);
+         MURMUR2_MIX(h,k,m);
+
+         data += align;
+         numBytes -= align;
+
+         //----------
+         // Handle tail bytes
+         switch(numBytes)
+         {
+            case 3: h ^= data[2] << 16;
+            case 2: h ^= data[1] << 8;
+            case 1: h ^= data[0];
+                    h *= m;
+         };
+      }
+      else
+      {
+         switch(numBytes)
+         {
+            case 3: d |= data[2] << 16;
+            case 2: d |= data[1] << 8;
+            case 1: d |= data[0];
+            case 0: h ^= (t >> sr) | (d << sl);
+                    h *= m;
+         }
+      }
+
+      h ^= h >> 13;
+      h *= m;
+      h ^= h >> 15;
+
+      return h;
+   }
+   else
+   {
+      while(numBytes >= 4)
+      {
+         uint32 k = *(uint32 *)data;
+         MURMUR2_MIX(h,k,m);
+         data     += 4;
+         numBytes -= 4;
+      }
+
+      //----------
+      // Handle tail bytes
+
+      switch(numBytes)
+      {
+         case 3: h ^= data[2] << 16;
+         case 2: h ^= data[1] << 8;
+         case 1: h ^= data[0];
+                 h *= m;
+      };
+
+      h ^= h >> 13;
+      h *= m;
+      h ^= h >> 15;
+
+      return h;
+   }
+}
+
+uint64 CalculateHashCode64(const void * key, unsigned int numBytes, unsigned int seed)
+{        
+#ifdef MUSCLE_64_BIT_PLATFORM 
+   const uint64 m = 0xc6a4a7935bd1e995;
+   const int r = 47;
+
+   uint64 h = seed ^ (numBytes * m);
+      
+   const uint64 * data = (const uint64 *)key;
+   const uint64 * end = data + (numBytes/sizeof(uint64));
+      
+   while(data != end)
+   {
+      uint64 k = *data++;
+      k *= m; 
+      k ^= k >> r;
+      k *= m; 
+      h ^= k;
+      h *= m;
+   }     
+         
+   const unsigned char * data2 = (const unsigned char*)data;
+   switch(numBytes & 7)
+   {     
+      case 7: h ^= uint64(data2[6]) << 48;
+      case 6: h ^= uint64(data2[5]) << 40;
+      case 5: h ^= uint64(data2[4]) << 32;
+      case 4: h ^= uint64(data2[3]) << 24;
+      case 3: h ^= uint64(data2[2]) << 16;
+      case 2: h ^= uint64(data2[1]) << 8;
+      case 1: h ^= uint64(data2[0]);
+              h *= m;
+   }     
+            
+   h ^= h >> r;
+   h *= m;  
+   h ^= h >> r;
+   return h;
+#else    
+   const unsigned int m = 0x5bd1e995;
+   const int r = 24;
+         
+   unsigned int h1 = seed ^ numBytes;
+   unsigned int h2 = 0;
+         
+   const unsigned int * data = (const unsigned int *)key;
+         
+   while(numBytes >= sizeof(uint64))
+   {        
+      unsigned int k1 = *data++; 
+      k1 *= m; k1 ^= k1 >> r; k1 *= m;
+      h1 *= m; h1 ^= k1; 
+      numBytes -= sizeof(uint32);
+      
+      unsigned int k2 = *data++;
+      k2 *= m; k2 ^= k2 >> r; k2 *= m;
+      h2 *= m; h2 ^= k2;
+      numBytes -= sizeof(uint32);
+   }        
+            
+   if (numBytes >= sizeof(uint32))
+   {        
+      unsigned int k1 = *data++;
+      k1 *= m; k1 ^= k1 >> r; k1 *= m;
+      h1 *= m; h1 ^= k1;
+      numBytes -= sizeof(uint32);
+   }  
+      
+   switch(numBytes)
+   {
+      case 3: h2 ^= ((unsigned char*)data)[2] << 16;
+      case 2: h2 ^= ((unsigned char*)data)[1] << 8;
+      case 1: h2 ^= ((unsigned char*)data)[0];
+              h2 *= m;
+   };
+
+   h1 ^= h2 >> 18; h1 *= m;
+   h2 ^= h1 >> 22; h2 *= m;
+   h1 ^= h2 >> 17; h1 *= m;
+   h2 ^= h1 >> 19; h2 *= m;
+
+   uint64 h = h1;
+   h = (h << 32) | h2;
+
+   return h;
+#endif
+}
 
 }; // end namespace muscle

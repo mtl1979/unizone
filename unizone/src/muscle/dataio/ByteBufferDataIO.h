@@ -111,7 +111,10 @@ public:
    virtual void Shutdown() {_buf.Reset();}
 
    /** Can't select on this one, sorry */
-   virtual const ConstSocketRef & GetSelectSocket() const {return GetNullSocket();}
+   virtual const ConstSocketRef & GetReadSelectSocket() const {return GetNullSocket();}
+
+   /** Can't select on this one, sorry */
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return GetNullSocket();}
 
 private:
    ByteBufferRef _buf;

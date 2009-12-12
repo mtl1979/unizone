@@ -16,10 +16,20 @@ public:
    virtual AbstractReflectSessionRef CreateSession(const String & clientAddress, const IPAddressAndPort & factoryInfo);
 };
 
+/** These flags govern the default routing behavior of unrecognized Message types */
+enum {
+   MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF      = 0x01,  /** If this bit is set, Messages broadcast by this session will be received by this session */
+   MUSCLE_ROUTING_FLAG_GATEWAY_TO_NEIGHBORS = 0x02,  /** If this bit is set, unrecognized Messages received by this session's gateway will be broadcast to all neighbors. */
+   MUSCLE_ROUTING_FLAG_NEIGHBORS_TO_GATEWAY = 0x04   /** If this bit is set, unrecognized Messages received by this session's neighbors will be forwarded to this session's gateway. */ 
+};
+
+#ifndef DEFAULT_MUSCLE_ROUTING_FLAGS_BIT_CHORD
+# define DEFAULT_MUSCLE_ROUTING_FLAGS_BIT_CHORD (MUSCLE_ROUTING_FLAG_GATEWAY_TO_NEIGHBORS | MUSCLE_ROUTING_FLAG_NEIGHBORS_TO_GATEWAY)
+#endif
+
 /** This class represents a single TCP connection between a muscled server and a client program.  
- * This class implements a simple "reflect-all-messages-to-all-clients"
- * message forwarding strategy, but may be subclassed to perform more complex message routing
- * logic.
+ *  This class implements a simple "reflect-all-messages-to-all-clients"
+ *  message forwarding strategy, but may be subclassed to perform more complex message routing logic.
  */
 class DumbReflectSession : public AbstractReflectSession
 {
@@ -39,22 +49,34 @@ public:
     */
    virtual void MessageReceivedFromSession(AbstractReflectSession & from, const MessageRef & msg, void * userData);
 
-   /**
-    * Set this true to enable self-reflection:  if true, messages
-    * sent by a given client will be reflected back to that client.
-    * Default state is false (i.e. messages only go to everyone else)
-    * @param reflectToSelf Whether or not our client's own messages should be bounced back to him.
-    */
-   void SetReflectToSelf(bool reflectToSelf);
+   /** Sets or unsets the specified default routing flag.
+     * @param flag a MUSCLE_ROUTING_FLAG_* value
+     * @param enable If true, the flag is set; if false, the flag is un-set.
+     * Note that the default states of the flags are specified by the DEFAULT_MUSCLE_ROUTING_FLAGS_BIT_CHORD macro, defined in DumbReflectSession.h
+     * Currently the default state of the flags is for all defined routing bits to be set.
+     */
+   void SetRoutingFlag(uint32 flag, bool enable)
+   {
+      if (enable) _defaultRoutingFlags |= flag;
+             else _defaultRoutingFlags &= ~flag;
+   }
 
-   /** Returns true iff our client's own messages will be bounced back to him.  */
-   bool GetReflectToSelf() const;
+   /** Returns true iff the specified default routing flag is set.
+     * @param flag a MUSCLE_ROUTING_FLAG_* value.
+     */
+   bool IsRoutingFlagSet(uint32 flag) const {return ((_defaultRoutingFlags & flag) != 0);}
 
    /** Returns a human-readable label for our session type:  "Dumb Session" */
    virtual const char * GetTypeName() const {return "Dumb Session";}
 
+   /** @deprecated synonym for SetRoutingFlag(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF). */
+   void SetReflectToSelf(bool reflectToSelf) {SetRoutingFlag(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF, reflectToSelf);}
+
+   /** @deprecated synonym for IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF). */
+   bool GetReflectToSelf() const {return IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF);}
+
 private:
-   bool _reflectToSelf;
+   uint32 _defaultRoutingFlags;
 };
 
 }; // end namespace muscle

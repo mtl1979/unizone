@@ -108,6 +108,8 @@ enum
 #define PR_NAME_SET_QUIETLY       "!SnQ2"     // Any type:  if present in a PR_COMMAND_SETDATA message, then the message won't cause subscribers to be notified.
 #define PR_NAME_REMOVE_QUIETLY    "!SnQ3"     // Any type:  if present in a PR_COMMAND_REMOVEDATA message, then the message won't cause subscribers to be notified.
 #define PR_NAME_REFLECT_TO_SELF   "!Self"     // If set as parameter, include ourself in wildcard matches
+#define PR_NAME_ROUTE_GATEWAY_TO_NEIGHBORS "!G2N" // If set as parameter, session broadcasts unrecognized Messages to neighbors (set by default)
+#define PR_NAME_ROUTE_NEIGHBORS_TO_GATEWAY "!N2G" // If set as parameter, session accepts unrecognized Messages from neighbors and sends them to gateway (set by default)
 #define PR_NAME_DISABLE_SUBSCRIPTIONS "!Dsub" // If set as a parameter, disable all subscription updates.
 #define PR_NAME_MAX_UPDATE_MESSAGE_ITEMS "!MxUp"  // Int32 parameter; sets max # of items per PR_RESULT_DATAITEMS message
 #define PR_NAME_SESSION_ROOT         "!Root"  // String returned in parameter set; contains this sessions /host/sessionID
@@ -187,7 +189,15 @@ enum
 //                                be suppressed (on the grounds that your client already knows
 //                                the value of anything that it uploaded, and doesn't need to
 //                                be reminded of it).  This field may be of any type, only
-//                                its existence/non-existence is relevant.
+//                                its existence/non-existence is relevant.  This parameter is NOT set by default.
+//
+//      PR_NAME_ROUTE_GATEWAY_TO_NEIGHBORS : If set, then any unrecognized Message received by the current
+//                                           session will be broadcast to all other neighboring sessions.
+//                                           This parameter is set by default.
+//
+//      PR_NAME_ROUTE_NEIGHBORS_TO_GATEWAY : If set, then any unrecognized Message received from a neighboring
+//                                           session will be sent out to the current session's gateay (and thus
+//                                           to the client).  This parameter is set by default.
 //
 //      PR_NAME_REPLY_ENCODING : If set, this int32 specifies the MUSCLE_MESSAGE_ENCODING_*
 //                               value to be used by the session when sending data back to the client.

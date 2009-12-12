@@ -146,11 +146,6 @@ private:
 };
 DECLARE_REFTYPES(AbstractSessionIOPolicy);
 
-// VC++ (previous to .net) can't handle partial template specialization, so for them we define this explicitly.
-#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
-DECLARE_HASHTABLE_KEY_CLASS(Ref<AbstractSessionIOPolicy>);
-#endif
-
 }; // end namespace muscle
 
 // At the bottom to avoid circular-forward-reference problems, while

@@ -8,6 +8,12 @@
 
 namespace muscle {
 
+/** @defgroup miscutilityfunctions The MiscUtilityFunctions function API
+ *  These functions are all defined in MiscUtilityFunctions.{cpp,h}, and are stand-alone
+ *  functions that do various small convenient things that don't fit anywhere else.
+ *  @{
+ */
+
 /** Parses the given arguments into a Message full of string fields.
   * Arguments should be of the form argname or argname=value.
   * The latter will be added as string fields; the former will
@@ -42,9 +48,18 @@ status_t ParseArgs(int argc, char ** argv, Message & addTo);
  */
 status_t ParseFile(FILE * file, Message & addTo);
 
+/** Same as above, except that the file data is passed in as a String
+  * instead of as a FILE handle.
+  * @param fileData a String containing the contents of the file to parse.
+  * @param addTo The Message to add the arguments to
+  * @return B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t ParseFile(const String & fileData, Message & addTo);
+
 /** Parses the single string argument (arg) and adds the results to (addTo).
  *  Formatting rules for the string are described above in the ParseArgs() documentation.
- *  @param argument string (or string=value pair) to parse.
+ *  @param arg string (or string=value pair) to parse.
+ *  @param addTo The Message to add the parsed arguments to (as String fields).
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t ParseArg(const String & arg, Message & addTo);
@@ -92,9 +107,18 @@ status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo);
  */
 status_t ParseFile(FILE * file, Queue<String> & addTo);
 
+/** Same as above, except that the file data is passed in as a String
+  * instead of as a FILE handle.
+  * @param fileData a String containing the contents of the file to parse.
+  * @param addTo The Queue to add the arguments to
+  * @return B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t ParseFile(const String & fileData, Queue<String> & addTo);
+
 /** Parses the single string argument (arg) and adds the results to (addTo).
  *  Formatting rules for the string are described above in the ParseArgs() documentation.
- *  @param argument string to parse.
+ *  @param arg string to parse.
+ *  @param addTo The Queue to add the argument to.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t ParseArg(const String & arg, Queue<String> & addTo);
@@ -176,192 +200,6 @@ status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
  *  @param args an arguments Message, as produced by ParseArgs() or ParseFile() or etc.
  */
 void HandleStandardDaemonArgs(const Message & args);
-
-/** Given an ASCII representation of a non-negative number, 
- *  returns that number as a uint64. 
- */
-uint64 Atoull(const char * str);
-
-/** Similar to Atoll(), but handles negative numbers as well */
-int64 Atoll(const char * str);
-
-/** This class represents all the fields necessary to present a human with a human-readable time/date stamp.  Objects of this class are typically populated by the GetHumanReadableTimeValues() function, below. */
-class HumanReadableTimeValues
-{
-public:
-   /** Default constructor */
-   HumanReadableTimeValues() : _year(0), _month(0), _dayOfMonth(0), _dayOfWeek(0), _hour(0), _minute(0), _second(0), _microsecond(0) {/* empty */}
-
-   /** Explicit constructor
-     * @param year The year value (e.g. 2005)
-     * @param month The month value (January=0, February=1, etc)
-     * @param dayOfMonth The day within the month (ranges from 0 to 30, inclusive)
-     * @param dayOfWeek The day within the week (Sunday=0, Monday=1, etc)
-     * @param hour The hour within the day (ranges from 0 to 23, inclusive)
-     * @param minute The minute within the hour (ranges from 0 to 59, inclusive)
-     * @param second The second within the minute (ranges from 0 to 59, inclusive)
-     * @param microsecond The microsecond within the second (ranges from 0 to 999999, inclusive)
-     */
-   HumanReadableTimeValues(int year, int month, int dayOfMonth, int dayOfWeek, int hour, int minute, int second, int microsecond) : _year(year), _month(month), _dayOfMonth(dayOfMonth), _dayOfWeek(dayOfWeek), _hour(hour), _minute(minute), _second(second), _microsecond(microsecond) {/* empty */}
-
-   /** Returns the year value (e.g. 2005) */
-   int GetYear() const {return _year;}
-
-   /** Returns the month value (January=0, February=1, March=2, ..., December=11). */
-   int GetMonth() const {return _month;}
-
-   /** Returns the day-of-month value (which ranges between 0 and 30, inclusive). */
-   int GetDayOfMonth() const {return _dayOfMonth;}
-
-   /** Returns the day-of-week value (Sunday=0, Monday=1, Tuesday=2, Wednesday=3, Thursday=4, Friday=5, Saturday=6). */
-   int GetDayOfWeek() const {return _dayOfWeek;}
-
-   /** Returns the hour value (which ranges between 0 and 23, inclusive). */
-   int GetHour() const {return _hour;}
-
-   /** Returns the minute value (which ranges between 0 and 59, inclusive). */
-   int GetMinute() const {return _minute;}
-
-   /** Returns the second value (which ranges between 0 and 59, inclusive). */
-   int GetSecond() const {return _second;}
-
-   /** Returns the microsecond value (which ranges between 0 and 999999, inclusive). */
-   int GetMicrosecond() const {return _microsecond;}
-
-   /** Sets the year value (e.g. 2005) */
-   void SetYear(int year) {_year = year;}
-
-   /** Sets the month value (January=0, February=1, March=2, ..., December=11). */
-   void SetMonth(int month) {_month = month;}
-
-   /** Sets the day-of-month value (which ranges between 0 and 30, inclusive). */
-   void SetDayOfMonth(int dayOfMonth) {_dayOfMonth = dayOfMonth;}
-
-   /** Sets the day-of-week value (Sunday=0, Monday=1, Tuesday=2, Wednesday=3, Thursday=4, Friday=5, Saturday=6). */
-   void SetDayOfWeek(int dayOfWeek) {_dayOfWeek = dayOfWeek;}
-
-   /** Sets the hour value (which ranges between 0 and 23, inclusive). */
-   void SetHour(int hour) {_hour = hour;}
-
-   /** Sets the minute value (which ranges between 0 and 59, inclusive). */
-   void SetMinute(int minute) {_minute = minute;}
-
-   /** Sets the second value (which ranges between 0 and 59, inclusive). */
-   void SetSecond(int second) {_second = second;}
-
-   /** Sets the microsecond value (which ranges between 0 and 999999, inclusive). */
-   void SetMicrosecond(int microsecond) {_microsecond = microsecond;}
-
-   /** Equality operator. */
-   bool operator == (const HumanReadableTimeValues & rhs) const
-   {
-      return ((_year       == rhs._year)&&
-              (_month      == rhs._month)&&
-              (_dayOfMonth == rhs._dayOfMonth)&&
-              (_dayOfWeek  == rhs._dayOfWeek)&&
-              (_hour       == rhs._hour)&&
-              (_minute     == rhs._minute)&&
-              (_second     == rhs._second)&&
-              (_microsecond == rhs._microsecond));
-   }
-
-   /** Inequality operator */
-   bool operator != (const HumanReadableTimeValues & rhs) const {return !(*this==rhs);}
-
-   /** This method will expand the following tokens in the specified String out to the following values:
-     * %Y -> Current year (e.g. "2005")
-     * %M -> Current month (e.g. "01" for January, up to "12" for December)
-     * %Q -> Current month as a string (e.g. "January", "February", "March", etc)
-     * %D -> Current day of the month (e.g. "01" through "31")
-     * %d -> Current day of the month (e.g. "01" through "31") (synonym for %D)
-     * %W -> Current day of the week (e.g. "1" through "7")
-     * %w -> Current day of the week (e.g. "1" through "7") (synonym for %W)
-     * %q -> Current day of the week as a string (e.g. "Sunday", "Monday", "Tuesday", etc)
-     * %h -> Current hour (military style:  e.g. "00" through "23")
-     * %m -> Current minute (e.g. "00" through "59")
-     * %s -> Current second (e.g. "00" through "59")
-     * %x -> Current microsecond (e.g. "000000" through "999999", inclusive)
-     * %r -> A random number between 0 and (2^64-1) (for spicing up the uniqueness of a filename)
-     * %T -> A human-readable time/date stamp, for convenience (e.g. "January 01 2005 23:59:59")
-     * %t -> A numeric time/date stamp, for convenience (e.g. "2005/01/01 15:23:59")
-     * %f -> A filename-friendly numeric time/date stamp, for convenience (e.g. "2005-01-01_15h23m59")
-     * %% -> A single percent sign.
-     * @param s The string to expand the tokens of
-     * @returns The same string, except with any and all of the above tokens expanded as described.
-     */
-   String ExpandTokens(const String & s) const;
-
-private:
-   int _year;
-   int _month;
-   int _dayOfMonth;
-   int _dayOfWeek;
-   int _hour;
-   int _minute;
-   int _second;
-   int _microsecond;
-};
-
-/** Given a uint64 representing a time in microseconds since 1970,
-  * (e.g. as returned by GetCurrentTime64()), returns the same value
-  * as a set of more human-friendly units.  
-  *
-  * @param timeUS a time in microseconds since 1970.  Note that the interpretation of this value depends on
-  *               the value passed in to the (timeType) argument.
-  * @param retValues On success, this object will be filled out with the various human-readable time/date value fields
-  *                  that human beings like to read.  See the HumanReadableTimeValues class documentation for details.
-  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (timeUS) will be interpreted as being in UTC, 
-  *                 and will be converted to the local time zone as part of the conversion process.  If set to 
-  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then (timeUS) will be assumed to be already 
-  *                 in the local time zone, and no time zone conversion will be done.
-  *                 Note that the values returned are ALWAYS in reference to local time 
-  *                 zone -- the (timeType) argument governs how (timeUS) should be interpreted.  
-  *                 (timeType) does NOT control the meaning of the return values.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure.
-  */
-status_t GetHumanReadableTimeValues(uint64 timeUS, HumanReadableTimeValues & retValues, uint32 timeType = MUSCLE_TIMEZONE_UTC);
-
-/** Given a uint64 representing a time in microseconds since 1970,
-  * (e.g. as returned by GetCurrentTime64()), returns an equivalent 
-  * human-readable time/date string.  The format of the returned 
-  * time string is "YYYY/MM/DD HH:MM:SS".
-  * @param timeUS a time in microseconds since 1970.  Note that the interpretation of this value depends on
-  *               the value passed in to the (timeType) argument.
-  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (timeUS) will be interpreted as being in UTC, 
-  *                 and will be converted to the local time zone as part of the conversion process.  If set to 
-  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then (timeUS) will be assumed to be already 
-  *                 in the local time zone, and no time zone conversion will be done.
-  * @returns The equivalent ASCII string, or "" on failure.
-  */
-String GetHumanReadableTimeString(uint64 timeVal, uint32 timeType = MUSCLE_TIMEZONE_UTC);
-
-/** Does the inverse operation of GetHumanReadableTimeString():
-  * Given a time string of the format "YYYY/MM/DD HH:MM:SS",
-  * returns the equivalent time value in microseconds since 1970.
-  * @param an ASCII string representing a time.
-  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then the returned value will be UTC. 
-  *                 If set to MUSCLE_TIMEZONE_LOCAL, on the other hand, then the returned value will
-  *                 be expressed as a time of the local time zone.
-  * @returns The equivalent time value, or zero on failure.
-  */
-uint64 ParseHumanReadableTimeString(const String & str, uint32 timeType = MUSCLE_TIMEZONE_UTC);
-
-/** Given a string that represents a time interval, returns the equivalent value in microsends.
-  * A time interval should be expressed as a non-negative integer, optionally followed by
-  * any of the following suffixes:
-  *   us = microseconds
-  *   ms = milliseconds
-  *   s  = seconds
-  *   m  = minutes
-  *   h  = hours
-  *   d  = days
-  *   w  = weeks
-  * As a special case, the string "forever" will parse to MUSCLE_TIME_NEVER.
-  * If no suffix is supplied, the units are presumed to be in seconds.
-  * @param str The string to parse 
-  * @returns a time interval value, in microseconds.
-  */
-uint64 ParseHumanReadableTimeIntervalString(const String & str);
 
 /** Similar to the standard exit() call, except that no global object destructors will
   * be called.  This is sometimes useful, e.g. in fork() situations where you want the
@@ -498,6 +336,7 @@ void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = N
 void PrintHexBytes(const Queue<uint8> & bytes, const char * optDesc = NULL, uint32 numColumns = 16, FILE * optFile = NULL);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
   * @param bytes The bytes to print out
   * @param numBytes How many bytes (bytes) points to
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
@@ -505,18 +344,17 @@ void PrintHexBytes(const Queue<uint8> & bytes, const char * optDesc = NULL, uint
   *                   out with this many bytes per row.  Defaults to 16.
   *                   If set to zero, then all the output will be placed
   *                   on a single line, using a simpler hex-only format.
-  * @param optFile Optional file to print the output to.  If left NULL, printing will go to stdout.
   */
 void LogHexBytes(int logLevel, const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
   * @param bytes A Queue of uint8s representing the bytes to print out.
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
   * @param numColumns If specified non zero, then the bytes will be printed
   *                   out with this many bytes per row.  Defaults to 16.
   *                   If set to zero, then all the output will be placed
   *                   on a single line, using a simpler hex-only format.
-  * @param optFile Optional file to print the output to.  If left NULL, printing will go to stdout.
   */
 void LogHexBytes(int logLevel, const Queue<uint8> & bytes, const char * optDesc = NULL, uint32 numColumns = 16);
 
@@ -596,6 +434,8 @@ String GetHumanReadableProgramNameFromArgv0(const char * argv0);
   */
 void Win32AllocateStdioConsole();
 #endif
+
+/** @} */ // end of miscutilityfunctions doxygen group
 
 }; // end namespace muscle
 

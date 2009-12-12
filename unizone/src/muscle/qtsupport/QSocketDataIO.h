@@ -74,8 +74,8 @@ public:
     */
    virtual void Shutdown() {if (_socket) _socket->close(); delete _socket; _socket = NULL; _socketRef.Reset();}
 
-   /** Returns the fd of our QSocket, if any. */
-   virtual const ConstSocketRef & GetSelectSocket() const {return _socket ? _socketRef : GetNullSocket();}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return _socket ? _socketRef : GetNullSocket();}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _socket ? _socketRef : GetNullSocket();}
 
    /**
     * Returns the held QSocket object (in case you need to access it directly for some reason)

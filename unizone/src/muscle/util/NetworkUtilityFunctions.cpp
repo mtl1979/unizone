@@ -124,16 +124,6 @@ static void InitializeSockAddr4(struct sockaddr_in & addr, const ip_address * op
 # define DECLARE_SOCKADDR(addr, ip, port) struct sockaddr_in addr; InitializeSockAddr4(addr, ip, port);
 #endif
 
-int IPAddressCompareFunc(const ip_address & a1, const ip_address & a2, void *)
-{
-#ifdef MUSCLE_USE_IPV6
-   int cmpHi = muscleCompare(a1.GetHighBits(), a2.GetHighBits());
-   return cmpHi ? cmpHi : muscleCompare(a1.GetLowBits(), a2.GetLowBits());
-#else
-   return muscleCompare(a1, a2);
-#endif
-}
-
 ConstSocketRef CreateUDPSocket()
 {
    ConstSocketRef ret = GetConstSocketRefFromPool(socket(MUSCLE_SOCKET_FAMILY, SOCK_DGRAM, 0));
@@ -560,7 +550,7 @@ static void ExpandLocalhostAddress(ip_address & ipAddress)
          if (_cachedLocalhostAddress == invalidIP)
          {
             Queue<NetworkInterfaceInfo> ifs;
-            (void) GetNetworkInterfaceInfos(ifs, GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES);  // just to set _cachedLocalhostAddress
+            (void) GetNetworkInterfaceInfos(ifs, GNII_INCLUDE_ENABLED_INTERFACES|GNII_INCLUDE_NONLOOPBACK_INTERFACES|GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES);  // just to set _cachedLocalhostAddress
          }
          altRet = _cachedLocalhostAddress;
       }
@@ -820,24 +810,24 @@ status_t SetSocketReceiveBufferSize(const ConstSocketRef & sock, uint32 receiveB
 #endif
 }
 
-NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(invalidIP), _netmask(invalidIP), _broadcastIP(invalidIP)
+NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(invalidIP), _netmask(invalidIP), _broadcastIP(invalidIP), _enabled(false)
 {
    // empty
 }
 
-NetworkInterfaceInfo :: NetworkInterfaceInfo(const String &name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP) : _name(name), _desc(desc), _ip(ip), _netmask(netmask), _broadcastIP(broadcastIP)
+NetworkInterfaceInfo :: NetworkInterfaceInfo(const String &name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP, bool enabled) : _name(name), _desc(desc), _ip(ip), _netmask(netmask), _broadcastIP(broadcastIP), _enabled(enabled)
 {
    // empty
 }
 
 String NetworkInterfaceInfo :: ToString() const
 {
-   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5]").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP));
+   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5] Enabled=%6").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP)).Arg((int8)_enabled);
 }
 
 uint32 NetworkInterfaceInfo :: HashCode() const
 {
-   return _name.HashCode() + _desc.HashCode() + GetHashCodeForIPAddress(_ip) + GetHashCodeForIPAddress(_netmask) + GetHashCodeForIPAddress(_broadcastIP);
+   return _name.HashCode() + _desc.HashCode() + GetHashCodeForIPAddress(_ip) + GetHashCodeForIPAddress(_netmask) + GetHashCodeForIPAddress(_broadcastIP) + _enabled;
 }
 
 #if defined(USE_GETIFADDRS) || defined(WIN32)
@@ -868,6 +858,8 @@ static ip_address SockAddrToIPAddr(const struct sockaddr * a)
 bool IsIPv4Address(const ip_address & ip)
 {
 #ifdef MUSCLE_USE_IPV6
+   if ((ip == invalidIP)||(ip == localhostIP)) return false;  // :: and ::1 are considered to be IPv6 addresses
+
    if (ip.GetHighBits() != 0) return false;
    uint64 lb = (ip.GetLowBits()>>32);
    return ((lb == 0)||(lb == 0xFFFF));  // 32-bit and IPv4-mapped, respectively
@@ -910,16 +902,19 @@ bool IsStandardLoopbackDeviceAddress(const ip_address & ip)
 #endif
 }
 
-static bool IsGNIIBitMatch(const ip_address & ip, uint32 includeBits)
+static bool IsGNIIBitMatch(const ip_address & ip, bool isInterfaceEnabled, uint32 includeBits)
 {
-   if ((includeBits & GNII_INCLUDE_ALL_INTERFACES) == 0)
-   {
-      if (((includeBits & GNII_INCLUDE_LOOPBACK_INTERFACES) == 0)&&(IsStandardLoopbackDeviceAddress(ip))) return false;
+   if (((includeBits & GNII_INCLUDE_ENABLED_INTERFACES)  == 0)&&( isInterfaceEnabled)) return false;
+   if (((includeBits & GNII_INCLUDE_DISABLED_INTERFACES) == 0)&&(!isInterfaceEnabled)) return false;
 
-      bool isIPv4 = IsIPv4Address(ip);
-      if (( isIPv4)&&((includeBits & GNII_INCLUDE_IPV4_INTERFACES) == 0)) return false;
-      if ((!isIPv4)&&((includeBits & GNII_INCLUDE_IPV6_INTERFACES) == 0)) return false;
-   }
+   bool isLoopback = IsStandardLoopbackDeviceAddress(ip);
+   if (((includeBits & GNII_INCLUDE_LOOPBACK_INTERFACES)    == 0)&&( isLoopback)) return false;
+   if (((includeBits & GNII_INCLUDE_NONLOOPBACK_INTERFACES) == 0)&&(!isLoopback)) return false;
+
+   bool isIPv4 = IsIPv4Address(ip);
+   if (( isIPv4)&&((includeBits & GNII_INCLUDE_IPV4_INTERFACES) == 0)) return false;
+   if ((!isIPv4)&&((includeBits & GNII_INCLUDE_IPV6_INTERFACES) == 0)) return false;
+
    return true;
 }
 
@@ -949,12 +944,13 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
             ip_address unicastIP   = SockAddrToIPAddr(p->ifa_addr);
             ip_address netmask     = SockAddrToIPAddr(p->ifa_netmask);
             ip_address broadcastIP = SockAddrToIPAddr(p->ifa_broadaddr);
-            if ((unicastIP != invalidIP)&&(IsGNIIBitMatch(unicastIP, includeBits)))
+            bool isEnabled         = ((p->ifa_flags & IFF_UP) != 0);
+            if ((unicastIP != invalidIP)&&(IsGNIIBitMatch(unicastIP, isEnabled, includeBits)))
             {
 #ifdef MUSCLE_USE_IPV6
                unicastIP.SetInterfaceIndex(if_nametoindex(p->ifa_name));  // so the user can find out; it will be ignore by the TCP stack
 #endif
-               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", unicastIP, netmask, broadcastIP)) == B_NO_ERROR)
+               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", unicastIP, netmask, broadcastIP, isEnabled)) == B_NO_ERROR)
                {
                   if (_cachedLocalhostAddress == invalidIP) _cachedLocalhostAddress = unicastIP;
                }
@@ -1015,7 +1011,8 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
                while(ua)
                {
                   ip_address unicastIP = SockAddrToIPAddr(ua->Address.lpSockaddr);
-                  if (IsGNIIBitMatch(unicastIP, includeBits))
+                  bool isEnabled = true;  // for now.  TODO:  See if GetAdaptersAddresses() reports disabled interfaces
+                  if (IsGNIIBitMatch(unicastIP, isEnabled, includeBits))
                   {
                      ip_address broadcastIP, netmask;
                      uint32 numLocalAddrs = (bytesReturned/sizeof(INTERFACE_INFO));
@@ -1037,7 +1034,7 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
                      char outBuf[512];
                      if (WideCharToMultiByte(CP_UTF8, 0, pCurrAddresses->Description, -1, outBuf, sizeof(outBuf), NULL, NULL) <= 0) outBuf[0] = '\0';
 
-                     if (results.AddTail(NetworkInterfaceInfo(pCurrAddresses->AdapterName, outBuf, unicastIP, netmask, broadcastIP)) == B_NO_ERROR)
+                     if (results.AddTail(NetworkInterfaceInfo(pCurrAddresses->AdapterName, outBuf, unicastIP, netmask, broadcastIP, isEnabled)) == B_NO_ERROR)
                      {
                         if (_cachedLocalhostAddress == invalidIP) _cachedLocalhostAddress = unicastIP;
                      }

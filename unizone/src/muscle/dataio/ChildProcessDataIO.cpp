@@ -428,7 +428,7 @@ void ChildProcessDataIO :: ChildProcessReadyToRun()
    // empty
 }
 
-const ConstSocketRef & ChildProcessDataIO :: GetSelectSocket() const
+const ConstSocketRef & ChildProcessDataIO :: GetChildSelectSocket() const
 {
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    return _blocking ? GetNullSocket() : _masterNotifySocket;

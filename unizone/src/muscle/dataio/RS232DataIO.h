@@ -44,12 +44,19 @@ public:
    /** Closes our held serial port */
    virtual void Shutdown();
 
-   /** Returns a socket that can be select()'d on for notifications of read/write availability.
+   /** Returns a socket that can be select()'d on for notifications of read availability.
     *  Even works under Windows (in non-blocking mode, anyway), despite Microsoft's best efforts 
     *  to make such a thing impossible :^P Note that you should only use this socket with select(); 
-    *  to read or write to/from the serial port, call Read() and Write() instead.
+    *  to read from the serial port, call Read() instead.
     */
-   virtual const ConstSocketRef & GetSelectSocket() const;
+   virtual const ConstSocketRef & GetReadSelectSocket() const {return GetSerialSelectSocket();}
+
+   /** Returns a socket that can be select()'d on for notifications of write availability.
+    *  Even works under Windows (in non-blocking mode, anyway), despite Microsoft's best efforts 
+    *  to make such a thing impossible :^P Note that you should only use this socket with select(); 
+    *  to write to the serial port, call Write() instead.
+    */
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return GetSerialSelectSocket();}
 
    /** Returns true iff we have a valid serial port to communicate through */
    bool IsPortAvailable() const;
@@ -63,6 +70,7 @@ public:
 
 private:
    void Close();
+   const ConstSocketRef & GetSerialSelectSocket() const;
 
    bool _blocking;
 #if defined(WIN32) || defined(CYGWIN)

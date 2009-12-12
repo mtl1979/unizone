@@ -49,7 +49,8 @@ public:
    virtual uint64 GetOutputStallLimit() const {return _slaveIO() ? _slaveIO()->GetOutputStallLimit() : MUSCLE_TIME_NEVER;}
    virtual void FlushOutput() {if (_slaveIO()) _slaveIO()->FlushOutput();}
    virtual void Shutdown() {if (_slaveIO()) _slaveIO()->Shutdown(); _slaveIO.Reset(); _outputBuffer.Clear(true); _inputBuffer.Clear(true); _inputBufferSizeBytesRead = 0;}
-   virtual const ConstSocketRef & GetSelectSocket() const {return _slaveIO() ? _slaveIO()->GetSelectSocket() : GetNullSocket();}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return _slaveIO() ? _slaveIO()->GetReadSelectSocket()  : GetNullSocket();}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _slaveIO() ? _slaveIO()->GetWriteSelectSocket() : GetNullSocket();}
    virtual int64 GetLength() {return _slaveIO() ? _slaveIO()->GetLength() : -1;}
 
    virtual bool HasBufferedOutput() const {return (_outputBufferBytesSent < _outputBuffer.GetNumBytes());}

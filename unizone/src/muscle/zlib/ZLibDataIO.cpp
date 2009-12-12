@@ -218,9 +218,14 @@ void ZLibDataIO :: Shutdown()
    }
 }
 
-const ConstSocketRef & ZLibDataIO :: GetSelectSocket() const
+const ConstSocketRef & ZLibDataIO :: GetReadSelectSocket() const
 {
-   return (_slaveIO()) ? _slaveIO()->GetSelectSocket() : GetNullSocket();
+   return (_slaveIO()) ? _slaveIO()->GetReadSelectSocket() : GetNullSocket();
+}
+
+const ConstSocketRef & ZLibDataIO :: GetWriteSelectSocket() const
+{
+   return (_slaveIO()) ? _slaveIO()->GetWriteSelectSocket() : GetNullSocket();
 }
 
 status_t ZLibDataIO :: GetReadByteTimeStamp(int32 whichByte, uint64 & retStamp) const

@@ -44,7 +44,8 @@ public:
    /** Will tell the I/O thread to shut down its I/O, asynchronously. */
    virtual void Shutdown();
 
-   virtual const ConstSocketRef & GetSelectSocket() const {return const_cast<AsyncDataIO &>(*this).GetOwnerWakeupSocket();}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return const_cast<AsyncDataIO &>(*this).GetOwnerWakeupSocket();}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return const_cast<AsyncDataIO &>(*this).GetOwnerWakeupSocket();}
 
    /** AsyncDataIO::GetLength() always returns -1, since the current length of the I/O is not well-defined outside of the internal I/O thread. */
    virtual int64 GetLength() {return -1;}

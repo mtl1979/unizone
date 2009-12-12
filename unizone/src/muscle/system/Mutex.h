@@ -39,7 +39,7 @@
 # elif defined(__ATHEOS__)
 #  include <util/locker.h>
 # else
-#  error "Mutex:  threading support not implemented for this platform.  You'll need to add code to the MUSCLE Mutex class for your platform, or add -DMUSCLE_SINGLE_THREAD_ONLY to your build line if your program is single-threaded or for some other reason doesn't need to worry about locking"
+#  error "Mutex:  threading support not implemented for this platform.  You'll need to add code to the MUSCLE Mutex class for your platform, or add -DMUSCLE_SINGLE_THREAD_ONLY to your build line if your program is single-threaded or for some other reason does not need to worry about locking"
 # endif
 #endif
 
@@ -66,7 +66,7 @@ public:
 # if defined(MUSCLE_USE_PTHREADS)
       // empty
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-      , _locker(_isEnabled ? CreateMutex(NULL, false, NULL) : NULL)
+      // empty
 # elif defined(MUSCLE_QT_HAS_THREADS)
 #  if (QT_VERSION >= 0x040000)
       , _locker(QMutex::Recursive)
@@ -86,6 +86,8 @@ public:
          pthread_mutexattr_init(&mutexattr);                              // Note:  If this code doesn't compile, then
          pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);  // you may need to add -D_GNU_SOURCE to your
          pthread_mutex_init(&_locker, &mutexattr);                        // Linux Makefile to enable it properly.
+# elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
+         InitializeCriticalSection(&_locker);
 # endif
       }
 #endif
@@ -112,7 +114,8 @@ public:
 # if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-      return ((_locker)&&(WaitForSingleObject(_locker, INFINITE) == WAIT_FAILED)) ? B_ERROR : B_NO_ERROR;
+      EnterCriticalSection(&_locker);
+      return B_NO_ERROR;
 # elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.lock();
       return B_NO_ERROR;
@@ -138,7 +141,8 @@ public:
 # if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_unlock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-      return ((_locker)&&(ReleaseMutex(_locker))) ? B_NO_ERROR : B_ERROR;
+      LeaveCriticalSection(&_locker);
+      return B_NO_ERROR;
 # elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.unlock();
       return B_NO_ERROR;
@@ -163,7 +167,7 @@ private:
 # if defined(MUSCLE_USE_PTHREADS)
          pthread_mutex_destroy(&_locker);
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-         CloseHandle(_locker);
+         DeleteCriticalSection(&_locker);
 # elif defined(MUSCLE_QT_HAS_THREADS)
          // do nothing
 # endif
@@ -178,7 +182,7 @@ private:
 # if defined(MUSCLE_USE_PTHREADS)
    mutable pthread_mutex_t _locker;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
-   mutable ::HANDLE _locker;
+   mutable CRITICAL_SECTION _locker;
 # elif defined(MUSCLE_QT_HAS_THREADS)
    mutable QMutex _locker;
 # elif defined(__BEOS__) || defined(__HAIKU__)
@@ -202,14 +206,14 @@ public:
       else
       {
          _isMutexLocked = false;
-         printf("MutexGuard %p:  couldn't lock mutex %p!\n", this, &_mutex);
+         printf("MutexGuard %p:  could not lock mutex %p!\n", this, &_mutex);
       }
    }
 
    /** Destructor.  Unlocks the Mutex previously specified in the constructor. */
    ~MutexGuard()
    {
-      if ((_isMutexLocked)&&(_mutex.Unlock() != B_NO_ERROR)) printf("MutexGuard %p:  couldn't unlock mutex %p!\n", this, &_mutex);
+      if ((_isMutexLocked)&&(_mutex.Unlock() != B_NO_ERROR)) printf("MutexGuard %p:  could not unlock mutex %p!\n", this, &_mutex);
    }
 
    /** Returns true iff we successfully locked our Mutex. */

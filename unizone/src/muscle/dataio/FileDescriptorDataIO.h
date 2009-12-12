@@ -79,8 +79,8 @@ public:
    /** Returns our current position in the file */
    virtual int64 GetPosition() const;
 
-   /** Returns our file descriptor */
-   virtual const ConstSocketRef & GetSelectSocket() const {return _fd;}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return _fd;}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _fd;}
 
 private:
    ConstSocketRef _fd;

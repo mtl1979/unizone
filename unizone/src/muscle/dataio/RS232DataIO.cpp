@@ -248,7 +248,7 @@ void RS232DataIO :: FlushOutput()
    }
 }
 
-const ConstSocketRef & RS232DataIO :: GetSelectSocket() const
+const ConstSocketRef & RS232DataIO :: GetSerialSelectSocket() const
 {
 #ifdef USE_WINDOWS_IMPLEMENTATION
    return _blocking ? GetNullSocket() : _masterNotifySocket;

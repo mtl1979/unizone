@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "support/MuscleSupport.h"
+#include "syslog/SysLog.h"  // for MUSCLE_TIMEZONE_*
 
 #ifndef WIN32
 # include <sys/time.h>
@@ -20,6 +21,12 @@
 #endif
 
 namespace muscle {
+
+/** @defgroup timeutilityfunctions The TimeUtilityFunctions function API
+ *  These functions are all defined in TimeUtilityFunctions.h, and are stand-alone
+ *  inline functions that do various time-related calculations
+ *  @{
+ */
 
 /** A value that GetPulseTime() can return to indicate that Pulse() should never be called. */
 #define MUSCLE_TIME_NEVER ((uint64)-1) // (9223372036854775807LL)
@@ -83,12 +90,6 @@ inline void SubtractTimeVal(struct timeval & subtractFromThis, const struct time
    }
 }
 
-/** timestamp types used by GetCurrentTime64(), etc */
-enum {
-   MUSCLE_TIMEZONE_UTC = 0, // Universal Co-ordinated Time (formerly Greenwhich Mean Time)
-   MUSCLE_TIMEZONE_LOCAL    // Host machine's local time (depends on local time zone settings)
-};
-
 /** Returns the current real-time clock time as a uint64.  The returned value is expressed
  *  as microseconds since the beginning of the year 1970.
  *  @param timeType if left as MUSCLE_TIMEZONE_UTC (the default), the value returned will be the current UTC time.  
@@ -110,7 +111,7 @@ uint64 GetCurrentTime64(uint32 timeType=MUSCLE_TIMEZONE_UTC);
 #if defined(__BEOS__) || defined(__HAIKU__)
 inline uint64 GetRunTime64() {return system_time();}
 #elif defined(TARGET_PLATFORM_XENOMAI)
-inline uint64 GetRunTime64() {return rt_timer_ticks2ns(rt_timer_read())/1000;}
+inline uint64 GetRunTime64() {return rt_timer_tsc2ns(rt_timer_tsc())/1000;}
 #else
 uint64 GetRunTime64();
 #endif
@@ -122,7 +123,7 @@ uint64 GetRunTime64();
 #if defined(__BEOS__) || defined(__HAIKU__)
 inline status_t Snooze64(uint64 microseconds) {return snooze(microseconds);}
 #else
-status_t Snooze64(uint64 microseconds);
+status_t Snooze64(uint64 micros);
 #endif
 
 /** Convenience function:  Returns true no more often than once every (interval).
@@ -175,6 +176,8 @@ inline bool OnceEvery(uint64 interval, uint64 & lastTime)
    count++; \
    if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: " UINT64_FORMAT_SPEC "/s\n", x, (1000000*((uint64)count))/(now-startTime)); \
 }
+
+/** @} */ // end of timeutilityfunctions doxygen group
 
 }; // end namespace muscle
 

@@ -859,7 +859,7 @@ Version %1</translation>
     <message>
         <location filename="util.cpp" line="355"/>
         <source>DSL-2M</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DSL-2M</translation>
     </message>
     <message>
         <location filename="util.cpp" line="356"/>
@@ -1250,7 +1250,7 @@ Date: %4</translation>
     <message>
         <location filename="menubar.cpp" line="59"/>
         <source>Shift+F11</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Shift-F11</translation>
     </message>
 </context>
 <context>

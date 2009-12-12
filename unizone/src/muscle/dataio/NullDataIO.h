@@ -14,9 +14,10 @@ class NullDataIO : public DataIO
 {
 public:
    /** Constructor. 
-     * @param selectSocket Optional ConstSocketRef to return in GetSelectSocket().  Defaults to a NULL ref.
+     * @param readSelectSocket  Optional ConstSocketRef to return in GetReadSelectSocket().   Defaults to a NULL ref.
+     * @param writeSelectSocket Optional ConstSocketRef to return in GetWriteSelectSocket().  Defaults to a NULL ref.
      */
-   NullDataIO(const ConstSocketRef & selectSocket = ConstSocketRef()) : _selectSocket(selectSocket), _shutdown(false) {/* empty */}
+   NullDataIO(const ConstSocketRef & readSelectSocket = ConstSocketRef(), const ConstSocketRef & writeSelectSocket = ConstSocketRef()) : _readSelectSocket(readSelectSocket), _writeSelectSocket(writeSelectSocket), _shutdown(false) {/* empty */}
 
    /** Virtual Destructor, to keep C++ honest */
    virtual ~NullDataIO() {/* empty */}
@@ -56,11 +57,15 @@ public:
    /** Disable us! */ 
    virtual void Shutdown() {_shutdown = true;}
 
-   /** Returns the socket specified in our constructor (if any) */
-   virtual const ConstSocketRef & GetSelectSocket() const {return _selectSocket;}
+   /** Returns the read socket specified in our constructor (if any) */
+   virtual const ConstSocketRef & GetReadSelectSocket() const {return _readSelectSocket;}
+
+   /** Returns the write socket specified in our constructor (if any) */
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _writeSelectSocket;}
 
 private:
-   ConstSocketRef _selectSocket;
+   ConstSocketRef _readSelectSocket;
+   ConstSocketRef _writeSelectSocket;
    bool _shutdown;
 };
 

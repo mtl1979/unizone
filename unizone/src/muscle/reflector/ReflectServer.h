@@ -175,17 +175,17 @@ public:
    /** Returns the number of bytes that are currently available to be allocated, or MUSCLE_NO_LIMIT
      * if no memory watcher was specified in the constructor.
      */
-   uint32 GetNumAvailableBytes() const;
+   uint64 GetNumAvailableBytes() const;
  
    /** Returns the maximum number of bytes that may be allocated at any given time, or MUSCLE_NO_LIMIT
      * if no memory watcher was specified in the constructor. 
      */
-   uint32 GetMaxNumBytes() const;
+   uint64 GetMaxNumBytes() const;
  
    /** Returns the number of bytes that are currently allocated, or MUSCLE_NO_LIMIT
      * if no memory watcher was specified in the constructor. 
      */
-   uint32 GetNumUsedBytes() const;
+   uint64 GetNumUsedBytes() const;
 
    /** Returns a reference to a table mapping IP addresses to custom strings...
      * This table may be examined or altered.  When a new connection is accepted,

@@ -161,6 +161,7 @@ void
 NetClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
+	Cleanup();
 	fLoggedIn = false;
 	fLoginTime = 0;
 
@@ -169,8 +170,8 @@ NetClient::Disconnect()
 		WinShareWindow *win = GetWindow(this);
 		if (win)
 		{
-         win->setCaption("Unizone");
-         win->setStatus(QString::null, 3);
+			win->setCaption("Unizone");
+			win->setStatus(QString::null, 3);
 		}
 		// Reset() implies ShutdownInternalThread();
 		//
@@ -183,7 +184,6 @@ NetClient::Disconnect()
 			WUserRef uref;
 			it.GetNextValue(uref);
 			RemoveUser(uref);
-//			it = fUsers.GetIterator();
 		}
 		PRINT("EMITTING DisconnectedFromServer()\n");
 		emit DisconnectedFromServer();

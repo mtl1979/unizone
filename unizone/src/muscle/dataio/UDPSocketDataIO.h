@@ -76,8 +76,8 @@ public:
     */
    virtual void Shutdown() {_sock.Reset();}
 
-   /** Returns our socket descriptor */
-   virtual const ConstSocketRef & GetSelectSocket() const {return _sock;}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return _sock;}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _sock;}
 
    /** Call this to make our Write() method use sendto() with the specified
      * destination address and port.  Calling this with (invalidIP, 0) will

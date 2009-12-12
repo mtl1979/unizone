@@ -3,27 +3,19 @@
 #ifndef QMuscleSupport_h
 #define QMuscleSupport_h
 
+#include "support/MuscleSupport.h"  // for PODHashFunctor, etc
+
 #if QT_VERSION >= 0x040000
 # include <qhash.h>
 #else
 # include "util/String.h"
 #endif
 
-#include "support/MuscleSupport.h"  // for uint32, etc
-
-#ifdef MUSCLE_USING_OLD_MICROSOFT_COMPILER
-# include "util/Hashtable.h"
-#endif
-
 namespace muscle {
-
-#ifndef MUSCLE_USING_OLD_MICROSOFT_COMPILER
-template <class T> class HashFunctor;
-#endif
 
 /** Enables the use of QStrings as keys in a MUSCLE Hashtable. */
 template <>
-class HashFunctor<QString>
+class PODHashFunctor<QString>
 {
 public:
    /** Returns a hash code for the given QString object.
@@ -34,9 +26,13 @@ public:
 #if QT_VERSION >= 0x040000
       return qHash(str);
 #else
-      return CStringHashFunc(str.utf8().data());
+      QByteArray ba = str.utf8();  // Yes, in Qt 3.x it's called utf8(), not toUtf8()
+      return muscle::CalculateHashCode(ba.data(), ba.size());
 #endif
    }
+
+   /** Returns true iff the two QStrings are equal. */
+   bool AreKeysEqual(const QString & k1, const QString & k2) const {return (k1==k2);}
 };
 
 };  // end namespace muscle

@@ -28,6 +28,7 @@ public:
    /** Given a buffer of raw data, returns a reference to a Buffer containing
      * the matching compressed data.
      * @param rawData The raw data to compress
+     * @param numBytes The number of bytes (rawData) points to
      * @param independent If true, the generated buffer will be decompressible on its
      *                    own, not depending on any previously decompressed data.
      *                    If false, the generated buffer will only be uncompressable
@@ -36,30 +37,36 @@ public:
      *                    compression efficiency, but allows for more flexibility.
      * @returna Reference to a buffer of compressed data on success, or a NULL reference on failure.
      */
-   ByteBufferRef Deflate(const ByteBuffer & rawData, bool independent);
+   ByteBufferRef Deflate(const uint8 * rawData, uint32 numBytes, bool independent);
 
    /** Given a buffer of compressed data, returns a reference to a Buffer containing
      * the matching raw data, or NULL on failure.
-     * @param rawData The compressed data to expand.  This should be a buffer that was previously
-     *                produced by the Deflate() method.
+     * @param compressedData The compressed data to expand.  This should be data that was previously produced by the Deflate() method.
+     * @param numBytes The number of bytes (compressedData) points to
      * @returns Reference to a buffer of decompressed data on success, or a NULL reference on failure.
      */
-   ByteBufferRef Inflate(const ByteBuffer & compressedData);
+   ByteBufferRef Inflate(const uint8 * compressedData, uint32 numBytes);
 
    /** Given a ByteBuffer that was previously produced by Deflate(), returns the number of bytes
      * of raw data that the buffer represents, or -1 if the buffer isn't recognized as valid.
-     * @param compressedData a ByteBuffer that was previously created by ZLibCodec::Deflate().
+     * @param compressedData Pointer to data that was previously created by ZLibCodec::Deflate().
+     * @param numBytes The number of bytes (compressedData) points to
      * @param optRetIsIndependent If non-NULL, the bool that this argument points to will have
      *                            the independent/non-independent state of this buffer written into it.
      *                            See Deflate()'s documentation for details.
      */
-   int32 GetInflatedSize(const ByteBuffer & compressedData, bool * optRetIsIndependent = NULL) const;
+   int32 GetInflatedSize(const uint8 * compressedData, uint32 numBytes, bool * optRetIsIndependent = NULL) const;
 
    /** Returns this codec's compression level, as was specified in the constructor.
      * Note that this value only affects what we compress to -- we can compress any compression
      * level, although the compression level cannot change from one Inflate() call to another.
      */
    int GetCompressionLevel() const {return _compressionLevel;}
+
+   // Convenience methods -- they work the same as their counterparts above, but take a ByteBuffer argument rather than a pointer and byte count.
+   ByteBufferRef Deflate(const ByteBuffer & rawData, bool independent) {return Deflate(rawData.GetBuffer(), rawData.GetNumBytes(), independent);}
+   ByteBufferRef Inflate(const ByteBuffer & compressedData) {return Inflate(compressedData.GetBuffer(), compressedData.GetNumBytes());}
+   int32 GetInflatedSize(const ByteBuffer & compressedData, bool * optRetIsIndependent = NULL) const {return GetInflatedSize(compressedData.GetBuffer(), compressedData.GetNumBytes(), optRetIsIndependent);}
 
 private:
    void InitStream(z_stream & stream);

@@ -7,7 +7,7 @@ namespace muscle {
 
 DataNode :: DataNode() : _children(NULL), _orderedIndex(NULL), _orderedCounter(0L)  // _parent and _cachedDataChecksum will be set in Init()/Reset(), not here
 {
-   _subscribers.SetKeyCompareFunction(StringCompareFunc);
+   // empty
 }
 
 DataNode :: ~DataNode() 
@@ -211,7 +211,6 @@ status_t DataNode :: PutChild(const DataNodeRef & node, StorageReflectSession * 
       {
          _children = newnothrow Hashtable<const String *, DataNodeRef>;
          if (_children == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-         _children->SetKeyCompareFunction(StringCompareFunc);
       }
       child->SetParent(this, optNotifyWithOnSetParent);
       DataNodeRef oldNode;

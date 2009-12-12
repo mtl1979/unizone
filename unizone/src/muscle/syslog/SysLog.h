@@ -3,8 +3,7 @@
 #ifndef MuscleSysLog_h
 #define MuscleSysLog_h
 
-#include <stdarg.h>
-#include "util/TimeUtilityFunctions.h"
+#include "support/MuscleSupport.h"
 
 namespace muscle {
 
@@ -86,14 +85,21 @@ inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxDepth = 64)
 #endif
 
 #ifdef MUSCLE_INLINE_LOGGING
-inline int ParseLogLevelKeyword(const char *) {return MUSCLE_LOG_NONE;}
-inline int GetFileLogLevel() {return MUSCLE_LOG_NONE;}
-inline String GetFileLogName() {return "";}
-inline int GetConsoleLogLevel() {return MUSCLE_LOG_NONE;}
-inline int GetMaxLogLevel() {return MUSCLE_LOG_NONE;}
-inline status_t SetFileLogLevel(int) {return B_NO_ERROR;}
-inline status_t SetFileLogName(const String &) {return B_NO_ERROR;}
-inline status_t SetConsoleLogLevel(int) {return B_NO_ERROR;}
+inline int ParseLogLevelKeyword(const char *)         {return MUSCLE_LOG_NONE;}
+inline int GetFileLogLevel()                          {return MUSCLE_LOG_NONE;}
+inline String GetFileLogName()                        {return "";}
+inline uint32 GetFileLogMaximumSize()                 {return MUSCLE_NO_LIMIT;}
+inline uint32 GetMaxNumLogFiles()                     {return MUSCLE_NO_LIMIT;}
+inline bool GetFileLogCompressionEnabled()            {return false;}
+inline int GetConsoleLogLevel()                       {return MUSCLE_LOG_NONE;}
+inline int GetMaxLogLevel()                           {return MUSCLE_LOG_NONE;}
+inline status_t SetFileLogLevel(int)                  {return B_NO_ERROR;}
+inline status_t SetFileLogName(const String &)        {return B_NO_ERROR;}
+inline status_t SetFileLogMaximumSize(uint32)         {return B_NO_ERROR;}
+inline status_t SetOldLogFilesPattern(const String &) {return B_NO_ERROR;}
+inline status_t SetMaxNumLogFiles(uint32)             {return B_NO_ERROR;}
+inline status_t SetFileLogCompressionEnabled(bool)    {return B_NO_ERROR;}
+inline status_t SetConsoleLogLevel(int)               {return B_NO_ERROR;}
 #else
 
 /** Returns the MUSCLE_LOG_* equivalent of the given keyword string 
@@ -116,6 +122,22 @@ int GetFileLogLevel();
  */
 String GetFileLogName();
 
+/** Returns the maximum size (in bytes) that we will allow the log file(s) to grow to.
+  * Default is MUSCLE_NO_LIMIT, i.e. unlimited file size.
+  */
+uint32 GetFileLogMaximumSize();
+
+/** Returns the maximum number of log files that should be written out before
+  * old log files start to be deleted.  Defaults to MUSCLE_NO_LIMIT, i.e.
+  * never delete any log files.
+  */
+uint32 GetMaxNumLogFiles();
+
+/** Returns true if log files are to be gzip-compressed when they are closed;
+  * or false if they should be left in raw text form.  Default value is false.
+  */
+bool GetFileLogCompressionEnabled();
+
 /** Returns the current log level for logging to stdout.
  *  @return a MUSCLE_LOG_* value.
  */
@@ -135,11 +157,48 @@ int GetMaxLogLevel();
 status_t SetFileLogLevel(int loglevel);
 
 /** Sets a user-specified name/path for the log file.  This name will
- *  be used if/when the log file is opened, instead of the default log file name.
+ *  be used whenever a log file is to be opened, instead of the default log file name.
  *  @param logName The string to use, or "" if you'd prefer a log file name be automatically generated.
+ *                 Note that this string can contain any of the special tokens described by the
+ *                 HumanReadableTimeValues::ExpandTokens() method, and these values will be expanded
+ *                 out when the log file is opened.
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
-status_t SetFileLogName(const String &);
+status_t SetFileLogName(const String & logName);
+
+/** Sets a user-specified maximum size for the log file.  Once a log file has reached this size,
+  * it will be closed and a new log file opened (note that the new log file's name will be the same
+  * as the old log file, overwriting it, unless you specify a date/time token via SetFileLogName()
+  * that will expand out differently).
+  * Default state is no limit on log file size.  (aka MUSCLE_NO_LIMIT)
+  * @param maxSizeBytes The maximum allowable log file size, or MUSCLE_NO_LIMIT to allow any size log file.
+  * @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
+  */
+status_t SetFileLogMaximumSize(uint32 maxSizeBytes);
+
+/** Sets the path-pattern of files that the logger is allowed to assume are old log files, and therefore
+  * is allowed to delete.
+  * @param pattern The pattern to match against (e.g. "/var/log/mylogfiles-*.txt").  The matching will
+  *                be done immediately/synchronously inside this call.
+  * @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
+  */
+status_t SetOldLogFilesPattern(const String & pattern);
+
+/** Sets a user-specified maximum number of log files that should be written out before
+  * the oldest log files start to be deleted.  This can help keep the filesystem
+  * space taken up by log files limited to a finite amount.
+  * Default state is no limit on the number of log files.  (aka MUSCLE_NO_LIMIT)
+  * @param maxNumLogFiles The maximum allowable number of log files, or MUSCLE_NO_LIMIT to allow any number of log files.
+  * @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
+  */
+status_t SetMaxNumLogFiles(uint32 maxNumLogFiles);
+
+/** Set this to true if you want log files to be compressed when they are closed (and given a .gz extension).
+  * or false if they should be left in raw text form.
+  * @param enable True to enable log file compression; false otherwise.
+  * @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
+  */
+status_t SetFileLogCompressionEnabled(bool enable);
 
 /** Sets the log filter level for logging to stdout.
  *  Any calls to Log*() that specify a log level greater than (loglevel)
@@ -151,7 +210,7 @@ status_t SetConsoleLogLevel(int loglevel);
 
 /** Same semantics as printf, only outputs to the log file/console instead
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
- *  @fmt A printf-style format string (e.g. "hello %s\n").  Note that \n is NOT added for you.
+ *  @param fmt A printf-style format string (e.g. "hello %s\n").  Note that \n is NOT added for you.
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
 status_t Log(int logLevel, const char * fmt, ...);
@@ -170,7 +229,7 @@ status_t _LogTime(const char * sourceFile, const char * optSourceFunction, int l
 /** Formatted.  Automagically prepends a timestamp and status string to your string.
  *  e.g. LogTime(MUSCLE_LOG_INFO, "Hello %s!", "world") would generate "[I 12/18 12:11:49] Hello world!"
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
- *  @fmt A printf-style format string (e.g. "hello %s\n").  Note that \n is NOT added for you.
+ *  @param fmt A printf-style format string (e.g. "hello %s\n").  Note that \n is NOT added for you.
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
 status_t LogTime(int logLevel, const char * fmt, ...);
@@ -224,7 +283,6 @@ const char * GetLogLevelKeyword(int logLevel);
 /** Writes a standard text string of the format "[L mm/dd hh:mm:ss]" into (buf).
  *  @param buf Char buffer to write into.  Should be at least 64 chars long.
  *  @param lca A LogCallbackArgs object containing the time stamp and severity that are appropriate to print.
- *  @param when time/date stamp of the message
  */
 void GetStandardLogLinePreamble(char * buf, const LogCallbackArgs & lca);
 
@@ -247,6 +305,206 @@ String SourceCodeLocationKeyToString(uint32 key);
 uint32 SourceCodeLocationKeyFromString(const String & s);
 
 #endif
+
+/** This class represents all the fields necessary to present a human with a human-readable time/date stamp.  Objects of this class are typically populated by the GetHumanReadableTimeValues() function, below. */
+class HumanReadableTimeValues
+{
+public:
+   /** Default constructor */
+   HumanReadableTimeValues() : _year(0), _month(0), _dayOfMonth(0), _dayOfWeek(0), _hour(0), _minute(0), _second(0), _microsecond(0) {/* empty */}
+
+   /** Explicit constructor
+     * @param year The year value (e.g. 2005)
+     * @param month The month value (January=0, February=1, etc)
+     * @param dayOfMonth The day within the month (ranges from 0 to 30, inclusive)
+     * @param dayOfWeek The day within the week (Sunday=0, Monday=1, etc)
+     * @param hour The hour within the day (ranges from 0 to 23, inclusive)
+     * @param minute The minute within the hour (ranges from 0 to 59, inclusive)
+     * @param second The second within the minute (ranges from 0 to 59, inclusive)
+     * @param microsecond The microsecond within the second (ranges from 0 to 999999, inclusive)
+     */
+   HumanReadableTimeValues(int year, int month, int dayOfMonth, int dayOfWeek, int hour, int minute, int second, int microsecond) : _year(year), _month(month), _dayOfMonth(dayOfMonth), _dayOfWeek(dayOfWeek), _hour(hour), _minute(minute), _second(second), _microsecond(microsecond) {/* empty */}
+
+   /** Returns the year value (e.g. 2005) */
+   int GetYear() const {return _year;}
+
+   /** Returns the month value (January=0, February=1, March=2, ..., December=11). */
+   int GetMonth() const {return _month;}
+
+   /** Returns the day-of-month value (which ranges between 0 and 30, inclusive). */
+   int GetDayOfMonth() const {return _dayOfMonth;}
+
+   /** Returns the day-of-week value (Sunday=0, Monday=1, Tuesday=2, Wednesday=3, Thursday=4, Friday=5, Saturday=6). */
+   int GetDayOfWeek() const {return _dayOfWeek;}
+
+   /** Returns the hour value (which ranges between 0 and 23, inclusive). */
+   int GetHour() const {return _hour;}
+
+   /** Returns the minute value (which ranges between 0 and 59, inclusive). */
+   int GetMinute() const {return _minute;}
+
+   /** Returns the second value (which ranges between 0 and 59, inclusive). */
+   int GetSecond() const {return _second;}
+
+   /** Returns the microsecond value (which ranges between 0 and 999999, inclusive). */
+   int GetMicrosecond() const {return _microsecond;}
+
+   /** Sets the year value (e.g. 2005) */
+   void SetYear(int year) {_year = year;}
+
+   /** Sets the month value (January=0, February=1, March=2, ..., December=11). */
+   void SetMonth(int month) {_month = month;}
+
+   /** Sets the day-of-month value (which ranges between 0 and 30, inclusive). */
+   void SetDayOfMonth(int dayOfMonth) {_dayOfMonth = dayOfMonth;}
+
+   /** Sets the day-of-week value (Sunday=0, Monday=1, Tuesday=2, Wednesday=3, Thursday=4, Friday=5, Saturday=6). */
+   void SetDayOfWeek(int dayOfWeek) {_dayOfWeek = dayOfWeek;}
+
+   /** Sets the hour value (which ranges between 0 and 23, inclusive). */
+   void SetHour(int hour) {_hour = hour;}
+
+   /** Sets the minute value (which ranges between 0 and 59, inclusive). */
+   void SetMinute(int minute) {_minute = minute;}
+
+   /** Sets the second value (which ranges between 0 and 59, inclusive). */
+   void SetSecond(int second) {_second = second;}
+
+   /** Sets the microsecond value (which ranges between 0 and 999999, inclusive). */
+   void SetMicrosecond(int microsecond) {_microsecond = microsecond;}
+
+   /** Equality operator. */
+   bool operator == (const HumanReadableTimeValues & rhs) const
+   {
+      return ((_year       == rhs._year)&&
+              (_month      == rhs._month)&&
+              (_dayOfMonth == rhs._dayOfMonth)&&
+              (_dayOfWeek  == rhs._dayOfWeek)&&
+              (_hour       == rhs._hour)&&
+              (_minute     == rhs._minute)&&
+              (_second     == rhs._second)&&
+              (_microsecond == rhs._microsecond));
+   }
+
+   /** Inequality operator */
+   bool operator != (const HumanReadableTimeValues & rhs) const {return !(*this==rhs);}
+
+   /** This method will expand the following tokens in the specified String out to the following values:
+     * %Y -> Current year (e.g. "2005")
+     * %M -> Current month (e.g. "01" for January, up to "12" for December)
+     * %Q -> Current month as a string (e.g. "January", "February", "March", etc)
+     * %D -> Current day of the month (e.g. "01" through "31")
+     * %d -> Current day of the month (e.g. "01" through "31") (synonym for %D)
+     * %W -> Current day of the week (e.g. "1" through "7")
+     * %w -> Current day of the week (e.g. "1" through "7") (synonym for %W)
+     * %q -> Current day of the week as a string (e.g. "Sunday", "Monday", "Tuesday", etc)
+     * %h -> Current hour (military style:  e.g. "00" through "23")
+     * %m -> Current minute (e.g. "00" through "59")
+     * %s -> Current second (e.g. "00" through "59")
+     * %x -> Current microsecond (e.g. "000000" through "999999", inclusive)
+     * %r -> A random number between 0 and (2^64-1) (for spicing up the uniqueness of a filename)
+     * %T -> A human-readable time/date stamp, for convenience (e.g. "January 01 2005 23:59:59")
+     * %t -> A numeric time/date stamp, for convenience (e.g. "2005/01/01 15:23:59")
+     * %f -> A filename-friendly numeric time/date stamp, for convenience (e.g. "2005-01-01_15h23m59")
+     * %% -> A single percent sign.
+     * @param s The string to expand the tokens of
+     * @returns The same string, except with any and all of the above tokens expanded as described.
+     */
+   String ExpandTokens(const String & s) const;
+
+private:
+   int _year;
+   int _month;
+   int _dayOfMonth;
+   int _dayOfWeek;
+   int _hour;
+   int _minute;
+   int _second;
+   int _microsecond;
+};
+
+/** When passing a uint64 as a time value, these tags help indicate what sort of time value it is. */
+enum {
+   MUSCLE_TIMEZONE_UTC = 0, // Universal Co-ordinated Time (formerly Greenwhich Mean Time)
+   MUSCLE_TIMEZONE_LOCAL    // Host machine's local time (depends on local time zone settings)
+};
+
+/** Given a uint64 representing a time in microseconds since 1970,
+  * (e.g. as returned by GetCurrentTime64()), returns the same value
+  * as a set of more human-friendly units.  
+  *
+  * @param timeUS a time in microseconds since 1970.  Note that the interpretation of this value depends on
+  *               the value passed in to the (timeType) argument.
+  * @param retValues On success, this object will be filled out with the various human-readable time/date value fields
+  *                  that human beings like to read.  See the HumanReadableTimeValues class documentation for details.
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (timeUS) will be interpreted as being in UTC, 
+  *                 and will be converted to the local time zone as part of the conversion process.  If set to 
+  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then (timeUS) will be assumed to be already 
+  *                 in the local time zone, and no time zone conversion will be done.
+  *                 Note that the values returned are ALWAYS in reference to local time 
+  *                 zone -- the (timeType) argument governs how (timeUS) should be interpreted.  
+  *                 (timeType) does NOT control the meaning of the return values.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t GetHumanReadableTimeValues(uint64 timeUS, HumanReadableTimeValues & retValues, uint32 timeType = MUSCLE_TIMEZONE_UTC);
+
+/** Given a uint64 representing a time in microseconds since 1970,
+  * (e.g. as returned by GetCurrentTime64()), returns an equivalent 
+  * human-readable time/date string.  The format of the returned 
+  * time string is "YYYY/MM/DD HH:MM:SS".
+  * @param timeUS a time in microseconds since 1970.  Note that the interpretation of this value depends on
+  *               the value passed in to the (timeType) argument.
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (timeUS) will be interpreted as being in UTC, 
+  *                 and will be converted to the local time zone as part of the conversion process.  If set to 
+  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then (timeUS) will be assumed to be already 
+  *                 in the local time zone, and no time zone conversion will be done.
+  * @returns The equivalent ASCII string, or "" on failure.
+  */
+String GetHumanReadableTimeString(uint64 timeUS, uint32 timeType = MUSCLE_TIMEZONE_UTC);
+
+/** Does the inverse operation of GetHumanReadableTimeString():
+  * Given a time string of the format "YYYY/MM/DD HH:MM:SS",
+  * returns the equivalent time value in microseconds since 1970.
+  * @param str An ASCII string representing a time.
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then the returned value will be UTC. 
+  *                 If set to MUSCLE_TIMEZONE_LOCAL, on the other hand, then the returned value will
+  *                 be expressed as a time of the local time zone.
+  * @returns The equivalent time value, or zero on failure.
+  */
+uint64 ParseHumanReadableTimeString(const String & str, uint32 timeType = MUSCLE_TIMEZONE_UTC);
+
+/** Given a string that represents a time interval, returns the equivalent value in microsends.
+  * A time interval should be expressed as a non-negative integer, optionally followed by
+  * any of the following suffixes:
+  *   us = microseconds
+  *   ms = milliseconds
+  *   s  = seconds
+  *   m  = minutes
+  *   h  = hours
+  *   d  = days
+  *   w  = weeks
+  * As a special case, the string "forever" will parse to MUSCLE_TIME_NEVER.
+  * If no suffix is supplied, the units are presumed to be in seconds.
+  * @param str The string to parse 
+  * @returns a time interval value, in microseconds.
+  */
+uint64 ParseHumanReadableTimeIntervalString(const String & str);
+
+/** Given a time interval specified in microseconds, returns a human-readable
+  * string representing that time, e.g. "3 weeks, 2 days, 1 hour, 25 minutes, 2 seconds, 350 microseconds"
+  * @param micros The number of microseconds to describe
+  * @param maxClauses The maximum number of clauses to allow in the returned string.  For example, passing this in
+  *                   as 1 might return "3 weeks", while passing this in as two might return "3 weeks, 2 days".
+  *                   Default value is MUSCLE_NO_LIMIT, indicating that no maximum should be enforced.
+  * @param minPrecisionMicros The maximum number of microseconds the routine is allowed to ignore
+  *                           when generating its string.  For example, if this value was passed in
+  *                           as 1000000, the returned string would describe the interval down to
+  *                           the nearest second.  Defaults to zero for complete accuracy.
+  * @param optRetIsAccurate If non-NULL, this value will be set to true if the returned string represents
+  *                         (micros) down to the nearest microsecond, or false if the string is an approximation.
+  * @returns a human-readable time interval description string.
+  */
+String GetHumanReadableTimeIntervalString(uint64 micros, uint32 maxClauses = MUSCLE_NO_LIMIT, uint64 minPrecisionMicros = 0, bool * optRetIsAccurate = NULL);
 
 }; // end namespace muscle
 

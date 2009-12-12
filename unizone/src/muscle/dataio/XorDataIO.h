@@ -51,7 +51,8 @@ public:
    virtual uint64 GetOutputStallLimit() const {return _childIO() ? _childIO()->GetOutputStallLimit() : MUSCLE_TIME_NEVER;}
    virtual void FlushOutput() {if (_childIO()) _childIO()->FlushOutput();}
    virtual void Shutdown() {if (_childIO()) _childIO()->Shutdown(); _childIO.Reset();}
-   virtual const ConstSocketRef & GetSelectSocket() const {return _childIO() ? _childIO()->GetSelectSocket() : GetNullSocket();}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return _childIO() ? _childIO()->GetReadSelectSocket()  : GetNullSocket();}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _childIO() ? _childIO()->GetWriteSelectSocket() : GetNullSocket();}
    virtual status_t GetReadByteTimeStamp(int32 whichByte, uint64 & retStamp) const {return _childIO() ? _childIO()->GetReadByteTimeStamp(whichByte, retStamp) : B_ERROR;}
 
    virtual bool HasBufferedOutput() const {return _childIO() ? _childIO()->HasBufferedOutput() : false;}

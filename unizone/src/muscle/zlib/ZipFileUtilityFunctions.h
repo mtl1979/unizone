@@ -8,6 +8,12 @@
 
 namespace muscle {
 
+/** @defgroup zipfileutilityfunctions The ZipFileUtilityFunctions function API
+ *  These functions are all defined in ZipFileUtilityFunctions.{cpp,h}, and are stand-alone
+ *  functions that conveniently convert .zip files into Message objects, and vice versa.
+ *  @{
+ */
+
 /** Given a Message object, outputs a .zip file containing the B_RAW_TYPE data in that Message.
   * Each B_RAW_TYPE field in the Message object will be written to the .zip file as a contained file.
   * Message fields will be written recursively to the .zip file as sub-directories.
@@ -49,6 +55,8 @@ MessageRef ReadZipFile(DataIO & readFrom, bool loadData = true);
 
 /** Convenience method:  as above, but takes a file name instead of a DataIO object. */
 MessageRef ReadZipFile(const char * fileName, bool loadData = true);
+
+/** @} */ // end of zipfileutilityfunctions doxygen group
 
 }; // end namespace muscle
 

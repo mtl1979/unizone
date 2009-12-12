@@ -81,8 +81,8 @@ public:
     */
    virtual void Shutdown() {_sock.Reset();}
 
-   /** Returns our socket descriptor */
-   virtual const ConstSocketRef & GetSelectSocket() const {return _sock;}
+   virtual const ConstSocketRef & GetReadSelectSocket()  const {return _sock;}
+   virtual const ConstSocketRef & GetWriteSelectSocket() const {return _sock;}
 
    /**
     * Enables or diables blocking I/O on this socket.

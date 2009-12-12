@@ -143,7 +143,7 @@ public:
      */
    status_t UnflattenFromByteBuffer(const ConstRef<ByteBuffer> & bufRef);
 
-   /** Convenience method.  Allocated an appropriately sized ByteBuffer object via GetByteBufferFromPool(), Flatten()s
+   /** Convenience method.  Allocates an appropriately sized ByteBuffer object via GetByteBufferFromPool(), Flatten()s
      * this object into the byte buffer, and returns the resulting ByteBufferRef.  Returns a NULL reference on failure (out of memory?)
      */ 
    Ref<ByteBuffer> FlattenToByteBuffer() const;

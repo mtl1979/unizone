@@ -59,7 +59,7 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
          }
          if (matched == false) 
          {
-            LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] doesn't match any require pattern, access denied.\n", clientHostIP());
+            LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] does not match any require pattern, access denied.\n", clientHostIP());
             return AbstractReflectSessionRef();
          }
       }

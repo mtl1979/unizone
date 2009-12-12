@@ -40,7 +40,9 @@ public:
    virtual uint64 GetOutputStallLimit() const;
    virtual void FlushOutput();
    virtual void Shutdown();
-   virtual const ConstSocketRef & GetSelectSocket() const;
+   virtual const ConstSocketRef & GetReadSelectSocket()  const;
+   virtual const ConstSocketRef & GetWriteSelectSocket() const;
+
    virtual status_t GetReadByteTimeStamp(int32 whichByte, uint64 & retStamp) const;
    virtual bool HasBufferedOutput() const;
    virtual void WriteBufferedOutput();

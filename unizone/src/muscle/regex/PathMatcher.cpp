@@ -93,6 +93,16 @@ status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const ch
    return ret;
 }
 
+status_t PathMatcher :: SetFilterForEntry(const String & path, const QueryFilterRef & newFilter)
+{
+   PathMatcherEntry * pme = _entries.Get(path);
+   if (pme == NULL) return B_ERROR;
+
+   if ((newFilter() != NULL) != (pme->GetFilter()() != NULL)) _numFilters += ((newFilter() != NULL) ? 1 : -1);  // FogBugz #5803
+   pme->SetFilter(newFilter);
+   return B_NO_ERROR;
+}
+
 status_t PathMatcher :: PutPathFromString(const String & str, const QueryFilterRef & filter, const char * prependIfNoLeadingSlash)
 {
    String s = str;
@@ -197,6 +207,33 @@ int GetPathDepth(const char * path)
            else break;
    }
    return depth;
+}
+
+/** Returns a human-readable string representing this StringMatcherQueue, for easier debugging */
+String StringMatcherQueue :: ToString() const
+{
+   String ret;
+   for (uint32 i=0; i<GetNumItems(); i++)
+   {
+      if (ret.HasChars()) ret += ' ';
+      const StringMatcherRef & smr = (*this)[i];
+      if (smr()) ret += smr()->ToString();
+            else ret += "(null)";
+   }
+   return ret;
+}
+
+/** Returns a human-readable string representing this PathMatcherEntry, for easier debugging */
+String PathMatcherEntry :: ToString() const
+{
+   String ret;
+   if (_parser()) ret += _parser()->ToString().Prepend("Parser=[").Append("]");
+   if (_filter())
+   {
+      char buf[128]; sprintf(buf, "%sfilter=%p", ret.HasChars()?" ":"", _filter());
+      ret += buf;
+   }
+   return ret;
 }
 
 }; // end namespace muscle

@@ -61,6 +61,23 @@ public:
    /** Returns true iff the data (rhs) is holding is different from our own (byte-for-byte). */
    bool operator !=(const ByteBuffer &rhs) const {return !(*this == rhs);}
 
+   /** Appends the specified bytes to the byte array held by this buffer.
+     * @param bytes Pointer to the bytes to append.  If NULL, the added bytes will be undefined.
+     * @param numBytes Number of bytes to append.
+     * @param allocExtra If true, and we need to resize the buffer larger, we will use an exponential resize
+     *                   so that the number of reallocations is small.  This is useful if you are going to be
+     *                   doing a number of small appends.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+     */
+   status_t AppendBytes(const uint8 * bytes, uint32 numBytes, bool allocExtra = true);
+
+   /** Convenience method, works the same as above
+     * @param bb A ByteBuffer whose contents we should append to our own.
+     * @param allocExtra See above for details
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+     */
+   status_t AppendBytes(const ByteBuffer & bb, bool allocExtra = true) {return AppendBytes(bb.GetBuffer(), bb.GetNumBytes(), allocExtra);}
+
    /** Prints the contents of this ByteBuffer to stdout, or to the specified file.  Useful for quick debugging.
      * @param maxBytesToPrint The maximum number of bytes we should actually print.  Defaults to MUSCLE_NO_LIMIT, meaning
      *                        that by default we will always print every byte held by this ByteBuffer.
@@ -198,6 +215,9 @@ ByteBufferRef GetByteBufferFromPool(const Flattenable & flattenMe);
  *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
  */
 ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, const Flattenable & flattenMe);
+
+/** Convenience method:  returns a read-only reference to a ByteBuffer that contains no data. */
+ByteBufferRef GetEmptyByteBufferRef();
 
 /** This interface is used to represent any object that knows how to allocate, reallocate, and free memory in a special way. */
 class IMemoryAllocationStrategy 

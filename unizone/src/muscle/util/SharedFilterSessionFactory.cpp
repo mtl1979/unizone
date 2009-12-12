@@ -20,7 +20,7 @@ SharedFilterSessionFactory :: ~SharedFilterSessionFactory()
 AbstractReflectSessionRef SharedFilterSessionFactory :: CreateSession(const String & clientIP, const IPAddressAndPort & iap)
 {
    TCHECKPOINT;
-   return ((GetSlave()())&&(IsAccessAllowedForIP(_sharedMemName, Inet_AtoN(clientIP()), _isGrantList, _defaultPass))) ? GetSlave()()->CreateSession(clientIP, iap) : AbstractReflectSessionRef();
+   return ((GetSlave()())&&(IsAccessAllowedForIP(_sharedMemName, IsStandardLoopbackDeviceAddress(iap.GetIPAddress())?localhostIP:Inet_AtoN(clientIP()), _isGrantList, _defaultPass))) ? GetSlave()()->CreateSession(clientIP, iap) : AbstractReflectSessionRef();
 }
 
 bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMemName, const ip_address & ip, bool isGrantList, bool defaultPass)

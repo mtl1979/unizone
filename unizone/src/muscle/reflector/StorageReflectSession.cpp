@@ -282,7 +282,7 @@ void
 StorageReflectSession ::
 NodeCreated(DataNode & newNode)
 {
-   newNode.IncrementSubscriptionRefCount(GetSessionIDString(), _subscriptions.GetMatchCount(newNode, NULL, 0));
+   newNode.IncrementSubscriptionRefCount(GetSessionIDString(), _subscriptions.GetMatchCount(newNode, newNode.GetData()(), 0));  // FogBugz #5803
 }
 
 void
@@ -557,7 +557,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   String path = fn->Substring(10);
                   String fixPath(path);
                   _subscriptions.AdjustStringPrefix(fixPath, DEFAULT_PATH_PREFIX);
-                  PathMatcherEntry * e = _subscriptions.GetEntries().Get(fixPath);
+                  const PathMatcherEntry * e = _subscriptions.GetEntries().Get(fixPath);
                   if (e)
                   {
                      const QueryFilter * subscriptionFilter = e->GetFilter()();
@@ -572,7 +572,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                      }
 
                      // And now, set e's filter to the new filter.
-                     e->SetFilter(filter);
+                     (void) _subscriptions.SetFilterForEntry(fixPath, filter);  // FogBugz #5803
                   }
                   else                  
                   {
@@ -589,10 +589,9 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                      (void) getMsg.AddMessage(PR_NAME_FILTERS, filterMsgRef);
                   }
                }
-               else if (*fn == PR_NAME_REFLECT_TO_SELF)
-               {
-                  SetReflectToSelf(true);
-               }
+               else if (*fn == PR_NAME_REFLECT_TO_SELF)            SetRoutingFlag(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF,      true);
+               else if (*fn == PR_NAME_ROUTE_GATEWAY_TO_NEIGHBORS) SetRoutingFlag(MUSCLE_ROUTING_FLAG_GATEWAY_TO_NEIGHBORS, true);
+               else if (*fn == PR_NAME_ROUTE_NEIGHBORS_TO_GATEWAY) SetRoutingFlag(MUSCLE_ROUTING_FLAG_NEIGHBORS_TO_GATEWAY, true);
                else if (*fn == PR_NAME_DISABLE_SUBSCRIPTIONS)
                {
                   SetSubscriptionsEnabled(false);
@@ -641,6 +640,16 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                if ((resultMessage())&&(_sessionDir()->GetNodePath(np) == B_NO_ERROR))
                {
                   // Add hard-coded params 
+
+                  resultMessage()->RemoveName(PR_NAME_REFLECT_TO_SELF);
+                  if (IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF)) resultMessage()->AddBool(PR_NAME_REFLECT_TO_SELF, true);
+
+                  resultMessage()->RemoveName(PR_NAME_ROUTE_GATEWAY_TO_NEIGHBORS);
+                  if (IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_GATEWAY_TO_NEIGHBORS)) resultMessage()->AddBool(PR_NAME_ROUTE_GATEWAY_TO_NEIGHBORS, true);
+
+                  resultMessage()->RemoveName(PR_NAME_ROUTE_NEIGHBORS_TO_GATEWAY);
+                  if (IsRoutingFlagSet(MUSCLE_ROUTING_FLAG_NEIGHBORS_TO_GATEWAY)) resultMessage()->AddBool(PR_NAME_ROUTE_NEIGHBORS_TO_GATEWAY, true);
+
                   resultMessage()->RemoveName(PR_NAME_SESSION_ROOT);
                   resultMessage()->AddString(PR_NAME_SESSION_ROOT, np);
 
@@ -648,13 +657,13 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                   resultMessage()->AddString(PR_NAME_SERVER_VERSION, MUSCLE_VERSION_STRING);
 
                   resultMessage()->RemoveName(PR_NAME_SERVER_MEM_AVAILABLE);
-                  resultMessage()->AddInt64(PR_NAME_SERVER_MEM_AVAILABLE, (uint64) GetNumAvailableBytes());
+                  resultMessage()->AddInt64(PR_NAME_SERVER_MEM_AVAILABLE, GetNumAvailableBytes());
 
                   resultMessage()->RemoveName(PR_NAME_SERVER_MEM_USED);
-                  resultMessage()->AddInt64(PR_NAME_SERVER_MEM_USED, (uint64) GetNumUsedBytes());
+                  resultMessage()->AddInt64(PR_NAME_SERVER_MEM_USED, GetNumUsedBytes());
 
                   resultMessage()->RemoveName(PR_NAME_SERVER_MEM_MAX);
-                  resultMessage()->AddInt64(PR_NAME_SERVER_MEM_MAX, (uint64) GetMaxNumBytes());
+                  resultMessage()->AddInt64(PR_NAME_SERVER_MEM_MAX, GetMaxNumBytes());
 
                   resultMessage()->RemoveName(PR_NAME_SERVER_UPTIME);
                   resultMessage()->AddInt64(PR_NAME_SERVER_UPTIME, GetServerUptime());
@@ -794,7 +803,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
    {
       // New for v1.85; if the message has a PR_NAME_SESSION field in it, make sure it's the correct one!
       // This is to foil certain people (olorin ;^)) who would otherwise be spoofing messages from other people.
-      msg.ReplaceString(false, PR_NAME_SESSION, GetSessionIDString());
+      (void) msg.ReplaceString(false, PR_NAME_SESSION, GetSessionIDString());
 
       // what code not in our reserved range:  must be a client-to-client message
       if (msg.HasName(PR_NAME_KEYS, B_STRING_TYPE)) 
@@ -825,7 +834,7 @@ class FindMatchingSessionsData
 public:
    FindMatchingSessionsData(Hashtable<const String *, AbstractReflectSessionRef> & results, uint32 maxResults) : _results(results), _ret(B_NO_ERROR), _maxResults(maxResults) 
    {
-      // _results doesn't need to have SetKeyCompareFunction() called on it, since we know the pointers are unique anyway
+      // empty
    }
 
    Hashtable<const String *, AbstractReflectSessionRef> & _results;
@@ -1477,7 +1486,7 @@ DataNodeRef
 StorageReflectSession ::
 GetNewDataNode(const String & name, const MessageRef & initialValue)
 {
-   DataNodeRef ret = _nodePool.ObtainObject();
+   DataNodeRef ret(_nodePool.ObtainObject());
    if (ret()) ret()->Init(name, initialValue);
    return ret;
 }
@@ -1679,7 +1688,6 @@ StorageReflectSession :: RestoreNodeTreeFromMessage(const Message & msg, const S
    {
       // First recurse to the indexed nodes, adding them as indexed children
       Hashtable<const String *, uint32> indexLookup;
-      indexLookup.SetKeyCompareFunction(StringCompareFunc);
       {
          MessageRef indexRef;
          if (msg.FindMessage(PR_NAME_NODEINDEX, indexRef) == B_NO_ERROR)
@@ -1739,8 +1747,10 @@ status_t StorageReflectSession :: RemoveParameter(const String & paramName, bool
          temp.DoTraversal((PathMatchCallback)DoSubscribeRefCallbackFunc, this, GetGlobalRoot(), false, (void *)-1L);
       }
    }
-   else if (paramName == PR_NAME_REFLECT_TO_SELF)          SetReflectToSelf(false);
-   else if (paramName == PR_NAME_DISABLE_SUBSCRIPTIONS)    SetSubscriptionsEnabled(true);
+   else if (paramName == PR_NAME_REFLECT_TO_SELF)            SetRoutingFlag(MUSCLE_ROUTING_FLAG_REFLECT_TO_SELF,      false);
+   else if (paramName == PR_NAME_ROUTE_GATEWAY_TO_NEIGHBORS) SetRoutingFlag(MUSCLE_ROUTING_FLAG_GATEWAY_TO_NEIGHBORS, false);
+   else if (paramName == PR_NAME_ROUTE_NEIGHBORS_TO_GATEWAY) SetRoutingFlag(MUSCLE_ROUTING_FLAG_NEIGHBORS_TO_GATEWAY, false);
+   else if (paramName == PR_NAME_DISABLE_SUBSCRIPTIONS)      SetSubscriptionsEnabled(true);
    else if (paramName == PR_NAME_MAX_UPDATE_MESSAGE_ITEMS) _maxSubscriptionMessageItems = DEFAULT_MAX_SUBSCRIPTION_MESSAGE_SIZE;  // back to the default
    else if (paramName == PR_NAME_REPLY_ENCODING)
    {
