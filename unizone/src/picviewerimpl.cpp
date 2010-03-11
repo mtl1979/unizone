@@ -276,7 +276,7 @@ bool
 WPicViewer::LoadImage(const ByteBufferRef &buffer, const char *fmt, QImage &image)
 {
 	bool ret;
-	ret = image.loadFromData(buffer()->GetBuffer(),buffer()->GetNumBytes(), fmt);
+	ret = image.loadFromData(buffer()->GetBuffer(), (int)buffer()->GetNumBytes(), fmt);
 	if (ret)
 		DrawImage(image);
 	return ret;

@@ -18,8 +18,8 @@ public:
 	WDownloadThread * Sender() const { return fSender; }
 	void SetSender(WDownloadThread *sender) { fSender = sender; }
 
-	uint32 Received() const { return fReceived; }
-	void SetReceived(const uint32 received) { fReceived = received; }
+	size_t Received() const { return fReceived; }
+	void SetReceived(const size_t received) { fReceived = received; }
 
 	enum
 	{
@@ -44,7 +44,7 @@ public:
 
 private:
 	WDownloadThread * fSender;
-	uint32 fReceived;
+	size_t fReceived;
 };
 
 #endif

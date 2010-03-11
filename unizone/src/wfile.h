@@ -29,8 +29,8 @@ public:
 	int64 WriteBlock(const uint8 *, uint64);
 	int64 WriteBlock(const QByteArray &, uint64);
 
-	int32 ReadBlock32(uint8 *, uint32);	// For backwards compatibility with functions that can't handle 64-bit values
-	int32 WriteBlock32(const uint8 *, uint32);
+	int32 ReadBlock32(uint8 *, size_t);	// For backwards compatibility with functions that can't handle 64-bit values
+	int32 WriteBlock32(const uint8 *, size_t);
 
 	int ReadLine(char *, int);
 

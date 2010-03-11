@@ -39,7 +39,7 @@ wreverse(wchar_t *dest, const wchar_t *src, size_t len)
 	if (dest)
 	{
 		int dpos = 0;
-		int spos = len - 1;
+		size_t spos = len - 1;
 		while (spos >= 0) 
 			dest[dpos++] = src[spos--];
 		dest[len] = 0;

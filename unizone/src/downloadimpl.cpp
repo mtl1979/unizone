@@ -832,13 +832,13 @@ WDownload::downloadEvent(WDownloadEvent * d)
 		{
 			int64 offset = d->Offset(), size = d->Size();
 			String mFile;
-			uint32 got = d->Received();
+			size_t got = d->Received();
 			
 			{
 				PRINT("\tWDownloadEvent::FileDataReceived\n");
 				PRINT2("\tOffset: " UINT64_FORMAT_SPEC "\n", offset);
 				PRINT2("\tSize  : " UINT64_FORMAT_SPEC "\n", size);
-				PRINT2("\tGot   : %lu\n", got);
+				PRINT2("\tGot   : %z\n", got);
 				gWin->UpdateReceiveStats(got);
 				
 				double secs = 0.0f;

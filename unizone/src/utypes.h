@@ -10,6 +10,10 @@
 
 #define MUSCLE_TYPES_PREDEFINED
 
+#if defined(__amd64__) || defined(_M_AMD64)
+#define MUSCLE_64_BIT_PLATFORM 1
+#endif
+
 #ifndef int8
 typedef signed char		int8;
 typedef unsigned char	uint8;
@@ -20,7 +24,7 @@ typedef short				int16;
 typedef unsigned short	uint16;
 #endif
 
-#ifdef __amd64__
+#if defined(MUSCLE_64_BIT_PLATFORM)
 typedef int					int32;
 # ifndef _UINT32
 #  define _UINT32
@@ -39,7 +43,7 @@ typedef unsigned long	uint32;
 	typedef __int64				int64; 
 	typedef unsigned __int64	uint64;
 # else
-#  ifdef __amd64__
+#  if defined(MUSCLE_64_BIT_PLATFORM)
 	typedef long int		int64;
 	typedef unsigned long int	uint64;
 #  else
@@ -53,7 +57,7 @@ typedef unsigned long	uint32;
 typedef int32						status_t;
 #endif
 #endif
-#ifdef __amd64__
+#if defined(MUSCLE_64_BIT_PLATFORM)
 # ifndef UINT32_MAX
 #  define UINT32_MAX				UINT_MAX
 # endif

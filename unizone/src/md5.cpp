@@ -50,11 +50,11 @@ MD5Init(struct MD5Context *ctx)
  * of bytes.
  */
 void
-MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
+MD5Update(struct MD5Context *ctx, md5byte const *buf, size_t len)
 {
    /* Update byte count */
    UWORD32 t = ctx->bytes[0];
-   if ((ctx->bytes[0] = t + len) < t) ctx->bytes[1]++;   /* Carry from low to high */
+   if ((ctx->bytes[0] = (UWORD32)(t + len)) < t) ctx->bytes[1]++;   /* Carry from low to high */
 
    t = 64 - (t & 0x3f);   /* Space available in ctx->in (at least 1) */
    if (t > len) {
@@ -260,7 +260,7 @@ HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesH
 			}
 			
 			MD5Init(&ctx);
-			uint32 numRead;
+			size_t numRead;
 			uint8 * buffer = buf()->GetBuffer();
 			size_t bufsize = buf()->GetNumBytes();
 			while ((numRead = file.ReadBlock32(buffer, md_min(bufsize, bytesLeft))) > 0)
