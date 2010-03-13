@@ -1,3 +1,5 @@
+#include <QString>
+
 #include "uenv.h"
 
 #ifdef _WIN32

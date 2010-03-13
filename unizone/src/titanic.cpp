@@ -1,3 +1,5 @@
+#include <QString>
+
 #include "titanic.h"
 #include <stdio.h>
 #include <qbytearray.h>

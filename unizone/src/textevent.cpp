@@ -1,6 +1,7 @@
+#include <QString>
+
 #include "textevent.h"
 #include <QCustomEvent>
-#include <QString>
 
 WTextEvent::WTextEvent(int type)
 : QCustomEvent(type), fValid(false)
@@ -54,3 +55,8 @@ WTextEvent::Text() const
 	return fText;
 }
 
+void
+WTextEvent::SetText(const QString & str)
+{
+	fText = str; 
+}

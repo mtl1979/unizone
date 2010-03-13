@@ -1,8 +1,8 @@
 /** String tokenizer class, similar to Java's java.util.StringTokenizer */
 
-#include "tokenizer.h"
+#include <QString>
 
-#include <qstring.h>
+#include "tokenizer.h"
 
 QStringTokenizer::QStringTokenizer(const QString &tokenizeMe, const QString &separators)
 {

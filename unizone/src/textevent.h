@@ -30,7 +30,7 @@ public:
 	bool Valid() const;
 
 	QString Text() const;
-	void SetText(const QString & str) { fText = str; }
+	void SetText(const QString & str);
 	bool Encrypted() const { return fEncrypted; }
 	void SetEncrypted(bool e) { fEncrypted = e; } 
 

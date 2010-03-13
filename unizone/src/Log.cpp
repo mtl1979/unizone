@@ -37,6 +37,12 @@ WLog::Close()
 }
 
 void
+WLog::Create(LogType type)
+{
+	Create(type, QString::null);
+}
+
+void
 WLog::Create(LogType type, const QString &name)
 {
 	int counter = 0;

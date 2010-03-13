@@ -18,7 +18,8 @@ public:
 	// Destructor. If current log is open, it closes it.
 	~WLog();
 
-	void Create(LogType = LogMain, const QString & = QString::null);
+	void Create(LogType = LogMain);
+	void Create(LogType, const QString &);
 	void Close();
 
 	void LogString(const char *, bool);

@@ -1,3 +1,5 @@
+#include <QString>
+
 #include "wcrypt.h"
 #include "titanic.h"
 
