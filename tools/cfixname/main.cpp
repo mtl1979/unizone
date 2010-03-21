@@ -5,11 +5,11 @@
 #include <qstring.h>
 #include <qtextcodec.h>
 #include <qfile.h>
-#include <qapplication.h>
+#include <qcoreapplication.h>
 
 int main(int argc, char* argv[])
 {
-	QApplication app(argc, argv);
+	QCoreApplication app(argc, argv);
 	if (argc != 3)
 	{
 		printf("Usage: %s <input file> <source encoding>\n", argv[0]);

@@ -7,9 +7,11 @@
 #include <qstring.h>
 #include <qfile.h>
 #include <qtextcodec.h>
+#include <qcoreapplication.h>
 
 int main(int argc, char* argv[])
 {
+	QCoreApplication app(argc, argv);
 	if (argc != 3)
 	{
 		printf("Usage: %s input output\n", argv[0]);

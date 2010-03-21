@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <wchar.h>
 #include <qstring.h>
 #include <qfile.h>
 #include <qiodevice.h>
@@ -18,10 +19,21 @@ hextochar(const QByteArray &orig)
 	return (char) (l & 0xFF);
 }
 
+wchar_t
+hextouchar(const QByteArray &orig)
+{
+	if (orig.length() != 4)
+		return (wchar_t) 0;
+	const char *buf = orig.data();
+	long l = strtol(buf, NULL, 16);
+	return (wchar_t) (l & 0xFFFF);
+}
+
 QString
 ConvertFileName(const QByteArray &in)
 {
 	QByteArray out = "";
+	QString out2 = QString::null;
 	int slash = 0;
 	for (int x = 0; x < in.length(); x++)
 	{
@@ -29,16 +41,34 @@ ConvertFileName(const QByteArray &in)
 			slash = x;
 		if ((in.at(x) == '%') || (in.at(x) == '@'))
 		{
-			char temp = hextochar(in.mid(x+1, 2));
-			if (temp != (char) 0)
+			if (in.at(x+1) == 'u') // Unicode
 			{
-				if ((temp == '\\') || (temp == '/'))
-					out.truncate(slash);
-				else
-					out += temp;
-				x += 2;
-				continue;
-			}			
+				wchar_t temp = hextouchar(in.mid(x+2, 4));
+				if (temp != (wchar_t) 0)
+				{
+					if (out.length() > 0) // Flush transcode buffer
+					{
+						out2 += QString::fromLocal8Bit(out);
+						out = "";
+					}
+					out2 += QChar(temp);
+					x += 5;
+					continue;
+				}
+			}
+			else
+			{
+				char temp = hextochar(in.mid(x+1, 2));
+				if (temp != (char) 0)
+				{
+					if ((temp == '\\') || (temp == '/'))
+						out.truncate(slash);
+					else
+						out += temp;
+					x += 2;
+					continue;
+				}
+			}
 		}
 		else if (in.at(x) == '+')
 		{
@@ -47,7 +77,11 @@ ConvertFileName(const QByteArray &in)
 		}
 		out += in.at(x);
 	}
-	return QString::fromLocal8Bit(out);			
+	if (out.length() > 0)
+	{
+		out2 += QString::fromLocal8Bit(out);
+	}
+	return out2;
 }
 
 int main(int argc, char* argv[])

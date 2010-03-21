@@ -4,11 +4,11 @@
 #include <qstring.h>
 #include <qtextcodec.h>
 #include <qfile.h>
-#include <qapplication.h>
+#include <qcoreapplication.h>
 
 int main(int argc, char* argv[])
 {
-	QApplication app(argc, argv);
+	QCoreApplication app(argc, argv);
 	if (argc != 2)
 	{
 		printf("Usage: %s <input file>\n", argv[0]);
