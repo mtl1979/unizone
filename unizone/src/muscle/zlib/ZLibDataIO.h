@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef ZLibDataIO_h
 #define ZLibDataIO_h
@@ -14,7 +14,7 @@ namespace muscle {
   * data going to that DataIO, and decompresses all data coming from that
   * dataIO.
   */
-class ZLibDataIO : public DataIO
+class ZLibDataIO : public DataIO, private CountedObject<ZLibDataIO>
 {
 public:
    /** Default Constructor -- Be sure to call SetDataIO() before use.

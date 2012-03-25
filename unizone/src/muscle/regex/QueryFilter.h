@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQueryFilter_h
 #define MuscleQueryFilter_h
@@ -66,11 +66,13 @@ public:
    virtual uint32 TypeCode() const = 0;
 
    /** Must be implemented to return true iff (msg) matches the criterion.
-     * @param msg the Message to check
+     * @param msg Reference to a read-only Message to check to see whether it matches our criteria or not.  The QueryFilter is allowed to
+     *            retarget this ConstMessageRef to point at a different Message if it wants to; the different Message will be used in the 
+     *            resulting query output.
      * @param optNode The DataNode object the matching is being done on, or NULL if the DataNode is not available.
      * @returns true iff the Messages matches, else false.
      */
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const = 0;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const = 0;
 
    /** Returns true iff we can be instantiated using a Message with the given
      * 'what' code.  Default implementation returns true iff (what) equals the
@@ -97,7 +99,7 @@ public:
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const {(void) optNode; return muscleInRange(msg.what, _minWhatCode, _maxWhatCode);}
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const {(void) optNode; return muscleInRange(msg()->what, _minWhatCode, _maxWhatCode);}
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_WHATCODE;}
 
 private:
@@ -157,7 +159,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_VALUEEXISTS;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const {(void) optNode; const void * junk; return (msg.FindData(GetFieldName(), _typeCode, &junk, NULL) == B_NO_ERROR);}
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const {(void) optNode; const void * junk; return (msg()->FindData(GetFieldName(), _typeCode, &junk, NULL) == B_NO_ERROR);}
 
    /** Sets the type code that we will look for in the target Message.
      * @param typeCode the type code to look for.  Use B_ANY_TYPE to indicate that you don't care what the type code is.
@@ -173,13 +175,47 @@ private:
    uint32 _typeCode;
 };
 
+
+/** Enumeration of mask operations available to NumericQueryFilter classes */
+enum {
+   NQF_MASK_OP_NONE = 0,
+   NQF_MASK_OP_AND,
+   NQF_MASK_OP_OR,
+   NQF_MASK_OP_XOR,
+   NQF_MASK_OP_NAND,
+   NQF_MASK_OP_NOR,
+   NQF_MASK_OP_XNOR,
+   NUM_NQF_MASK_OPS
+};
+
+template <typename DataType> inline DataType NQFDoMaskOp(uint8 maskOp, const DataType & msgVal, const DataType & mask)
+{
+   switch(maskOp)
+   {
+      case NQF_MASK_OP_NONE: return msgVal;
+      case NQF_MASK_OP_AND:  return msgVal & mask;
+      case NQF_MASK_OP_OR:   return msgVal | mask;
+      case NQF_MASK_OP_XOR:  return msgVal ^ mask;
+      case NQF_MASK_OP_NAND: return ~(msgVal & mask);
+      case NQF_MASK_OP_NOR:  return ~(msgVal | mask);
+      case NQF_MASK_OP_XNOR: return ~(msgVal ^ mask);
+      default:           return msgVal;
+   }
+}
+
+// Dummy specializations for mask operations, for types that don't have bitwise operations defined.
+template<> inline Point  NQFDoMaskOp(uint8 /*maskOp*/, const Point &  /*msgVal*/, const Point &  /*argVal*/) {return Point();}
+template<> inline Rect   NQFDoMaskOp(uint8 /*maskOp*/, const Rect &   /*msgVal*/, const Rect &   /*argVal*/) {return Rect();}
+template<> inline float  NQFDoMaskOp(uint8 /*maskOp*/, const float &  /*msgVal*/, const float &  /*argVal*/) {return float();}
+template<> inline double NQFDoMaskOp(uint8 /*maskOp*/, const double & /*msgVal*/, const double & /*argVal*/) {return double();}
+
 /** This templated class is used to generate a number of numeric-comparison-query classes, all of which are quite similar to each other. */
 template <typename DataType, uint32 DataTypeCode, uint32 ClassTypeCode>
 class NumericQueryFilter : public ValueQueryFilter
 {
 public:
    /** Default constructor.  Sets our value to its default (usually zero), and the operator to OP_EQUAL_TO. */
-   NumericQueryFilter() : _value(), _op(OP_EQUAL_TO), _assumeDefault(false) {/* empty */}
+   NumericQueryFilter() : _value(), _mask(), _op(OP_EQUAL_TO), _maskOp(NQF_MASK_OP_NONE), _assumeDefault(false) {/* empty */}
 
    /** Constructor.  This constructor will create a QueryFilter that only returns true from Match()
      * If the matched Message has the field item with the specified value in it.
@@ -188,7 +224,7 @@ public:
      * @param value The value to compare to the value found in the Message.
      * @param index Optional index of the item within the field.  Defaults to zero.
      */
-   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _assumeDefault(false) {/* empty */}
+   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index = 0) : ValueQueryFilter(fieldName, index), _value(value), _mask(), _op(op), _maskOp(NQF_MASK_OP_NONE), _assumeDefault(false) {/* empty */}
 
    /** Constructor.  This constructor is similar to the constructor shown above,
      * except that when this constructor is used, if the specified item does not exist in 
@@ -202,13 +238,15 @@ public:
      * @param index Index of the item within the field.  Defaults to zero.
      * @param assumedValue The value to pretend that the Message contained, if we don't find our value in the Message.
      */
-   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index, const DataType & assumedValue) : ValueQueryFilter(fieldName, index), _value(value), _op(op), _assumeDefault(true), _default(assumedValue) {/* empty */}
+   NumericQueryFilter(const String & fieldName, uint8 op, DataType value, uint32 index, const DataType & assumedValue) : ValueQueryFilter(fieldName, index), _value(value), _mask(), _op(op), _maskOp(NQF_MASK_OP_NONE), _assumeDefault(true), _default(assumedValue) {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const
    {
       return ((ValueQueryFilter::SaveToArchive(archive)                                                      == B_NO_ERROR)&&
-              (archive.AddInt8("op", _op)                                                                    == B_NO_ERROR)&&
+              (archive.CAddInt8("op", _op)                                                                   == B_NO_ERROR)&&
+              (archive.CAddInt8("mop", _maskOp)                                                              == B_NO_ERROR)&&
               (archive.AddData("val", DataTypeCode, &_value, sizeof(_value))                                 == B_NO_ERROR)&&
+              (archive.AddData("msk", DataTypeCode, &_mask,  sizeof(_mask))                                  == B_NO_ERROR)&&
               ((_assumeDefault == false)||(archive.AddData("val", DataTypeCode, &_default, sizeof(_default)) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
    }
 
@@ -218,11 +256,13 @@ public:
 
       const void * dt;
       uint32 numBytes;
-      if ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&
-          (archive.FindInt8("op", _op)               == B_NO_ERROR)&&
-          (archive.FindData("val", DataTypeCode, &dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_value)))
+      if ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&(archive.FindData("val", DataTypeCode, &dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_value)))
       {
-         _value = *((DataType *)dt);
+         _op     = archive.GetInt8("op");
+         _value  = *((DataType *)dt);
+         _maskOp = archive.GetInt8("mop");
+         _mask   = ((archive.FindData("msk", DataTypeCode, &dt, &numBytes) == B_NO_ERROR)&&(numBytes == sizeof(_mask))) ? *((DataType *)dt) : DataType();
+         
          if (archive.FindData("val", DataTypeCode, 1, &dt, &numBytes) == B_NO_ERROR)
          {
             _assumeDefault = true;
@@ -235,29 +275,18 @@ public:
 
    virtual uint32 TypeCode() const {return ClassTypeCode;}
 
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const
    {
       (void) optNode;  // shut compiler and DOxygen up
 
       const DataType * valueInMsg;
      
       const void * p;
-           if (msg.FindData(GetFieldName(), DataTypeCode, GetIndex(), &p, NULL) == B_NO_ERROR) valueInMsg = (const DataType *)p;
+           if (msg()->FindData(GetFieldName(), DataTypeCode, GetIndex(), &p, NULL) == B_NO_ERROR) valueInMsg = (const DataType *)p;
       else if (_assumeDefault) valueInMsg = &_default;
       else return false;
 
-      const DataType & temp = *valueInMsg;
-      switch(_op)
-      {
-         case OP_EQUAL_TO:                 return (temp == _value);
-         case OP_LESS_THAN:                return (temp <  _value);
-         case OP_GREATER_THAN:             return (temp >  _value);
-         case OP_LESS_THAN_OR_EQUAL_TO:    return (temp <= _value);
-         case OP_GREATER_THAN_OR_EQUAL_TO: return (temp >= _value);
-         case OP_NOT_EQUAL_TO:             return (temp != _value);
-         default:                          /* do nothing */  break;
-      }
-      return false;
+      return (_maskOp == NQF_MASK_OP_NONE) ? MatchesAux(*valueInMsg) : MatchesAux(NQFDoMaskOp(_maskOp, *valueInMsg, _mask));
    }
 
    /** Set the operator to use.  
@@ -300,10 +329,39 @@ public:
      */
    void UnsetAssumedDefault() {_default = DataType(); _assumeDefault = false;}
 
-private:
-   DataType _value;
-   uint8 _op;
+   /** Sets the mask operation to perform on the discovered data value before applying the OP_* test.
+     * Note that mask operations are not defined for floats, doubles, Points, or Rects.
+     * @param maskOp a NQF_MASK_OP_* value.  Default value is NQF_MASK_OP_NONE.
+     * @param maskValue The mask value to apply to the discovered data value, before applying the OP_* test.
+     */
+   void SetMask(uint8 maskOp, const DataType & maskValue) {_maskOp = maskOp, _mask = maskValue;}
 
+   /** Returns this QueryFilter's current NQF_MASK_OP_* setting. */
+   uint8 GetMaskOp() const {return _maskOp;}
+
+   /** Returns this QueryFilter's current mask value. */
+   uint8 GetMaskValue() const {return _mask;}
+
+private:
+   bool MatchesAux(const DataType & valueInMsg) const
+   {
+      switch(_op)
+      {
+         case OP_EQUAL_TO:                 return (valueInMsg == _value);
+         case OP_LESS_THAN:                return (valueInMsg <  _value);
+         case OP_GREATER_THAN:             return (valueInMsg >  _value);
+         case OP_LESS_THAN_OR_EQUAL_TO:    return (valueInMsg <= _value);
+         case OP_GREATER_THAN_OR_EQUAL_TO: return (valueInMsg >= _value);
+         case OP_NOT_EQUAL_TO:             return (valueInMsg != _value);
+         default:                          /* do nothing */  break;
+      }
+      return false;
+   }
+
+   DataType _value;
+   DataType _mask;
+   uint8 _op, _maskOp;
+   
    bool _assumeDefault;
    DataType _default;
 };
@@ -328,14 +386,14 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
 
-   /** Returns a read-only reference to our Queue of child QueryFilterRefs. */
-   const Queue<QueryFilterRef> & GetChildren() const {return _children;}
+   /** Returns a read-only reference to our Queue of child ConstQueryFilterRefs. */
+   const Queue<ConstQueryFilterRef> & GetChildren() const {return _children;}
 
-   /** Returns a read/write reference to our Queue of child QueryFilterRefs. */
-   Queue<QueryFilterRef> & GetChildren() {return _children;}
+   /** Returns a read/write reference to our Queue of child ConstQueryFilterRefs. */
+   Queue<ConstQueryFilterRef> & GetChildren() {return _children;}
 
 private:
-   Queue<QueryFilterRef> _children;
+   Queue<ConstQueryFilterRef> _children;
 };
 
 /** This class matches iff at least (n) of its children match.  As such, it can be used as an OR operator,
@@ -351,29 +409,42 @@ public:
    AndOrQueryFilter(uint32 minMatches = MUSCLE_NO_LIMIT) : _minMatches(minMatches) {/* empty */}
 
    /** Convenience constructor.  Note that you usually want to manually add at least one more child as well.
-     * @param child First argument to the operation
      * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
+     * @param child First argument to the operation
      */
-   AndOrQueryFilter(const QueryFilterRef & child, bool isAnd) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
+   AndOrQueryFilter(bool isAnd, const ConstQueryFilterRef & child) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
    {
       GetChildren().AddTail(child);
    }
 
    /** Convenience constructor for simple binary 'or' or 'and' operations.
+     * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation
-     * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
      */
-   AndOrQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2, bool isAnd) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
+   AndOrQueryFilter(bool isAnd, const ConstQueryFilterRef & child1, const ConstQueryFilterRef & child2) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);
    }
 
+   /** Convenience constructor for simple ternary 'or' or 'and' operations.
+     * @param isAnd If true, the operation will be an 'and' operation.  Otherwise it will be an 'or' operation.
+     * @param child1 First argument to the operation
+     * @param child2 Second argument to the operation
+     * @param child3 Third argument to the operation
+     */
+   AndOrQueryFilter(bool isAnd, const ConstQueryFilterRef & child1, const ConstQueryFilterRef & child2, const ConstQueryFilterRef & child3) : _minMatches(isAnd ? MUSCLE_NO_LIMIT : 1)
+   {
+      GetChildren().AddTail(child1);
+      GetChildren().AddTail(child2);
+      GetChildren().AddTail(child3);
+   }
+
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_ANDOR;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const;
 
    /** Set the minimum number of children that must match the target Message in order for this
      * filter to match the target Message.  If the specified number is greater than the number of
@@ -405,7 +476,7 @@ public:
    /** Convenience constructor for simple unary 'not' operation.
      * @param child Child whose logic we should negate.  This child is added to our child list, and the MaxMatchCount is set to zero. 
      */
-   NandNotQueryFilter(const QueryFilterRef & child) : _maxMatches(0)
+   NandNotQueryFilter(const ConstQueryFilterRef & child) : _maxMatches(0)
    {
       GetChildren().AddTail(child);
    }
@@ -414,16 +485,28 @@ public:
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation
      */
-   NandNotQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2) : _maxMatches(1)
+   NandNotQueryFilter(const ConstQueryFilterRef & child1, const ConstQueryFilterRef & child2) : _maxMatches(1)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);
    }
 
+   /** Convenience constructor for simple ternary 'nand' operation.  MaxMatchCount is set to one.
+     * @param child1 First argument to the operation
+     * @param child2 Second argument to the operation
+     * @param child3 Third argument to the operation
+     */
+   NandNotQueryFilter(const ConstQueryFilterRef & child1, const ConstQueryFilterRef & child2, const ConstQueryFilterRef & child3) : _maxMatches(1)
+   {
+      GetChildren().AddTail(child1);
+      GetChildren().AddTail(child2);
+      GetChildren().AddTail(child3);
+   }
+
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_NANDNOT;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const;
 
    /** Set the maximum number of children that may match the target Message in order for this
      * filter to match the target Message.  If the specified number is greater than the number of
@@ -451,18 +534,18 @@ public:
      * @param child1 First argument to the operation
      * @param child2 Second argument to the operation
      */
-   XorQueryFilter(const QueryFilterRef & child1, const QueryFilterRef & child2)
+   XorQueryFilter(const ConstQueryFilterRef & child1, const ConstQueryFilterRef & child2)
    {
       GetChildren().AddTail(child1);
       GetChildren().AddTail(child2);
    }
 
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_XOR;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const;
 };
 
 /** This class matches iff the specified sub-Message exists in our target Message,
-  * and (optionally) our child QueryFilterRef can match that sub-Message.
+  * and (optionally) our child ConstQueryFilterRef can match that sub-Message.
   */
 class MessageQueryFilter : public ValueQueryFilter
 {
@@ -475,23 +558,23 @@ public:
      * @param fieldName Name of the field in the Message to look at
      * @param index Index of the item within the field to look at.  Defaults to zero (i.e. the first item)
      */
-   MessageQueryFilter(const QueryFilterRef & childFilter, const String & fieldName, uint32 index = 0) : ValueQueryFilter(fieldName, index), _childFilter(childFilter) {/* empty */}
+   MessageQueryFilter(const ConstQueryFilterRef & childFilter, const String & fieldName, uint32 index = 0) : ValueQueryFilter(fieldName, index), _childFilter(childFilter) {/* empty */}
 
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_MESSAGE;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const;
 
    /** Set the sub-filter to use on the target's sub-Message.
      * @param childFilter Filter to use, or a NULL reference to indicate that any sub-Message found should match. 
      */
-   void SetChildFilter(const QueryFilterRef & childFilter) {_childFilter = childFilter;}
+   void SetChildFilter(const ConstQueryFilterRef & childFilter) {_childFilter = childFilter;}
 
    /** Returns our current sub-filter as set in our constructor or in SetChildFilter() */
-   QueryFilterRef GetChildFilter() const {return _childFilter;}
+   ConstQueryFilterRef GetChildFilter() const {return _childFilter;}
 
 private:
-   QueryFilterRef _childFilter;
+   ConstQueryFilterRef _childFilter;
 };
 
 /** This class matches on string field values.  */
@@ -529,7 +612,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_STRING;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const;
 
    /** Set the operator to use.  
      * @param op One of the OP_* values enumerated below.
@@ -637,7 +720,7 @@ public:
    virtual status_t SaveToArchive(Message & archive) const;
    virtual status_t SetFromArchive(const Message & archive);
    virtual uint32 TypeCode() const {return QUERY_FILTER_TYPE_RAWDATA;}
-   virtual bool Matches(const Message & msg, const DataNode * optNode) const;
+   virtual bool Matches(ConstMessageRef & msg, const DataNode * optNode) const;
 
    /** Set the operator to use.  
      * @param op One of the OP_* values enumerated below.

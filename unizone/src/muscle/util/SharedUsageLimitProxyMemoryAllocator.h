@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef SharedUsageLimitProxyMemoryAllocator_h
 #define SharedUsageLimitProxyMemoryAllocator_h
@@ -76,7 +76,10 @@ private:
    void ResetDaemonCounter(); // Note: this assumes the SharedMemory is already locked for read/write!
    status_t ChangeDaemonCounter(int32 byteDelta);  // Note: this assumes the SharedMemory is not locked yet
    status_t ChangeDaemonCounterAux(int32 byteDelta);  // Note: this assumes the SharedMemory is not locked yet
+   size_t CalculateTotalAllocationSum() const;
+   uint32 GetNumSlots() const {return _shared.GetAreaSize()/sizeof(size_t);}
 
+   size_t _localAllocated;
    size_t _maxBytes;
    mutable SharedMemory _shared;
    int32 _memberID;

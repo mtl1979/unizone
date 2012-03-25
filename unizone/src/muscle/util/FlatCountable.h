@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef	MuscleFlatCountable_h
 #define	MuscleFlatCountable_h
@@ -8,10 +8,8 @@
 
 namespace muscle {
 
-/** This class is used simply to more succinctly designate any
- *  object that derives from both Flattenable and RefCountable.
- *  That is, it is an interface for objects that can be both
- *  flattened and reference-counted.
+/** This class is used to designate any object that derives from both Flattenable and RefCountable.
+ *  That is, it is an interface for objects that can be both serialized to a byte-stream, AND can be reference-counted.
  */
 class FlatCountable : public RefCountable, public Flattenable
 {

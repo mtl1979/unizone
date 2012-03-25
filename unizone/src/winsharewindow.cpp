@@ -1215,10 +1215,10 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 
 			bool foundMatches = false;
 			WUserIter iter = net->UsersIterator(HTIT_FLAG_NOREGISTER);
-			while (iter.HasMoreValues())
+			while (iter.HasData())
 			{
-				WUserRef user;
-				iter.GetNextValue(user);
+				WUserRef user = iter.GetValue();
+				iter++;
 				QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 
 				if (Match(userName, qr) == 0)
@@ -1242,10 +1242,10 @@ WinShareWindow::ParseUserTargets(const QString & text, WUserSearchMap & sendTo, 
 		{
 			// tab-completion thingy :)
 			WUserIter iter = net->UsersIterator(HTIT_FLAG_NOREGISTER);
-			while (iter.HasMoreValues())
+			while (iter.HasData())
 			{
-				WUserRef user;
-				iter.GetNextValue(user);
+				WUserRef user = iter.GetValue();
+				iter++;
 				QString uName = user()->GetUserName();
 				QString userName = StripURL(uName.stripWhiteSpace()) + " ";
 
@@ -1560,7 +1560,8 @@ WinShareWindow::InitToolbars()
 	int32 _extra[NUM_TOOLBARS];
 
 	for (i = 0; i < NUM_TOOLBARS; i++)
-		fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]);
+		if (!fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]))
+			return;
 
 	// Start from dock position 0
 	// Start moving toolbars from index value of 0
@@ -1908,16 +1909,16 @@ WinShareWindow::MapUsersToIDs(const QString & pattern)
 		// Space in username? (replaced with '*' for BeShare compatibility)
 		qItem.replace(QRegExp("*"), " ");
 
-		while (it.HasMoreValues())
+		while (it.HasData())
 		{
-			WUserRef uref;
-			it.GetNextValue(uref);
+			WUserRef uref = it.GetValue();
 			if ((uref()->GetUserID() == qItem) ||
 				(StripURL(uref()->GetUserName().lower()) == StripURL(qItem.lower())))
 			{
 				AddToList(qResult, "/"+uref()->GetUserHostName() + "/" + uref()->GetUserID());
 				break;
 			}
+			it++;
 		}
 	}
 
@@ -1942,9 +1943,7 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 	}
 	int iUsers = 0;
 
-	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
-	if (!window)
-		return;
+	WUserMap umap;
 
 	QString qItem;
 	QStringTokenizer qTok(users,",");
@@ -1956,24 +1955,27 @@ WinShareWindow::LaunchPrivate(const QString & pattern)
 
 		WUserIter it = gWin->fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 
-		while (it.HasMoreValues())
+		while (it.HasData())
 		{
-			WUserRef uref;
-			it.GetNextValue(uref);
+			WUserRef uref = it.GetValue();
 			if ((uref()->GetUserID() == qItem) ||
 				(StripURL(uref()->GetUserName().lower()) == StripURL(qItem.lower())))
 			{
-				window->AddUser(uref);
+				umap.Put(uref()->GetUserID().toULong(), uref);
 				iUsers++;
 				break;
 			}
+			it++;
 		}
 	}
 	if (iUsers == 0) // No valid users?
 	{
-		delete window;
 		return;
 	}
+	WPrivateWindow * window = new WPrivateWindow(this, fNetClient, NULL);
+	if (!window)
+		return;
+	window->AddUsers(umap);
 	window->show();
 	pLock.Lock();
 	gWin->fPrivateWindows.AddTail(window);
@@ -1989,8 +1991,8 @@ WinShareWindow::QueueFile(const QString & ref)
 void
 WinShareWindow::QueueFileAux(const QString & ref)
 {
-	QString from = ref.left(ref.find("/"));
-	QString file = ref.mid(ref.find("/") + 1);
+	QString from = ref.section('/', 0, 0);
+	QString file = ref.section('/', 1, 1);
 	QString sfile = TTPDecode(file);
 	TTPInfo * ttpInfo = new TTPInfo;
 	if (ttpInfo)

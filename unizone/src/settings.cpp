@@ -1603,7 +1603,7 @@ WSettings::EmptyResumeList()
 	fSet()->RemoveName(RESUMEUSER);
 }
 
-void 
+bool 
 WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const
 {
 	dock = (int) Qt::DockTop;
@@ -1626,7 +1626,9 @@ WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl,
                 mref()->FindInt32("index", index);
                 mref()->FindBool("nl", nl);
                 mref()->FindInt32("extra", extra);
+		return true;
 	}
+	else return false;
 }
 
 void 

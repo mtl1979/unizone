@@ -1,13 +1,12 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleReflectServer_h
 #define MuscleReflectServer_h
 
 #include "reflector/AbstractReflectSession.h"
+#include "util/SocketMultiplexer.h"
 
 namespace muscle {
-
-class MemoryAllocator;
 
 /** This class represents a MUSCLE server:  It runs on a centrally located machine,
  *  and many clients may connect to it simultaneously.  This server can then redirect messages
@@ -15,18 +14,13 @@ class MemoryAllocator;
  *  This class can be used as-is, or subclassed if necessary.
  *  There is typically only one ReflectServer object present in a given MUSCLE server program.
  */
-class ReflectServer : public RefCountable, public PulseNode, private PulseNodeManager
+class ReflectServer : public RefCountable, public PulseNode, private PulseNodeManager, private CountedObject<ReflectServer>
 {
 public: 
-   /** Constructor. 
-     * @param optMemoryUsageTracker If non-NULL, this tracker will be inspected by the server in order
-     *                              to report back to clients how much memory is currently available
-     *                              on the server.  Note that this tracker does NOT become
-     *                              owned by the ReflectServer!
-     */
-   ReflectServer(MemoryAllocator * optMemoryUsageTracker = NULL);
+   /** Constructor. */
+   ReflectServer();
 
-   /** Destructor.  */
+   /** Destructor. */
    virtual ~ReflectServer();
 
    /** The main loop for the message reflection server.
@@ -96,9 +90,15 @@ public:
     *                           be attempted, and the session will be removed when the
     *                           connection breaks.  Specifying this is equivalent to calling
     *                           SetAutoReconnectDelay() on (ref).
+    * @param maxAsyncConnectPeriod If specified, this is the maximum time (in microseconds) that we will
+    *                              wait for the asynchronous TCP connection to complete.  If this amount of time passes
+    *                              and the TCP connection still has not been established, we will force the connection attempt to
+    *                              abort.  If not specified, the default value (as specified by MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS)
+    *                              is used; typically this means that it will be left up to the operating system how long to wait
+    *                              before timing out the connection attempt.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error (out-of-memory?)
     */
-   status_t AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER); 
+   status_t AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS); 
 
    /**
     * Like AddNewConnectSession(), except that the added session will not initiate
@@ -114,9 +114,15 @@ public:
     *                           be attempted, and the session will be removed when the
     *                           connection breaks.  Specifying this is equivalent to calling
     *                           SetAutoReconnectDelay() on (ref).
+    * @param maxAsyncConnectPeriod If specified, this is the maximum time (in microseconds) that we will
+    *                              wait for the asynchronous TCP connection to complete.  If this amount of time passes
+    *                              and the TCP connection still has not been established, we will force the connection attempt to
+    *                              abort.  If not specified, the default value (as specified by MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS)
+    *                              is used; typically this means that it will be left up to the operating system how long to wait
+    *                              before timing out the connection attempt.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error (out-of-memory?)
     */
-   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
+   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS);
 
    /**
     * Should be called just before the ReflectServer is to be destroyed.
@@ -169,20 +175,20 @@ public:
    /** Call this and the server will quit ASAP */
    void EndServer();
 
-   /** Returns the number of microseconds since our main loop started */
-   uint64 GetServerUptime() const;
+   /** Returns the value GetRunTime64() was at, when the ServerProcessLoop() event loop started. */
+   uint64 GetServerStartTime() const {return _serverStartedAt;}
 
-   /** Returns the number of bytes that are currently available to be allocated, or MUSCLE_NO_LIMIT
+   /** Returns the number of bytes that are currently available to be allocated, or ((uint64)-1)
      * if no memory watcher was specified in the constructor.
      */
    uint64 GetNumAvailableBytes() const;
  
-   /** Returns the maximum number of bytes that may be allocated at any given time, or MUSCLE_NO_LIMIT
+   /** Returns the maximum number of bytes that may be allocated at any given time, or ((uint64)-1)
      * if no memory watcher was specified in the constructor. 
      */
    uint64 GetMaxNumBytes() const;
  
-   /** Returns the number of bytes that are currently allocated, or MUSCLE_NO_LIMIT
+   /** Returns the number of bytes that are currently allocated, or ((uint64)-1)
      * if no memory watcher was specified in the constructor. 
      */
    uint64 GetNumUsedBytes() const;
@@ -202,6 +208,16 @@ public:
      * This number will be different each time the server is run, but will remain the same for the duration of the server's life.
      */
    uint64 GetServerSessionID() const {return _serverSessionID;}
+
+   /** This method is called at the beginning of each iteration of the event loop.
+     * Default implementation is a no-op.
+     */
+   virtual void EventLoopCycleBegins() {/* empty */}
+
+   /** This method is called at the end of each iteration of the event loop.
+     * Default implementation is a no-op.
+     */
+   virtual void EventLoopCycleEnds() {/* empty */}
 
 protected:
    /**
@@ -246,12 +262,12 @@ private:
    void AddLameDuckSession(AbstractReflectSession * who);  // convenience method ... less efficient
    void ShutdownIOFor(AbstractReflectSession * session);
    status_t ClearLameDucks();  // returns B_NO_ERROR if the server should keep going, or B_ERROR otherwise
-   void DumpBoggedSessions();
+   uint32 DumpBoggedSessions();
    status_t RemoveAcceptFactoryAux(const IPAddressAndPort & iap);
    status_t FinalizeAsyncConnect(const AbstractReflectSessionRef & ref);
    status_t DoAccept(const IPAddressAndPort & iap, const ConstSocketRef & acceptSocket, ReflectSessionFactory * optFactory);
    void LogAcceptFailed(int lvl, const char * desc, const char * ipbuf, const IPAddressAndPort & iap);
-   uint32 CheckPolicy(Hashtable<AbstractSessionIOPolicyRef, bool> & policies, const AbstractSessionIOPolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const;
+   uint32 CheckPolicy(Hashtable<AbstractSessionIOPolicyRef, Void> & policies, const AbstractSessionIOPolicyRef & policyRef, const PolicyHolder & ph, uint64 now) const;
    void CheckForOutOfMemory(const AbstractReflectSessionRef & optSessionRef);
 
    Hashtable<IPAddressAndPort, ReflectSessionFactoryRef> _factories;
@@ -268,8 +284,7 @@ private:
    uint64 _serverSessionID;
 
    Hashtable<ip_address, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
-
-   MemoryAllocator * _watchMemUsage; 
+   SocketMultiplexer _multiplexer;
 };
 DECLARE_REFTYPES(ReflectServer);
 

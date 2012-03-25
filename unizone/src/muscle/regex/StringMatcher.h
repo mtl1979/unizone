@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStringMatcher_h
 #define MuscleStringMatcher_h
@@ -19,27 +19,46 @@
 
 namespace muscle {
 
-/** A utility class for doing globbing or regular expression matching.  (A thin wrapper around the C regex calls) */
+/** This class uses the regex library to implement "simple" string matching (similar to filename globbing in bash) as well as full regular expression pattern-matching. */
 class StringMatcher : public RefCountable
 {
 public:
    /** Default Constructor. */
    StringMatcher();
 
-   /** A constructor that sets the given expression.  See SetPattern() for argument semantics. */
-   StringMatcher(const String & matchString, bool isSimpleFormat = true);
+   /** A constructor that sets the given expression.  See SetPattern() for argument semantics.
+     * @param expression the pattern string to use in future pattern-matches.
+     * @param isSimpleFormat if true, a simple globbing syntax is expected in (expression).  
+     *                       Otherwise, the full regex syntax will be expected.  Defaults to true.
+     */
+   StringMatcher(const String & expression, bool isSimpleFormat = true);
     
+   /** Copy constructor */
+   StringMatcher(const StringMatcher & rhs);
+
    /** Destructor */
    ~StringMatcher();
+
+   /** Equality constructor.  */
+   bool operator == (const StringMatcher & rhs) const {return ((_bits == rhs._bits)&&(_pattern == rhs._pattern));}
+
+   /** Inequality constructor */
+   bool operator != (const StringMatcher & rhs) const {return !(*this == rhs);}
+
+   /** Assignment operator */
+   StringMatcher & operator = (const StringMatcher & rhs);
 
    /** 
     * Set a new wildcard pattern or regular expression for this StringMatcher to use in future Match() calls.
     *
-    * As of v2.01, simple patterns specified here also have a special case:  If you set a pattern of the form 
+    * Simple patterns specified here also have a special case:  If you set a pattern of the form 
     * "<x-y>", where x and y are ASCII representations of positive integers, then this StringMatcher will only 
     * match ASCII representations of integers in that range.  So "<19-21>" would match "19", "20", and "21" only.
     * Also, "<-19>" will match integers less than or equal to 19, and "<21->" will match all integers greater
     * than or equal to 21.  "<->" will match everything, same as "*".
+    *
+    * Also, simple patterns that begin with a tilde (~) will be logically negated, e.g. ~A* will match all
+    * strings that do NOT begin with the character A.
     *
     * @param expression The new globbing pattern or regular expression to match with.
     * @param isSimpleFormat If you wish to use the formal regex syntax, 
@@ -54,7 +73,7 @@ public:
    /** Returns true iff this StringMatcher's pattern specifies exactly one possible string.
     *  (i.e. the pattern is just plain old text, with no wildcards or other pattern matching logic specified)
     */
-   bool IsPatternUnique() const {return (_hasRegexTokens == false)&&(_negate == false)&&(_rangeMin == MUSCLE_NO_LIMIT);}
+   bool IsPatternUnique() const {return (IsBitSet(STRINGMATCHER_BIT_HASREGEXTOKENS|STRINGMATCHER_BIT_NEGATE) == false)&&(_rangeMin == MUSCLE_NO_LIMIT);}
 
    /** Returns true iff (string) is matched by the current expression.
     * @param matchString a string to match against using our current expression.
@@ -72,10 +91,13 @@ public:
      * SetPattern(..., true), based on whether or not the pattern
      * string starts with a tilde.
      */
-   void SetNegate(bool negate) {_negate = negate;}
+   void SetNegate(bool negate) {SetBit(STRINGMATCHER_BIT_NEGATE, negate);}
 
    /** Returns the current state of our negate flag. */
-   bool IsNegate() const {return _negate;}
+   bool IsNegate() const {return IsBitSet(STRINGMATCHER_BIT_NEGATE);}
+
+   /** Returns the true iff our current pattern is of the "simple" variety, or false if it is of the "official regex" variety. */
+   bool IsSimple() const {return IsBitSet(STRINGMATCHER_BIT_SIMPLE);}
 
    /** Resets this StringMatcher to the state it would be in if created with default arguments. */
    void Reset();
@@ -83,10 +105,21 @@ public:
    /** Returns a human-readable string representing this StringMatcher, for debugging purposes. */
    String ToString() const;
 
+   /** Returns a hash code for this StringMatcher */
+   inline uint32 HashCode() const {return _pattern.HashCode() + _bits;}
+
 private:
-   bool _regExpValid;
-   bool _negate;
-   bool _hasRegexTokens;
+   void SetBit(uint8 bit, bool set) {if (set) _bits |= bit; else _bits &= ~(bit);}
+   bool IsBitSet(uint8 bit) const {return (_bits & bit) != 0;}
+
+   enum {
+      STRINGMATCHER_BIT_REGEXVALID     = (1<<0),
+      STRINGMATCHER_BIT_NEGATE         = (1<<1),
+      STRINGMATCHER_BIT_HASREGEXTOKENS = (1<<2),
+      STRINGMATCHER_BIT_SIMPLE         = (1<<3),
+   };
+
+   uint8 _bits;
    String _pattern;
    regex_t _regExp;
    uint32 _rangeMin;
@@ -135,6 +168,15 @@ bool HasRegexTokens(const char * str);
 
 /** As above, but takes a String object instead of a (const char *) */
 inline bool HasRegexTokens(const String & str) {return HasRegexTokens(str());}
+
+/** Returns true iff the specified regex string can match more than one possible value.
+ *  @param str The string to check
+ *  @return True iff the string might match more than one value; false if not.
+ */
+bool CanRegexStringMatchMultipleValues(const char * str);
+
+/** As above, but takes a String object instead of a (const char *) */
+inline bool CanRegexStringMatchMultipleValues(const String & str) {return CanRegexStringMatchMultipleValues(str());}
 
 /** Returns true iff (c) is a regular expression "special" char as far as StringMatchers are concerned.
  *  @param c an ASCII char

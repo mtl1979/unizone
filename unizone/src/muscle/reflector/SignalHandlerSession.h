@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/AbstractReflectSession.h"
 #include "system/SignalMultiplexer.h"
@@ -9,7 +9,7 @@ namespace muscle {
   * catch signals (e.g. SIGINT on Unix/MacOS, Console signals on Windows)
   * and react by initiating a controlled shutdown of the server.
   */
-class SignalHandlerSession : public AbstractReflectSession, public ISignalHandler
+class SignalHandlerSession : public AbstractReflectSession, public ISignalHandler, private CountedObject<SignalHandlerSession>
 {
 public:
    /** Default constructor. */

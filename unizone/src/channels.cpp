@@ -652,8 +652,11 @@ Channels::UserIDChanged(const QString &oldid, const QString &newid)
 	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
 	ChannelInfo *info;
 	QString channel;
-	while ((iter.GetNextKey(channel) == B_OK) && (iter.GetNextValue(info) == B_OK))
+	while (iter.HasData())
 	{
+		channel = iter.GetKey();
+		info = iter.GetValue();
+		iter++;
 		if (IsOwner(channel, oldid))
 		{
 			// Owner changed
@@ -694,9 +697,10 @@ void
 Channels::StartLogging()
 {
 	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
-	ChannelInfo * info;
-	while (iter.GetNextValue(info) == B_OK)
+	while (iter.HasData())
 	{
+		ChannelInfo * info = iter.GetValue();
+		iter++;
 		Channel * chn = info->GetWindow();
 		if (chn)
 			chn->StartLogging();
@@ -707,9 +711,10 @@ void
 Channels::StopLogging()
 {
 	WChannelIter iter = fChannels.GetIterator(HTIT_FLAG_NOREGISTER);
-	ChannelInfo * info;
-	while (iter.GetNextValue(info) == B_OK)
+	while (iter.HasData())
 	{
+		ChannelInfo * info = iter.GetValue();
+		iter++;
 		Channel * chn = info->GetWindow();
 		if (chn)
 			chn->StopLogging();
@@ -719,16 +724,16 @@ Channels::StopLogging()
 void
 Channels::HandleMessage(MessageRef & msg)
 {
-   switch (msg()->what)
-   {
-         case NetClient::ChannelCreated:
+	switch (msg()->what)
+	{
+		case NetClient::ChannelCreated:
 			{
 				QString qChan, qOwner;
 				uint64 rtime;
 				if (
 					(GetStringFromMessage(msg, PR_NAME_SESSION, qOwner) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
-                                        (msg()->FindInt64("when", rtime) == B_OK)
+										(msg()->FindInt64("when", rtime) == B_OK)
 					)
 				{
 					ChannelCreated(qChan, qOwner, rtime);
@@ -806,12 +811,12 @@ Channels::HandleMessage(MessageRef & msg)
 				if (
 					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK) &&
-                                        (msg()->FindBool("public", pub) == B_OK)
+										(msg()->FindBool("public", pub) == B_OK)
 					)
 				{
 					ChannelPublic(qChan, qUser, pub);
 				}
 				break;
 			}
-   }
+	}
 }

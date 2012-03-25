@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef RateLimitSessionIOPolicy_h
 #define RateLimitSessionIOPolicy_h
@@ -12,7 +12,7 @@ namespace muscle {
  * of AbstractReflectSessionSessions that use it.  Each policy object may referenced by
  * zero or more PolicyHolders at once.
  */
-class RateLimitSessionIOPolicy : public AbstractSessionIOPolicy
+class RateLimitSessionIOPolicy : public AbstractSessionIOPolicy, private CountedObject<RateLimitSessionIOPolicy>
 {
 public:
    /** Constructor.  

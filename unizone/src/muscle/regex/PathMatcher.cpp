@@ -1,12 +1,11 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "regex/PathMatcher.h"
 #include "util/StringTokenizer.h"
 
 namespace muscle {
 
-static void ResetMatcherQueueFunc(StringMatcherQueue * q, void *) {q->Clear();}
-StringMatcherQueueRef::ItemPool _stringMatcherQueuePool(100, ResetMatcherQueueFunc);
+StringMatcherQueueRef::ItemPool _stringMatcherQueuePool;
 StringMatcherQueueRef::ItemPool * GetStringMatcherQueuePool() {return &_stringMatcherQueuePool;}
 
 void PathMatcher :: AdjustStringPrefix(String & path, const char * optPrepend) const
@@ -35,7 +34,7 @@ status_t PathMatcher :: RemovePathString(const String & wildpath)
    return B_ERROR;
 }
 
-status_t PathMatcher :: PutPathString(const String & path, const QueryFilterRef & filter)
+status_t PathMatcher :: PutPathString(const String & path, const ConstQueryFilterRef & filter)
 {
    TCHECKPOINT;
 
@@ -48,12 +47,12 @@ status_t PathMatcher :: PutPathString(const String & path, const QueryFilterRef 
 
          StringMatcherRef::ItemPool * smPool = GetStringMatcherPool();
          String temp;
-         int lastSlashPos = -1;
-         int slashPos = 0;
+         int32 lastSlashPos = -1;
+         int32 slashPos = 0;
          while(slashPos >= 0)
          {
             slashPos = path.IndexOf('/', lastSlashPos+1);
-            temp = path.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : path.Length());
+            temp = path.Substring(lastSlashPos+1, (slashPos >= 0) ? slashPos : (int32)path.Length());
             StringMatcherRef smRef;
             if (strcmp(temp(), "*"))
             {
@@ -79,7 +78,7 @@ status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const ch
 
    status_t ret = B_NO_ERROR;
 
-   QueryFilterRef filter;  // declared here so that queries can "bleed down" the list without being specified multiple times
+   ConstQueryFilterRef filter;  // declared here so that queries can "bleed down" the list without being specified multiple times
    String str;
    for (uint32 i=0; msg.FindString(pathFieldName, i, str) == B_NO_ERROR; i++) 
    {
@@ -93,7 +92,7 @@ status_t PathMatcher :: PutPathsFromMessage(const char * pathFieldName, const ch
    return ret;
 }
 
-status_t PathMatcher :: SetFilterForEntry(const String & path, const QueryFilterRef & newFilter)
+status_t PathMatcher :: SetFilterForEntry(const String & path, const ConstQueryFilterRef & newFilter)
 {
    PathMatcherEntry * pme = _entries.Get(path);
    if (pme == NULL) return B_ERROR;
@@ -103,7 +102,7 @@ status_t PathMatcher :: SetFilterForEntry(const String & path, const QueryFilter
    return B_NO_ERROR;
 }
 
-status_t PathMatcher :: PutPathFromString(const String & str, const QueryFilterRef & filter, const char * prependIfNoLeadingSlash)
+status_t PathMatcher :: PutPathFromString(const String & str, const ConstQueryFilterRef & filter, const char * prependIfNoLeadingSlash)
 {
    String s = str;
    AdjustStringPrefix(s, prependIfNoLeadingSlash);
@@ -114,14 +113,11 @@ status_t PathMatcher :: PutPathsFromMatcher(const PathMatcher & matcher)
 {
    TCHECKPOINT;
 
-   HashtableIterator<String, PathMatcherEntry> iter(matcher.GetEntries(), HTIT_FLAG_NOREGISTER);
-   const String * nextKey;
-   const PathMatcherEntry * nextValue;
-   while(iter.GetNextKeyAndValue(nextKey, nextValue) == B_NO_ERROR)
+   for (HashtableIterator<String, PathMatcherEntry> iter(matcher.GetEntries(), HTIT_FLAG_NOREGISTER); iter.HasData(); iter++)
    {
-      if (_entries.Put(*nextKey, *nextValue) == B_NO_ERROR)
+      if (_entries.Put(iter.GetKey(), iter.GetValue()) == B_NO_ERROR)
       {
-         if (nextValue->GetFilter()()) _numFilters++;
+         if (iter.GetValue().GetFilter()()) _numFilters++;
       }
       else return B_ERROR;
    }
@@ -133,12 +129,9 @@ bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage, c
    TCHECKPOINT;
 
    uint32 numClauses = GetPathDepth(path);
-
-   HashtableIterator<String, PathMatcherEntry> iter(_entries, HTIT_FLAG_NOREGISTER);
-   const PathMatcherEntry * nextValue;
-   while((nextValue = iter.GetNextValue()) != NULL)
+   for (HashtableIterator<String, PathMatcherEntry> iter(_entries, HTIT_FLAG_NOREGISTER); iter.HasData(); iter++)
    {
-      const StringMatcherQueue * nextSubscription = nextValue->GetParser()();      
+      const StringMatcherQueue * nextSubscription = iter.GetValue().GetParser()();      
       if ((nextSubscription)&&(nextSubscription->GetNumItems() == numClauses))
       {
          bool matched = true;  // default
@@ -157,8 +150,9 @@ bool PathMatcher :: MatchesPath(const char * path, const Message * optMessage, c
 
          if (matched) 
          {
-            const QueryFilter * filter = nextValue->GetFilter()();
-            if ((filter == NULL)||(optMessage == NULL)||(filter->Matches(*optMessage, optNode))) return true;
+            ConstMessageRef constMsg(optMessage, false);
+            const QueryFilter * filter = iter.GetValue().GetFilter()();
+            if ((filter == NULL)||(optMessage == NULL)||(filter->Matches(constMsg, optNode))) return true;
          }
       }
    }

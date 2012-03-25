@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleGlobalMemoryAllocator_h
 #define MuscleGlobalMemoryAllocator_h
@@ -23,7 +23,7 @@ void SetCPlusPlusGlobalMemoryAllocator(const MemoryAllocatorRef & maRef);
   * C++ global new and delete operators.  Will return a NULL reference if no MemoryAllocator is in use.
   * @note this function is only available is -DMUSCLE_ENABLE_MEMORY_TRACKING is defined in the Makefile.
   */
-MemoryAllocatorRef GetCPlusPlusGlobalMemoryAllocator();
+const MemoryAllocatorRef & GetCPlusPlusGlobalMemoryAllocator();
 
 /** Returns the number of bytes currently dynamically allocated by this process. 
   * @note this function is only available is -DMUSCLE_ENABLE_MEMORY_TRACKING is defined in the Makefile.
@@ -51,8 +51,8 @@ void * muscleAlloc(size_t numBytes, bool retryOnFailure = true);
 
 /** Companion to muscleAlloc().  Any buffers allocated with muscleAlloc() should
  *  be freed with muscleFree() when you are done with them, to avoid memory leaks.
- *  @param buf Buffer that was previously allocated with (buf).  If NULL, then this
- *             call becomes a no-op.
+ *  @param buf Buffer that was previously allocated with muscleAlloc() or muscleRealloc().  
+ *             If NULL, then this call will be a no-op.
  */
 void muscleFree(void * buf);
 

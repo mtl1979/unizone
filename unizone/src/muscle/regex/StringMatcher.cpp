@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include <stdio.h>
 #include "regex/StringMatcher.h"
@@ -18,14 +18,19 @@ StringMatcherRef GetStringMatcherFromPool(const String & matchString, bool isSim
    return ret;
 }
 
-StringMatcher::StringMatcher() : _regExpValid(false), _negate(false), _hasRegexTokens(false), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
+StringMatcher::StringMatcher() : _bits(0), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
 {
    // empty
 } 
 
-StringMatcher :: StringMatcher(const String & str, bool simple) : _regExpValid(false), _negate(false)
+StringMatcher :: StringMatcher(const String & str, bool simple) : _bits(0)
 {
    (void) SetPattern(str, simple);
+}
+
+StringMatcher :: StringMatcher(const StringMatcher & rhs) : RefCountable(rhs), _bits(0)
+{
+   *this = rhs;
 }
 
 StringMatcher :: ~StringMatcher()
@@ -35,10 +40,16 @@ StringMatcher :: ~StringMatcher()
 
 void StringMatcher :: Reset()
 {
-   if (_regExpValid) regfree(&_regExp);
-   _regExpValid = _negate = _hasRegexTokens = false;
+   if (IsBitSet(STRINGMATCHER_BIT_REGEXVALID)) regfree(&_regExp);
+   _bits = 0;
    _rangeMin = _rangeMax = MUSCLE_NO_LIMIT;
    _pattern.Clear();
+}
+
+StringMatcher & StringMatcher :: operator = (const StringMatcher & rhs)
+{
+   (void) SetPattern(rhs._pattern, rhs.IsBitSet(STRINGMATCHER_BIT_SIMPLE));
+   return *this;
 }
 
 status_t StringMatcher :: SetPattern(const String & s, bool isSimple) 
@@ -46,20 +57,22 @@ status_t StringMatcher :: SetPattern(const String & s, bool isSimple)
    TCHECKPOINT;
 
    _pattern = s;
+   SetBit(STRINGMATCHER_BIT_SIMPLE, isSimple);
+
    const char * str = _pattern();
-   _hasRegexTokens = HasRegexTokens(str);
+   SetBit(STRINGMATCHER_BIT_HASREGEXTOKENS, HasRegexTokens(str));
 
    String regexPattern;
    _rangeMin = _rangeMax = MUSCLE_NO_LIMIT;  // default to regular matching mode
    if (isSimple)
    {
-      // Special case:  if the first char is a tilde, ignore it, but set the _negate flag.
+      // Special case:  if the first char is a tilde, ignore it, but set the negate-bit.
       if (str[0] == '~')
       {
-         _negate = true;
+         SetBit(STRINGMATCHER_BIT_NEGATE, true);
          str++;
       }
-      else _negate = false;
+      else SetBit(STRINGMATCHER_BIT_NEGATE, false);
 
       // Special case for strings of form e.g. "<15-23>", which is interpreted to
       // match integers in the range 15-23, inclusive.  Yeah, it's an ungraceful
@@ -107,19 +120,21 @@ status_t StringMatcher :: SetPattern(const String & s, bool isSimple)
          regexPattern += ")$";
       }
    }
+   else SetBit(STRINGMATCHER_BIT_NEGATE, false);
 
    // Free the old regular expression, if any
-   if (_regExpValid)    
+   if (IsBitSet(STRINGMATCHER_BIT_REGEXVALID))
    {
-     regfree(&_regExp);
-     _regExpValid = false;
+      regfree(&_regExp);
+      SetBit(STRINGMATCHER_BIT_REGEXVALID, false);
    }
 
    // And compile the new one
    if (_rangeMin == MUSCLE_NO_LIMIT)
    {
-      _regExpValid = (regcomp(&_regExp, (regexPattern.HasChars()) ? regexPattern.Cstr() : str, REG_EXTENDED) == 0);
-      return _regExpValid ? B_NO_ERROR : B_ERROR;
+      bool isValid = (regcomp(&_regExp, regexPattern.HasChars() ? regexPattern() : str, REG_EXTENDED) == 0);
+      SetBit(STRINGMATCHER_BIT_REGEXVALID, isValid);
+      return isValid ? B_NO_ERROR : B_ERROR;
    }
    else return B_NO_ERROR;  // for range queries, we don't need a valid regex
 }
@@ -132,20 +147,20 @@ bool StringMatcher :: Match(const char * const str) const
 
    if (_rangeMin == MUSCLE_NO_LIMIT)
    {
-      if (_regExpValid) ret = (regexec(&_regExp, str, 0, NULL, 0) != REG_NOMATCH);
+      if (IsBitSet(STRINGMATCHER_BIT_REGEXVALID)) ret = (regexec(&_regExp, str, 0, NULL, 0) != REG_NOMATCH);
    }
-   else if ((str[0] >= '0')&&(str[0] <= '9'))
+   else if (muscleInRange(str[0], '0', '9'))
    {
       ret = muscleInRange((uint32) atoi(str), _rangeMin, _rangeMax);
    }
 
-   return _negate ? (!ret) : ret;
+   return IsBitSet(STRINGMATCHER_BIT_NEGATE) ? (!ret) : ret;
 }
 
 String StringMatcher :: ToString() const
 {
    String s;
-   if (_negate) s = '~';
+   if (IsBitSet(STRINGMATCHER_BIT_NEGATE)) s = "~";
 
    if (_rangeMin == MUSCLE_NO_LIMIT) return s+_pattern;
    else
@@ -161,7 +176,7 @@ bool IsRegexToken(char c, bool isFirstCharInString)
    {
       // muscle 2.50:  fixed to match exactly the chars specified in muscle/regex/regex/regcomp.c
       case '[': case ']': case '*': case '?': case '\\': case ',': case '|': case '(': case ')':
-      case '=': case '^': case '+': case '$': case '{':  case '}': case ':': case '-':
+      case '=': case '^': case '+': case '$': case '{':  case '}': case '-':  // note:  deliberately not including ':'
         return true;
 
       case '<': case '~':   // these chars are only special if they are the first character in the string
@@ -219,6 +234,21 @@ bool HasRegexTokens(const char * str)
    }
    return false;
 }
+
+bool CanRegexStringMatchMultipleValues(const char * str)
+{
+   bool prevCharWasEscape = false;
+   const char * s = str;
+   while(*s)
+   {
+      bool isEscape = ((*s == '\\')&&(prevCharWasEscape == false));
+      if ((isEscape == false)&&(prevCharWasEscape == false)&&(IsRegexToken(*s, (s==str)))) return true;
+      prevCharWasEscape = isEscape;
+      s++;
+   }
+   return false;
+}
+
 
 bool MakeRegexCaseInsensitive(String & str)
 {

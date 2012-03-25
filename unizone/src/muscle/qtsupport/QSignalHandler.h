@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQSignalHandler_h
 #define MuscleQSignalHandler_h
@@ -21,7 +21,7 @@ namespace muscle {
  *  whenever a new TCP connection is received on that port.  In all 
  *  other respects it works like an SignalHandler object.
  */
-class QSignalHandler : public QObject, public ISignalHandler
+class QSignalHandler : public QObject, public ISignalHandler, private CountedObject<QSignalHandler>
 {
    Q_OBJECT
 

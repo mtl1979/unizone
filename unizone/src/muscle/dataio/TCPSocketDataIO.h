@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTCPSocketDataIO_h
 #define MuscleTCPSocketDataIO_h
@@ -11,13 +11,13 @@
 namespace muscle {
 
 #ifndef MUSCLE_DEFAULT_TCP_STALL_TIMEOUT
-# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT (3*60*((uint64)1000000))  // 3 minutes is our default timeout period
+# define MUSCLE_DEFAULT_TCP_STALL_TIMEOUT MinutesToMicros(3)  // 3 minutes is our default timeout period
 #endif
 
 /**
  *  Data I/O to and from a TCP socket! 
  */
-class TCPSocketDataIO : public DataIO
+class TCPSocketDataIO : public DataIO, private CountedObject<TCPSocketDataIO>
 {
 public:
    /**
@@ -52,7 +52,7 @@ public:
    virtual int64 GetPosition() const {return -1;}
 
    /**
-    * Stall limit for TCP streams is 3*60*1000000 microseconds (3 minutes) by default.
+    * Stall limit for TCP streams is 180000000 microseconds (aka 3 minutes) by default.
     * Or change it by calling SetOutputStallLimit().
     */
    virtual uint64 GetOutputStallLimit() const {return _stallLimit;}

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #if defined(_WIN32) || defined(WIN32)
 # include <errno.h>
@@ -169,7 +169,7 @@ status_t Directory :: SetDir(const char * dirPath)
    else return B_NO_ERROR;
 }
 
-status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary)
+status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary, bool errorIfAlreadyExists)
 {
    if (forceCreateParentDirsIfNecessary)
    {
@@ -185,7 +185,7 @@ status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParent
          temp[subLen] = '\0';
 
          Directory pd(temp);
-         if ((pd.IsValid() == false)&&(Directory::MakeDirectory(temp, forceCreateParentDirsIfNecessary) != B_NO_ERROR))
+         if ((pd.IsValid() == false)&&(Directory::MakeDirectory(temp, true, false) != B_NO_ERROR))
          {
             delete [] temp;
             return B_ERROR;
@@ -196,9 +196,9 @@ status_t Directory :: MakeDirectory(const char * dirPath, bool forceCreateParent
 
    // base case!
 #ifdef WIN32
-   return CreateDirectoryA(dirPath, NULL) ? B_NO_ERROR : B_ERROR;
+   return ((CreateDirectoryA(dirPath, NULL))||((errorIfAlreadyExists==false)&&(GetLastError()==ERROR_ALREADY_EXISTS))) ? B_NO_ERROR : B_ERROR;
 #else
-   return (mkdir(dirPath, S_IRWXU|S_IRWXG|S_IRWXO) == 0) ? B_NO_ERROR : B_ERROR;
+   return ((mkdir(dirPath, S_IRWXU|S_IRWXG|S_IRWXO) == 0)||((errorIfAlreadyExists==false)&&(errno==EEXIST))) ? B_NO_ERROR : B_ERROR;
 #endif
 }
 

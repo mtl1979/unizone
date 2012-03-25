@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/ServerComponent.h"
 #include "reflector/ReflectServer.h"
@@ -6,7 +6,7 @@
 namespace muscle {
 
 ServerComponent ::
-ServerComponent() : _owner(NULL)
+ServerComponent() : _owner(NULL), _fullyAttached(false)
 {
    // empty
 }
@@ -89,18 +89,18 @@ AddNewSession(const AbstractReflectSessionRef & ref, const ConstSocketRef & sock
 
 status_t
 ServerComponent ::
-AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & ip, uint16 port, uint64 autoReconnectDelay)
+AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & ip, uint16 port, uint64 autoReconnectDelay, uint64 maxAsyncConnectPeriod)
 {
    MASSERT(_owner, "Can not call AddNewConnectSession() while not attached to the server");
-   return _owner->AddNewConnectSession(ref, ip, port, autoReconnectDelay);
+   return _owner->AddNewConnectSession(ref, ip, port, autoReconnectDelay, maxAsyncConnectPeriod);
 }
 
 status_t
 ServerComponent ::
-AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & ip, uint16 port, uint64 autoReconnectDelay)
+AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & ip, uint16 port, uint64 autoReconnectDelay, uint64 maxAsyncConnectPeriod)
 {
    MASSERT(_owner, "Can not call AddNewDormantConnectSession() while not attached to the server");
-   return _owner->AddNewDormantConnectSession(ref, ip, port, autoReconnectDelay);
+   return _owner->AddNewDormantConnectSession(ref, ip, port, autoReconnectDelay, maxAsyncConnectPeriod);
 }
 
 void
@@ -113,10 +113,10 @@ EndServer()
 
 uint64
 ServerComponent ::
-GetServerUptime() const
+GetServerStartTime() const
 {
-   MASSERT(_owner, "Can not call GetServerUptime() while not attached to the server");
-   return _owner->GetServerUptime();
+   MASSERT(_owner, "Can not call GetServerStartTime() while not attached to the server");
+   return _owner->GetServerStartTime();
 }
 
 uint64

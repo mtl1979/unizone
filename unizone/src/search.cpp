@@ -330,10 +330,7 @@ WSearch::StopSearch()
 			// <postmaster@raasu.org> 20021023 -- Use temporary variable to help debugging
 			{
 				QString tmp;
-				int a = fCurrentSearchPattern.find("/");
-				int b = fCurrentSearchPattern.find("/", a + 1);
-				int c = fCurrentSearchPattern.find("/", b + 1);
-				tmp = fCurrentSearchPattern.mid(c + 1);
+				tmp = fCurrentSearchPattern.section("/", 3);
 				AddStringToMessage(cancel, PR_NAME_KEYS, tmp);
 			}
 			fNetClient->SendMessageToSessions(cancel);
@@ -357,8 +354,11 @@ WSearch::ClearList()
 	WFileInfo * info;
 	QString key;
 	HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_BACKWARDS);
-	while ((iter.GetNextKey(key) == B_OK) && (iter.GetNextValue(info) == B_OK))
+	while (iter.HasData())
 	{
+		key = iter.GetKey();
+		info = iter.GetValue();
+		iter++;
 		// don't delete the list items here
 		delete info;
 		info = NULL; // <postmaster@raasu.org> 20021027
@@ -403,21 +403,18 @@ WSearch::SplitQuery(const QString &fileExp)
 		WUserMap &users = fNetClient->Users();
 		WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
 		
-		while (it.HasMoreValues())
+		while (it.HasData())
 		{
-			WUserRef uref;
-			it.GetNextValue(uref);
+			WUserRef uref = it.GetValue();
 			// User ID?
-			QString user(uref()->GetUserID());
-			user.prepend("@");
+			QString user("@" + uref()->GetUserID());
 			if (fileExp.endsWith(user))
 			{
 				return fileExp.findRev(user);
 			}
 			// User Name?
 			QString name = uref()->GetUserName().lower();
-			name = StripURL(name).stripWhiteSpace();
-			name.prepend("@");
+			name = "@" + StripURL(name).stripWhiteSpace();
 			
 			// Compare end of fileExp against stripped user name
 			
@@ -425,6 +422,7 @@ WSearch::SplitQuery(const QString &fileExp)
 			{
 				return fileExp.length() - name.length();
 			}
+			it++;
 		}
 	}
 	// No exact match?
@@ -494,10 +492,10 @@ WSearch::GoSearch()
 			WUserMap & users = fNetClient->Users();
 			WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
 			QString ulist;
-			while (it.HasMoreValues())
+			while (it.HasData())
 			{
-				WUserRef user;
-				it.GetNextValue(user);
+				WUserRef user = it.GetValue();
+				it++;
 				QString username = StripURL(user()->GetUserName());
 				QString userid = user()->GetUserID();
 				if (username.find(qr) >= 0)
@@ -553,7 +551,7 @@ Simplify(const QString &str)
 			ret += str.mid(x, 2);
 			x += 2;
 		}
-		else if (str.mid(x, 2) == ".*")
+		else if (str.midRef(x, 2) == ".*")
 		{
 			ret += "*";
 			x += 2;
@@ -658,8 +656,10 @@ WSearch::Download()
 
 		HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
 		
-		while (iter.GetNextValue(fi) == B_OK)
+		while (iter.HasData())
 		{
+			fi = iter.GetValue();
+			iter++;
 #ifdef _DEBUG
 			WString w0(fi->fiListItem->text(0));
 			WString w5(fi->fiListItem->text(5));
@@ -692,8 +692,10 @@ WSearch::DownloadAll()
 		WFileInfo * fi;
 		HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
 		
-		while (iter.GetNextValue(fi) == B_OK)
+		while (iter.HasData())
 		{
+			fi = iter.GetValue();
+			iter++;
 #ifdef _DEBUG
 			WString w0(fi->fiListItem->text(0));
 			WString w5(fi->fiListItem->text(5));

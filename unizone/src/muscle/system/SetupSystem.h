@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSetupSystem_h
 #define MuscleSetupSystem_h
@@ -199,6 +199,9 @@ Mutex * GetGlobalMuscleLock();
   * If MUSCLE_SINGLE_THREAD_ONLY is defined, then this function always returns true.
   */
 bool IsCurrentThreadMainThread();
+
+/** Returns a numeric identifier associated with the thread that called this function. */
+unsigned long GetCurrentThreadID();
 
 }; // end namespace muscle
 

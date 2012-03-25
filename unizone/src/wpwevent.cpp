@@ -36,11 +36,12 @@ WPWEvent::WPWEvent(int type, WUserMap & users, const QString & msg, bool encrypt
 
 			QString tusers;
 			WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
-			while (it.HasMoreValues())
+			while (it.HasData())
 			{
 				WUserRef uref;
-				it.GetNextValue(uref);
+				uref = it.GetValue();
 				AddToList(tusers, uref()->GetUserID());
+				it++;
 			}
 			
 			fMsg += tusers;

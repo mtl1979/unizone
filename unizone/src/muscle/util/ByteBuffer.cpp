@@ -4,10 +4,6 @@
 
 namespace muscle {
 
-static ByteBuffer _emptyBuf;
-static const ByteBufferRef _emptyBufRef(&_emptyBuf, false);
-ByteBufferRef GetEmptyByteBufferRef() {return _emptyBufRef;}
-
 void ByteBuffer :: AdoptBuffer(uint32 numBytes, uint8 * optBuffer)
 {
    Clear(true);  // free any previously held array
@@ -17,10 +13,28 @@ void ByteBuffer :: AdoptBuffer(uint32 numBytes, uint8 * optBuffer)
 
 status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer)
 {
-   Clear();
-   if (SetNumBytes(numBytes, false) != B_NO_ERROR) return B_ERROR;
-   if ((buffer)&&(_buffer)) memcpy(_buffer, buffer, numBytes);
-   return B_NO_ERROR;
+   if (IsByteInLocalBuffer(buffer))
+   {
+      // Special logic for handling it when the caller wants our bytes-array to become a subset of its former self.
+      uint32 numReadableBytes = ((_buffer+_numValidBytes)-buffer);
+      if (numBytes > numReadableBytes)
+      {
+         LogTime(MUSCLE_LOG_CRITICALERROR, "ByteBuffer::SetBuffer();  Attempted to read "UINT32_FORMAT_SPEC" bytes off the end of our internal buffer!\n", numBytes-numReadableBytes);
+         return B_ERROR;
+      }
+      else
+      {
+         if (buffer > _buffer) memmove(_buffer, buffer, numBytes);
+         return SetNumBytes(numBytes, true);
+      }
+   }
+   else
+   {
+      Clear(numBytes<(_numAllocatedBytes/2));  // FogBugz #6933: if the new buffer takes up less than half of our current space, toss it
+      if (SetNumBytes(numBytes, false) != B_NO_ERROR) return B_ERROR;
+      if ((buffer)&&(_buffer)) memcpy(_buffer, buffer, numBytes);
+      return B_NO_ERROR;
+   }
 }
 
 status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
@@ -67,6 +81,20 @@ status_t ByteBuffer :: SetNumBytes(uint32 newNumBytes, bool retainData)
 
 status_t ByteBuffer :: AppendBytes(const uint8 * bytes, uint32 numBytes, bool allocExtra)
 {
+   if (numBytes == 0) return B_NO_ERROR;
+
+   if ((bytes)&&(IsByteInLocalBuffer(bytes))&&((_numValidBytes+numBytes)>_numAllocatedBytes))
+   {
+      // Oh dear, caller wants us to add a copy of some of our own bytes to ourself, AND we'll need to perform a reallocation to do it!
+      // So to avoid freeing (bytes) before we read from them, we're going to copy them over to a temporary buffer first.
+      uint8 * tmpBuf = newnothrow uint8[numBytes];
+      if (tmpBuf) memcpy(tmpBuf, bytes, numBytes);
+             else {WARN_OUT_OF_MEMORY; return B_ERROR;}
+      status_t ret = AppendBytes(tmpBuf, numBytes, allocExtra);
+      delete [] tmpBuf;
+      return ret;
+   }
+
    uint32 oldTotalSize = _numValidBytes;  // save this value since SetNumBytes() will change it
    uint32 newTotalSize = _numValidBytes+numBytes;
    uint32 allocSize    = ((newTotalSize > _numAllocatedBytes)&&(allocExtra)) ? muscleMax(newTotalSize*4, (uint32)128) : newTotalSize;
@@ -119,24 +147,29 @@ void ByteBuffer :: PrintToStream(uint32 maxBytesToPrint, uint32 numColumns, FILE
    PrintHexBytes(GetBuffer(), muscleMin(maxBytesToPrint, GetNumBytes()), "ByteBuffer", numColumns, optFile);
 }
 
-static void ClearBufferFunc(ByteBuffer * buf, void *) {buf->Clear(buf->GetNumBytes() > 100);}
-static ByteBufferRef::ItemPool _bufferPool(100, ClearBufferFunc);
+ByteBuffer operator+(const ByteBuffer & lhs, const ByteBuffer & rhs)
+{
+   ByteBuffer ret;
+   if (ret.SetNumBytes(lhs.GetNumBytes()+rhs.GetNumBytes(), false) == B_NO_ERROR)
+   {
+      memcpy(ret.GetBuffer(), lhs.GetBuffer(), lhs.GetNumBytes());
+      memcpy(ret.GetBuffer()+lhs.GetNumBytes(), rhs.GetBuffer(), rhs.GetNumBytes());
+   }
+   return ret;
+}
+
+static ByteBufferRef::ItemPool _bufferPool;
 ByteBufferRef::ItemPool * GetByteBufferPool() {return &_bufferPool;}
+const ByteBuffer & GetEmptyByteBuffer() {return _bufferPool.GetDefaultObject();}
+
+static const ConstByteBufferRef _emptyBufRef(&_bufferPool.GetDefaultObject(), false);
+ConstByteBufferRef GetEmptyByteBufferRef() {return _emptyBufRef;}
 
 ByteBufferRef GetByteBufferFromPool(uint32 numBytes, const uint8 * optBuffer) {return GetByteBufferFromPool(_bufferPool, numBytes, optBuffer);}
 ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numBytes, const uint8 * optBuffer)
 {
    ByteBufferRef ref(pool.ObtainObject());
    if ((ref())&&(ref()->SetBuffer(numBytes, optBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
-   return ref;
-}
-
-ByteBufferRef GetByteBufferFromPool(const Flattenable & flattenMe) {return GetByteBufferFromPool(_bufferPool, flattenMe);}
-ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, const Flattenable & flattenMe)
-{
-   ByteBufferRef ref(pool.ObtainObject());
-   if ((ref() == NULL)||(ref()->SetNumBytes(flattenMe.FlattenedSize(), false) != B_NO_ERROR)) return ByteBufferRef();
-   flattenMe.FlattenToByteBuffer(*ref());
    return ref;
 }
 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSharedFilterSessionFactory_h
 #define MuscleSharedFilterSessionFactory_h
@@ -11,10 +11,10 @@ namespace muscle {
 
 /** This is a convenience decorator factory; whenever it is asked to create a session,
   * it will open the shared-memory area with the specified name (using the MUSCLE
-  * SharedMemory class) and look in that area for IP addresses.  The decision about
+  * SharedMemory class) and look in that area for a list of IP addresses.  The decision about
   * whether to pass the CreateSession() call on to the slave ReflectSessionFactory
-  * or just return NULL will be made based on whether the requesting client's IP
-  * address is present in that shared memory area (as a ip_address).
+  * or just fail (i.e. return NULL) will be made based on whether the requesting client's IP
+  * address is present in that shared memory area (as an ip_address).
   */
 class SharedFilterSessionFactory : public ProxySessionFactory
 {

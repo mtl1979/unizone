@@ -1,9 +1,13 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.TXT file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.TXT file for details. */
 
 #ifndef MuscleSysLog_h
 #define MuscleSysLog_h
 
 #include "support/MuscleSupport.h"
+
+#ifdef MUSCLE_MINIMALIST_LOGGING
+# include <stdarg.h>
+#endif
 
 namespace muscle {
 
@@ -23,45 +27,37 @@ enum
    NUM_MUSCLE_LOGLEVELS
 }; 
 
-/** This is similar to LogStackTrace(), except that the stack trace is printed directly
-  * to stdout (or another file you specify) instead of via calls to Log() and LogTime().  
-  * This call is handy when you need to print a stack trace in situations where the log
-  * isn't available.
-  * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
-  * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
-  *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
-  * @note This function is currently only implemented under Linux and MacOS/X Leopard; for other OS's, this function is a no-op.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure.
-  */
-status_t PrintStackTrace(FILE * optFile = NULL, uint32 maxDepth = 64);
-
-/** Similar to LogStackTrace(), except that the current stack trace is returned as a String
-  * instead of being printed out anywhere.
-  * @param retStr On success, the stack trace is written to this String object.
-  * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
-  *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure.
-  * @note This function is currently only implemented under Linux and MacOS/X Leopard; for other OS's, this function is a no-op.
-  */
-status_t GetStackTrace(String & retStr, uint32 maxDepth = 64);
-
 // Define this constant in your Makefile (i.e. -DMUSCLE_DISABLE_LOGGING) to turn all the
 // Log commands into no-ops.
 #ifdef MUSCLE_DISABLE_LOGGING
 # define MUSCLE_INLINE_LOGGING
 
 // No-op implementation of Log()
-inline status_t Log(int, const char * , ...) {return B_NO_ERROR;}
+static inline status_t Log(int, const char * , ...) {return B_NO_ERROR;}
 
 // No-op implementation of LogTime()
-inline status_t LogTime(int, const char *, ...) {return B_NO_ERROR;}
+static inline status_t LogTime(int, const char *, ...) {return B_NO_ERROR;}
+
+// No-op implementation of WarnOutOfMemory()
+static inline void WarnOutOfMemory(const char *, int) {/* empty */}
 
 // No-op implementation of LogFlush()
-inline status_t LogFlush() {return B_NO_ERROR;}
+static inline status_t LogFlush() {return B_NO_ERROR;}
 
 // No-op implementation of LogStackTrace()
-inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxLevel=64) {(void) level; (void) maxLevel; return B_NO_ERROR;}
+static inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxLevel=64) {(void) level; (void) maxLevel; return B_NO_ERROR;}
 
+// No-op implementation of PrintStackTrace()
+static inline status_t PrintStackTrace(FILE * fpOut = NULL, uint32 maxLevel=64) {(void) fpOut; (void) maxLevel; return B_NO_ERROR;}
+
+// No-op implementation of GetStackTracke(), just return B_NO_ERROR
+static inline status_t GetStackTrace(String & retStr, uint32 maxDepth = 64) {(void) retStr; (void) maxDepth; return B_NO_ERROR;}
+
+// No-op version of GetLogLevelName(), just returns a dummy string
+static inline const char * GetLogLevelName(int /*logLevel*/) {return "<omitted>";}
+
+// No-op version of GetLogLevelKeyword(), just returns a dummy string
+static inline const char * GetLogLevelKeyword(int /*logLevel*/) {return "<omitted>";}
 #else
 
 // Define this constant in your Makefile (i.e. -DMUSCLE_MINIMALIST_LOGGING) if you don't want to have
@@ -70,24 +66,39 @@ inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxLevel=64) {
 #  define MUSCLE_INLINE_LOGGING
 
 // Minimalist version of Log(), just sends the output to stdout.
-inline status_t Log(int, const char * fmt, ...) {va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
+static inline status_t Log(int, const char * fmt, ...) {va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
 
 // Minimalist version of LogTime(), just sends a tiny header and the output to stdout.
-inline status_t LogTime(int logLevel, const char * fmt, ...) {printf("%i: ", logLevel); va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
+static inline status_t LogTime(int logLevel, const char * fmt, ...) {printf("%i: ", logLevel); va_list va; va_start(va, fmt); vprintf(fmt, va); va_end(va); return B_NO_ERROR;}
+
+// Minimalist version of WarnOutOfMemory()
+static inline void WarnOutOfMemory(const char * file, int line) {printf("ERROR--OUT OF MEMORY!  (%s:%i)\n", file, line);}
 
 // Minimumist version of LogFlush(), just flushes stdout
-inline status_t LogFlush() {fflush(stdout); return B_NO_ERROR;}
+static inline status_t LogFlush() {fflush(stdout); return B_NO_ERROR;}
 
 // Minimalist version of LogStackTrace(), just prints a dummy string
-inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxDepth = 64) {(void) level; (void) maxDepth; printf("<stack trace omitted>\n"); return B_NO_ERROR;}
+static inline status_t LogStackTrace(int level = MUSCLE_LOG_INFO, uint32 maxDepth = 64) {(void) level; (void) maxDepth; printf("<stack trace omitted>\n"); return B_NO_ERROR;}
 
+// Minimalist version of PrintStackTrace(), just prints a dummy string
+static inline status_t PrintStackTrace(FILE * optFile = NULL, uint32 maxDepth = 64) {(void) maxDepth; fprintf(optFile?optFile:stdout, "<stack trace omitted>\n"); return B_NO_ERROR;}
+
+// Minimalist version of GetStackTracke(), just returns B_NO_ERROR
+static inline status_t GetStackTrace(String & /*retStr*/, uint32 maxDepth = 64) {(void) maxDepth; return B_NO_ERROR;}
+
+// Minimalist version of GetLogLevelName(), just returns a dummy string
+static inline const char * GetLogLevelName(int /*logLevel*/) {return "<omitted>";}
+
+// Minimalist version of GetLogLevelKeyword(), just returns a dummy string
+static inline const char * GetLogLevelKeyword(int /*logLevel*/) {return "<omitted>";}
 # endif
 #endif
 
 #ifdef MUSCLE_INLINE_LOGGING
 inline int ParseLogLevelKeyword(const char *)         {return MUSCLE_LOG_NONE;}
 inline int GetFileLogLevel()                          {return MUSCLE_LOG_NONE;}
-inline String GetFileLogName()                        {return "";}
+// Note:  GetFileLogName() is not defined here for the inline-logging case, because it causes chicken-and-egg header problems
+//inline String GetFileLogName()                        {return "";}
 inline uint32 GetFileLogMaximumSize()                 {return MUSCLE_NO_LIMIT;}
 inline uint32 GetMaxNumLogFiles()                     {return MUSCLE_NO_LIMIT;}
 inline bool GetFileLogCompressionEnabled()            {return false;}
@@ -215,6 +226,15 @@ status_t SetConsoleLogLevel(int loglevel);
  */
 status_t Log(int logLevel, const char * fmt, ...);
 
+/** Calls LogTime() with a critical "OUT OF MEMORY" Message.
+  * Note that you typically wouldn't call this function directly;
+  * rather you should call the WARN_OUT_OF_MEMORY macro and it will
+  * call WarnOutOfMemory() for you, with the correct arguments.
+  * @param file Name of the source file where the memory failure occurred.
+  * @param line Line number where the memory failure occurred.
+  */
+void WarnOutOfMemory(const char * file, int line);
+
 #ifdef MUSCLE_INCLUDE_SOURCE_LOCATION_IN_LOGTIME
 # if defined(_MSC_VER)
 #  define LogTime(logLevel, ...)     _LogTime(__FILE__, __FUNCTION__, __LINE__, logLevel, __VA_ARGS__)
@@ -259,6 +279,18 @@ status_t LockLog();
   */
 status_t UnlockLog();
 
+/** This is similar to LogStackTrace(), except that the stack trace is printed directly
+  * to stdout (or another file you specify) instead of via calls to Log() and LogTime().  
+  * This call is handy when you need to print a stack trace in situations where the log
+  * isn't available.
+  * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
+  * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
+  *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
+  * @note This function is currently only implemented under Linux and MacOS/X Leopard; for other OS's, this function is a no-op.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t PrintStackTrace(FILE * optFile = NULL, uint32 maxDepth = 64);
+
 /** Logs out a stack trace, if possible.  Returns B_ERROR if not.
  *  @note Currently only works under Linux and MacOS/X Leopard, and then only if -rdynamic is specified as a compile flag.
  *  @param logLevel a MUSCLE_LOG_* value indicating the "severity" of this message.
@@ -267,6 +299,16 @@ status_t UnlockLog();
  *  @returns B_NO_ERROR on success, or B_ERROR if a stack trace couldn't be logged because the platform doesn't support it.
  */
 status_t LogStackTrace(int logLevel = MUSCLE_LOG_INFO, uint32 maxDepth = 64);
+
+/** Similar to LogStackTrace(), except that the current stack trace is returned as a String
+  * instead of being printed out anywhere.
+  * @param retStr On success, the stack trace is written to this String object.
+  * @param maxDepth The maximum number of levels of stack trace that we should print out.  Defaults to
+  *                 64.  The absolute maximum is 256; if you specify a value higher than that, you will still get 256.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  * @note This function is currently only implemented under Linux and MacOS/X Leopard; for other OS's, this function is a no-op.
+  */
+status_t GetStackTrace(String & retStr, uint32 maxDepth = 64);
 
 /** Returns a human-readable string for the given log level.
  *  @param logLevel A MUSCLE_LOG_* value
@@ -412,6 +454,9 @@ public:
      */
    String ExpandTokens(const String & s) const;
 
+   /** Returns a human-readable string showing the contents of this HumanReadableTimeValues object */
+   String ToString() const;
+
 private:
    int _year;
    int _month;
@@ -447,6 +492,17 @@ enum {
   * @returns B_NO_ERROR on success, or B_ERROR on failure.
   */
 status_t GetHumanReadableTimeValues(uint64 timeUS, HumanReadableTimeValues & retValues, uint32 timeType = MUSCLE_TIMEZONE_UTC);
+
+/** This function is the inverse operation of GetHumanReadableTimeValues().  Given a HumanReadableTimeValues object,
+  * this function returns the corresponding microseconds-since-1970 value.
+  * @param values The HumanReadableTimeValues object to examine
+  * @param retTimeUS On success, the corresponding uint64 is written here (in microseconds-since-1970)
+  * @param timeType If set to MUSCLE_TIMEZONE_UTC (the default) then (values) will be interpreted as being in UTC, 
+  *                 and (retTimeUS) be converted to the local time zone as part of the conversion process.  If set to 
+  *                 MUSCLE_TIMEZONE_LOCAL, on the other hand, then no time zone conversion will be done.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t GetTimeStampFromHumanReadableTimeValues(const HumanReadableTimeValues & values, uint64 & retTimeUS, uint32 timeType = MUSCLE_TIMEZONE_UTC);
 
 /** Given a uint64 representing a time in microseconds since 1970,
   * (e.g. as returned by GetCurrentTime64()), returns an equivalent 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "util/SharedFilterSessionFactory.h"
 #include "system/SharedMemory.h"
@@ -41,7 +41,11 @@ bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMem
          for (uint32 i=0; i<numIPs; i++)
          {
             ip_address nextIP = ips[i];
+#ifdef MUSCLE_AVOID_IPV6
             if (nextIP == ip)
+#else
+            if (nextIP.EqualsIgnoreInterfaceIndex(ip))  // FogBugz #7490
+#endif
             {
                allowAccess = isGrantList;
                break;
@@ -58,7 +62,11 @@ bool SharedFilterSessionFactory :: IsAccessAllowedForIP(const String & sharedMem
                bool matchedLocal = false;
                for (uint32 j=0; j<ifs.GetNumItems(); j++)
                {
-                  if (ifs[j].GetLocalAddress() == ip)
+#ifdef MUSCLE_AVOID_IPV6
+                  if (ifs[j] == ip)
+#else
+                  if (ifs[j].GetLocalAddress().EqualsIgnoreInterfaceIndex(ip))  // FogBugz #7490
+#endif
                   {
                      allowAccess = isGrantList;
                      matchedLocal = true;

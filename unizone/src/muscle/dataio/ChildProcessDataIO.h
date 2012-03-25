@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef ChildProcessDataIO_h
 #define ChildProcessDataIO_h
@@ -9,6 +9,18 @@
 
 namespace muscle {
 
+// Bits that can be passed as a bit-chord to LaunchChildProcess()
+enum {
+   CHILD_PROCESS_LAUNCH_BIT_USE_FORKPTY    = 0x01,  // if set, we'll use forkpty() instead of fork() (ignored under Windows)
+   CHILD_PROCESS_LAUNCH_BIT_EXCLUDE_STDIN  = 0x02,  // if set, we won't redirect from the child process's stdin (supported by fork() implementation only, for now)
+   CHILD_PROCESS_LAUNCH_BIT_EXCLUDE_STDOUT = 0x04,  // if set, we won't capture and return output from the child process's stdout (supported by fork() implementation only, for now)
+   CHILD_PROCESS_LAUNCH_BIT_EXCLUDE_STDERR = 0x08,  // if set, we won't capture and return output from the child process's stderr (supported by fork() implementation only, for now)
+};
+
+#ifndef MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS
+# define MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS (CHILD_PROCESS_LAUNCH_BIT_USE_FORKPTY)
+#endif
+
 /** This DataIO class is a handy cross-platform way to spawn 
  *  and talk to a child process.  Any data that the child process
  *  prints to stdout can be read from this object, and any data
@@ -16,7 +28,7 @@ namespace muscle {
  *  stdin.  Note that this class is currently only guaranteed to work 
  *  under Windows, MacOS/X, BeOS, and Linux.
  */
-class ChildProcessDataIO : public DataIO
+class ChildProcessDataIO : public DataIO, private CountedObject<ChildProcessDataIO>
 {
 public:
    /** Constructor.
@@ -31,34 +43,25 @@ public:
    /** Launch the child process.  Note that this method should only be called once!
      * @param argc The argc variable to be passed to the child process
      * @param argv The argv variable to be passed to the child process
-     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
-     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
-     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
-     *               Note that this argument is ignored when running under Windows.
+     * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(int argc, const char * argv[], bool usePty = true) {return LaunchChildProcessAux(muscleMax(0,argc), argv, usePty);}
+   status_t LaunchChildProcess(int argc, const char * argv[], uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS) {return LaunchChildProcessAux(muscleMax(0,argc), argv, launchBits);}
 
    /** As above, but the program name and all arguments are specified as a single string.
      * @param cmd String to launch the child process with
-     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
-     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
-     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
-     *               Note that this argument is ignored when running under Windows.
+     * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(const char * cmd, bool usePty = true) {return LaunchChildProcessAux(-1, cmd, usePty);}
+   status_t LaunchChildProcess(const char * cmd, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS) {return LaunchChildProcessAux(-1, cmd, launchBits);}
 
    /** Convenience method.  Launches a child process using an (argc,argv) that is constructed from the passed in argument list.
      * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
      *             should be the first argument to the executable, and so on.
-     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
-     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
-     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
-     *               Note that this argument is ignored when running under Windows.
+     * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(const Queue<String> & argv, bool usePty = true);
+   status_t LaunchChildProcess(const Queue<String> & argv, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS);
 
    /** Read data from the child process's stdout stream. 
      * @param buffer The read bytes will be placed here
@@ -185,11 +188,15 @@ public:
      * until that process has completed.
      * @param argc Number of items in the (argv) array
      * @param argv A standard argv array for the child process to use
-     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
+     * @param maxWaitTimeMicros If specified, this is the maximum amount of time (in microseconds) 
+     *                          that we should wait for the child process to exit before continuing.
+     *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
+     *                          for the child to exit, if necessary.
      * @returns B_NO_ERROR if the child process was launched, or B_ERROR
      *          if the child process could not be launched.
      */
-   static status_t System(int argc, const char * argv[], bool usePty=true);
+   static status_t System(int argc, const char * argv[], uint32 launchBits=true, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
 
    /** Convenience method:  acts similar to the POSIX system() call, but
      * implemented internally via a ChildProcessDataIO object.  In particular,
@@ -197,30 +204,61 @@ public:
      * until that process has completed.
      * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
      *             should be the first argument to the executable, and so on.
-     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
-     *               If specified as false, ChildProcessDataIO will use good old fashioned fork() instead.
-     *               Pty's allow for better control of interactive child processes, but are not always well supported on all platforms.
-     *               Note that this argument is ignored when running under Windows.
+     * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
+     * @param maxWaitTimeMicros If specified, this is the maximum amount of time (in microseconds) 
+     *                          that we should wait for the child process to exit before continuing.
+     *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
+     *                          for the child to exit, if necessary.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t System(const Queue<String> & argv, bool usePty = true);
+   static status_t System(const Queue<String> & argv, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
 
    /** Convenience method:  acts similar to the POSIX system() call, but
      * implemented internally via a ChildProcessDataIO object.  In particular,
      * this static method will launch the specified process and not return
      * until that process has completed.
      * @param cmdLine The command string to launch (as if typed into a shell)
-     * @param usePty If true (the default), ChildProcessDataIO will try to launch the child process using a pseudo-terminal (via forkpty()).
+     * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
      * @returns B_NO_ERROR if the child process was launched, or B_ERROR
      *          if the child process could not be launched.
+     * @param maxWaitTimeMicros If specified, this is the maximum amount of time (in microseconds) 
+     *                          that we should wait for the child process to exit before continuing.
+     *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
+     *                          for the child to exit, if necessary.
      */
-   static status_t System(const char * cmdLine, bool usePty=true);
+   static status_t System(const char * cmdLine, uint32 launchBits=true, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
+
+   /** Convenience method:  launches a child process that will be completely independent of the current process.
+     * @param argc Number of items in the (argv) array
+     * @param argv A standard argv array for the child process to use
+     * @param inheritFileDescriptors If true, the child process will inherit all file descriptors from this process.
+     *                               If false (the default), the child process will not inherit any file descriptors from this process.
+     * @returns B_NO_ERROR if the child process was launched, or B_ERROR if the child process could not be launched.
+     */
+   static status_t LaunchIndependentChildProcess(int argc, const char * argv[], bool inheritFileDescriptors=false);
+
+   /** Convenience method:  launches a child process that will be completely independent of the current process.
+     * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
+     *             should be the first argument to the executable, and so on.
+     * @param inheritFileDescriptors If true, the child process will inherit all file descriptors from this process.
+     *                               If false (the default), the child process will not inherit any file descriptors from this process.
+     * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
+     */
+   static status_t LaunchIndependentChildProcess(const Queue<String> & argv, bool inheritFileDescriptors=false);
+
+   /** Convenience method:  launches a child process that will be completely independent of the current process.
+     * @param cmdLine The command string to launch (as if typed into a shell)
+     * @param inheritFileDescriptors If true, the child process will inherit all file descriptors from this process.
+     *                               If false (the default), the child process will not inherit any file descriptors from this process.
+     * @returns B_NO_ERROR if the child process was launched, or B_ERROR if the child process could not be launched.
+     */
+   static status_t LaunchIndependentChildProcess(const char * cmdLine, bool inheritFileDescriptors=false);
 
 private:
    void Close();
-   status_t LaunchChildProcessAux(int argc, const void * argv, bool usePty);
+   status_t LaunchChildProcessAux(int argc, const void * argv, uint32 launchBits);
    void DoGracefulChildShutdown();
-   const ConstSocketRef &GetChildSelectSocket() const;
+   const ConstSocketRef & GetChildSelectSocket() const;
 
    bool _blocking;
 
@@ -229,6 +267,7 @@ private:
    int _signalNumber;
 
    bool _childProcessInheritFileDescriptors;
+   bool _childProcessIsIndependent;
 
 #if defined(WIN32) || defined(CYGWIN)
    void IOThreadEntry();
@@ -244,7 +283,6 @@ private:
    ConstSocketRef _slaveNotifySocket;
    volatile bool _requestThreadExit;
 #else
-   void RunChildProcess(int argc, const void * args);
    ConstSocketRef _handle;
    pid_t _childPID;
 #endif

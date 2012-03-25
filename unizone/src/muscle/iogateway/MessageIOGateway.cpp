@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/StorageReflectConstants.h"  // for PR_COMMAND_PING, PR_RESULT_PONG
@@ -15,7 +15,7 @@ MessageIOGateway :: MessageIOGateway(int32 encoding) :
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
    , _sendCodec(NULL), _recvCodec(NULL)
 #endif
-   , _syncPingCounter(0)
+   , _syncPingCounter(0), _pendingSyncPingCounter(-1)
 {
    /* empty */
 }
@@ -60,6 +60,13 @@ MessageIOGateway :: SendData(TransferBuffer & buf, int32 & sentBytes, uint32 & m
    return B_NO_ERROR;
 }
 
+status_t
+MessageIOGateway ::
+PopNextOutgoingMessage(MessageRef & retMsg)
+{
+   return GetOutgoingMessageQueue().RemoveHead(retMsg);
+}
+
 int32 
 MessageIOGateway ::
 DoOutputImplementation(uint32 maxBytes)
@@ -75,7 +82,7 @@ DoOutputImplementation(uint32 maxBytes)
          while(true)
          {
             MessageRef nextRef;
-            if (GetOutgoingMessageQueue().RemoveHead(nextRef) != B_NO_ERROR) 
+            if (PopNextOutgoingMessage(nextRef) != B_NO_ERROR) 
             {
                if ((GetFlushOnEmpty())&&(sentBytes > 0)) GetDataIO()()->FlushOutput();
                return sentBytes;  // nothing more to send, so we're done!
@@ -239,7 +246,7 @@ FlattenMessage(const MessageRef & msgRef, uint8 * headerBuf) const
             ZLibCodec * enc = GetCodec(_outgoingEncoding, _sendCodec);
             if (enc)
             {
-               ByteBufferRef compressedRef = enc->Deflate(*ret(), false);
+               ByteBufferRef compressedRef = enc->Deflate(*ret(), AreOutgoingMessagesIndependent());
                if (compressedRef())
                {
                   encoding = MUSCLE_MESSAGE_ENCODING_ZLIB_1+enc->GetCompressionLevel()-1;
@@ -341,29 +348,46 @@ Reset()
    _recvBodyBuffer.Reset();
 }
 
+MessageRef MessageIOGateway :: CreateSynchronousPingMessage(uint32 syncPingCounter) const
+{
+   MessageRef pingMsg = GetMessageFromPool(PR_COMMAND_PING);
+   return ((pingMsg())&&(pingMsg()->AddInt32("_miosp", syncPingCounter) == B_NO_ERROR)) ? pingMsg : MessageRef();
+}
+
 status_t MessageIOGateway :: ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod)
 {
    const DataIO * dio = GetDataIO()();
    if ((dio == NULL)||(dio->GetReadSelectSocket().GetFileDescriptor() < 0)||(dio->GetWriteSelectSocket().GetFileDescriptor() < 0)) return B_ERROR;
 
-   char buf[64]; sprintf(buf, "mio-sp-"UINT32_FORMAT_SPEC, ++_syncPingCounter);
-   _syncPingKey = buf;
-
-   MessageRef pingMsg = GetMessageFromPool(PR_COMMAND_PING);
-   return ((pingMsg())&&(pingMsg()->AddBool(_syncPingKey, true) == B_NO_ERROR)&&(AddOutgoingMessage(pingMsg) == B_NO_ERROR)) ? AbstractMessageIOGateway::ExecuteSynchronousMessaging(optReceiver, timeoutPeriod) : B_ERROR;
+   MessageRef pingMsg = CreateSynchronousPingMessage(_syncPingCounter);
+   if ((pingMsg())&&(AddOutgoingMessage(pingMsg) == B_NO_ERROR))
+   {
+      _pendingSyncPingCounter = _syncPingCounter;
+      _syncPingCounter++;
+      return AbstractMessageIOGateway::ExecuteSynchronousMessaging(optReceiver, timeoutPeriod);
+   }
+   else return B_ERROR;
 }
 
 void MessageIOGateway :: SynchronousMessageReceivedFromGateway(const MessageRef & msg, void * userData, AbstractGatewayMessageReceiver & r) 
 {
-   if ((msg())&&(msg()->what == PR_RESULT_PONG)&&(_syncPingKey.HasChars())&&(msg()->HasName(_syncPingKey, B_BOOL_TYPE)))
+   if ((_pendingSyncPingCounter >= 0)&&(IsSynchronousPongMessage(msg, _pendingSyncPingCounter)))
    {
-      _syncPingKey.Clear();
+      // Yay, we found our pong Message, so we are no longer waiting for one.
+      _pendingSyncPingCounter = -1;
    }
    else AbstractMessageIOGateway::SynchronousMessageReceivedFromGateway(msg, userData, r);
 }
 
-MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod)
+bool MessageIOGateway :: IsSynchronousPongMessage(const MessageRef & msg, uint32 pendingSyncPingCounter) const
 {
+   return ((msg()->what == PR_RESULT_PONG)&&((uint32)msg()->GetInt32("_miosp", -1) == pendingSyncPingCounter));
+}
+
+MessageRef MessageIOGateway :: ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod)
+{
+   MessageRef ret;
+
    uint64 timeBeforeConnect = GetRunTime64();
    ConstSocketRef s = Connect(targetIAP, NULL, NULL, true, timeoutPeriod);
    if (s())
@@ -374,12 +398,76 @@ MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, cons
          timeoutPeriod = (timeoutPeriod > connectDuration) ? (timeoutPeriod-connectDuration) : 0;
       }
  
+      DataIORef oldIO = GetDataIO();
       TCPSocketDataIO tsdio(s, false);
-      MessageIOGateway iog; iog.SetDataIO(DataIORef(&tsdio, false));
+      SetDataIO(DataIORef(&tsdio, false));
       QueueGatewayMessageReceiver receiver;
-      if ((iog.AddOutgoingMessage(MessageRef(const_cast<Message *>(&requestMessage), false)) == B_NO_ERROR)&&(iog.ExecuteSynchronousMessaging(&receiver, timeoutPeriod) == B_NO_ERROR)) return receiver.HasItems() ? receiver.Head() : GetMessageFromPool();
+      if ((AddOutgoingMessage(MessageRef(const_cast<Message *>(&requestMessage), false)) == B_NO_ERROR)&&(ExecuteSynchronousMessaging(&receiver, timeoutPeriod) == B_NO_ERROR)) ret = receiver.HasItems() ? receiver.Head() : GetMessageFromPool();
+      SetDataIO(oldIO);  // restore any previous I/O
    }
-   return MessageRef();
+   return ret;
+}
+
+status_t MessageIOGateway :: ExecuteSynchronousMessageSend(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod)
+{
+   status_t ret = B_ERROR;
+   uint64 timeBeforeConnect = GetRunTime64();
+   ConstSocketRef s = Connect(targetIAP, NULL, NULL, true, timeoutPeriod);
+   if (s())
+   {
+      if (timeoutPeriod != MUSCLE_TIME_NEVER)
+      {
+         uint64 connectDuration = GetRunTime64()-timeBeforeConnect;
+         timeoutPeriod = (timeoutPeriod > connectDuration) ? (timeoutPeriod-connectDuration) : 0;
+      }
+ 
+      DataIORef oldIO = GetDataIO();
+      TCPSocketDataIO tsdio(s, false);
+      SetDataIO(DataIORef(&tsdio, false));
+      QueueGatewayMessageReceiver receiver;
+      if (AddOutgoingMessage(MessageRef(const_cast<Message *>(&requestMessage), false)) == B_NO_ERROR) 
+      {
+         NestCountGuard ncg(_noRPCReply);  // so that we'll return as soon as we've sent the request Message, and not wait for a reply Message.
+         ret = ExecuteSynchronousMessaging(&receiver, timeoutPeriod);
+      }
+      SetDataIO(oldIO);
+   }
+   return ret;
+}
+
+CountedMessageIOGateway :: CountedMessageIOGateway(int32 outgoingEncoding) : MessageIOGateway(outgoingEncoding), _outgoingByteCount(0)
+{
+   // empty
+}
+
+status_t CountedMessageIOGateway :: AddOutgoingMessage(const MessageRef & messageRef)
+{
+   if (MessageIOGateway::AddOutgoingMessage(messageRef) != B_NO_ERROR) return B_ERROR;
+
+   uint32 msgSize = messageRef()?messageRef()->FlattenedSize():0;
+   if (GetOutgoingMessageQueue().GetNumItems() > 1) _outgoingByteCount += msgSize;
+                                               else _outgoingByteCount  = msgSize;  // semi-paranoia about meddling via GetOutgoingMessageQueue() access
+   return B_NO_ERROR;
+}
+
+void CountedMessageIOGateway :: Reset()
+{
+   MessageIOGateway::Reset();
+   _outgoingByteCount = 0;
+}
+
+status_t CountedMessageIOGateway :: PopNextOutgoingMessage(MessageRef & ret)
+{
+   if (MessageIOGateway::PopNextOutgoingMessage(ret) != B_NO_ERROR) return B_ERROR;
+
+   if (GetOutgoingMessageQueue().HasItems())
+   {
+      uint32 retSize = ret()?ret()->FlattenedSize():0;
+      _outgoingByteCount = (retSize<_outgoingByteCount) ? (_outgoingByteCount-retSize) : 0;  // paranoia to avoid underflow
+   }
+   else _outgoingByteCount = 0;  // semi-paranoia about meddling via GetOutgoingMessageQueue() access
+
+   return B_NO_ERROR;
 }
 
 }; // end namespace muscle

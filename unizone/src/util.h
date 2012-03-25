@@ -91,8 +91,8 @@ const QString & CheckIfEmpty(const QString & str, const QString & str2);
 // Calculate Checksum for raw buffer (borrowed from BeShare)
 uint32 CalculateFileChecksum(const ByteBufferRef &buf);
 
-// Return (first) IPv4 address from hostname
-uint32 GetHostByName(const QString &name);
+// Return (first) IPv4/IPv6 address from hostname
+muscle::ip_address GetHostByName(const QString &name);
 
 
 QString UniqueName(const QString & file, int index); // build up unique name using 'file' and 'index'
@@ -100,11 +100,11 @@ QString UniqueName(const QString & file, int index); // build up unique name usi
 // Save picture to file, makes sure file doesn't exist before writing...
 void SavePicture(QString & file, const ByteBufferRef & buf);
 
-uint64 toULongLong(const QString &, bool * = NULL);
+uint64 toULongLong(const QStringRef &, bool * = NULL);
 QString fromULongLong(const uint64 &);
 QString hexFromULongLong(const uint64 &, int);
 
-int64 toLongLong(const QString &, bool * = NULL);
+int64 toLongLong(const QStringRef &, bool * = NULL);
 QString fromLongLong(const int64 &);
 QString hexFromLongLong(const int64 &, int);
 

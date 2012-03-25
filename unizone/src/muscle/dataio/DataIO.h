@@ -1,15 +1,16 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataIO_h
 #define MuscleDataIO_h
 
 #include "util/Socket.h"
 #include "util/TimeUtilityFunctions.h"  // for MUSCLE_TIME_NEVER
+#include "util/CountedObject.h"
 
 namespace muscle {
  
 /** Abstract base class for a byte-stream Data I/O interface, similar to Be's BDataIO.  */
-class DataIO : public RefCountable
+class DataIO : public RefCountable, private CountedObject<DataIO>
 {
 public:
    /** Values to pass in to DataIO::Seek()'s second parameter */

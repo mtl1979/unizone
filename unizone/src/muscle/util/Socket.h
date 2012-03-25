@@ -1,17 +1,21 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSocket_h
 #define MuscleSocket_h
 
 #include "util/RefCount.h"
+#include "util/CountedObject.h"
 
 namespace muscle {
 
-/** A simple socket-holder class to make sure that socket fd's 
-  * added to Messages get properly closed and not leaked if said 
-  * Messages never get processed.
+/** A simple socket-holder class to make sure that opened socket file
+  * descriptors don't get accidentally leaked.  A Socket object is typically
+  * handed to a ConstSocketRef, whose constructor and destructor will implement
+  * the reference-counting necessary to automatically delete/recycle the Socket
+  * object (and thereby automatically close its held file descriptor) when the file 
+  * descriptor is no longer needed for anything.
   */
-class Socket : public RefCountable
+class Socket : public RefCountable, public CountedObject<Socket>
 {
 public:
    /** Default constructor. */
@@ -44,9 +48,19 @@ public:
      */
    void SetFileDescriptor(int fd, bool okayToCloseFD = true);
 
+   /** Resets this Socket object to its just-constructed state, freeing any held socket descriptor if appropriate. 
+     * This call is equivalent to calling SetFileDescriptor(-1, false).
+     */ 
+   void Clear() {SetFileDescriptor(-1, false);}
+
 private:
+   friend class ObjectPool<Socket>;
+
    /** Copy constructor, private and unimplemented on purpose */
    Socket(const Socket &);
+
+   /** Assignment operator, used only for ObjectPool recycling, private on purpose */
+   Socket & operator = (const Socket & /*rhs*/) {Clear(); return *this;}
 
    int _fd;
    bool _okayToClose;
@@ -108,7 +122,7 @@ public:
 ConstSocketRef GetConstSocketRefFromPool(int fd, bool okayToClose = true, bool retNULLIfInvalidSocket = true);
 
 /** Convenience method:  Returns a NULL socket reference. */
-const ConstSocketRef & GetNullSocket();
+inline const ConstSocketRef & GetNullSocket() {return GetDefaultObjectForType<ConstSocketRef>();}
 
 /** Convenience method:  Returns a reference to an invalid Socket (i.e. a Socket object with a negative file descriptor).  Note the difference between what this function returns and what GetNullSocket() returns!  If you're not sure which of these two functions to use, then GetNullSocket() is probably the one you want. */
 const ConstSocketRef & GetInvalidSocket();

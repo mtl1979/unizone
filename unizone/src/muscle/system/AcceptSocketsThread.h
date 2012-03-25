@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAcceptSocketsThread_h
 #define MuscleAcceptSocketsThread_h
@@ -19,7 +19,7 @@ enum {
 /** A thread that waits for TCP connections on a given port, and when it gets one, 
   * it sends the socket to its owner via a ConstSocketRef.
   */
-class AcceptSocketsThread : public Thread
+class AcceptSocketsThread : public Thread, private CountedObject<AcceptSocketsThread>
 {
 public:
    /** Default constructor.  You'll need to call SetPort() before calling StartInternalThread(). */

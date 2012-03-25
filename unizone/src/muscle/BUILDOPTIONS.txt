@@ -3,12 +3,52 @@ if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_AVOID_IPV6
+   Set this to indicate that Muscle should be compiled without IPv6
+   support.  The main difference with this flag is that muscle_ip_address
+   will be defined a typedef'd alias for a uint32 (rather than a C++ class
+   that holds 128 bits of data).
+
+-DMUSCLE_SINGLE_THREAD_ONLY 
+   Makes the Mutex class's methods compile down to no-ops.  Specify this if 
+   you are able to guarantee that your program will never access MUSCLE
+   code from more than one thread.
+
+-DMUSCLE_USE_EPOLL
+   Causes the SocketMultiplexer class to use the epoll() Linux system
+   call instead of select().  This method is less portable, but 
+   avoids the FD_SETSIZE limitation that select() introduces.
+   Note that this flag is mutually exclusive with -DMUSCLE_USE_KQUEUE and
+   -DMUSCLE_USE_POLL.
+
+-DMUSCLE_USE_POLL
+   Causes the SocketMultiplexer class to use the poll() system
+   call instead of select().  This method is slightly less portable, but 
+   avoids the FD_SETSIZE limitation that select() introduces.
+   Note that this flag is mutually exclusive with -DMUSCLE_USE_KQUEUE
+   and -DMUSCLE_USE_EPOLL.
+
+-DMUSCLE_USE_KQUEUE
+   Causes the SocketMultiplexer class to use the kqueue() and kevent() 
+   system calls instead of select().  This method is less portable, but
+   avoids the FD_SETSIZE limitation that select() introduces.
+   Note that this flag is mutually exclusive with -DMUSCLE_USE_POLL and
+   -DMUSCLE_USE_EPOLL.
+
+-DMUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS=(#micros)
+   If specified, MUSCLE's AddNewConnectSession() calls
+   will force an asynchronous connection to fail after this
+   many microseconds have elapsed.  If not defined, the
+   default behavior is to let the operating system determine
+   when the asynchronous connection should time out and fail.
+
 -DMUSCLE_CATCH_SIGNALS_BY_DEFAULT
    If specified, ReflectServer will by default set up a signal 
    handler to catch signals (e.g. Control-C), and gracefully 
-   exit its event loop when they are detected.  (Without this
-   flag, that only happens if you call SetSignalHandlingEnabled(true)
-   somewhere in your code)
+   exit its event loop when they are detected.  Without this
+   flag, MUSCLE signal-handling routines will only be set up
+   if you explicitly call SetSignalHandlingEnabled(true)
+   somewhere in your code.
  
 -DMUSCLE_USE_LIBRT
    If specified, GetRunTime64() and Snooze64() will use librt's
@@ -16,18 +56,16 @@ of your Makefile to alter muscle's behaviour:
    ones supplied by older operating systems.  Note that if you 
    specify this flag, you should link with librt as well (-lrt).
 
--DMUSCLE_USE_IPV6
-   Set this to indicate that Muscle should be compiled to include IPv6
-   support.  The main difference with this flag is that the muscle_ip_address
-   typedef will be defined as a struct that holds 128 bits of data.  If
-   this flag isn't defined (the default), than muscle_ip_address will be
-   defined as a synonym for uint32 (for backwards compatibility with old code)
+-DMUSCLE_AVOID_MULTICAST_API
+   Set this to omit the multicast API calls in NetworkUtilityFunctions.h.  
+   This might be useful to do if compiling on a platform where multicast
+   APIs aren't supported.
 
--DMUSCLE_ENABLE_MULTICAST_API
-   Set this to make the multicast API calls in NetworkUtilityFunctions.h
+-DMUSCLE_ENABLE_KEEPALIVE_API
+   Set this to make the TCP keepalive API calls in NetworkUtilityFunctions.h
    available for use.  (it's disabled by default to make sure that the
-   multicast functions won't break the build on platforms that don't 
-   support multicast).  Note that muscled itself won't use multicast even 
+   keepalive functions won't break the build on platforms that don't 
+   support keepalive).  Note that muscled itself won't use keepalive even 
    if this constant is specified; the functions are a convenience for 
    other MUSCLE-based applications to use if they wish.
 
@@ -37,13 +75,6 @@ of your Makefile to alter muscle's behaviour:
    indicating a known 64-bit platform are detected; if not, you can set it
    yourself in the Makefile if necessary.
 
--DMUSCLE_POOL_SLAB_SIZE
-   This can be set to a number indicating the number of bytes that should be
-   allocated in each "slab" of data malloc()'d by the ObjectPool class.  If left
-   unset, slabs of approximately 8 kilobytes will be used.  Large slabs mean
-   fewer memory allocations, but potentially more memory wasted if all the objects
-   in the slabs aren't needed.  This value should be specified in bytes.
-
 -DMUSCLE_USE_LLSEEK
    Force the FileDescriptorDataIO class to use the non-standard _llseek() command
    when compiled under Linux.  This should be done automatically in most cases
@@ -51,14 +82,10 @@ of your Makefile to alter muscle's behaviour:
 
 -DMUSCLE_PREFER_QT_OVER_WIN32
    Tell the Muscle Thread/Mutex/etc classes to prefer to use Qt Threading APIs over Win32 calls
-   when both are available.  (By default, Win32 calls are preferred)
+   when both are available.  (By default, Win32 calls are preferred when running under Windows)
 
 -DMUSCLE_ENABLE_MEMORY_PARANOIA=N 
    Put N overwrite-guards before and after each malloc() buffer, watch them for memory corruption
-
--DMUSCLE_SINGLE_THREAD_ONLY 
-   Makes the Mutex class's methods compile down to no-ops.  Specify this if you can guarantee 
-   your program will be single-threaded.
 
 -DMUSCLE_NO_EXCEPTIONS 
    Tells muscle that exceptions won't be used.
@@ -111,17 +138,11 @@ of your Makefile to alter muscle's behaviour:
 -DMUSCLE_FD_SETSIZE=N 
    Redefine the fd_setsize to another value (useful under Windows, where the default setsize is a measly 64)
 
--DMUSCLE_CPU_REQUIRES_DATA_ALIGNMENT 
-   Tell muscle that this CPU can't handle non-aligned integer data reads/writes (e.g. Sparc)
-
 -DMUSCLE_AVOID_NEWNOTHROW 
    Turns newnothrow into a synonym for "new", instead of "new (nothrow)"
 
 -DMUSCLE_AVOID_FORKPTY 
    Tells the ChildProcessDataIO class not to compile in calls to forkpty(); instead it will use fork() only
-
--DMUSCLE_CUSTOM_ATOMIC_TYPE 
-   Use custom callback functions to implement atomic inc/dec
 
 -DMUSCLE_HASHTABLE_DEFAULT_CAPACITY=X 
    Number of value slots to initially pre-allocate in a Hashtable, by default (defaults to 7)
@@ -145,7 +166,46 @@ of your Makefile to alter muscle's behaviour:
    source code location in the call.  By enabling this it is possible to include
    the source of a message with the messge itself, should your code choose to do so.
 
--DMUSCLE_COLLECT_HASHTABLE_COLLISION_STATISTICS
-   If defined, a global counter (_totalHashtableCollisions) is incremented every time
-   a Hashtable::Put() call encounters a Hashtable collision.  This can be handy for testing
-   the relative effectiveness of various hash functions on your particular data set.
+-DMUSCLE_WARN_ABOUT_LOUSY_HASH_FUNCTIONS=200
+   If defined, the Hashtable::EnsureSize() method will do some paranoia
+   checking every time it resizes the Hashtable, to see if the Hashtable's
+   average lookup-count (as calculated by CountAverageLookupComparisons())
+   is greater than 2.00f (or whatever the preprocessor-define's value is,
+   divided by 100).  If it is, a log message, debug info, and a stack trace
+   will be printed.  Only enable this compiler flag when doing debugging/
+   development/optimization (i.e. when you want to check to see if you 
+   have any hash functions that aren't performing well), since it will
+   significantly slow down your program when it is enabled.
+
+-DMUSCLE_ENABLE_DEADLOCK_FINDER
+   If specified, calls to Mutex::Lock() and Mutex::Unlock() will
+   print trace information to stdout that can later be used by
+   the deadlockfinder program (in the tests folder) to detect
+   potential deadlocks in the code caused by inconsistent lock
+   acquisition ordering.
+
+-DMUSCLE_DEFAULT_RUNTIME_DISABLE_DEADLOCK_FINDER
+   If this is specified in addition to -DMUSCLE_ENABLE_DEADLOCK_FINDER,
+   then deadlock-detection will be compiled into the code but the
+   printouts will be disabled by default.  To enable them at runtime,
+   set the global variable _enableDeadlockFinderPrints to true.
+
+-DMUSCLE_POOL_SLAB_SIZE
+   This can be set to a number indicating the number of bytes that should be
+   allocated in each "slab" of data malloc()'d by the ObjectPool class.  If left
+   unset, slabs of approximately 8 kilobytes will be used.  Large slabs mean
+   fewer memory allocations, but potentially more memory wasted if all the objects
+   in the slabs aren't needed.  This value should be specified in bytes.
+
+-DMUSCLE_AVOID_REFCOUNT_BITSTUFFING
+   If set, this flag will cause the RefCount class to use a separate
+   boolean for its _doRefCount state, rather than stuffing that bit
+   into its held pointer.  This flag might be necessary on systems
+   that don't word-align their object pointers (if such systems exist)
+
+-DMUSCLE_AVOID_CHECK_THREAD_STACK_USAGE
+   If set, calls to the CHECK_THREAD_STACK_USAGE macro will be
+   converted into no-ops.
+
+-DMUSCLE_AVOID_OBJECT_COUNTING
+   If defined, the CountedObject<> class will compile down to a no-op.

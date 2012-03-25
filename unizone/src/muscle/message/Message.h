@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -28,14 +28,14 @@ namespace muscle {
 class Message;
 DECLARE_REFTYPES(Message);
 
-/** Very trivial function, just returns a reference to an empty/default Message object.
-  * Useful in cases where you need to refer to an empty Message and don't wish to be
-  * constantly constructing/destroying it.
+/** Returns a reference to an empty/default Message object.
+  * Useful in cases where you need to refer to an empty Message but don't wish to be
+  * constantly constructing/destroying temporary Message objects.
   */
-const Message & GetEmptyMessage();
+inline const Message & GetEmptyMessage() {return GetDefaultObjectForType<Message>();}
 
-/** Same as GetEmptyMessage(), except it returns a MessageRef instead of a Message. */
-const MessageRef & GetEmptyMessageRef();
+/** Same as GetEmptyMessage(), except it returns a ConstMessageRef instead of a Message. */
+const ConstMessageRef & GetEmptyMessageRef();
 
 /** This function returns a pointer to a singleton ObjectPool that can be 
  *  used to minimize the number of Message allocations and deletions by
@@ -102,10 +102,8 @@ MessageRef GetLightweightCopyOfMessageFromPool(ObjectPool<Message> & pool, const
 // this declaration is for internal use only
 class AbstractDataArray;
 
-/** This is an iterator that allows you to efficiently iterate over the field names in a Message. 
- *  It is typically allocated using the Message::GetFieldNameIterator() method.
- */
-class MessageFieldNameIterator : private HashtableIterator<String, RefCountableRef>
+/** This is an iterator that allows you to efficiently iterate over the field names in a Message. */
+class MessageFieldNameIterator
 {
 public:
    /** Default constructor.   
@@ -125,66 +123,30 @@ public:
    /** Destructor. */
    ~MessageFieldNameIterator() {/* empty */}
 
-   /** Advances this iterator by one entry in the table.  Equivalent to calling GetNextFieldName() once. */
-   void operator++(int) {(void) GetNextFieldNameString();}
+   /** Moves this iterator forward by one in the field-names list.  */
+   void operator++(int) {_iter++; if (_typeCode != B_ANY_TYPE) SkipNonMatchingFieldNames();}
 
-   /** Retracts this iterator by one entry in the table. */
-   void operator--(int) {bool b = IsBackwards(); SetBackwards(!b); (void) GetNextFieldNameString(); SetBackwards(b);}
+   /** Moves this iterator backward by one in the field-names list.  */
+   void operator--(int) {bool b = _iter.IsBackwards(); _iter.SetBackwards(!b); (*this)++; _iter.SetBackwards(b);}
 
-   /** Returns true iff there are more field names available to be traversed.  */
-   bool HasMoreFieldNames() const {return (PeekNextFieldNameString() != NULL);}
-
-   /** Returns a reference to the current field name.  Note that this will return a NULL
-     * reference if there is no current field name, so be sure to call HasMoreFieldNames()
-     * first and only call this method if HasMoreFieldNames() returned true!
+   /** Returns true iff this iterator is pointing at valid field name data.
+     * It's only safe to call GetFieldName() if this method returns true.
      */
-   const String & GetFieldName() const {return *PeekNextFieldNameString();}
+   bool HasData() const {return _iter.HasData();}
 
-   /**
-    *  Places the next field name into (retFieldName) and bumps the iterator position.
-    *  @param retFieldName On success, the next field name is written into this object.
-    *  @return B_NO_ERROR iff successful, B_ERROR if there were no more names are left to get.
-    */
-   status_t GetNextFieldName(String & retFieldName);
-
-   /**
-    *  Returns the next field name and bumps the iterator position, or returns NULL 
-    *  if there are no more field names left to get.  (Note that
-    *  the returned string may become invalid when the Message is changed)
-    */
-   const char * GetNextFieldName() {const String * r = GetNextFieldNameString(); return r ? r->Cstr() : NULL;}
-
-   /** Same as above, only returns a pointer to a String object instead a C-style string. 
-    *  (Note that ownership of the String is retained by the Message, and that the
-    *  pointer may become invalid if the Message is modified)
-    */
-   const String * GetNextFieldNameString();
-
-   /** 
-    *  Places the next field name into (retFieldName) without modifying the state of the traversal.
-    *  @param retFieldName On success, the next field name is written into this object.
-    *  @return B_NO_ERROR on success, or B_ERROR if there were no more field names left to traverse.
-    */
-   status_t PeekNextFieldName(String & retFieldName) const;
-
-   /** 
-    *  Returns The next field name on success, or NULL if there were no more field
-    *  names left to traverse.  Does not modify the state of the traversal.  (Note that
-    *  the returned string may become invalid if the Message is modified)
-    */
-   const char * PeekNextFieldName() const {const String * r = PeekNextFieldNameString(); return r ? r->Cstr() : NULL;}
-
-   /** Same as above, only returns a pointer to a String object instead a C-style string. 
-     *  (Note that ownership of the String object is retained by the Message, and that the
-     *  pointer may become invalid if the Message is modified)
+   /** Returns a reference to the current field name.  Note that it is only safe
+     * to call this method if HasData() returned true!  The value returned by
+     * HasData() may change if the Message we are iterating over is modified.
      */
-   const String * PeekNextFieldNameString() const;
+   const String & GetFieldName() const {return _iter.GetKey();}
 
 private:
    friend class Message;
-   MessageFieldNameIterator(const HashtableIterator<String, RefCountableRef> & iter, uint32 tc) : HashtableIterator<String, RefCountableRef>(iter), _typeCode(tc) {/* empty */}
+   MessageFieldNameIterator(const HashtableIterator<String, RefCountableRef> & iter, uint32 tc) : _typeCode(tc), _iter(iter) {if (_typeCode != B_ANY_TYPE) SkipNonMatchingFieldNames();}
+   void SkipNonMatchingFieldNames();
 
    uint32 _typeCode;
+   HashtableIterator<String, RefCountableRef> _iter;
 };
 
 // Version number of the Message serialization protocol.
@@ -195,13 +157,77 @@ private:
 #define CURRENT_PROTOCOL_VERSION          1347235888 // 'PM00'
 
 /** 
- *  This class is similar to a BMessage, but portable.  
- *  It only acts as a serializable data container; it does not
- *  include any threading capabilities.  Unless otherwise noted, all
- *  methods behave similarly to their BMessage counterparts.  (Exception:
- *  the only error codes returned are B_ERROR and B_NO_ERROR)
+ *  The Message class implements a serializable container for named, typed data.
+ *
+ *  Messages are the foundation of the MUSCLE data-exchange protocol, and
+ *  they are used to send data between computers, processes, and threads
+ *  in a standardized, type-safe, expressive, endian-neutral, and 
+ *  language-neutral manner.  A Message object can be serialized into
+ *  a series of bytes on one machine by calling Flatten() on it, and 
+ *  after those bytes have been sent across the network, the same Message 
+ *  can be recreated on the destination machine by calling Unflatten().
+ *
+ *  This enables efficient and reliable transmission of arbitrarily complex structured data.  
+ *  A flattened Message can be as small as 12 bytes, or as large as 4 gigabytes.
+ *
+ *  Each Message object has a single 32-bit integer 'what code', which 
+ *  can be set to any 32-bit value (often a PR_COMMAND_* or PR_RESULT_* 
+ *  value, as enumerated in StorageReflectConstants.h)
+ *  
+ *  Each Message can also hold a number of data fields.  Each data field 
+ *  in a Message is assigned a name string (which also can be arbitrary, 
+ *  although various strings may have particular meanings in various contexts), 
+ *  and has a specified data type.  The field names are used as keys to lookup 
+ *  their associated data, so each field in the Message must have a name that is 
+ *  unique relative to the other fields in the same Message.  (Note: to make 
+ *  MUSCLE code more readable and less susceptible to typos, the field name strings 
+ *  that MUSCLE's PR_COMMAND_* Messages recognize are encoded as PR_NAME_* defines 
+ *  in StorageReflectConstants.h)
+ *  
+ *  Each data field in a Message holds an array of one or more data items of the 
+ *  field's specified type, stored (internally) as a double-ended Queue.  
+ *
+ *  The Message class has built-in support for fields containing the following data types:
+ *    - Boolean: via AddBool(), FindBool(), GetBool(), etc.
+ *    - Double-precision IEEE754 floating point: via AddDouble(), FindDouble(), GetDouble(), etc.
+ *    - Single-precision IEEE754 floating point: via AddFloat(), FindFloat(), GetFloat(), etc.
+ *    - 64-bit signed integer: via AddInt64(), FindInt64(), GetInt64(), etc.
+ *    - 32-bit signed integer: via AddInt32(), FindInt32(), GetInt32(), etc.
+ *    - 16-bit signed integer: via AddInt16(), FindInt16(), GetInt16(), etc.
+ *    - 8-bit  signed integer: via AddInt8(), FindInt8(), GetInt8(), etc.
+ *    - String: (String objects are NUL-terminated character strings):  via AddString(), FindString(), GetString(), etc.
+ *    - Message/MessageRef: via AddMessage(), FindMessage(), GetMessage(), etc.
+ *    - Raw Byte Buffer: (Variable-length sequences of unstructured uint8 bytes):  via AddData(), FindData(), etc.
+ *    - Point: (x and y float values):  via AddPoint(), FindPoint(), GetPoint(), etc.
+ *    - Rectangle: (left, top, right, and bottom float values):  via AddRect(), FindRect(), GetRect(), etc.
+ *    - Pointer: (Note: Pointer fields do not get serialized):  via AddPointer(), FindPointer(), GetPointer(), etc.
+ *
+ *  Note that the support fields of type Message means that Messages can be nested hierarchically;
+ *  A single Message object can contain a field of type Message, each of whose elements is another
+ *  Message, each of which can contain its own Message fields, and so on.  This allows for very
+ *  complex data structures:  for example, Meyer Sound's CueStation software encodes an entire
+ *  saved project file in the form of a single serialized Message object.
+ *
+ *  In addition to the built-in types listed above, it is possible to add fields
+ *  containing user-defined objects of arbitary type.  In order to be added to a Message,
+ *  a non-built-in object must derive from Flattenable (if you wish to add it to the Message
+ *  in its flattened-bytes form, and later on restore it via FindFlat()), or alternatively
+ *  the object can be derived from FlatCountable, in which case you can add a reference to 
+ *  your object (again via AddFlat()) to the Message, and the Message will hold on to your
+ *  object directly rather than to a buffer of its flattened bytes.  This can be more efficient,
+ *  since when done this way the object need not be serialized and later reconstructed, unless/until
+ *  the Message itself needs to be serialized and reconstructed (e.g. in order to
+ *  send it across the network to another machine).
+ *
+ *  Lastly, it is possible to store inside a Message references to objects of any class that derives
+ *  from RefCountable, via the AddTag() method (etc).  Objects added via AddTag() will not be serialized
+ *  when the Message is serialized, however, so this method is useful mainly for intra-process communication
+ *  or in-RAM data storage.
+ *
+ *  Note that for quick debugging purposes, it is possible to dump a Message's contents to stdout
+ *  at any time by calling PrintToStream() on the Message.
  */
-class Message : public FlatCountable, public Cloneable
+class Message : public FlatCountable, public Cloneable, private CountedObject<Message>
 {
 public:
    /** 32 bit what code, for quick identification of message types.  Set this however you like. */
@@ -213,10 +239,10 @@ public:
    /** Constructor.
     *  @param what The 'what' member variable will be set to the value you specify here.
     */
-   Message(uint32 what) : what(what) {/* empty */}
+   explicit Message(uint32 what) : what(what) {/* empty */}
 
    /** Copy Constructor. */
-   Message(const Message & copyMe) : FlatCountable(), Cloneable() {*this = copyMe;}
+   Message(const Message & copyMe) : FlatCountable(), Cloneable(), CountedObject<Message>() {*this = copyMe;}
 
    /** Destructor. */
    virtual ~Message() {/* empty */}
@@ -259,20 +285,20 @@ public:
 
    /** Prints debug info describing the contents of this Message to stdout. 
      * @param optFile If non-NULL, the text will be printed to this file.  If left as NULL, stdout will be used as a default.
-     * @param recursive if true, we will call PrintToStream() recursively on any held messages also.   Defaults to true.
+     * @param maxRecurseLevel The maximum level of nested sub-Messages that we will print.  Defaults to MUSCLE_NO_LIMIT.
      * @param indentLevel Number of spaces to indent each printed line.  Used while recursing to format nested messages text nicely
      */
-   void PrintToStream(FILE * optFile = NULL, bool recursive = true, int indentLevel = 0) const;
+   void PrintToStream(FILE * optFile = NULL, uint32 maxRecurseLevel = MUSCLE_NO_LIMIT, int indentLevel = 0) const;
 
    /** Same as PrintToStream(), only the state of the Message is returned
     *  as a String instead of being printed to stdout.
     */
-   String ToString(bool recursive = true, int indentLevel = 0) const;
+   String ToString(uint32 maxRecurseLevel = MUSCLE_NO_LIMIT, int indentLevel = 0) const;
 
    /** Same as ToString(), except the text is added to the given String instead
     *  of being returned as a new String.
     */
-   void AddToString(String & s, bool recursive = true, int indentLevel = 0) const;
+   void AddToString(String & s, uint32 maxRecurseLevel = MUSCLE_NO_LIMIT, int indentLevel = 0) const;
 
    /** Renames a field.
     *  @param old_entry Field name to rename from.
@@ -390,10 +416,7 @@ public:
     *  @param obj The object to archive.  May be any type with a SaveToArchive() method.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or SaveToArchive() failed.
     */
-   template<typename T> inline status_t AddArchiveMessage(const String & fieldName, const T & obj)
-   {
-      return AddMessage(fieldName, GetArchiveMessageFromPool(obj));
-   }
+   template<class T> inline status_t AddArchiveMessage(const String & fieldName, const T & obj);
 
    /** Adds a new pointer value to the Message.
     *  @param fieldName Name of the field to add (or add to)
@@ -416,13 +439,14 @@ public:
     */
    status_t AddRect(const String & fieldName, const Rect & rect);
 
-   /** Flattens a Flattenable object into the Message.
+   /** Flattens a Flattenable object and adds the resulting bytes into this Message.
     *  @param fieldName Name of the field to add (or add to)
-    *  @param obj The Flattenable object.  Flatten() is called on this object, and the
+    *  @param obj The Flattenable object (or at least an object with TypeCode(), Flatten(), 
+    *             and FlattenedSize() methods).  Flatten() is called on this object, and the 
     *             resulting bytes are appended to the given field in this Message.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t AddFlat(const String & fieldName, const Flattenable & obj);
+   template <class T> status_t AddFlat(const String & fieldName, const T & obj) {return AddFlatAux(fieldName, GetFlattenedByteBufferFromPool(obj), obj.TypeCode(), false);}
 
    /** Adds a reference to a FlatCountable object to the Message.
     *  @param fieldName Name of the field to add (or add to)
@@ -438,8 +462,7 @@ public:
     */
    status_t AddFlat(const String & fieldName, const ByteBufferRef & ref)
    {
-      FlatCountableRef fcRef;
-      fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
+      FlatCountableRef fcRef; fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
       return AddFlat(fieldName, fcRef);
    }
 
@@ -552,10 +575,7 @@ public:
     *  @param obj The object to archive.  May be any type with a SaveToArchive() method.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or SaveToArchive() failed.
     */
-   template<typename T> inline status_t PrependArchiveMessage(const String & fieldName, const T & obj)
-   {
-      return PrependMessage(fieldName, GetArchiveMessageFromPool(obj));
-   }
+   template<class T> inline status_t PrependArchiveMessage(const String & fieldName, const T & obj);
 
    /** Prepends a new pointer value to the beginning of a field array in the Message.
     *  @param fieldName Name of the field to add (or prepend to)
@@ -578,14 +598,14 @@ public:
     */
    status_t PrependRect(const String & fieldName, const Rect & rect);
 
-   /** Flattens the given object and prepends the resulting bytes into beginning of a field 
-    *  array in the Message.
+   /** Flattens a Flattenable object and adds the resulting bytes into this Message.
     *  @param fieldName Name of the field to add (or prepend to)
-    *  @param obj The Flattenable object.  Flatten() is called on this object, and the resulting
-    *             bytes are prepended to the beginning of the given field in this Message.
+    *  @param obj The Flattenable object (or at least an object with TypeCode(), Flatten(), 
+    *             and FlattenedSize() methods).  Flatten() is called on this object, and the 
+    *             resulting bytes are appended to the given field in this Message.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t PrependFlat(const String & fieldName, const Flattenable & obj);
+   template <class T> status_t PrependFlat(const String & fieldName, const T & obj) {return AddFlatAux(fieldName, GetFlattenedByteBufferFromPool(obj), obj.TypeCode(), true);}
 
    /** Prepends a reference to a FlatCountable object to the Message.
     *  @param fieldName Name of the field to add (or prepend to)
@@ -601,8 +621,7 @@ public:
     */
    status_t PrependFlat(const String & fieldName, const ByteBufferRef & ref)
    {
-      FlatCountableRef fcRef;
-      fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
+      FlatCountableRef fcRef; fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
       return PrependFlat(fieldName, fcRef);
    }
 
@@ -798,14 +817,14 @@ public:
     *             this object may be of any type that has a SetFromArchive(const Message &) method.
     *  @return B_NO_ERROR if the Message value was found and SetFromArchive() returned B_NO_ERROR, or B_ERROR otherwise.
     */
-   template<typename T> inline status_t FindArchiveMessage(const String & fieldName, uint32 index, T & obj) const
+   template<class T> inline status_t FindArchiveMessage(const String & fieldName, uint32 index, T & obj) const
    {
       MessageRef msg;
       return (FindMessage(fieldName, index, msg) == B_NO_ERROR) ? obj.SetFromArchive(*msg()) : B_ERROR;
    }
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   template<typename T> inline status_t FindArchiveMessage(const String & fieldName, T & obj) const {return FindArchiveMessage(fieldName, 0, obj);}
+   template<class T> inline status_t FindArchiveMessage(const String & fieldName, T & obj) const {return FindArchiveMessage(fieldName, 0, obj);}
 
    /** Convenience method:  Retrieves a Message value from this Message,
     *  and if successful, calls SetFromArchive(foundMsg) on the passed-in object.  
@@ -817,14 +836,14 @@ public:
     *  @param defaultMsg The Message to pass to SetFromArchive() if no sub-Message is found.  Defaults to GetEmptyMessage().
     *  @return The value returned by obj.SetFromArchive().
     */
-   template<typename T> inline status_t FindArchiveMessageWithDefault(const String & fieldName, uint32 index, T & obj, const Message & defaultMsg = GetEmptyMessage()) const
+   template<class T> inline status_t FindArchiveMessageWithDefault(const String & fieldName, uint32 index, T & obj, const Message & defaultMsg = GetEmptyMessage()) const
    {
       MessageRef msg; 
       return (FindMessage(fieldName, index, msg) == B_NO_ERROR) ? obj.SetFromArchive(*msg()) : obj.SetFromArchive(defaultMsg);
    }
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   template<typename T> inline status_t FindArchiveMessageWithDefault(const String & fieldName, T & obj, const Message & defaultMsg = GetEmptyMessage()) const {return FindArchiveMessageWithDefault(fieldName, 0, obj, defaultMsg);}
+   template<class T> inline status_t FindArchiveMessageWithDefault(const String & fieldName, T & obj, const Message & defaultMsg = GetEmptyMessage()) const {return FindArchiveMessageWithDefault(fieldName, 0, obj, defaultMsg);}
 
    /** Retrieve a pointer value from the Message.
     *  @param fieldName The field name to look for the pointer value under.
@@ -865,10 +884,23 @@ public:
     *  @param obj On success, the flattened object is copied into this object.
     *  @return B_NO_ERROR if the flattened object was found, or B_ERROR if it wasn't.
     */
-   status_t FindFlat(const String & fieldName, uint32 index, Flattenable & obj) const;
-
+   template <class T> status_t FindFlat(const String & fieldName, uint32 index, T & obj) const
+   {
+      uint32 arrayTypeCode;
+      const AbstractDataArray * ada = GetArrayAndTypeCode(fieldName, index, &arrayTypeCode);
+      if ((ada)&&(obj.AllowsTypeCode(arrayTypeCode)))
+      {
+         uint32 numBytes;
+         const FlatCountable * fcPtr;
+         const uint8 * ptr = FindFlatAux(ada, index, numBytes, &fcPtr);
+              if (ptr)   return obj.Unflatten(ptr, numBytes);
+         else if (fcPtr) return obj.CopyFrom(*fcPtr);
+      }
+      return B_ERROR;
+   }
+         
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t FindFlat(const String & fieldName, Flattenable & obj) const {return FindFlat(fieldName, 0, obj);}
+   template <class T> status_t FindFlat(const String & fieldName, T & obj) const {return FindFlat(fieldName, 0, obj);}
 
    /** Retrieve a FlatCountable reference from the Message.
     *  @param fieldName The field name to look for the FlatCountable reference under.
@@ -1094,25 +1126,27 @@ public:
     *  @param obj The object to call SaveToArchive() on.
     *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, if SaveToArchive() failed, or if (index) wasn't a valid index, or out of memory.
     */
-   template<typename T> inline status_t ReplaceArchiveMessage(bool okayToAdd, const String & fieldName, uint32 index, const T & obj)
+   template<class T> inline status_t ReplaceArchiveMessage(bool okayToAdd, const String & fieldName, uint32 index, const T & obj)
    {
       return ReplaceMessage(okayToAdd, fieldName, index, GetArchiveMessageFromPool(obj));
    }
 
    /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   template<typename T> inline status_t ReplaceArchiveMessage(bool okayToAdd, const String & fieldName, const T & obj) {return ReplaceArchiveMessage(okayToAdd, fieldName, 0, obj);}
+   template<class T> inline status_t ReplaceArchiveMessage(bool okayToAdd, const String & fieldName, const T & obj) {return ReplaceArchiveMessage(okayToAdd, fieldName, 0, obj);}
 
-   /** Replace a flattened object in an existing Message field with a new object.
+   /** Flattens a Flattenable object and adds the resulting bytes into this Message.
     *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
-    *  @param fieldName The field name of an existing field to modify
+    *  @param fieldName Name of the field to add (or add to)
     *  @param index The index of the entry within the field name to modify
-    *  @param obj The new flattened object value to put overwrite the old flattened object with.
-    *  @return B_NO_ERROR on success, or B_ERROR if the field wasn't found, or if (index) wasn't a valid index, or out of memory.
+    *  @param obj The Flattenable object (or at least an object with TypeCode(), Flatten(), 
+    *             and FlattenedSize() methods).  Flatten() is called on this object, and the 
+    *             resulting bytes are appended to the given field in this Message.
+    *  @return B_NO_ERROR on success, B_ERROR if out of memory or a type conflict occurred
     */
-   status_t ReplaceFlat(bool okayToAdd, const String & fieldName, uint32 index, const Flattenable & obj);
+   template <class T> status_t ReplaceFlat(bool okayToAdd, const String & fieldName, uint32 index, const T & obj) {return ReplaceFlatAux(okayToAdd, fieldName, index, GetFlattenedByteBufferFromPool(obj), obj.TypeCode());}
 
-   /** As above, only (index) isn't specified.  It is assumed to be zero. */
-   status_t ReplaceFlat(bool okayToAdd, const String & fieldName, const Flattenable & obj) {return ReplaceFlat(okayToAdd, fieldName, 0, obj);}
+   /** As above, except that the index argument is implicitly zero. */
+   template <class T> status_t ReplaceFlat(bool okayToAdd, const String & fieldName, const T & obj) {return ReplaceFlat(okayToAdd, fieldName, 0, obj);}
 
    /** Replace a FlatCountable reference in an existing Message field with a new reference.
     *  @param okayToAdd If set true, attempting to replace an reference that doesn't exist will cause the new reference to be added to the end of the field array, instead.  If false, attempting to replace a non-existant reference will cause B_ERROR to be returned with no side effects.
@@ -1129,8 +1163,7 @@ public:
    /** As above, only (ref) is specified as a ByteBufferRef, to save you having to do the necessary casting to FlatCountableRef yourself */
    status_t ReplaceFlat(bool okayToAdd, const String & fieldName, uint32 index, const ByteBufferRef & ref) 
    {
-      FlatCountableRef fcRef;
-      fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
+      FlatCountableRef fcRef; fcRef.SetFromRefCountableRefUnchecked(ref.GetRefCountableRef());
       return ReplaceFlat(okayToAdd, fieldName, index, fcRef);
    }
 
@@ -1295,6 +1328,16 @@ public:
     */
    void SwapContents(Message & swapWith);
 
+   /** Sorts the iteration-order of this Message's field names into case-sensitive alphabetical order. */
+   void SortFieldNames() {_entries.SortByKey();}
+
+   /** Returns true iff every one of our fields has a like-named, liked-typed, equal-length field in (rhs).
+     * @param rhs The Message to check to see if it has a superset of our fields.
+     * @param compareData If true, then the data in the fields will be compared also, and true will not be returned unless all the data items are equal.
+     * @returns true If and only if our fields are a subset of (rhs)'s fields.
+     */
+   bool FieldsAreSubsetOf(const Message & rhs, bool compareData) const;
+
    /**
     * Iterates over the contents of this Message to compute a checksum.
     * Note that this method can be CPU-intensive, since it has to scan
@@ -1394,19 +1437,19 @@ public:
    inline type Get##name(const String & fieldName, const type & defVal = type(), uint32 idx = 0) const {type r; return (Find##name (fieldName, idx, r) == B_NO_ERROR) ? (const type &)r : defVal;} \
    inline status_t CAdd##name(    const String & fieldName, const type & value, const type & defVal = type())   {return (value == defVal) ? B_NO_ERROR : Add##name     (fieldName, value);}        \
    inline status_t CPrepend##name(const String & fieldName, const type & value, const type & defVal = type())   {return (value == defVal) ? B_NO_ERROR : Prepend##name (fieldName, value);}
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Bool,    bool);            ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Double,  double);          ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Float,   float);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int8,    int8);            ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int16,   int16);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int32,   int32);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int64,   int64);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Point,   Point);           ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Rect,    Rect);            ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(String,  String);          ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Message, MessageRef);      ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Flat,    ByteBufferRef);   ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
-   DECLARE_MUSCLE_CONVENIENCE_METHODS(Tag,     RefCountableRef); ///< This macro defines Get(), CAdd(), and CPrpend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Bool,    bool);            ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Double,  double);          ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Float,   float);           ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int8,    int8);            ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int16,   int16);           ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int32,   int32);           ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Int64,   int64);           ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Point,   Point);           ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Rect,    Rect);            ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(String,  String);          ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Message, MessageRef);      ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Flat,    ByteBufferRef);   ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
+   DECLARE_MUSCLE_CONVENIENCE_METHODS(Tag,     RefCountableRef); ///< This macro defines Get(), CAdd(), and CPrepend() methods for convience in common use cases.
    DECLARE_STANDARD_CLONE_METHOD(Message);  ///< implements the standard Clone() method to copy a Message object.
 
 protected:
@@ -1422,31 +1465,52 @@ private:
    uint32 GetElementSize(uint32 type) const;
 
    RefCountableRef GetArrayRef(const String & arrayName, uint32 etc) const;
-   AbstractDataArray * GetArray(const String & arrayName, uint32 etc) const;
+   AbstractDataArray * GetArray(const String & arrayName, uint32 etc);
+   const AbstractDataArray * GetArray(const String & arrayName, uint32 etc) const;
    AbstractDataArray * GetOrCreateArray(const String & arrayName, uint32 tc);
+   const AbstractDataArray * GetArrayAndTypeCode(const String & arrayName, uint32 index, uint32 * retTypeCode) const;
 
-   status_t AddFlatBuffer(const String & fieldName, const Flattenable & flat, uint32 etc, bool prepend);
-   status_t AddFlatRef(const String & fieldName, const FlatCountableRef & flat, uint32 etc, bool prepend);
+   status_t AddFlatAux(const String & fieldName, const FlatCountableRef & flat, uint32 etc, bool prepend);
+   status_t AddFlatAux(const String & fieldName, const ByteBufferRef & bufRef, uint32 etc, bool prepend)
+   {
+      FlatCountableRef fcRef; fcRef.SetFromRefCountableRefUnchecked(bufRef.GetRefCountableRef());
+      return AddFlatAux(fieldName, fcRef, etc, prepend);
+   }
+
    status_t AddDataAux(const String & fieldName, const void * data, uint32 size, uint32 etc, bool prepend);
 
-   status_t FindFlatAux(const String & fieldName, uint32 index, Flattenable & flat) const;
+   const uint8 * FindFlatAux(const AbstractDataArray * ada, uint32 index, uint32 & retNumBytes, const FlatCountable ** optRetFCPtr) const;
    status_t FindDataItemAux(const String & fieldName, uint32 index, uint32 tc, void * setValue, uint32 valueSize) const;
 
-   status_t ReplaceFlatItemBuffer(bool okayToAdd, const String & fieldName, uint32 index, const Flattenable & flat, uint32 tc);
+   status_t ReplaceFlatAux(bool okayToAdd, const String & fieldName, uint32 index, const ByteBufferRef & bufRef, uint32 tc);
    status_t ReplaceDataAux(bool okayToAdd, const String & fieldName, uint32 index, void * dataBuf, uint32 bufSize, uint32 tc);
  
-   bool FieldsAreSubsetOf(const Message & rhs, bool compareData) const;
-
    const String * GetExtremeFieldNameStringAux(uint32 optTypeCode, bool isLast) const
    {
-      return (optTypeCode == B_ANY_TYPE) ? (isLast ? _entries.GetLastKey() : _entries.GetFirstKey()) 
-                                         : MessageFieldNameIterator(*this, optTypeCode, HTIT_FLAG_NOREGISTER|(isLast?HTIT_FLAG_BACKWARDS:0)).GetNextFieldNameString();
+      if (optTypeCode == B_ANY_TYPE) return isLast ? _entries.GetLastKey() : _entries.GetFirstKey(); 
+
+      MessageFieldNameIterator iter(*this, optTypeCode, HTIT_FLAG_NOREGISTER|(isLast?HTIT_FLAG_BACKWARDS:0));
+      return iter.HasData() ? &iter.GetFieldName() : NULL;
    }
 
    // Iterator support methods
    friend class MessageFieldNameIterator;
    Hashtable<String, RefCountableRef> _entries;   
 };
+
+// Template specializations so that the *Flat() methods do the right thing when called with a String or Message object as the argument
+#define DECLARE_MUSCLE_FLAT_SPECIALIZERS(tp)                                                                                                                    \
+template <> inline status_t Message::FindFlat<tp>(   const String & fieldName, uint32 index, tp & obj)  const  {return Find##tp(   fieldName, index, obj);}     \
+template <> inline status_t Message::FindFlat<tp>(   const String & fieldName,               tp & obj)  const  {return Find##tp(   fieldName, obj);}            \
+template <> inline status_t Message::AddFlat<tp>(    const String & fieldName,         const tp & obj)         {return Add##tp(    fieldName, obj);}            \
+template <> inline status_t Message::PrependFlat<tp>(const String & fieldName,         const tp & obj)         {return Prepend##tp(fieldName, obj);}            \
+template <> inline status_t Message::ReplaceFlat<tp>(bool okayToAdd, const String & fieldName, const tp & obj) {return Replace##tp(okayToAdd, fieldName, obj);} \
+template <> inline status_t Message::ReplaceFlat<tp>(bool okayToAdd, const String & fieldName, uint32 index, const tp & obj)  {return Replace##tp( okayToAdd, fieldName, index, obj);}
+
+DECLARE_MUSCLE_FLAT_SPECIALIZERS(String)
+DECLARE_MUSCLE_FLAT_SPECIALIZERS(Point)
+DECLARE_MUSCLE_FLAT_SPECIALIZERS(Rect)
+DECLARE_MUSCLE_FLAT_SPECIALIZERS(Message)
 
 /** Convenience method:  Gets a Message from the message pool, populates it using the flattened Message
  *  bytes held by (bb), and returns it.
@@ -1455,15 +1519,13 @@ private:
  */
 inline MessageRef GetMessageFromPool(const ByteBuffer & bb) {return GetMessageFromPool(bb.GetBuffer(), bb.GetNumBytes());}
 
-inline MessageFieldNameIterator :: MessageFieldNameIterator(const Message & msg, uint32 type, uint32 flags) : HashtableIterator<String, RefCountableRef>(msg._entries.GetIterator(flags)), _typeCode(type) {/* empty */}
-
 /** Convenience method:  Gets a Message from the message pool, and populates it by calling
   * SaveToArchive(msg) on the passed in object.  Templates so that the passed-in object may be of any type.
   * @param pool The Message pool to get the Message object from.
   * @param objectToArchive The object to call SaveToArchive() on.
   * @returns a non-NULL MessageRef on success, or a NULL MessageRef on failure.
   */
-template<typename T> inline MessageRef GetArchiveMessageFromPool(ObjectPool<Message> & pool, const T & objectToArchive)
+template<class T> inline MessageRef GetArchiveMessageFromPool(ObjectPool<Message> & pool, const T & objectToArchive)
 {
    MessageRef m = GetMessageFromPool(pool);
    if ((m())&&(objectToArchive.SaveToArchive(*m()) != B_NO_ERROR)) m.Reset();
@@ -1475,11 +1537,25 @@ template<typename T> inline MessageRef GetArchiveMessageFromPool(ObjectPool<Mess
   * @param objectToArchive The object to call SaveToArchive() on.
   * @returns a non-NULL MessageRef on success, or a NULL MessageRef on failure.
   */
-template<typename T> inline MessageRef GetArchiveMessageFromPool(const T & objectToArchive)
+template<class T> inline MessageRef GetArchiveMessageFromPool(const T & objectToArchive)
 {
    MessageRef m = GetMessageFromPool();
    if ((m())&&(objectToArchive.SaveToArchive(*m()) != B_NO_ERROR)) m.Reset();
    return m;
+}
+
+inline MessageFieldNameIterator :: MessageFieldNameIterator(const Message & msg, uint32 type, uint32 flags) : _typeCode(type), _iter(msg._entries.GetIterator(flags)) {if (_typeCode != B_ANY_TYPE) SkipNonMatchingFieldNames();}
+
+// declared down here to make clang++ happy
+template<class T> status_t Message :: AddArchiveMessage(const String & fieldName, const T & obj)
+{
+   return AddMessage(fieldName, GetArchiveMessageFromPool(obj));
+}
+
+// declared down here to make clang++ happy
+template<class T> status_t Message :: PrependArchiveMessage(const String & fieldName, const T & obj)
+{
+   return PrependMessage(fieldName, GetArchiveMessageFromPool(obj));
 }
 
 }; // end namespace muscle

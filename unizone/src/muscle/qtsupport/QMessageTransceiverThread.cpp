@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <qapplication.h>
 #include "qtsupport/QMessageTransceiverThread.h"
@@ -24,7 +24,7 @@ QMessageTransceiverThread :: ~QMessageTransceiverThread()
    ShutdownInternalThread();  // just in case (note this assumes the user isn't going to subclass this class!)
 
    // Make sure our handlers don't try to reference us anymore
-   for (HashtableIterator<uint32, QMessageTransceiverHandler *> iter(_handlers); iter.HasMoreKeys(); iter++) iter.GetValue()->ClearRegistrationFields();
+   for (HashtableIterator<uint32, QMessageTransceiverHandler *> iter(_handlers); iter.HasData(); iter++) iter.GetValue()->ClearRegistrationFields();
 }
 
 status_t QMessageTransceiverThread :: SendMessageToSessions(const MessageRef & msgRef, const char * optDistPath)       
@@ -68,7 +68,7 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
    {
       switch(code)
       {
-         case MTT_EVENT_INCOMING_MESSAGE:
+         case MTT_EVENT_INCOMING_MESSAGE: default:
             if (seenIncomingMessage == false)
             {
                seenIncomingMessage = true;
@@ -76,6 +76,7 @@ void QMessageTransceiverThread :: HandleQueuedIncomingEvents()
             }
             emit MessageReceived(next, sessionID); 
          break;
+
          case MTT_EVENT_SESSION_ACCEPTED:      emit SessionAccepted(sessionID, factoryID, iap); break;
          case MTT_EVENT_SESSION_ATTACHED:      emit SessionAttached(sessionID);                 break;
          case MTT_EVENT_SESSION_CONNECTED:     emit SessionConnected(sessionID, iap);           break;
@@ -132,7 +133,7 @@ void QMessageTransceiverThread :: RemoveFromSeenList(QMessageTransceiverHandler 
 void QMessageTransceiverThread :: Reset()
 {
    FlushSeenHandlers(true);
-   for (HashtableIterator<uint32, QMessageTransceiverHandler *> iter(_handlers); iter.HasMoreKeys(); iter++) iter.GetValue()->ClearRegistrationFields();
+   for (HashtableIterator<uint32, QMessageTransceiverHandler *> iter(_handlers); iter.HasData(); iter++) iter.GetValue()->ClearRegistrationFields();
    _handlers.Clear();
 
    MessageTransceiverThread::Reset(); 
@@ -188,7 +189,7 @@ QMessageTransceiverThreadPool :: ~QMessageTransceiverThreadPool()
 
 void QMessageTransceiverThreadPool :: ShutdownAllThreads()
 {
-   for (HashtableIterator<QMessageTransceiverThread *, bool> iter(_threads); iter.HasMoreKeys(); iter++) 
+   for (HashtableIterator<QMessageTransceiverThread *, Void> iter(_threads); iter.HasData(); iter++) 
    {
       QMessageTransceiverThread * mtt = iter.GetKey();
       mtt->ShutdownInternalThread();
@@ -212,7 +213,7 @@ QMessageTransceiverThread * QMessageTransceiverThreadPool :: ObtainThread()
 
    // If we got here, we need to create a new thread
    QMessageTransceiverThread * newThread = CreateThread();
-   if ((newThread == NULL)||(newThread->StartInternalThread() != B_NO_ERROR)||(_threads.Put(newThread, true) != B_NO_ERROR))
+   if ((newThread == NULL)||(newThread->StartInternalThread() != B_NO_ERROR)||(_threads.PutWithDefault(newThread) != B_NO_ERROR))
    {
       WARN_OUT_OF_MEMORY;
       newThread->ShutdownInternalThread();  // in case Put() failed
@@ -273,7 +274,7 @@ status_t QMessageTransceiverHandler :: SetupAsNewSession(IMessageTransceiverMast
    return B_ERROR;
 }
 
-status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay)
+status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay, uint64 maxAsyncConnectPeriod)
 {
    Reset();
    QMessageTransceiverThread * thread = master.ObtainThread();
@@ -283,14 +284,14 @@ status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTranscei
       if (sRef() == NULL) sRef = CreateDefaultWorkerSession(*thread);  // gotta do this now so we can know its ID
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR)) 
       {
-         if (thread->AddNewConnectSession(targetIPAddress, port, sRef, autoReconnectDelay) == B_NO_ERROR) return B_NO_ERROR;
+         if (thread->AddNewConnectSession(targetIPAddress, port, sRef, autoReconnectDelay, maxAsyncConnectPeriod) == B_NO_ERROR) return B_NO_ERROR;
          master.UnregisterHandler(*thread, this, true);
       }
    }
    return B_ERROR;
 }
 
-status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost, uint64 autoReconnectDelay)
+status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost, uint64 autoReconnectDelay, uint64 maxAsyncConnectPeriod)
 {
    Reset();
    QMessageTransceiverThread * thread = master.ObtainThread();
@@ -300,7 +301,7 @@ status_t QMessageTransceiverHandler :: SetupAsNewConnectSession(IMessageTranscei
       if (sRef() == NULL) sRef = CreateDefaultWorkerSession(*thread);  // gotta do this now so we can know its ID
       if ((sRef())&&(master.RegisterHandler(*thread, this, sRef) == B_NO_ERROR))
       {
-         if (thread->AddNewConnectSession(targetHostName, port, sRef, expandLocalhost, autoReconnectDelay) == B_NO_ERROR) return B_NO_ERROR;
+         if (thread->AddNewConnectSession(targetHostName, port, sRef, expandLocalhost, autoReconnectDelay, maxAsyncConnectPeriod) == B_NO_ERROR) return B_NO_ERROR;
          master.UnregisterHandler(*thread, this, true);
       }
    }

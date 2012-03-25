@@ -354,10 +354,10 @@ Channel::customEvent(QEvent * event)
 				{
 					PrintSystem(tr( "List of channel admins:" ));
 					WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
-					while (iter.HasMoreValues())
+					while (iter.HasData())
 					{
-						WUserRef uref;
-						iter.GetNextValue(uref);
+						WUserRef uref = iter.GetValue();
+						iter++;
 						if ( gWin->fChannels->IsAdmin(fName, uref()->GetUserID()) )
 						{
 							PrintSystem( uref()->GetUserID() + " - " + uref()->GetUserName() );
@@ -481,10 +481,9 @@ Channel::customEvent(QEvent * event)
 							if (uref())
 							{
 								WUserIter uit = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
-								while ( uit.HasMoreValues())
+								while (uit.HasData())
 								{
-									WUserRef found;
-									uit.GetNextValue(found);
+									WUserRef found = uit.GetValue();
 									if (found() == uref())
 									{
 										if (gWin->fSettings->GetUserEvents())
@@ -493,6 +492,7 @@ Channel::customEvent(QEvent * event)
 										talking = true;
 										break;	// done...
 									}
+									uit++;
 								}
 							}
 							if (!uref())
@@ -530,10 +530,9 @@ Channel::customEvent(QEvent * event)
 							if (uref())
 							{
 								WUserIter uit = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
-								while (uit.HasMoreValues())
+								while (uit.HasData())
 								{
-									WUserRef found;
-									uit.GetNextValue(found);
+									WUserRef found = uit.GetValue();
 									
 #ifdef _DEBUG
 									WString wuid1(found()->GetUserID());
@@ -549,6 +548,7 @@ Channel::customEvent(QEvent * event)
 										f = true;
 										break;	// done...
 									}
+									uit++;
 								}
 							}
 							if (!f)

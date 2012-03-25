@@ -39,8 +39,12 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 {
 	QString addr, uname, uid;
 	QString out;
+#ifdef MUSCLE_AVOID_IPV6
 	uint32 address = 0;
-	char host[16];
+#else
+	muscle::ip_address address = 0;
+#endif
+	String host;
 
 	if (user() != NULL)
 	{
@@ -52,12 +56,12 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 
 	if (address > 0)
 	{
-		Inet_NtoA(address, host);
+		host = Inet_NtoA(address, true);
 					
 		out += tr("Address info for user #%1:").arg(uid);
 		out += "\n" + tr("User Name: %1").arg(uname);
 					
-		out += "\n" + tr("IP Address: %1").arg(host);
+		out += "\n" + tr("IP Address: %1").arg(host.Cstr());
 		
 		if (verbose)
 		{
@@ -86,19 +90,23 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 }
 
 bool
+#ifdef MUSCLE_AVOID_IPV6
 ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
+#else
+ResolverThread::PrintAddressInfo(muscle::ip_address address, bool verbose)
+#endif
 {
-	char host[16];
+	String host;
 	QString out;
 	bool found = false;
 
 	if (address > 0)
 	{
-		Inet_NtoA(address, host);
+		host = Inet_NtoA(address, true);
 					
 		if (verbose)
 		{
-			out += tr("Address info for %1:").arg(host);
+			out += tr("Address info for %1:").arg(host.Cstr());
 				
 			QString qhost = ResolveHost(address);
 			if (qhost != QString::null)
@@ -120,16 +128,16 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 			// List all users from this ip
 						
 			WUserMap cmap;
-			gWin->fNetClient->FindUsersByIP(cmap, host);
+			gWin->fNetClient->FindUsersByIP(cmap, host.Cstr());
 			if (cmap.GetNumItems() > 0)
 			{
 				out += "\n" + tr("Connected users:");
 
 				WUserIter it = cmap.GetIterator(HTIT_FLAG_NOREGISTER);
-				while ( it.HasMoreValues() )
+				while ( it.HasData() )
 				{
-					WUserRef uref;
-					it.GetNextValue(uref);
+					WUserRef uref = it.GetValue();
+					it++;
 					if ( uref() )
 					{
 						QString uid = uref()->GetUserID();
@@ -148,7 +156,7 @@ ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 		}
 		else
 		{
-			out += tr("IP Address: %1").arg(host);
+			out += tr("IP Address: %1").arg(host.Cstr());
 			found = true;
 		}
 		if (found)
@@ -165,15 +173,19 @@ ResolverThread::QueryEntry(const QString &user, bool verbose)
 	int numMatches;
 	WUserMap wmap;
 	numMatches = gWin->FillUserMap(user, wmap);
+#ifdef MUSCLE_AVOID_IPV6
 	uint32 address = 0;
+#else
+	muscle::ip_address address = 0;
+#endif
 	if (numMatches > 0)	
 	{
 		// Found atleast one match in users
 		WUserIter uiter = wmap.GetIterator(HTIT_FLAG_NOREGISTER);
-		while (uiter.HasMoreValues())
+		while (uiter.HasData())
 		{
-			WUserRef uref;
-			uiter.GetNextValue(uref);
+			WUserRef uref = uiter.GetValue();
+			uiter++;
 			PrintAddressInfo(uref, verbose);
 		}
 	}

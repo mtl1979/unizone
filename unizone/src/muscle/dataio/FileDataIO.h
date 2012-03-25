@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFileDataIO_h
 #define MuscleFileDataIO_h
@@ -10,7 +10,7 @@ namespace muscle {
 /**
  *  Data I/O to and from a stdio FILE. 
  */
-class FileDataIO : public DataIO
+class FileDataIO : public DataIO, private CountedObject<FileDataIO>
 {
 public:
    /** Constructor.
@@ -34,7 +34,7 @@ public:
    {
       if (_file)
       {
-         int32 ret = fread(buffer, 1, size, _file);
+         int32 ret = (int32) fread(buffer, 1, size, _file);
          return (ret > 0) ? ret : -1;  // EOF is an error, and it's returned as zero
       }
       else return -1;
@@ -43,14 +43,14 @@ public:
    /** Takes bytes from (buffer) and writes them out to our file.
     *  @param buffer Buffer to read the bytes from.
     *  @param size Number of bytes in the buffer.
-    *  @return Number of bytes writte, or -1 on error.
+    *  @return Number of bytes written, or -1 on error.
     *  @see DataIO::Write()
     */
    virtual int32 Write(const void * buffer, uint32 size)
    {
       if (_file)
       {
-         int32 ret = fwrite(buffer, 1, size, _file);
+         int32 ret = (int32) fwrite(buffer, 1, size, _file);
          return (ret > 0) ? ret : -1;   // zero is an error
       }
       else return -1;

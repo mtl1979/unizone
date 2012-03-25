@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/FilterSessionFactory.h"
 #include "reflector/StorageReflectConstants.h"
@@ -28,11 +28,9 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
    if (_maxSessionsPerHost != MUSCLE_NO_LIMIT)
    {
       uint32 count = 0;
-      AbstractReflectSessionRef next;
-      HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
-      while(iter.GetNextValue(next) == B_NO_ERROR) 
+      for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasData(); iter++)
       {
-         if ((next())&&(strcmp(next()->GetHostName()(), clientHostIP()) == 0)&&(++count >= _maxSessionsPerHost))
+         if ((iter.GetValue()())&&(strcmp(iter.GetValue()()->GetHostName()(), clientHostIP()) == 0)&&(++count >= _maxSessionsPerHost))
          {
             LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (host already has "UINT32_FORMAT_SPEC" sessions open).\n", clientHostIP(), _maxSessionsPerHost);
             return AbstractReflectSessionRef();
@@ -47,11 +45,9 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
       if (_requires.HasItems())
       {
          bool matched = false;
-         HashtableIterator<String, StringMatcherRef> iter(_requires);
-         StringMatcherRef next;
-         while(iter.GetNextValue(next) == B_NO_ERROR)
+         for (HashtableIterator<String, StringMatcherRef> iter(_requires); iter.HasData(); iter++)
          {
-            if (next()->Match(clientHostIP()))
+            if (iter.GetValue()()->Match(clientHostIP()))
             {
                matched = true;
                break;
@@ -65,14 +61,11 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
       }
 
       // This IP must *not* match any of our bans!
-      HashtableIterator<String, StringMatcherRef> iter(_bans);
-      StringMatcherRef next;
-      while(iter.GetNextValue(next) == B_NO_ERROR)
+      for (HashtableIterator<String, StringMatcherRef> iter(_bans); iter.HasData(); iter++)
       {
-         const String * key = iter.GetNextKey();
-         if (next()->Match(clientHostIP()))
+         if (iter.GetValue()()->Match(clientHostIP()))
          {
-            LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] matches ban pattern [%s], access denied.\n", clientHostIP(), key->Cstr());
+            LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] matches ban pattern [%s], access denied.\n", clientHostIP(), iter.GetKey()());
             return AbstractReflectSessionRef();
          }
       }
@@ -151,9 +144,10 @@ status_t FilterSessionFactory :: PutRequirePattern(const String & requirePattern
 
 status_t FilterSessionFactory :: RemoveBanPattern(const String & banPattern)
 {
-   if (_bans.Remove(banPattern) == B_NO_ERROR)
+   if (_bans.ContainsKey(banPattern))  // don't Remove() here, since then our argument might be a dangling reference during the LogTime() call
    {
       if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing ban [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString()(), banPattern(), _tempLogFor->GetPort());
+      (void) _bans.Remove(banPattern);
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -161,9 +155,10 @@ status_t FilterSessionFactory :: RemoveBanPattern(const String & banPattern)
 
 status_t FilterSessionFactory :: RemoveRequirePattern(const String & requirePattern)
 {
-   if (_requires.Remove(requirePattern) == B_NO_ERROR)
+   if (_requires.ContainsKey(requirePattern))  // don't Remove() here, since then our argument might be a dangling reference during the LogTime() call
    {
       if (_tempLogFor) LogTime(MUSCLE_LOG_DEBUG, "Session [%s/%s] is removing requirement [%s] on port %u\n", _tempLogFor->GetHostName()(), _tempLogFor->GetSessionIDString()(), requirePattern(), _tempLogFor->GetPort());
+      (void) _requires.Remove(requirePattern);
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -172,18 +167,14 @@ status_t FilterSessionFactory :: RemoveRequirePattern(const String & requirePatt
 void FilterSessionFactory :: RemoveMatchingBanPatterns(const String & exp)
 {
    StringMatcher sm(exp);
-   HashtableIterator<String, StringMatcherRef> iter(_bans);
-   String next;  // important to make this copy to avoid dangling pointer trouble!
-   while(iter.GetNextKey(next) == B_NO_ERROR) if (sm.Match(next())) RemoveBanPattern(next());
+   for (HashtableIterator<String, StringMatcherRef> iter(_bans); iter.HasData(); iter++) if (sm.Match(iter.GetKey()())) RemoveBanPattern(iter.GetKey());
 }
 
 
 void FilterSessionFactory :: RemoveMatchingRequirePatterns(const String & exp)
 {
    StringMatcher sm(exp);
-   HashtableIterator<String, StringMatcherRef> iter(_requires);
-   String next;  // important to make this copy to avoid dangling pointer trouble!
-   while(iter.GetNextKey(next) == B_NO_ERROR) if (sm.Match(next())) RemoveRequirePattern(next());
+   for (HashtableIterator<String, StringMatcherRef> iter(_requires); iter.HasData(); iter++) if (sm.Match(iter.GetKey()())) RemoveRequirePattern(iter.GetKey());
 }
 
 }; // end namespace muscle

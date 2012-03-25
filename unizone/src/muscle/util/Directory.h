@@ -1,15 +1,16 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDirectory_h
 #define MuscleDirectory_h
 
 #include "support/MuscleSupport.h"
+#include "util/CountedObject.h"
 #include "util/RefCount.h"
 
 namespace muscle {
 
-/** A cross-platform API for scanning the contents of a directory. */
-class Directory : public RefCountable
+/** A cross-platform API for iterating over the contents of a specified filesystem directory. */
+class Directory : public RefCountable, private CountedObject<Directory>
 {
 public:
    /** Default constructor:  creates an invalid Directory object.  */
@@ -50,11 +51,13 @@ public:
      * @param dirPath the directory's name (include path if desired) to create.
      * @param forceCreateParentDirsIfNecessary If true, we'll create directories above the new directory also if necessary.
      *                                         Otherwise we'll fail if the new directory's parent director doesn't exist.
+     * @param errorIfAlreadyExists If true, and the requested folder already exists, then this method will return B_ERROR.
+     *                             If false (the default), then this method will return B_NO_ERROR if the directory already exists.
      * @note This method was originally called CreateDirectory() but that was causing namespace collisions with
      *       some defines in the Microsoft Windows system headers, so I've renamed it to MakeDirectory() to avoid that problem.
      * @return B_NO_ERROR on success, or B_ERROR on failure (directory already exists, or permission denied).
      */
-   static status_t MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary);
+   static status_t MakeDirectory(const char * dirPath, bool forceCreateParentDirsIfNecessary, bool errorIfAlreadyExists=false);
 
    /** This static method will delete a directory with the specified path.
      * @param dirPath the directory's name (include path if desired) to delete.
@@ -67,7 +70,7 @@ public:
    /** Convenience method.  Given a path to a file, this method will create any missing directories
      * along that path, so that the file can be created.
      * @param filePath a path to a file, including the filename itself (the filename part will be ignored)
-     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory or permission denied?)
+     * @returns B_NO_ERROR on success (i.e. directory was created, or already exists), or B_ERROR on failure (out of memory or permission denied?)
      */
    static status_t MakeDirectoryForFile(const char * filePath);
 
@@ -78,7 +81,7 @@ public:
    static bool Exists(const char * dirPath);
 
    /** Returns the path string that was passed in to this Directory object, or NULL if
-     * there is no current directory active.  Note that the Direcory object makes an
+     * there is no current directory active.  Note that the Directory object makes an
      * internal copy of the passed in string, so this pointer will be valid even if
      * the string passed in to the constructor (or SetDir()) isn't anymore.
      * @note this string, if non-NULL, will always have a file-path-separator character at the end.

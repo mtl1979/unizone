@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef RS232DataIO_h
 #define RS232DataIO_h
@@ -15,7 +15,7 @@ namespace muscle {
  *  only minimal control of the serial parameters (baud rate only at the moment).
  *  On the plus side, it provides a serial-port-socket for use with select(), even under Windows.
  */
-class RS232DataIO : public DataIO
+class RS232DataIO : public DataIO, private CountedObject<RS232DataIO>
 {
 public:
    /** Constructor.

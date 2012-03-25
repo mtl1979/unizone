@@ -25,10 +25,10 @@ WinShareWindow::MatchUserName(const QString & un, QString & result, const QStrin
 
 	WUserIter iter = fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 
-	while (iter.HasMoreValues())
+	while (iter.HasData())
 	{
-		WUserRef user;
-		iter.GetNextValue(user);
+		WUserRef user = iter.GetValue();
+		iter++;
 		QString userName = StripURL(user()->GetUserName().stripWhiteSpace());
 		if (((filter == QString::null) || (MatchUserFilter(user, filter))) &&
 			(userName.startsWith(un, false)))
@@ -325,10 +325,10 @@ WinShareWindow::FillUserMap(const QString & filter, WUserMap & wmap)
 	int matchCount = 0;
 	WUserIter iter = fNetClient->UsersIterator(HTIT_FLAG_NOREGISTER);
 
-	while (iter.HasMoreValues())
+	while (iter.HasData())
 	{
-		WUserRef user;
-		iter.GetNextValue(user);
+		WUserRef user = iter.GetValue();
+		iter++;
 		if ( MatchUserFilter(user, filter) )
 		{
 			uint32 uid = user()->GetUserID().toULong();

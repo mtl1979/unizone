@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleUDPSocketDataIO_h
 #define MuscleUDPSocketDataIO_h
@@ -13,7 +13,7 @@ namespace muscle {
 /**
  *  Data I/O to and from a UDP socket! 
  */
-class UDPSocketDataIO : public DataIO
+class UDPSocketDataIO : public DataIO, private CountedObject<UDPSocketDataIO>
 {
 public:
    /**

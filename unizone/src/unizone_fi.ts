@@ -320,7 +320,7 @@ Versio %1</translation>
         <translation type="obsolete">Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="channelimpl.cpp" line="491"/>
+        <location filename="channelimpl.cpp" line="490"/>
         <source>User #%1 (a.k.a %2) is already in this channel window!</source>
         <translation>Käyttäjä #%1, eli %2, on jo tällä kanavalla!</translation>
     </message>
@@ -604,122 +604,174 @@ Versio %1</translation>
         <translation>Käyttöjärjestelmä</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="766"/>
-        <location filename="chatwindow.cpp" line="773"/>
-        <location filename="chatwindow.cpp" line="804"/>
-        <location filename="chatwindow.cpp" line="842"/>
-        <location filename="chatwindow.cpp" line="864"/>
-        <location filename="chatwindow.cpp" line="875"/>
-        <location filename="chatwindow.cpp" line="887"/>
-        <location filename="chatwindow.cpp" line="898"/>
-        <location filename="chatwindow.cpp" line="911"/>
-        <location filename="chatwindow.cpp" line="915"/>
-        <location filename="chatwindow.cpp" line="1026"/>
-        <location filename="chatwindow.cpp" line="1038"/>
-        <location filename="chatwindow.cpp" line="1049"/>
-        <location filename="chatwindow.cpp" line="1052"/>
-        <location filename="chatwindow.cpp" line="1063"/>
-        <location filename="chatwindow.cpp" line="1066"/>
-        <location filename="chatwindow.cpp" line="1115"/>
-        <location filename="chatwindow.cpp" line="1138"/>
-        <location filename="chatwindow.cpp" line="1148"/>
-        <location filename="chatwindow.cpp" line="1152"/>
-        <location filename="chatwindow.cpp" line="1171"/>
-        <location filename="chatwindow.cpp" line="1182"/>
-        <location filename="chatwindow.cpp" line="1221"/>
+        <location filename="chatwindow.cpp" line="715"/>
+        <source>Date: %1</source>
+        <translation>Päiväys: %1</translation>
+    </message>
+    <message>
         <source>&lt;font color=&quot;%1&quot;&gt;</source>
-        <translation>&lt;font color=&quot;%1&quot;&gt;</translation>
+        <translation type="obsolete">&lt;font color=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="796"/>
-        <location filename="chatwindow.cpp" line="814"/>
-        <location filename="chatwindow.cpp" line="830"/>
-        <location filename="chatwindow.cpp" line="852"/>
-        <location filename="chatwindow.cpp" line="876"/>
-        <location filename="chatwindow.cpp" line="888"/>
-        <location filename="chatwindow.cpp" line="910"/>
-        <location filename="chatwindow.cpp" line="1025"/>
-        <location filename="chatwindow.cpp" line="1037"/>
-        <location filename="chatwindow.cpp" line="1048"/>
-        <location filename="chatwindow.cpp" line="1062"/>
-        <location filename="chatwindow.cpp" line="1098"/>
-        <location filename="chatwindow.cpp" line="1125"/>
-        <location filename="chatwindow.cpp" line="1147"/>
-        <location filename="chatwindow.cpp" line="1181"/>
-        <location filename="chatwindow.cpp" line="1220"/>
         <source>&lt;font size=&quot;%1&quot;&gt;</source>
-        <translation>&lt;font size=&quot;%1&quot;&gt;</translation>
+        <translation type="obsolete">&lt;font size=&quot;%1&quot;&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="815"/>
         <source>&lt;b&gt;(%1)&lt;/b&gt;</source>
-        <translation>&lt;b&gt;(%1)&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;(%1)&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="912"/>
         <source>&lt;b&gt;System:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Järjestelmä:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Järjestelmä:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="927"/>
+        <location filename="chatwindow.cpp" line="854"/>
+        <source>System:</source>
+        <translation>Järjestelmä:</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="866"/>
         <source>User #%1 is now connected.</source>
         <translation>Käyttäjä #%1 on nyt linjoilla.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="936"/>
-        <location filename="chatwindow.cpp" line="970"/>
-        <location filename="chatwindow.cpp" line="988"/>
-        <location filename="chatwindow.cpp" line="1185"/>
-        <location filename="chatwindow.cpp" line="1253"/>
-        <location filename="chatwindow.cpp" line="1271"/>
-        <source>User #%1 (a.k.a</source>
-        <translation>Käyttäjä #%1, eli</translation>
+        <location filename="chatwindow.cpp" line="876"/>
+        <source>User #%1 (a.k.a %2) has disconnected.</source>
+        <translation>Käyttäjä #%1, eli %2, on poistunut.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="939"/>
-        <location filename="chatwindow.cpp" line="973"/>
-        <location filename="chatwindow.cpp" line="991"/>
-        <location filename="chatwindow.cpp" line="1188"/>
-        <location filename="chatwindow.cpp" line="1208"/>
-        <location filename="chatwindow.cpp" line="1209"/>
-        <location filename="chatwindow.cpp" line="1238"/>
-        <location filename="chatwindow.cpp" line="1239"/>
-        <location filename="chatwindow.cpp" line="1256"/>
-        <location filename="chatwindow.cpp" line="1274"/>
+        <location filename="chatwindow.cpp" line="879"/>
+        <source>User #%1 has disconnected.</source>
+        <translation>Käyttäjä #%1 on poistunut.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="887"/>
+        <source>User #%1 is now known as %2.</source>
+        <translation>Käyttäjä #%1 on nyt nimeltään %2.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="903"/>
+        <source>User #%1 (a.k.a %2) is now known as %3.</source>
+        <translation>Käyttäjä #%1, eli %2, on nyt nimeltään %3.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="915"/>
+        <source>User #%1 (a.k.a %2) is now %3.</source>
+        <translation>Käyttäjä #%1, eli %2, on nyt %3.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="919"/>
+        <source>User #%1 is now %2.</source>
+        <translation>Käyttäjä #%1 on nyt %2.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="928"/>
+        <source>%1&apos;s IP address is %2.</source>
+        <translation>%1:n IP-osoite on %2.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="965"/>
+        <source>Error:</source>
+        <translation>Virhe:</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="977"/>
+        <source>Warning:</source>
+        <translation>Varoitus:</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="986"/>
+        <source>You are now %1.</source>
+        <translation>Olet nyt %1.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="994"/>
+        <source>Name changed to %1.</source>
+        <translation>Nimesi on nyt %1.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1047"/>
+        <source>Action:</source>
+        <translation>Toiminta:</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1077"/>
+        <source>User #%1 (a.k.a %2) pinged you.</source>
+        <translation>Käyttäjä #%1, eli %2, pingasi sinua.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1080"/>
+        <source>User #%1 pinged you.</source>
+        <translation>Käyttäjä #%1 pingasi sinua.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1093"/>
+        <source>Ping sent to user #%1 (a.k.a %2).</source>
+        <translation>Ping lähetetty käyttäjälle #%1, eli %2.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1096"/>
+        <source>Ping sent to user #%1.</source>
+        <translation>Ping lähetetty käyttäjälle #%1.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1114"/>
+        <source>Time request sent to user #%1 (a.k.a %2).</source>
+        <translation>Aikapyyntö lähetetty käyttäjälle #%1, eli %2.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1118"/>
+        <source>Time request sent to user #%1.</source>
+        <translation>Aikapyyntö lähetetty käyttäjälle #%1.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1127"/>
+        <source>User #%1 (a.k.a %2) is a bot!</source>
+        <translation>Käyttäjä #%1, eli %2, on botti!</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1130"/>
+        <source>User #%1 is a bot!</source>
+        <translation>Käyttäjä #%1 on botti!</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1139"/>
+        <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
+        <translation>Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
+    </message>
+    <message>
+        <location filename="chatwindow.cpp" line="1142"/>
+        <source>User #%1 was removed from the private chat window.</source>
+        <translation>Käyttäjä #%1 poistettiin keskusteluikkunasta.</translation>
+    </message>
+    <message>
+        <source>User #%1 (a.k.a</source>
+        <translation type="obsolete">Käyttäjä #%1, eli</translation>
+    </message>
+    <message>
         <source>)</source>
         <comment>aka suffix</comment>
-        <translation>,</translation>
+        <translation type="obsolete">,</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="942"/>
-        <location filename="chatwindow.cpp" line="951"/>
-        <location filename="chatwindow.cpp" line="994"/>
-        <location filename="chatwindow.cpp" line="1191"/>
-        <location filename="chatwindow.cpp" line="1259"/>
-        <location filename="chatwindow.cpp" line="1277"/>
         <source>User #%1</source>
-        <translation>Käyttäjä #%1</translation>
+        <translation type="obsolete">Käyttäjä #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="944"/>
         <source>has disconnected.</source>
-        <translation>on poistunut.</translation>
+        <translation type="obsolete">on poistunut.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="953"/>
-        <location filename="chatwindow.cpp" line="975"/>
         <source>is now known as</source>
-        <translation>on nyt nimeltään</translation>
+        <translation type="obsolete">on nyt nimeltään</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="956"/>
-        <location filename="chatwindow.cpp" line="978"/>
         <source>.</source>
         <comment>&apos;is now known as&apos; suffix</comment>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="963"/>
+        <location filename="chatwindow.cpp" line="893"/>
         <source>User #%1 is now nameless.</source>
         <translation>Käyttäjä #%1 on nyt nimetön.</translation>
     </message>
@@ -737,122 +789,105 @@ Versio %1</translation>
         <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="996"/>
         <source>is now</source>
-        <translation>on nyt</translation>
+        <translation type="obsolete">on nyt</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="999"/>
         <source>.</source>
         <comment>&apos;is now&apos; suffix</comment>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1006"/>
         <source>ip_prefix</source>
-        <translation> </translation>
+        <translation type="obsolete"> </translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1008"/>
         <source>ip_space</source>
         <comment>Need space after username in IP address string?</comment>
-        <translation>no</translation>
+        <translation type="obsolete">no</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1010"/>
         <source>&apos;s IP address is %1.</source>
-        <translation>:n IP-osoite on %1.</translation>
+        <translation type="obsolete">:n IP-osoite on %1.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1017"/>
+        <location filename="chatwindow.cpp" line="935"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation>Käyttäjän #%1 IP-osoite on %2.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1027"/>
+        <location filename="chatwindow.cpp" line="944"/>
         <source>Ping returned in %1 milliseconds</source>
         <translation>Ping palasi %1 millisekunnissa</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1039"/>
+        <location filename="chatwindow.cpp" line="954"/>
         <source>Uptime: %1, Logged on for %2</source>
         <translation>Käynnissä: %1, Kirjautuneena %2</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1050"/>
         <source>&lt;b&gt;Error:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Virhe:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Virhe:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1064"/>
         <source>&lt;b&gt;Warning:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Varoitus:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Varoitus:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1075"/>
         <source>You are now</source>
-        <translation>Olet nyt</translation>
+        <translation type="obsolete">Olet nyt</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1084"/>
         <source>Name changed to</source>
-        <translation>Nimesi on nyt</translation>
+        <translation type="obsolete">Nimesi on nyt</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1086"/>
         <source>.</source>
         <comment>&apos;Name changed to&apos; suffix</comment>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1149"/>
+        <source>&lt;b&gt;%1&lt;/b&gt;</source>
+        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt;</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;Action:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Toiminta:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Toiminta:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1193"/>
         <source>pinged you.</source>
-        <translation>pingasi sinua.</translation>
+        <translation type="obsolete">pingasi sinua.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1201"/>
         <source>Ping sent to</source>
-        <translation>Ping lähetetty</translation>
+        <translation type="obsolete">Ping lähetetty</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1205"/>
-        <location filename="chatwindow.cpp" line="1235"/>
         <source>user #%1 (a.k.a</source>
         <comment>Ping sent to user...</comment>
-        <translation>käyttäjälle #%1, eli</translation>
+        <translation type="obsolete">käyttäjälle #%1, eli</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1212"/>
-        <location filename="chatwindow.cpp" line="1242"/>
         <source>user #%1</source>
         <comment>Ping sent to user...</comment>
-        <translation>käyttäjälle #%1</translation>
+        <translation type="obsolete">käyttäjälle #%1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1231"/>
         <source>Time request sent to</source>
-        <translation>Aikapyyntö lähetetty</translation>
+        <translation type="obsolete">Aikapyyntö lähetetty</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1261"/>
         <source>is a bot!</source>
-        <translation>on botti!</translation>
+        <translation type="obsolete">on botti!</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1279"/>
         <source>was removed from the private chat window.</source>
-        <translation>poistettiin keskusteluikkunasta.</translation>
+        <translation type="obsolete">poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1077"/>
         <source>.</source>
         <comment>&apos;You are now&apos; suffix</comment>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
 </context>
 <context>
@@ -987,7 +1022,7 @@ Versio %1</translation>
         <location filename="user.cpp" line="180"/>
         <location filename="user.cpp" line="185"/>
         <location filename="user.cpp" line="187"/>
-        <location filename="user.cpp" line="372"/>
+        <location filename="user.cpp" line="375"/>
         <location filename="util.cpp" line="365"/>
         <location filename="util.cpp" line="423"/>
         <source>Unknown</source>
@@ -1092,9 +1127,8 @@ Versio %1</translation>
         <translation>Su</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="716"/>
         <source>Date:</source>
-        <translation>Päiväys:</translation>
+        <translation type="obsolete">Päiväys:</translation>
     </message>
 </context>
 <context>
@@ -1365,52 +1399,52 @@ Päiväys: %4</translation>
 <context>
     <name>NetClient</name>
     <message>
-        <location filename="netclient.cpp" line="904"/>
+        <location filename="netclient.cpp" line="910"/>
         <source>Unizone (English)</source>
         <translation>Unizone (Suomi)</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="813"/>
+        <location filename="netclient.cpp" line="819"/>
         <source>Unizone - User #%1 on %2</source>
         <translation>Unizone - Käyttäjä #%1 palvelimella %2</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1051"/>
+        <location filename="netclient.cpp" line="1057"/>
         <source>Access Denied!!!</source>
         <translation>Pääsy Evätty!!!</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1054"/>
+        <location filename="netclient.cpp" line="1060"/>
         <source>do that to</source>
         <translation>tehdä</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1065"/>
+        <location filename="netclient.cpp" line="1071"/>
         <source>kick</source>
         <translation>potkaiset</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1071"/>
+        <location filename="netclient.cpp" line="1077"/>
         <source>ban</source>
         <translation>bannaat</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1077"/>
+        <location filename="netclient.cpp" line="1083"/>
         <source>unban</source>
         <translation>poistat bannauksen</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1083"/>
+        <location filename="netclient.cpp" line="1089"/>
         <source>require</source>
         <translation>lisäät vaatimuksen</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1089"/>
+        <location filename="netclient.cpp" line="1095"/>
         <source>unrequire</source>
         <translation>poistat vaatimuksen</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1098"/>
+        <location filename="netclient.cpp" line="1104"/>
         <source>You are not allowed to %1 [%2]</source>
         <translation>Ei ole sallittua, että %1 %2</translation>
     </message>
@@ -1423,7 +1457,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1344"/>
+        <location filename="netclient.cpp" line="1350"/>
         <source>Send Queue Overflow!</source>
         <translation>Lähetyspuskurin ylivuoto!</translation>
     </message>
@@ -3984,7 +4018,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjä #%1, eli %2, on botti!</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="352"/>
+        <location filename="privatewindowimpl.cpp" line="371"/>
         <source>User #%1 (a.k.a %2) is already in this private window!</source>
         <translation>Käyttäjä #%1, eli %2, on jo tässä yksityisikkunassa!</translation>
     </message>
@@ -3993,17 +4027,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="523"/>
+        <location filename="privatewindowimpl.cpp" line="542"/>
         <source>Remove</source>
         <translation>Poista</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="525"/>
+        <location filename="privatewindowimpl.cpp" line="544"/>
         <source>List All Files</source>
         <translation>Näytä Kaikki Tiedostot</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="527"/>
+        <location filename="privatewindowimpl.cpp" line="546"/>
         <source>Get IP Address</source>
         <translation>Hae IP-osoite</translation>
     </message>
@@ -4016,22 +4050,22 @@ Päiväys: %4</translation>
         <translation type="obsolete">[Freeware] - Yksityinen</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="570"/>
+        <location filename="privatewindowimpl.cpp" line="589"/>
         <source>Private Chat</source>
         <translation>Yksityinen Keskustelu</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="571"/>
+        <location filename="privatewindowimpl.cpp" line="590"/>
         <source>There are no longer any users in this private chat window. Close window?</source>
         <translation>Kaikki käyttäjät ovat poistuneet keskusteluikkunasta. Suljetaanko ikkuna?</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="572"/>
+        <location filename="privatewindowimpl.cpp" line="591"/>
         <source>Yes</source>
         <translation>Kyllä</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="572"/>
+        <location filename="privatewindowimpl.cpp" line="591"/>
         <source>No</source>
         <translation>Ei</translation>
     </message>
@@ -4041,12 +4075,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="495"/>
+        <location filename="privatewindowimpl.cpp" line="514"/>
         <source>Failed to create private log.</source>
         <translation>Yksityislogin luonti epäonnistui.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="316"/>
+        <location filename="privatewindowimpl.cpp" line="335"/>
         <source>User(s) not found!</source>
         <translation>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
@@ -4067,17 +4101,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjä #%1, eli %2, poistettiin keskusteluikkunasta.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="435"/>
+        <location filename="privatewindowimpl.cpp" line="454"/>
         <source>Encryption enabled.</source>
         <translation>Salakirjoitus päällä.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="441"/>
+        <location filename="privatewindowimpl.cpp" line="460"/>
         <source>Encryption disabled.</source>
         <translation>Salakirjoitus pois päältä.</translation>
     </message>
     <message>
-        <location filename="privatewindowimpl.cpp" line="445"/>
+        <location filename="privatewindowimpl.cpp" line="464"/>
         <source>Encryption is %1.</source>
         <translation>Salakirjoitus on %1.</translation>
     </message>
@@ -4153,7 +4187,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="search.cpp" line="188"/>
-        <location filename="search.cpp" line="347"/>
+        <location filename="search.cpp" line="344"/>
         <source>Idle.</source>
         <translation>Vapaa.</translation>
     </message>
@@ -4162,17 +4196,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="447"/>
+        <location filename="search.cpp" line="445"/>
         <source>Not connected.</source>
         <translation>Ei yhdistetty.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="644"/>
+        <location filename="search.cpp" line="642"/>
         <source>Searching for: &quot;%1&quot;.</source>
         <translation>Etsitään: &quot;%1&quot;.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="716"/>
+        <location filename="search.cpp" line="718"/>
         <source>Results: %1</source>
         <translation>Tuloksia: %1</translation>
     </message>
@@ -4182,22 +4216,22 @@ Päiväys: %4</translation>
         <translation>Tyhjennä Historia</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="514"/>
+        <location filename="search.cpp" line="512"/>
         <source>User(s) not found!</source>
         <translation>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="630"/>
+        <location filename="search.cpp" line="628"/>
         <source>Initializing...</source>
         <translation>Alustetaan...</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="645"/>
+        <location filename="search.cpp" line="643"/>
         <source>active</source>
         <translation>aktiivinen</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="830"/>
+        <location filename="search.cpp" line="832"/>
         <source>passive</source>
         <translation>passiivinen</translation>
     </message>
@@ -4239,52 +4273,52 @@ Päiväys: %4</translation>
 <context>
     <name>WUniListItem</name>
     <message>
-        <location filename="ulistview.cpp" line="359"/>
+        <location filename="ulistview.cpp" line="361"/>
         <source>B</source>
         <translation>t</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="377"/>
+        <location filename="ulistview.cpp" line="379"/>
         <source>TB</source>
         <translation>Tt</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="380"/>
+        <location filename="ulistview.cpp" line="382"/>
         <source>GB</source>
         <translation>Gt</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="383"/>
+        <location filename="ulistview.cpp" line="385"/>
         <source>MB</source>
         <translation>Mt</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="386"/>
+        <location filename="ulistview.cpp" line="388"/>
         <source>kB</source>
         <translation>kt</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="414"/>
+        <location filename="ulistview.cpp" line="416"/>
         <source>B/s</source>
         <translation>t/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="432"/>
+        <location filename="ulistview.cpp" line="434"/>
         <source>TB/s</source>
         <translation>Tt/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="435"/>
+        <location filename="ulistview.cpp" line="437"/>
         <source>GB/s</source>
         <translation>Gt/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="438"/>
+        <location filename="ulistview.cpp" line="440"/>
         <source>MB/s</source>
         <translation>Mt/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="441"/>
+        <location filename="ulistview.cpp" line="443"/>
         <source>kB/s</source>
         <translation>kt/s</translation>
     </message>
@@ -4571,7 +4605,7 @@ Päiväys: %4</translation>
     <message>
         <location filename="uploadimpl.cpp" line="770"/>
         <source>Shift+F11</source>
-        <translation type="unfinished">Shift+F11</translation>
+        <translation>Shift+F11</translation>
     </message>
     <message>
         <location filename="uploadimpl.cpp" line="782"/>
@@ -4648,109 +4682,109 @@ Päiväys: %4</translation>
 <context>
     <name>WUser</name>
     <message>
-        <location filename="chatwindow.cpp" line="1112"/>
-        <location filename="chatwindow.cpp" line="1135"/>
+        <location filename="chatwindow.cpp" line="1015"/>
+        <location filename="chatwindow.cpp" line="1035"/>
         <location filename="user.cpp" line="22"/>
         <location filename="user.cpp" line="53"/>
         <source>Unknown</source>
         <translation>Tuntematon</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="447"/>
         <location filename="user.cpp" line="450"/>
+        <location filename="user.cpp" line="453"/>
         <source>Windows</source>
         <translation>Windows</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="448"/>
         <location filename="user.cpp" line="451"/>
+        <location filename="user.cpp" line="454"/>
         <source>Linux</source>
         <translation>Linux</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="452"/>
+        <location filename="user.cpp" line="455"/>
         <source>FreeBSD</source>
         <translation>FreeBSD</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="446"/>
-        <location filename="user.cpp" line="455"/>
+        <location filename="user.cpp" line="449"/>
+        <location filename="user.cpp" line="458"/>
         <source>BeOS</source>
         <translation>BeOS</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="456"/>
-        <location filename="user.cpp" line="457"/>
+        <location filename="user.cpp" line="459"/>
+        <location filename="user.cpp" line="460"/>
         <source>Mac OS</source>
         <translation>Mac OS</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="458"/>
+        <location filename="user.cpp" line="461"/>
         <source>QNX</source>
         <translation>QNX</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="459"/>
+        <location filename="user.cpp" line="462"/>
         <source>OS/2</source>
         <translation>OS/2</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="453"/>
+        <location filename="user.cpp" line="456"/>
         <source>OpenBSD</source>
         <translation>OpenBSD</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="454"/>
+        <location filename="user.cpp" line="457"/>
         <source>NetBSD</source>
         <translation>NetBSD</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="460"/>
+        <location filename="user.cpp" line="463"/>
         <source>SunOS</source>
         <translation>SunOS</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="461"/>
+        <location filename="user.cpp" line="464"/>
         <source>AtheOS</source>
         <translation>AtheOS</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="462"/>
+        <location filename="user.cpp" line="465"/>
         <source>Tru64</source>
         <translation>Tru64</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="463"/>
+        <location filename="user.cpp" line="466"/>
         <source>Irix</source>
         <translation>Irix</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="464"/>
+        <location filename="user.cpp" line="467"/>
         <source>AIX</source>
         <translation>AIX</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="465"/>
+        <location filename="user.cpp" line="468"/>
         <source>Sequent</source>
         <translation>Sequent</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="466"/>
+        <location filename="user.cpp" line="469"/>
         <source>OpenServer</source>
         <translation>OpenServer</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="467"/>
+        <location filename="user.cpp" line="470"/>
         <source>HPUX</source>
         <translation>HPUX</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="468"/>
+        <location filename="user.cpp" line="471"/>
         <source>Solaris</source>
         <translation>Solaris</translation>
     </message>
     <message>
-        <location filename="user.cpp" line="469"/>
+        <location filename="user.cpp" line="472"/>
         <source>UnixWare</source>
         <translation>UnixWare</translation>
     </message>
@@ -4766,14 +4800,14 @@ Päiväys: %4</translation>
     <name>WinShareWindow</name>
     <message>
         <location filename="winshare_network.cpp" line="73"/>
-        <location filename="winsharewindow.cpp" line="2334"/>
+        <location filename="winsharewindow.cpp" line="2335"/>
         <source>Already scanning!</source>
         <translation>Tutkinta on jo käynnissä!</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="83"/>
         <location filename="winshare_network.cpp" line="378"/>
-        <location filename="winshare_network.cpp" line="3096"/>
+        <location filename="winshare_network.cpp" line="3093"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="1001"/>
@@ -4782,7 +4816,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="89"/>
-        <location filename="winsharewindow.cpp" line="2322"/>
+        <location filename="winsharewindow.cpp" line="2323"/>
         <source>File sharing not enabled.</source>
         <translation>Tiedostojenjako ei ole päällä.</translation>
     </message>
@@ -4815,7 +4849,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="373"/>
-        <location filename="winsharewindow.cpp" line="2419"/>
+        <location filename="winsharewindow.cpp" line="2420"/>
         <source>Logged In: %1</source>
         <translation>Kirjautuneena: %1</translation>
     </message>
@@ -4835,15 +4869,15 @@ Päiväys: %4</translation>
         <location filename="winshare_network.cpp" line="885"/>
         <location filename="winshare_network.cpp" line="904"/>
         <location filename="winshare_network.cpp" line="945"/>
-        <location filename="winshare_network.cpp" line="1381"/>
-        <location filename="winshare_network.cpp" line="1666"/>
+        <location filename="winshare_network.cpp" line="1378"/>
+        <location filename="winshare_network.cpp" line="1663"/>
         <source>No users passed.</source>
         <translation>Ei käyttäjiä annettu.</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="620"/>
         <location filename="winshare_network.cpp" line="687"/>
-        <location filename="winshare_network.cpp" line="2442"/>
+        <location filename="winshare_network.cpp" line="2439"/>
         <source>Current time: %1 %2</source>
         <translation>Nykyinen aika: %1 %2</translation>
     </message>
@@ -4875,7 +4909,7 @@ Päiväys: %4</translation>
         <location filename="winshare_network.cpp" line="976"/>
         <location filename="winshare_network.cpp" line="998"/>
         <location filename="winshare_network.cpp" line="1116"/>
-        <location filename="winshare_network.cpp" line="3012"/>
+        <location filename="winshare_network.cpp" line="3009"/>
         <source>Invalid index.</source>
         <translation>Epäkelpo indeksi.</translation>
     </message>
@@ -4923,25 +4957,25 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1031"/>
-        <location filename="winshare_network.cpp" line="2761"/>
+        <location filename="winshare_network.cpp" line="2758"/>
         <source>Auto-private pattern: %1</source>
         <translation>Automaattisen keskustelun kaava: %1</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1043"/>
-        <location filename="winshare_network.cpp" line="2769"/>
+        <location filename="winshare_network.cpp" line="2766"/>
         <source>Blacklist pattern: %1</source>
         <translation>Mustan listan kaava: %1</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1054"/>
-        <location filename="winshare_network.cpp" line="2773"/>
+        <location filename="winshare_network.cpp" line="2770"/>
         <source>Ignore pattern: %1</source>
         <translation>Ignore-kaava: %1</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1060"/>
-        <location filename="winshare_network.cpp" line="2777"/>
+        <location filename="winshare_network.cpp" line="2774"/>
         <source>Watch pattern: %1</source>
         <translation>Seurannan kaava: %1</translation>
     </message>
@@ -4977,16 +5011,16 @@ Päiväys: %4</translation>
         <translation type="obsolete">Yhdistäessä tee: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1491"/>
-        <location filename="winshare_network.cpp" line="1497"/>
+        <location filename="winshare_network.cpp" line="1488"/>
+        <location filename="winshare_network.cpp" line="1494"/>
         <source>Unknown command!</source>
         <translation>Tuntematon komento!</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="659"/>
-        <location filename="winshare_network.cpp" line="1408"/>
-        <location filename="winshare_network.cpp" line="1597"/>
-        <location filename="winshare_network.cpp" line="1603"/>
+        <location filename="winshare_network.cpp" line="1405"/>
+        <location filename="winshare_network.cpp" line="1594"/>
+        <location filename="winshare_network.cpp" line="1600"/>
         <source>User(s) not found!</source>
         <translation>Käyttäjää(-jiä) ei löytynyt!</translation>
     </message>
@@ -5011,23 +5045,23 @@ Päiväys: %4</translation>
         <translation type="obsolete">Unizone (Suomi)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2484"/>
+        <location filename="winshare_network.cpp" line="2481"/>
         <source>Connecting to server %1.</source>
         <translation>Yhdistetään palvelimelle %1.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2490"/>
+        <location filename="winshare_network.cpp" line="2487"/>
         <location filename="winshare_slots.cpp" line="470"/>
         <source>Connection to server failed!</source>
         <translation>Yhdistäminen palvelimelle epäonnistui!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2842"/>
+        <location filename="winshare_network.cpp" line="2839"/>
         <source>Command %1 not found</source>
         <translation>Komentoa %1 ei löytynyt</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2964"/>
+        <location filename="winshare_network.cpp" line="2961"/>
         <source>File %1: (%2) from %3</source>
         <translation>Tiedosto %1: (%2) käyttäjältä %3</translation>
     </message>
@@ -5152,12 +5186,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">%1 tiedosto(a) jaossa.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3105"/>
+        <location filename="winshare_network.cpp" line="3102"/>
         <source>Connected.</source>
         <translation>Yhdistetty.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2521"/>
+        <location filename="winshare_network.cpp" line="2518"/>
         <location filename="winsharewindow.cpp" line="552"/>
         <source>Reconnect timer stopped</source>
         <translation>Uudelleenyhdistämisen ajastin pysäytetty</translation>
@@ -5271,37 +5305,37 @@ Päiväys: %4</translation>
         <translation type="obsolete">%1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2154"/>
+        <location filename="winsharewindow.cpp" line="2155"/>
         <source>here</source>
         <translation>täällä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2155"/>
+        <location filename="winsharewindow.cpp" line="2156"/>
         <source>away</source>
         <translation>poissa</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2156"/>
+        <location filename="winsharewindow.cpp" line="2157"/>
         <source>idle</source>
         <translation>laiskottelemassa</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2157"/>
+        <location filename="winsharewindow.cpp" line="2158"/>
         <source>busy</source>
         <translation>kiireinen</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2158"/>
+        <location filename="winsharewindow.cpp" line="2159"/>
         <source>at work</source>
         <translation>töissä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2159"/>
+        <location filename="winsharewindow.cpp" line="2160"/>
         <source>around</source>
         <translation>ympärillä</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2160"/>
+        <location filename="winsharewindow.cpp" line="2161"/>
         <source>sleeping</source>
         <translation>nukkumassa</translation>
     </message>
@@ -5310,17 +5344,17 @@ Päiväys: %4</translation>
         <translation type="obsolete">/search %1</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2345"/>
+        <location filename="winsharewindow.cpp" line="2346"/>
         <source>Rescanning shared files...</source>
         <translation>Tutkitaan uudelleen jaetut tiedostot...</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2350"/>
+        <location filename="winsharewindow.cpp" line="2351"/>
         <source>Scanning shares...</source>
         <translation>Tutkitaan jaot...</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2268"/>
+        <location filename="winshare_network.cpp" line="2265"/>
         <source>Nick collision with user #%1</source>
         <translation>Nimi on jo käytössä käyttäjällä #%1</translation>
     </message>
@@ -5423,7 +5457,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">poistat vaatimuksen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2956"/>
+        <location filename="winshare_network.cpp" line="2953"/>
         <source>Resume list:</source>
         <translation>Resume-luettelo:</translation>
     </message>
@@ -5447,7 +5481,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="389"/>
-        <location filename="winshare_network.cpp" line="3093"/>
+        <location filename="winshare_network.cpp" line="3090"/>
         <source>Number of users logged in: %1</source>
         <translation>Käyttäjiä linjoilla: %1</translation>
     </message>
@@ -5516,7 +5550,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Kytkeytyneet käyttäjät:</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2316"/>
+        <location filename="winshare_network.cpp" line="2313"/>
         <source>Unizone (English)</source>
         <translation>Unizone (Suomi)</translation>
     </message>
@@ -5547,332 +5581,332 @@ Päiväys: %4</translation>
         <translation>Ei</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2550"/>
+        <location filename="winshare_network.cpp" line="2547"/>
         <source>Unizone Command Reference</source>
         <translation>Unizone Komennot</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2553"/>
+        <location filename="winshare_network.cpp" line="2550"/>
         <source>/action [action] - do something</source>
         <translation>/action [toiminta] - tee jotain</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2555"/>
+        <location filename="winshare_network.cpp" line="2552"/>
         <source>/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/addautopriv [kaava] - päivitä automaattisen keskustelun kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2557"/>
+        <location filename="winshare_network.cpp" line="2554"/>
         <source>/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/addblacklist [kaava] - päivitä mustan listan kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2563"/>
+        <location filename="winshare_network.cpp" line="2560"/>
         <source>/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/addignore [kaava] - päivitä ignore-kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2565"/>
+        <location filename="winshare_network.cpp" line="2562"/>
         <source>/adduser [name or session ids] - add users to a private chat window (works in private windows only!)</source>
         <translation>/adduser [nimiä tai session id:t] - lisää käyttäjiä yksityiseen keskusteluikkunaan (toimii vain yksityisissä keskusteluikkunoissa!)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2567"/>
+        <location filename="winshare_network.cpp" line="2564"/>
         <source>/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/autopriv [kaava] - aseta automaattisen keskustelun kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2569"/>
+        <location filename="winshare_network.cpp" line="2566"/>
         <source>/away - set away state (same as selecting away from the list)</source>
         <translation>/away - aseta poissa-tila (sama kuin valitsisi &apos;away&apos; luettelosta)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2571"/>
+        <location filename="winshare_network.cpp" line="2568"/>
         <source>/awaymsg - away message for away state (when /away is invoked)</source>
         <translation>/awaymsg - poissa-viesti, kun olet poissa-tilassa (kun kutsut /away)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2579"/>
+        <location filename="winshare_network.cpp" line="2576"/>
         <source>/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/blacklist [kaava] - aseta mustan listan kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2581"/>
+        <location filename="winshare_network.cpp" line="2578"/>
         <source>/btime [gmt] - Broadcast and show local (or GMT) time</source>
         <translation>/btime [gmt] - Lähetä ja näytä paikallinen (tai GMT) aika</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2583"/>
+        <location filename="winshare_network.cpp" line="2580"/>
         <source>/buptime - Broadcast and show uptime</source>
         <translation>/buptime - Lähetä ja näytä aika, kun kone on ollut käynnissä</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2585"/>
+        <location filename="winshare_network.cpp" line="2582"/>
         <source>/chkserver [index] - check server string</source>
         <translation>/chkserver [indeksi] - tarkista merkkijono palvelinluettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2587"/>
+        <location filename="winshare_network.cpp" line="2584"/>
         <source>/chkstatus [index] - check status string</source>
         <translation>/chkstatus [indeksi] - tarkista merkkijono tilaluettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2589"/>
+        <location filename="winshare_network.cpp" line="2586"/>
         <source>/chkuser [index] - check nick string</source>
         <translation>/chkuser [indeksi] - tarkista merkkijono nimiluettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2591"/>
+        <location filename="winshare_network.cpp" line="2588"/>
         <source>/clear - clear the text in the chat view</source>
         <translation>/clear - tyhjennä teksti keskustelusta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2593"/>
+        <location filename="winshare_network.cpp" line="2590"/>
         <source>/clearline - clear all the line buffers</source>
         <translation>/clearline - tyhjennä kaikki rivipuskurit</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2597"/>
+        <location filename="winshare_network.cpp" line="2594"/>
         <source>/clearstats - clear transfer statistics</source>
         <translation>/clearstats - nollaa tiedonsiirtotilastot</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2601"/>
+        <location filename="winshare_network.cpp" line="2598"/>
         <source>/connect - connect to the currently selected server</source>
         <translation>/connect - yhdistä nyt valittuna olevaan palvelimeen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2607"/>
+        <location filename="winshare_network.cpp" line="2604"/>
         <source>/disconnect - disconnect from server</source>
         <translation>/disconnect - katkaise yhteys palvelimeen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2609"/>
+        <location filename="winshare_network.cpp" line="2606"/>
         <source>/dns [user|host] - give information about host</source>
         <translation>/dns [käyttäjä|osoite] - anna tiedot osoitteesta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2619"/>
+        <location filename="winshare_network.cpp" line="2616"/>
         <source>/help [command] - show help for command (no &apos;/&apos; in front of command) or show this help text if no command given.</source>
         <translation>/help [komento] - näyttää ohjeen komennolle (ilman &apos;/&apos; merkkiä komennon edessä) tai näyttää koko komentoluettelon, jos ei anneta komentoa.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2621"/>
+        <location filename="winshare_network.cpp" line="2618"/>
         <source>/heremsg - message for here state</source>
         <translation>/heremsg - viesti täällä-tilalle</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2629"/>
+        <location filename="winshare_network.cpp" line="2626"/>
         <source>/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/ignore [kaava] - aseta ignore-kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2633"/>
+        <location filename="winshare_network.cpp" line="2630"/>
         <source>/logged - show the time you have been logged in to a server</source>
         <translation>/logged - näyttää ajan, kun olet ollut kirjautuneena palvelimeen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2635"/>
+        <location filename="winshare_network.cpp" line="2632"/>
         <source>/me [action] - /action synonym</source>
         <translation>/me [toiminta] - synonyymi komennolle /action</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2641"/>
+        <location filename="winshare_network.cpp" line="2638"/>
         <source>/msg [name] [message] - send a private message</source>
         <translation>/msg [nimi] [viesti] - lähetä yksityinen viesti</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2643"/>
+        <location filename="winshare_network.cpp" line="2640"/>
         <source>/nick [name] - change your user name</source>
         <translation>/nick [nimi] - vaihda käyttäjänimesi</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2649"/>
+        <location filename="winshare_network.cpp" line="2646"/>
         <source>/onconnect [command] - set or clear command to perform on successful connect</source>
         <translation>/onconnect [komento] - asettaa tai tyhjentää komennon, joka suoritetaan onnistuneen palvelimelle kirjautumisen jälkeen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2655"/>
+        <location filename="winshare_network.cpp" line="2652"/>
         <source>/ping [name or session ids] - ping other clients</source>
         <translation>/ping [nimi tai session id:t] - pingaa toisia ohjelmia</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2657"/>
+        <location filename="winshare_network.cpp" line="2654"/>
         <source>/priv [name or session ids] - open private chat with these users added</source>
         <translation>/priv [nimi tai session id:t] - avaa keskusteluikkuna ja lisää nämä käyttäjät ikkunaan</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2659"/>
+        <location filename="winshare_network.cpp" line="2656"/>
         <source>/quit - quit Unizone</source>
         <translation>/quit - lopeta Unizone</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2663"/>
+        <location filename="winshare_network.cpp" line="2660"/>
         <source>/remote [password] - set &amp; view remote password</source>
         <translation>/remote [salasana] - aseta &amp; näytä kaukokohjauksen salasana</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2665"/>
+        <location filename="winshare_network.cpp" line="2662"/>
         <source>/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)</source>
         <translation>/removeuser [nimi tai session id:t] - poista käyttäjät yksityisestä keskusteluikkunasta (toimii vain yksityisessä keskusteluikkunassa!)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2667"/>
+        <location filename="winshare_network.cpp" line="2664"/>
         <source>/remserver [index] - remove server from server list</source>
         <translation>/remserver [indeksi] - poista palvelin luettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2669"/>
+        <location filename="winshare_network.cpp" line="2666"/>
         <source>/remstatus [index] - remove status from status list</source>
         <translation>/remstatus [indeksi] - poista tila luettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2671"/>
+        <location filename="winshare_network.cpp" line="2668"/>
         <source>/remuser [index] - remove nick from nick list</source>
         <translation>/remuser [indeksi] - poista käyttäjänimi luettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2673"/>
+        <location filename="winshare_network.cpp" line="2670"/>
         <source>/resumes - list files waiting to be resumed</source>
         <translation>/resumes - näyttää tiedostot, jotka odottavat jatkamista</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2681"/>
+        <location filename="winshare_network.cpp" line="2678"/>
         <source>/save - saves settings (might be necessary after editing drop-down lists)</source>
         <translation>/save - tallenna asetukset (voi olla tarpeellista jos muokkaat alasvedettäviä valintaluetteloja)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2683"/>
+        <location filename="winshare_network.cpp" line="2680"/>
         <source>/scan - rescan shared directory</source>
         <translation>/scan - tarkista uudelleen tiedostot jakokansiosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2687"/>
+        <location filename="winshare_network.cpp" line="2684"/>
         <source>/search [pattern] - open search window</source>
         <translation>/search [kaava] - avaa ikkuna ja etsi tiedostoja</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2689"/>
+        <location filename="winshare_network.cpp" line="2686"/>
         <source>/server [server] - set the current server</source>
         <translation>/server [palvelin] - aseta nykyinen palvelin</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2691"/>
+        <location filename="winshare_network.cpp" line="2688"/>
         <source>/serverinfo - check status of server</source>
         <translation>/serverinfo - tarkista palvelimen tila</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2693"/>
+        <location filename="winshare_network.cpp" line="2690"/>
         <source>/shell [command] - execute command</source>
         <translation>/shell [komento] - suorita komento</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2695"/>
+        <location filename="winshare_network.cpp" line="2692"/>
         <source>/showpatterns - show auto-private, blacklist, ignore and watch patterns</source>
         <translation>/showpatterns - näytä automaattisen keskustelun, mustan listan, ignore- ja seurantakaavat</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2697"/>
+        <location filename="winshare_network.cpp" line="2694"/>
         <source>/showstats - show transfer statistics</source>
         <translation>/showstats - näytä tiedonsiirtotilastot</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2699"/>
+        <location filename="winshare_network.cpp" line="2696"/>
         <source>/status [status] - set status string</source>
         <translation>/status [tila] - aseta tilamerkkijono</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2705"/>
+        <location filename="winshare_network.cpp" line="2702"/>
         <source>/time [gmt] - show local (or GMT) time</source>
         <translation>/time [gmt] - näytä paikallinen (tai GMT) aika</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2709"/>
+        <location filename="winshare_network.cpp" line="2706"/>
         <source>/unautopriv [name] - remove name from auto-private list</source>
         <translation>/unautopriv [nimi] - poista nimi automaattisen keskustelun luettelosta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2711"/>
+        <location filename="winshare_network.cpp" line="2708"/>
         <source>/unblacklist [name] - remove name from blacklist</source>
         <translation>/unblacklist [nimi] - poista nimi mustalta listalta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2715"/>
+        <location filename="winshare_network.cpp" line="2712"/>
         <source>/unignore [name] - remove name from ignore list</source>
         <translation>/unignore [nimi] - poista nimi ignore-listalta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2719"/>
+        <location filename="winshare_network.cpp" line="2716"/>
         <source>/uptime - show system uptime</source>
         <translation>/uptime - näytä järjestelmän käynnissäoloaika</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2721"/>
+        <location filename="winshare_network.cpp" line="2718"/>
         <source>/users - show number of users connected</source>
         <translation>/users - näyttää palvelimelle kirjautuneiden käyttäjien määrä</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2723"/>
+        <location filename="winshare_network.cpp" line="2720"/>
         <source>/version - show client version strings</source>
         <translation>/version - näyttää ohjelman versiomerkkijonot</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2727"/>
+        <location filename="winshare_network.cpp" line="2724"/>
         <source>/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/watch [kaava] - aseta seurantakaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2733"/>
+        <location filename="winshare_network.cpp" line="2730"/>
         <source>Admin Command Reference</source>
         <translation>Valvojien Komennot</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2736"/>
+        <location filename="winshare_network.cpp" line="2733"/>
         <source>/addbans [users] - add bans by user names or session ids</source>
         <translation>/addbans [käyttäjiä] - lisää estoja käyttäjänimille tai session id:ille</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2738"/>
+        <location filename="winshare_network.cpp" line="2735"/>
         <source>/addipbans [ips] - add bans by ip addresses</source>
         <translation>/addipbans [ip:itä] - aseta estoja ip-osoitteille</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2740"/>
+        <location filename="winshare_network.cpp" line="2737"/>
         <source>/kick [users] - kick by user names or session ids</source>
         <translation>/kick [käyttäjiä] - potkaise pihalle käyttäjänimet tai session id:t</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2742"/>
+        <location filename="winshare_network.cpp" line="2739"/>
         <source>/kickips [ips] - kick by ip addresses</source>
         <translation>/kickips [ip:t] - potkaise pihalle ip-osoitteet</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2744"/>
+        <location filename="winshare_network.cpp" line="2741"/>
         <source>/rembans [users] - remove bans by user names</source>
         <translation>/rembans [käyttäjiä] - poista estot käyttäjänimiltä</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2746"/>
+        <location filename="winshare_network.cpp" line="2743"/>
         <source>/remipbans [ips] - remove bans by ip addresses</source>
         <translation>/remipbans [ip:t] - poista estot ip-osoitteilta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2748"/>
+        <location filename="winshare_network.cpp" line="2745"/>
         <source>/require [ips] - add require mask</source>
         <translation>/require [ip:t] - lisää vaatimus</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2750"/>
+        <location filename="winshare_network.cpp" line="2747"/>
         <source>/unrequire [ips] - remove require mask</source>
         <translation>/unrequire [ip:t] - poista vaatimus</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2754"/>
+        <location filename="winshare_network.cpp" line="2751"/>
         <source>The list of commands is being worked on. More will be added</source>
         <translation>Luettelo komennoista on työn alla. Lisää tulee</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2756"/>
+        <location filename="winshare_network.cpp" line="2753"/>
         <source>as time goes on.</source>
         <translation>ajan myötä.</translation>
     </message>
@@ -5901,7 +5935,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Yhdistäessä tee myös: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2814"/>
+        <location filename="winshare_network.cpp" line="2811"/>
         <source>Help for %1:</source>
         <translation>Ohje komennolle %1:</translation>
     </message>
@@ -5915,7 +5949,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Aikapyyntö lähetetty käyttäjälle #%1, eli &lt;font color=&quot;%3&quot;&gt;%2&lt;/font&gt;.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2707"/>
+        <location filename="winshare_network.cpp" line="2704"/>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
         <translation>/time [nimi] [gmt] - pyydä aikaleima toiselta käyttäjältä</translation>
     </message>
@@ -5933,12 +5967,12 @@ Päiväys: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="265"/>
         <location filename="winshare_network.cpp" line="273"/>
-        <location filename="winshare_network.cpp" line="3108"/>
+        <location filename="winshare_network.cpp" line="3105"/>
         <source>Current compression: %1</source>
         <translation>Nykyinen pakkaustaso: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2599"/>
+        <location filename="winshare_network.cpp" line="2596"/>
         <source>/compression [level] - set or view message compression level</source>
         <translation>/compression [taso] - asettaa tai näyttää viestien pakkaustason</translation>
     </message>
@@ -5948,7 +5982,7 @@ Päiväys: %4</translation>
         <translation>Käynnissä: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2679"/>
+        <location filename="winshare_network.cpp" line="2676"/>
         <source>/running - show time elapsed since you started Unizone</source>
         <translation>/running - näyttää ajan, kuinka kauan Unizone on ollut käynnissä</translation>
     </message>
@@ -6107,7 +6141,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Tyhjennä Historia</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2967"/>
+        <location filename="winshare_network.cpp" line="2964"/>
         <source>- Local File: %1</source>
         <translation>- Paikallinen Tiedosto: %1</translation>
     </message>
@@ -6145,12 +6179,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas FreeBSD:lle!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2595"/>
+        <location filename="winshare_network.cpp" line="2592"/>
         <source>/clearresumes - clear all pending resumes</source>
         <translation>/clearresumes - tyhjentää kaikki jatkamista odottavat siirrot</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3020"/>
+        <location filename="winshare_network.cpp" line="3017"/>
         <source>Cleared resume list.</source>
         <translation>Resume-luettelo tyhjennetty.</translation>
     </message>
@@ -6161,31 +6195,31 @@ Päiväys: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="1077"/>
         <location filename="winshare_network.cpp" line="1148"/>
-        <location filename="winshare_network.cpp" line="2789"/>
+        <location filename="winshare_network.cpp" line="2786"/>
         <source>1. %1</source>
         <translation>1. %1</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1079"/>
         <location filename="winshare_network.cpp" line="1150"/>
-        <location filename="winshare_network.cpp" line="2793"/>
+        <location filename="winshare_network.cpp" line="2790"/>
         <source>2. %1</source>
         <translation>2. %1</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1076"/>
         <location filename="winshare_network.cpp" line="1147"/>
-        <location filename="winshare_network.cpp" line="2787"/>
+        <location filename="winshare_network.cpp" line="2784"/>
         <source>On Connect:</source>
         <translation>Yhdistäessä tee:</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2001"/>
+        <location filename="winsharewindow.cpp" line="2002"/>
         <source>Queued file %1 from user #%2.</source>
         <translation>Lisättiin tiedosto %1 käyttäjältä #%2 jonoon.</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2028"/>
+        <location filename="winsharewindow.cpp" line="2029"/>
         <source>Downloading file %1 from user #%2.</source>
         <translation>Ladataan tiedostoa %1 käyttäjältä #%2.</translation>
     </message>
@@ -6198,12 +6232,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">Käyttäjän Nimi: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2675"/>
+        <location filename="winshare_network.cpp" line="2672"/>
         <source>/reverse [text] - say text in reverse</source>
         <translation>/reverse [teksti] - sanoo tekstin takaperin</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2677"/>
+        <location filename="winshare_network.cpp" line="2674"/>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
         <translation>/revsay [nimi]: [teksti] - sanoo tekstin takaperin, mutta jättää nimen oikeinpäin eteen</translation>
     </message>
@@ -6214,18 +6248,18 @@ Päiväys: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="1072"/>
         <location filename="winshare_network.cpp" line="1143"/>
-        <location filename="winshare_network.cpp" line="2782"/>
+        <location filename="winshare_network.cpp" line="2779"/>
         <source>On Connect: Do Nothing ;)</source>
         <translation>Yhdistäessä Tee: Ei Mitään ;)</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1025"/>
-        <location filename="winshare_network.cpp" line="2547"/>
+        <location filename="winshare_network.cpp" line="2544"/>
         <source>&amp;lt;None&amp;gt;</source>
         <translation>&amp;lt;Ei Mitään&amp;gt;</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2631"/>
+        <location filename="winshare_network.cpp" line="2628"/>
         <source>/ip [user|host] - give information about host</source>
         <translation>/ip [käyttäjä|osoite] - anna tiedot osoitteesta</translation>
     </message>
@@ -6284,32 +6318,32 @@ Päiväys: %4</translation>
         <translation>Valkoisen listan kaava: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2559"/>
+        <location filename="winshare_network.cpp" line="2556"/>
         <source>/addfilter [pattern] - update the word filter pattern</source>
         <translation>/addfilter [kaava] - päivitä suodatuslistan kaava</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2561"/>
+        <location filename="winshare_network.cpp" line="2558"/>
         <source>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/addwhitelist [kaava] - päivitä suodatuslistan kaava (voi olla käyttäjän nimi, useita nimiä tai regular expression)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2615"/>
+        <location filename="winshare_network.cpp" line="2612"/>
         <source>/filter [pattern] - set the word filter pattern</source>
         <translation>/filter [kaava] - aseta suodatuslistan kaava</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2713"/>
+        <location filename="winshare_network.cpp" line="2710"/>
         <source>/unfilter [pattern] - remove pattern from word filters</source>
         <translation>/unfilter [kaava] - poista kaava suodatuslistalta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2717"/>
+        <location filename="winshare_network.cpp" line="2714"/>
         <source>/unwhitelist [name] - remove name from whitelist</source>
         <translation>/unwhitelist [nimi] - poista nimi valkoiselta listalta</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2729"/>
+        <location filename="winshare_network.cpp" line="2726"/>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation>/whitelist [kaava] - aseta valkoisen listan kaava</translation>
     </message>
@@ -6318,7 +6352,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">Tervetuloa käyttämään ohjelmaa Unizone (Suomi)! MUSCLE-asiakas QNX Neutrinolle!</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2161"/>
+        <location filename="winsharewindow.cpp" line="2162"/>
         <source>wandering</source>
         <translation>harhailemassa</translation>
     </message>
@@ -6329,17 +6363,17 @@ Päiväys: %4</translation>
         <translation>Epäkelpo nimi!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2653"/>
+        <location filename="winshare_network.cpp" line="2650"/>
         <source>/picture [name or session ids] - send picture to other clients</source>
         <translation>/picture [nimi tai session id:t] - lähetä kuva muille käyttäjille</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2725"/>
+        <location filename="winshare_network.cpp" line="2722"/>
         <source>/view - view picture on local machine</source>
         <translation>/view - näytä kuva omalta koneeltasi</translation>
     </message>
     <message>
-        <location filename="winsharewindow.cpp" line="2047"/>
+        <location filename="winsharewindow.cpp" line="2048"/>
         <source>Failed to create log file.</source>
         <translation>Lokitiedoston luominen epäonnistui.</translation>
     </message>
@@ -6354,7 +6388,7 @@ Päiväys: %4</translation>
         <translation>Muistia käytössä: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2638"/>
+        <location filename="winshare_network.cpp" line="2635"/>
         <source>/memory - show number of bytes Unizone is using memory</source>
         <translation>/memory - näytä kuinka monta tavua muistia Unizone käyttää</translation>
     </message>
@@ -6364,33 +6398,33 @@ Päiväys: %4</translation>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1448"/>
-        <location filename="winshare_network.cpp" line="1472"/>
+        <location filename="winshare_network.cpp" line="1445"/>
+        <location filename="winshare_network.cpp" line="1469"/>
         <source>Bad Conversion!</source>
         <translation>Epäkelpo muunnos!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1452"/>
+        <location filename="winshare_network.cpp" line="1449"/>
         <source>%1 degrees in %2 is:</source>
         <translation>%1 astetta %2-asteikolla on:</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1456"/>
+        <location filename="winshare_network.cpp" line="1453"/>
         <source>%1 degrees Celsius</source>
         <translation>%1 astetta Celsius-asteikolla</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1461"/>
+        <location filename="winshare_network.cpp" line="1458"/>
         <source>%1 degrees Fahrenheit</source>
         <translation>%1 astetta Fahrenheit-asteikolla</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1466"/>
+        <location filename="winshare_network.cpp" line="1463"/>
         <source>%1 degrees Kelvin</source>
         <translation>%1 astetta Kelvin-asteikolla</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2703"/>
+        <location filename="winshare_network.cpp" line="2700"/>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
         <translation>/temp [lämpötila] [C|F|K] - muunna lämpötila-asteikoiden välillä</translation>
     </message>
@@ -6419,32 +6453,32 @@ Päiväys: %4</translation>
         <translation>Enkoodattu: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2603"/>
+        <location filename="winshare_network.cpp" line="2600"/>
         <source>/crypt - encrypt text and display it as hexadecimal data</source>
         <translation>/crypt - salakirjoita teksti ja näytä se heksadesimaalisena</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2605"/>
+        <location filename="winshare_network.cpp" line="2602"/>
         <source>/decrypt - decrypt text and display it</source>
         <translation>/decrypt - pura salakirjoitettu teksti ja näytä se</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2611"/>
+        <location filename="winshare_network.cpp" line="2608"/>
         <source>/emsg [name] [message] - send an encrypted private message</source>
         <translation>/emsg [nimi] [viesti] - lähetä salakirjoitettu yksityisviesti</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2613"/>
+        <location filename="winshare_network.cpp" line="2610"/>
         <source>/encryption [on|off] - toggle encryption in private windows</source>
         <translation>/encryption [on|off] - vaihda salakirjoituksen tila yksityisikkunoissa</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2623"/>
+        <location filename="winshare_network.cpp" line="2620"/>
         <source>/hexdecode - decode hexadecimal data and display it</source>
         <translation>/hexdecode - muunna heksadesimaalinen tieto näytettävään muotoon</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2625"/>
+        <location filename="winshare_network.cpp" line="2622"/>
         <source>/hexencode - encode as hexadecimal data and display it</source>
         <translation>/hexencode - muunna teksti heksadesimaalimuotoon ja näytä se</translation>
     </message>
@@ -6462,12 +6496,12 @@ Päiväys: %4</translation>
         <translation type="obsolete">MUSCLE-asiakas %1:lle!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2573"/>
+        <location filename="winshare_network.cpp" line="2570"/>
         <source>/bindecode - decode binary data and display it</source>
         <translation>/bindecode - muunna binäärinen tieto näytettävään muotoon</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2575"/>
+        <location filename="winshare_network.cpp" line="2572"/>
         <source>/binencode - encode as binary data and display it</source>
         <translation>/binencode - muunna teksti binäärimuotoon ja näytä se</translation>
     </message>
@@ -6482,17 +6516,17 @@ Päiväys: %4</translation>
         <translation>zlib versio: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2645"/>
+        <location filename="winshare_network.cpp" line="2642"/>
         <source>/octdecode - decode octal data and display it</source>
         <translation>/octdecode - muunna oktaalinen tieto näytettävään muotoon</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2647"/>
+        <location filename="winshare_network.cpp" line="2644"/>
         <source>/octencode - encode as octal data and display it</source>
         <translation>/octencode - muunna teksti oktaalimuotoon ja näytä se</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3110"/>
+        <location filename="winshare_network.cpp" line="3107"/>
         <source>Logging in...</source>
         <translation>Kirjaudutaan...</translation>
     </message>
@@ -6514,12 +6548,12 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="1037"/>
-        <location filename="winshare_network.cpp" line="2765"/>
+        <location filename="winshare_network.cpp" line="2762"/>
         <source>Private Message redirect pattern: %1</source>
         <translation>Yksityisviestien uudelleenohjauskaava: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2661"/>
+        <location filename="winshare_network.cpp" line="2658"/>
         <source>/redirect [nick] - Redirect all private messages to another user</source>
         <translation>/redirect [nimi] - Uudelleenohjaa kaikki yksityisviestit toiselle käyttäjälle</translation>
     </message>
@@ -6533,27 +6567,27 @@ Päiväys: %4</translation>
         <translation>Qt versio: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2458"/>
+        <location filename="winshare_network.cpp" line="2455"/>
         <source>You must change your nickname before connecting!</source>
         <translation>Sinun täytyy vaihtaa käyttäjänimesi ennen yhteyden muodostamista!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2459"/>
+        <location filename="winshare_network.cpp" line="2456"/>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation>Me suosittelemme käyttämään nimeä, joissa ei ole sanaa &apos;binky&apos;.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2685"/>
+        <location filename="winshare_network.cpp" line="2682"/>
         <source>/screenshot - grab screenshot and save to file</source>
         <translation>/screenshot - ota ruudunkaappaus ja tallenna tiedostoon</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2577"/>
+        <location filename="winshare_network.cpp" line="2574"/>
         <source>/binsay [nick]: [text] - say text in binary but prefix with nick</source>
         <translation>/binsay [nimi]: [teksti] - sanoo tekstin binäärisenä, mutta jättää nimen oikeinpäin eteen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2627"/>
+        <location filename="winshare_network.cpp" line="2624"/>
         <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
         <translation>/hexsay [nimi]: [teksti] - sanoo tekstin heksadesimaalisena, mutta jättää nimen oikeinpäin eteen</translation>
     </message>
@@ -6568,7 +6602,7 @@ Päiväys: %4</translation>
         <translation>Tarkistetaan päivityksiä...</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2485"/>
+        <location filename="winshare_network.cpp" line="2482"/>
         <source>Connecting...</source>
         <translation>Yhdistetään...</translation>
     </message>
@@ -6592,42 +6626,42 @@ Päiväys: %4</translation>
         <translation>pois päältä</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2651"/>
+        <location filename="winshare_network.cpp" line="2648"/>
         <source>/pauseresumes - toggle resuming of file transfers</source>
         <translation>/pauseresumes - keskeytä tai salli tiedostonsiirtojen uudelleenyrittäminen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2701"/>
+        <location filename="winshare_network.cpp" line="2698"/>
         <source>/stopresume [index] - stop resuming file</source>
         <translation>/stopresume [index] - keskeytä tiedoston siirron jatkaminen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2999"/>
+        <location filename="winshare_network.cpp" line="2996"/>
         <source>Removed file &apos;%1&apos; from resume list.</source>
         <translation>Tiedosto &apos;%1&apos; poistettu jatkettavien tiedostojen luettelosta.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2974"/>
+        <location filename="winshare_network.cpp" line="2971"/>
         <source>Total:</source>
         <translation>Yhteensä:</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2977"/>
+        <location filename="winshare_network.cpp" line="2974"/>
         <source>1 file</source>
         <translation>1 tiedosto</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2979"/>
+        <location filename="winshare_network.cpp" line="2976"/>
         <source>%1 files</source>
         <translation>%1 tiedostoa</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2617"/>
+        <location filename="winshare_network.cpp" line="2614"/>
         <source>/google [string] - open entry in Google</source>
         <translation>/google [teksti] - hae tekstiä Googlella</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2731"/>
+        <location filename="winshare_network.cpp" line="2728"/>
         <source>/wiki [string] - open entry in Wikipedia</source>
         <translation>/wiki [teksti] - Etsi teksti Wikipediasta</translation>
     </message>

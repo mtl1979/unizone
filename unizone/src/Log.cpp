@@ -47,39 +47,36 @@ WLog::Create(LogType type, const QString &name)
 {
 	int counter = 0;
 	time_t currentTime = time(NULL);
-	QString lt = QString::fromLocal8Bit( ctime(&currentTime) );
-	lt.truncate(lt.find("\n"));
+	QString lt;
+	QString logtime = QString::fromLocal8Bit( ctime(&currentTime) );
+	logtime.truncate(logtime.find("\n"));
 	QString fullPath;
 
 	QString prepend = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html;charset=utf-8\"><TITLE>Log for: ";
-	prepend += lt;
+	prepend += logtime;
 	if (type == LogPrivate)
 		prepend += " (Private)";
 	else if (type == LogChannel)
 	{
-		prepend += " (Channel &quot;";
-		prepend += name;
-		prepend += "&quot;)";
+		prepend += QString(" (Channel &quot;%1&quot;)").arg(name);
 	}
 	prepend += "</TITLE></HEAD><BODY BGCOLOR=\"#FFFFFF\">";
 	
 	switch (type)
 	{
 	case LogMain: 
+		lt = logtime;
 		break;
 	case LogPrivate:
-		lt.prepend("private_");
+		lt = QString("private_%1").arg(logtime);
 		break;
 	case LogChannel:
-		lt.prepend("_");
-		lt.prepend(name);
-		lt.prepend("channel_");
+		lt = QString("channel_%1_%2").arg(name, logtime);
 		break;
 	}
 	lt.replace(QRegExp(" "), "_");
 	lt = FixFileName(lt);
-	lt.prepend("logs/");
-	fullPath = lt + ".html";
+	fullPath = QString("logs/%1.html").arg(lt);
 	
 	// Delete old log
 	if (InitCheck())
@@ -89,9 +86,7 @@ WLog::Create(LogType type, const QString &name)
 	while (WFile::Exists(fullPath))	// to avoid name conflicts (very possible!)
 	{
 		counter++;
-		fullPath = lt + "_";
-		fullPath += QString::number(counter);
-		fullPath += ".html";
+		fullPath = QString("logs/%1_%2.html").arg(lt, QString::number(counter));
 	}
 	if (!fFile)
 		fFile = new WFile();

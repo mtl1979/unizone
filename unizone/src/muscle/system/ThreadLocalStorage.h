@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleThreadLocalStorage_h
 #define MuscleThreadLocalStorage_h
@@ -32,8 +32,13 @@ template <class ObjType> class ThreadLocalStorage
 {
 public:
    /** Constructor. */
-   ThreadLocalStorage()
+   ThreadLocalStorage() : _freeHeldObjects(true)
    {
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+      // Avoid re-entrancy problems when the deadlock callbacks are using ThreadLocalStorage to initialize themselves!
+      _allocedObjsMutex.AvoidFindDeadlockCallbacks();
+#endif
+
 #if defined(MUSCLE_USE_PTHREADS)
       _isKeyValid = (pthread_key_create(&_key, NULL) == 0);
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
@@ -53,7 +58,7 @@ public:
 #endif
       }
 #ifndef MUSCLE_USE_QT_THREADLOCALSTORAGE
-      for (uint32 i=0; i<_allocedObjs.GetNumItems(); i++) delete _allocedObjs[i];
+      if (_freeHeldObjects) for (uint32 i=0; i<_allocedObjs.GetNumItems(); i++) delete _allocedObjs[i];
 #endif
    }
 
@@ -103,7 +108,7 @@ public:
       if (_allocedObjsMutex.Lock() != B_NO_ERROR) return B_ERROR;
 
       status_t ret = B_NO_ERROR;
-      if ((_allocedObjs.EnsureSize(_allocedObjs.GetNumItems()+1) == B_NO_ERROR)&&(SetThreadLocalObjectAux(newObj) == B_NO_ERROR))
+      if (SetThreadLocalObjectAux(newObj) == B_NO_ERROR)  // SetThreadLocalObjectAux() MUST be called first to avoid re-entrancy trouble!
       {
          int32 idx = oldObj ? _allocedObjs.IndexOf(oldObj) : -1;
          if (idx >= 0)
@@ -111,7 +116,7 @@ public:
             if (newObj) _allocedObjs[idx] = newObj;
                    else (void) _allocedObjs.RemoveItemAt(idx);
          }
-         else if (newObj) (void) _allocedObjs.AddTail(newObj);  // guaranteed to succeed
+         else if (newObj) (void) _allocedObjs.AddTail(newObj);
       }
       else ret = B_ERROR;
 
@@ -120,6 +125,11 @@ public:
       return ret;
 #endif
    }
+
+   /** If set false, this object will not free its held thread-local-storage data when its destructor is called.  Default state is true.
+     * Note that this method has no effect if the Qt implementation of ThreadLocalStorage is in use.
+     */
+   void SetFreeHeldObjectsOnExit(bool fho) {_freeHeldObjects = fho;}
 
 private:
 #if defined(MUSCLE_USE_QT_THREADLOCALSTORAGE)
@@ -134,6 +144,8 @@ private:
    Mutex _allocedObjsMutex;
    Queue<ObjType *> _allocedObjs;
 #endif
+
+   bool _freeHeldObjects;
 
    inline ObjType * GetThreadLocalObjectAux() const
    {
@@ -166,7 +178,7 @@ private:
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       return (_tlsIndex != TLS_OUT_OF_INDEXES);
 #endif
-   }   
+   }
 };
 
 }; // end namespace muscle

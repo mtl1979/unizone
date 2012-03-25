@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAsyncDataIO_h
 #define MuscleAsyncDataIO_h
@@ -15,7 +15,7 @@ namespace muscle {
  * It does this by handing the file I/O operations off to a separate internal thread, so that the main
  * thread will never block.
  */
-class AsyncDataIO : public DataIO, private Thread
+class AsyncDataIO : public DataIO, private Thread, private CountedObject<AsyncDataIO>
 {
 public:
    /**

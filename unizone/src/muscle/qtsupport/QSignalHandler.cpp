@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <qapplication.h>
 #include "qtsupport/QSignalHandler.h"
@@ -18,6 +18,7 @@ QSignalHandler :: QSignalHandler(QObject * parent, const char * name) : QObject(
 
 QSignalHandler :: ~QSignalHandler()
 {
+   if (_socketNotifier) _socketNotifier->setEnabled(false);  // prevent occasional CPU-spins under Lion
    SignalMultiplexer::GetSignalMultiplexer().RemoveHandler(this);
 }
 

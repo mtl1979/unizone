@@ -33,7 +33,11 @@ private:
 	void run();
 	void QueryEntry(const QString &user, bool verbose);
 	void PrintAddressInfo(const WUserRef &user, bool verbose);
+#ifdef MUSCLE_AVOID_IPV6
 	bool PrintAddressInfo(uint32 address, bool verbose);
+#else;
+	bool PrintAddressInfo(muscle::ip_address address, bool verbose);
+#endif
 
 	mutable Mutex fQueueLock;
 	mutable QMutex fWaitLock;

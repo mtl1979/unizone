@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/StdinDataIO.h"
 #include "util/Hashtable.h"
@@ -48,13 +48,13 @@ static unsigned __stdcall StdinThreadEntryFunc(void *)
 
          // Now send the data we read from stdin to all the registered sockets
          bool trim = false;
-         for (HashtableIterator<uint32, ConstSocketRef> iter(temp); iter.HasMoreKeys(); iter++) if (SendData(iter.GetValue(), buf, numBytesRead, true) != numBytesRead) {trim = true; iter.GetValue().Reset();}
+         for (HashtableIterator<uint32, ConstSocketRef> iter(temp); iter.HasData(); iter++) if (SendData(iter.GetValue(), buf, numBytesRead, true) != numBytesRead) {trim = true; iter.GetValue().Reset();}
 
          // Lastly, remove from the registered-sockets-set any sockets that SendData() errored out on.
          // This will cause the socket connection to be closed and the master thread(s) to be notified.
          if ((trim)&&(_slaveSocketsMutex.Lock() == B_NO_ERROR))
          {
-            for (HashtableIterator<uint32, ConstSocketRef> iter(_slaveSockets); iter.HasMoreKeys(); iter++)
+            for (HashtableIterator<uint32, ConstSocketRef> iter(_slaveSockets); iter.HasData(); iter++)
             {
                const ConstSocketRef * v = temp.Get(iter.GetKey());
                if ((v)&&(v->IsValid() == false)) (void) _slaveSockets.Remove(iter.GetKey());

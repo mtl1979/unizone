@@ -1,10 +1,11 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMessageIOGateway_h
 #define MuscleMessageIOGateway_h
 
 #include "iogateway/AbstractMessageIOGateway.h"
 #include "util/ByteBuffer.h"
+#include "util/NestCount.h"
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 # include "zlib/ZLibCodec.h"
@@ -48,7 +49,7 @@ typedef void (*MessageFlattenedCallback)(const MessageRef & msgRef, void * userD
  * An example flattened Message byte structure is provided at the bottom of the
  * MessageIOGateway.h header file.
  */
-class MessageIOGateway : public AbstractMessageIOGateway
+class MessageIOGateway : public AbstractMessageIOGateway, private CountedObject<MessageIOGateway>
 {
 public:
    /** 
@@ -132,6 +133,30 @@ public:
      */
    virtual status_t ExecuteSynchronousMessaging(AbstractGatewayMessageReceiver * optReceiver, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
 
+   /** Convenience method:  Connects to the specified IPAddressAndPort via TCP, sends the specified Message, waits
+     * for a reply Message, and returns the reply Message.  This is useful if you want a client/server transaction
+     * to act like a function call, although it is a bit inefficient since the TCP connection is re-established
+     * and then closed every time this function is called.
+     * @param requestMessage the request Message to send
+     * @param targetIAP Where to connect to (via TCP) to send (requestMessage)
+     * @param timeoutPeriod The maximum amount of time this function should wait for a reply before returning.
+     *                      Defaults to MUSCLE_TIME_NEVER, i.e. no timeout.
+     * @returns A reference to a reply Message, or a NULL MessageRef() if we were unable to connect to the specified
+     *          address, or an empty Message if we connected and send our request okay, but received no reply Message.
+     */
+   MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
+
+   /** This method is similar to ExecuteSynchronousMessageRPCCall(), except that it doesn't wait for a reply Message.
+     * Instead, it sends the specified (requestMessage), and returns B_NO_ERROR if the Message successfully goes out
+     * over the TCP socket, or B_ERROR otherwise.
+     * @param requestMessage the request Message to send
+     * @param targetIAP Where to connect to (via TCP) to send (requestMessage)
+     * @param timeoutPeriod The maximum amount of time this function should wait for TCP to connect, before returning.
+     * @returns B_NO_ERROR if the Message was sent, or B_ERROR if we couldn't connect (or if we connected but couldn't send the data).
+     *          Note that there is no way to know what (if anything) the receiving client did with the Message.
+     */
+   status_t ExecuteSynchronousMessageSend(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
+
 protected:
    virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
@@ -175,12 +200,43 @@ protected:
     */
    virtual int32 GetBodySize(const uint8 * header) const;
 
-protected:
    /** Overridden to return true until our PONG Message is received back */
-   virtual bool IsStillAwaitingSynchronousMessagingReply() const {return _syncPingKey.HasChars();}
+   virtual bool IsStillAwaitingSynchronousMessagingReply() const {return _noRPCReply.IsInBatch() ? HasBytesToOutput() : (_pendingSyncPingCounter >= 0);}
 
    /** Overridden to filter out our PONG Message and pass everything else on to (r). */
    virtual void SynchronousMessageReceivedFromGateway(const MessageRef & msg, void * userData, AbstractGatewayMessageReceiver & r);
+
+   /** Allocates and returns a Message to send as a Ping Message for its synchronization. 
+     * Default implementation calls GetMessageFromPool(PR_COMMAND_PING) and adds the tag value as an int32 field.
+     * @param syncPingCounter the value to add as a tag.
+     */
+   virtual MessageRef CreateSynchronousPingMessage(uint32 syncPingCounter) const;
+
+   /** 
+     * Returns true iff (msg) is a pong-Message corresponding to a ping-Message
+     * that was created by CreateSynchronousPingMessage(syncPingCounter).
+     * @param msg a Message received from the remote peer
+     * @param syncPingCounter The value of the ping-counter that we are interested in checking against.
+     */
+   virtual bool IsSynchronousPongMessage(const MessageRef & msg, uint32 syncPingCounter) const;
+
+   /** 
+     * Removes the next MessageRef from our outgoing Message queue and returns it in (retMsg).
+     * @param retMsg on success, the next MessageRef to send will be written into this MessageRef.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (queue was empty)
+     */
+   virtual status_t PopNextOutgoingMessage(MessageRef & retMsg);
+
+   /** 
+     * Should return true iff we need to make sure that any outgoing Messages that we've deflated
+     * are inflatable independently of each other.  The default method always returns false, since it
+     * allowed better compression ratios if we can assume the receiver will be re-inflating the
+     * Messages is FIFO order.  However, in some cases it's not possible to make that assumption.
+     * In those cases, reimplementing this method to return true will cause each outgoing Message
+     * to be deflated independently of its predecessors, giving more flexibility at the expense of 
+     * less compression.
+     */
+   virtual bool AreOutgoingMessagesIndependent() const {return false;}
 
 private:
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
@@ -228,22 +284,35 @@ private:
    mutable ZLibCodec * _recvCodec;
 #endif
 
-   uint32 _syncPingCounter;
-   String _syncPingKey;
+   NestCount _noRPCReply;
+   int32 _syncPingCounter;
+   int32 _pendingSyncPingCounter;
 };
 
-/** Convenience method:  Connects to the specified IPAddressAndPort via TCP, sends the specified Message, waits
-  * for a reply Message, and returns the reply Message.  This is useful if you want a client/server transaction
-  * to act like a function call, although it is a bit inefficient since the TCP connection is re-established
-  * and then closed every time this function is called.
-  * @param requestMessage the request Message to send
-  * @param targetIAP Where to connect to (via TCP) to send (requestMessage)
-  * @param timeoutPeriod The maximum amount of time this function should wait for a reply before returning.
-  *                      Defaults to MUSCLE_TIME_NEVER, i.e. no timeout.
-  * @returns A reference to a reply Message, or a NULL MessageRef() if we were unable to connect to the specified
-  *          address, or an empty Message if we connected and send our request okay, but received no reply Message.
+/** This class is similar to MessageIOGateway, but it also keep a running tally
+  * of the total number of bytes of data currently in its outgoing-Messages queue.
+  * Message sizes are calculated via FlattenedSize(); zlib compression is not
+  * taken into account.
   */
-MessageRef ExecuteSynchronousMessageRPCCall(const Message & requestMessage, const IPAddressAndPort & targetIAP, uint64 timeoutPeriod = MUSCLE_TIME_NEVER);
+class CountedMessageIOGateway : public MessageIOGateway
+{
+public:
+   /** 
+    *  Constructor.
+    *  @param outgoingEncoding See MessageIOGateway constructor for details.
+    */
+   CountedMessageIOGateway(int32 outgoingEncoding = MUSCLE_MESSAGE_ENCODING_DEFAULT);
+
+   virtual status_t AddOutgoingMessage(const MessageRef & messageRef);
+   uint32 GetNumOutgoingDataBytes() const {return _outgoingByteCount;}
+   virtual void Reset();
+
+protected:
+   virtual status_t PopNextOutgoingMessage(MessageRef & ret);
+
+private:
+   uint32 _outgoingByteCount;
+};
 
 //////////////////////////////////////////////////////////////////////////////////
 //

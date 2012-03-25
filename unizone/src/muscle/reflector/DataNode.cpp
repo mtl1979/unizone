@@ -1,11 +1,11 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/DataNode.h"
 #include "reflector/StorageReflectSession.h"
 
 namespace muscle {
 
-DataNode :: DataNode() : _children(NULL), _orderedIndex(NULL), _orderedCounter(0L)  // _parent and _cachedDataChecksum will be set in Init()/Reset(), not here
+DataNode :: DataNode() : _children(NULL), _orderedIndex(NULL), _orderedCounter(0L), _subscribers(NULL)  // _parent and _cachedDataChecksum will be set in Init()/Reset(), not here
 {
    // empty
 }
@@ -14,6 +14,7 @@ DataNode :: ~DataNode()
 {
    delete _children;
    delete _orderedIndex;
+   delete _subscribers;
 }
 
 void DataNode :: Init(const String & name, const MessageRef & initData)
@@ -30,9 +31,9 @@ void DataNode :: Reset()
 {
    TCHECKPOINT;
 
-   if (_children) _children->Clear();
+   if (_children)     _children->Clear();
    if (_orderedIndex) _orderedIndex->Clear();
-   _subscribers.Clear();
+   if (_subscribers)  _subscribers->Clear();
    _parent             = NULL;
    _depth              = 0;
    _maxChildIDHint     = 0;
@@ -47,17 +48,25 @@ void DataNode :: IncrementSubscriptionRefCount(const String & sessionID, long de
    if (delta > 0)
    {
       uint32 res = 0;
-      (void) _subscribers.Get(&sessionID, res);
-      (void) _subscribers.Put(&sessionID, res+delta);  // I'm not sure how to cleanly handle out-of-mem here??  --jaf
+      if (_subscribers == NULL)
+      {
+         _subscribers = newnothrow Hashtable<const String *, uint32>;
+         if (_subscribers == NULL) WARN_OUT_OF_MEMORY;
+      }
+      if (_subscribers)
+      {
+         (void) _subscribers->Get(&sessionID, res);
+         (void) _subscribers->Put(&sessionID, res+delta);  // I'm not sure how to cleanly handle out-of-mem here??  --jaf
+      }
    }
    else if (delta < 0)
    {
       uint32 res = 0;
-      if (_subscribers.Get(&sessionID, res) == B_NO_ERROR)
+      if ((_subscribers)&&(_subscribers->Get(&sessionID, res) == B_NO_ERROR))
       {
          uint32 decBy = (uint32) -delta;
-         if (decBy >= res) _subscribers.Remove(&sessionID);
-                      else (void) _subscribers.Put(&sessionID, res - decBy);  // out-of-mem shouldn't be possible
+         if (decBy >= res) (void) _subscribers->Remove(&sessionID);
+                      else (void) _subscribers->Put(&sessionID, res-decBy);  // out-of-mem shouldn't be possible
       }
    }
 }
@@ -68,7 +77,7 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const String * 
 
    if (_orderedIndex == NULL)
    {
-      _orderedIndex = newnothrow Queue<const String *>;
+      _orderedIndex = newnothrow Queue<DataNodeRef>;
       if (_orderedIndex == NULL)
       {
          WARN_OUT_OF_MEMORY; 
@@ -101,7 +110,7 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const String * 
    {
       for (int i=_orderedIndex->GetNumItems()-1; i>=0; i--) 
       {
-         if (*((*_orderedIndex)[i]) == *optInsertBefore)
+         if ((*_orderedIndex)[i]()->GetNodeName() == *optInsertBefore)
          {
             insertIndex = i;
             break;
@@ -112,7 +121,7 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const String * 
    // Update the index
    if (PutChild(dref, notifyWithOnSetParent, optNotifyChangedData) == B_NO_ERROR)
    {
-      if (_orderedIndex->InsertItemAt(insertIndex, &dref()->GetNodeName()) == B_NO_ERROR)
+      if (_orderedIndex->InsertItemAt(insertIndex, dref) == B_NO_ERROR)
       {
          String np;
          if ((optRetAdded)&&(dref()->GetNodePath(np) == B_NO_ERROR)) (void) optRetAdded->Put(np, dref);
@@ -132,9 +141,8 @@ status_t DataNode :: RemoveIndexEntryAt(uint32 removeIndex, StorageReflectSessio
 
    if ((_orderedIndex)&&(removeIndex < _orderedIndex->GetNumItems()))
    {
-      String holdKey = *((*_orderedIndex)[removeIndex]);      // gotta make a temp copy here, or it's dangling pointer time
-      (void) _orderedIndex->RemoveItemAt(removeIndex);
-      if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYREMOVED, removeIndex, holdKey);
+      DataNodeRef holdKey = _orderedIndex->RemoveItemAtWithDefault(removeIndex);  // gotta make a temp copy here, or it's dangling pointer time
+      if ((holdKey())&&(optNotifyWith)) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYREMOVED, removeIndex, holdKey()->GetNodeName());
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -146,20 +154,18 @@ status_t DataNode :: InsertIndexEntryAt(uint32 insertIndex, StorageReflectSessio
 
    if (_children)
    {
-      // Find a string matching (key) but that belongs to an actual child...
-      HashtableIterator<const String *, DataNodeRef> iter(*_children);
-      const String * childKey;
-      if (_children->GetKey(&key, childKey) == B_NO_ERROR)
+      DataNodeRef childNode;
+      if (_children->Get(&key, childNode) == B_NO_ERROR)
       {
          if (_orderedIndex == NULL)
          {
-            _orderedIndex = newnothrow Queue<const String *>;
+            _orderedIndex = newnothrow Queue<DataNodeRef>;
             if (_orderedIndex == NULL) WARN_OUT_OF_MEMORY; 
          }
-         if ((_orderedIndex)&&(_orderedIndex->InsertItemAt(insertIndex, childKey) == B_NO_ERROR))
+         if ((_orderedIndex)&&(_orderedIndex->InsertItemAt(insertIndex, childNode) == B_NO_ERROR))
          {
             // Notify anyone monitoring this node that the ordered-index has been updated
-            notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, *childKey);
+            notifyWithOnSetParent->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, insertIndex, childNode()->GetNodeName());
             return B_NO_ERROR;
          }
       }
@@ -167,12 +173,12 @@ status_t DataNode :: InsertIndexEntryAt(uint32 insertIndex, StorageReflectSessio
    return B_ERROR;
 }
 
-status_t DataNode :: ReorderChild(const DataNode & child, const String * moveToBeforeThis, StorageReflectSession * optNotifyWith)
+status_t DataNode :: ReorderChild(const DataNodeRef & child, const String * moveToBeforeThis, StorageReflectSession * optNotifyWith)
 {
    TCHECKPOINT;
 
    // Only do anything if we have an index, and the node isn't going to be moved to before itself (silly) and (child) can be removed from the index
-   if ((_orderedIndex)&&((moveToBeforeThis == NULL)||(*moveToBeforeThis != child.GetNodeName()))&&(RemoveIndexEntry(child.GetNodeName(), optNotifyWith) == B_NO_ERROR))
+   if ((_orderedIndex)&&(child())&&((moveToBeforeThis == NULL)||(*moveToBeforeThis != child()->GetNodeName()))&&(RemoveIndexEntry(child()->GetNodeName(), optNotifyWith) == B_NO_ERROR))
    {
       // Then re-add him to the index at the appropriate point
       uint32 targetIndex = _orderedIndex->GetNumItems();  // default to end of index
@@ -180,7 +186,7 @@ status_t DataNode :: ReorderChild(const DataNode & child, const String * moveToB
       {
          for (int i=_orderedIndex->GetNumItems()-1; i>=0; i--) 
          { 
-            if (*moveToBeforeThis == *((*_orderedIndex)[i]))
+            if (*moveToBeforeThis == (*_orderedIndex)[i]()->GetNodeName())
             {
                targetIndex = i;
                break; 
@@ -189,10 +195,10 @@ status_t DataNode :: ReorderChild(const DataNode & child, const String * moveToB
       }
 
       // Now add the child back into the index at his new position
-      if (_orderedIndex->InsertItemAt(targetIndex, &child.GetNodeName()) == B_NO_ERROR)
+      if (_orderedIndex->InsertItemAt(targetIndex, child) == B_NO_ERROR)
       {
          // Notify anyone monitoring this node that the ordered-index has been updated
-         if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, targetIndex, child.GetNodeName());
+         if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYINSERTED, targetIndex, child()->GetNodeName());
          return B_NO_ERROR;
       }
    }
@@ -236,7 +242,7 @@ void DataNode :: SetParent(DataNode * parent, StorageReflectSession * optNotifyW
       uint32 id = atol(&nn[(*nn=='I')?1:0]);
       _parent->_maxChildIDHint = muscleMax(_parent->_maxChildIDHint, id);
    }
-   else _subscribers.Clear();
+   else if (_subscribers) _subscribers->Clear();
 
    // Calculate our node's depth into the tree
    _depth = 0;
@@ -341,7 +347,8 @@ status_t DataNode :: RemoveChild(const String & key, StorageReflectSession * opt
          child->SetParent(NULL, optNotifyWith);
       }
       if (optCurrentNodeCount) (*optCurrentNodeCount)--;
-      _children->Remove(&key, childRef);
+
+      (void) _children->Remove(&key, childRef);
       return B_NO_ERROR;
    }
    return B_ERROR;
@@ -356,9 +363,9 @@ status_t DataNode :: RemoveIndexEntry(const String & key, StorageReflectSession 
    {
       for (int i=_orderedIndex->GetNumItems()-1; i>=0; i--)
       {
-         if (key == *((*_orderedIndex)[i]))
+         if (key == (*_orderedIndex)[i]()->GetNodeName())
          {
-            _orderedIndex->RemoveItemAt(i);
+            (void) _orderedIndex->RemoveItemAt(i);
             if (optNotifyWith) optNotifyWith->NotifySubscribersThatNodeIndexChanged(*this, INDEX_OP_ENTRYREMOVED, i, key);
             return B_NO_ERROR;
          }
@@ -384,8 +391,8 @@ uint32 DataNode :: CalculateChecksum(uint32 maxRecursionDepth) const
    else
    {
       uint32 ret = _cachedDataChecksum;
-      if (_orderedIndex) for (int32 i=_orderedIndex->GetNumItems()-1; i>=0; i--) ret += (*_orderedIndex)[i]->CalculateChecksum();
-      if (_children) for (HashtableIterator<const String *, DataNodeRef> iter(*_children); iter.HasMoreKeys(); iter++) ret += iter.GetValue()()->CalculateChecksum(maxRecursionDepth-1);
+      if (_orderedIndex) for (int32 i=_orderedIndex->GetNumItems()-1; i>=0; i--) ret += (*_orderedIndex)[i]()->GetNodeName().CalculateChecksum();
+      if (_children) for (HashtableIterator<const String *, DataNodeRef> iter(*_children); iter.HasData(); iter++) ret += iter.GetValue()()->CalculateChecksum(maxRecursionDepth-1);
       return ret;
    }
 }
@@ -407,13 +414,13 @@ void DataNode :: PrintToStream(FILE * optFile, uint32 maxRecursionDepth, int ind
          for (uint32 i=0; i<_orderedIndex->GetNumItems(); i++)
          {
             PrintIndent(optFile, indentLevel);
-            fprintf(optFile, "   Index slot " UINT32_FORMAT_SPEC " = %s\n", i, (*_orderedIndex)[i]->Cstr());
+            fprintf(optFile, "   Index slot " UINT32_FORMAT_SPEC " = %s\n", i, (*_orderedIndex)[i]()->GetNodeName()());
          }
       }
       if (_children)
       {
          PrintIndent(optFile, indentLevel); fprintf(optFile, "Children for node [%s] follow:\n", np());
-         for (HashtableIterator<const String *, DataNodeRef> iter(*_children); iter.HasMoreKeys(); iter++) iter.GetValue()()->PrintToStream(optFile, maxRecursionDepth-1, indentLevel+2);
+         for (HashtableIterator<const String *, DataNodeRef> iter(*_children); iter.HasData(); iter++) iter.GetValue()()->PrintToStream(optFile, maxRecursionDepth-1, indentLevel+2);
       }
    }
 }
@@ -436,7 +443,7 @@ DataNode * DataNode :: FindFirstMatchingNode(const char * path, uint32 maxDepth)
          if (HasRegexTokens(childKey()))
          {
             StringMatcher sm(childKey);
-            for (DataNodeRefIterator iter = GetChildIterator(); iter.HasMoreKeys(); iter++)
+            for (DataNodeRefIterator iter = GetChildIterator(); iter.HasData(); iter++)
             {
                if (sm.Match(*iter.GetKey()))
                {

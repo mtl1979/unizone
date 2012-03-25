@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSignalMessageIOGateway_h
 #define MuscleSignalMessageIOGateway_h
@@ -13,7 +13,7 @@ namespace muscle {
  * will add a user-specified MessageRef to its incoming Message queue.
  * It's useful primarily for thread synchronization purposes.
  */
-class SignalMessageIOGateway : public AbstractMessageIOGateway
+class SignalMessageIOGateway : public AbstractMessageIOGateway, private CountedObject<SignalMessageIOGateway>
 {
 public:
    /** Constructor.  Creates a SignalMessageIOGateway with a NULL signal message reference.  

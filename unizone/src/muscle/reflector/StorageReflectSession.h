@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStorageReflectSession_h
 #define MuscleStorageReflectSession_h
@@ -13,7 +13,7 @@ namespace muscle {
 /**
  *  This is a factory class that returns new StorageReflectSession objects.
  */
-class StorageReflectSessionFactory : public ReflectSessionFactory
+class StorageReflectSessionFactory : public ReflectSessionFactory, private CountedObject<StorageReflectSessionFactory>
 {
 public:
    /** Default constructor.  The maximum incoming message size is set to "unlimited" by default.  */
@@ -78,7 +78,7 @@ public:
  *  See StorageReflectConstants.h and/or "The Beginner's Guide.html"
  *  for details.
  */
-class StorageReflectSession : public DumbReflectSession
+class StorageReflectSession : public DumbReflectSession, private CountedObject<StorageReflectSession>
 {
 public:
    /** Default constructor. */
@@ -105,6 +105,17 @@ public:
    /** Returns a human-readable label for this session type:  "Session" */
    virtual const char * GetTypeName() const {return "Session";}
 
+   /** Prints to stdout a report of what sessions are currently present on this server, and how
+     * much memory each of them is currently using for various things.  Useful for understanding
+     * what your RAM is being used for.
+     */
+   void PrintSessionsInfo() const;
+
+   /** Prints to stdout a report of what ReflectSessionFactories are currently present on this server, 
+     * and what interfaces and ports they are listening on.
+     */
+   void PrintFactoriesInfo() const;
+
 protected:
    /**
     * Create or Set the value of a data node.
@@ -127,7 +138,7 @@ protected:
     *  @param quiet If set to true, subscriber's won't be updated regarding this change to the database
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
-   virtual status_t RemoveDataNodes(const String & nodePath, const QueryFilterRef & filterRef = QueryFilterRef(), bool quiet = false);
+   virtual status_t RemoveDataNodes(const String & nodePath, const ConstQueryFilterRef & filterRef = ConstQueryFilterRef(), bool quiet = false);
 
    /**
     * Recursively saves a given subtree of the node database into the given Message object, for safe-keeping.
@@ -172,6 +183,17 @@ protected:
    virtual status_t InsertOrderedData(const MessageRef & insertMsg, Hashtable<String, DataNodeRef> * optRetNewNodes);
 
    /**
+     * Utility method:  Adds a new child node to the specified parent node. 
+     * This method calls through to parentNode.InsertOrderedChild(), but also updates the StorageReflectSession's own internal state as necessary.
+     * @param parentNode The node to add the new child node to.
+     * @param data Reference to a message to create a new child node for.
+     * @param optInsertBefore if non-NULL, the name of the child to put the new child before in our index.  If NULL, (or the specified child cannot be found) the new child will be appended to the end of the index.
+     * @param optAddNewChildren If non-NULL, any newly formed nodes will be added to this hashtable, keyed on their absolute node path.
+     * @return B_NO_ERROR on success, B_ERROR if out of memory
+     */
+   status_t InsertOrderedChildNode(DataNode & parentNode, const String * optInsertBefore, const MessageRef & data, Hashtable<String, DataNodeRef> * optAddNewChildren);
+
+   /**
     * This typedef represents the proper signature of a node-tree traversal callback function.
     * Functions with this signature may be used with the NodePathMatcher::DoTraversal() method.
     * @param This The StorageReflectSession doing the traveral, as specified in the DoTraversal() call
@@ -197,10 +219,12 @@ protected:
       /**
        * Returns true iff the given node matches our query.
        * @param node the node to check to see if it matches
-       * @param optData Message to use for QueryFilter filtering, or NULL to disable filtering.
+       * @param optData Reference to a Message to use for QueryFilter filtering, or NULL to disable filtering.
+       *                Note that a filter may optionally retarget this ConstMessageRef to point to a different
+       *                Message, but it is not allowed to modify the Message that (optData) points to.
        * @param rootDepth the depth at which the traversal started (i.e. 0 if started at root)
        */
-      bool MatchesNode(DataNode & node, const Message * optData, int rootDepth) const;
+      bool MatchesNode(DataNode & node, ConstMessageRef & optData, int rootDepth) const;
 
       /**
        * Does a depth-first traversal of the node tree, starting with (node) as the root.
@@ -238,7 +262,7 @@ protected:
       };
 
       int DoTraversalAux(const TraversalContext & data, DataNode & node);
-      bool PathMatches(DataNode & node, const Message * optData, const PathMatcherEntry & entry, int rootDepth) const;
+      bool PathMatches(DataNode & node, ConstMessageRef & optData, const PathMatcherEntry & entry, int rootDepth) const;
       bool CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int & depth);
    };
 
@@ -267,15 +291,15 @@ protected:
     *                to the (retSessions) table.
     *  @param retSessions A table that will on return contain the set of matching sessions, keyed by their session ID strings.
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
-    *  @param maxResults Maximum number of matching sessions to returns.  Defaults to MUSCLE_NO_LIMIT.
+    *  @param maxResults Maximum number of matching sessions to return.  Defaults to MUSCLE_NO_LIMIT.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t FindMatchingSessions(const String & nodePath, const QueryFilterRef & filter, Hashtable<const String *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
+   status_t FindMatchingSessions(const String & nodePath, const ConstQueryFilterRef & filter, Hashtable<const String *, AbstractReflectSessionRef> & retSessions, bool matchSelf, uint32 maxResults = MUSCLE_NO_LIMIT) const;
 
-    /** Convenience method:  Same as FindMatchingsession(), but finds only the first matching session.  
-      * Returns a reference to the first matching session on success, or a NULL reference on failue.
-      */
-    AbstractReflectSessionRef FindMatchingSession(const String & nodePath, const QueryFilterRef & filter, bool matchSelf) const;
+   /** Convenience method:  Same as FindMatchingSessions(), but finds only the first matching session.  
+     * Returns a reference to the first matching session on success, or a NULL reference on failue.
+     */
+   AbstractReflectSessionRef FindMatchingSession(const String & nodePath, const ConstQueryFilterRef & filter, bool matchSelf) const;
 
    /** Convenience method:  Passes the given Message on to the sessions who match the given nodePath.
     *  (that is, any sessions who have nodes that match (nodePath) will have their MessageReceivedFromSession()
@@ -287,25 +311,40 @@ protected:
     *  @param matchSelf If true, we will include as a candidate for pattern matching.  Otherwise we won't.
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-    status_t SendMessageToMatchingSessions(const MessageRef & msgRef, const String & nodePath, const QueryFilterRef & filter, bool matchSelf);
+   status_t SendMessageToMatchingSessions(const MessageRef & msgRef, const String & nodePath, const ConstQueryFilterRef & filter, bool matchSelf);
+
+   /** Convenience method:  Adds nodes that match the specified path to the passed-in Queue.
+    *  @param nodePath the node path to match against.  May be absolute (e.g. "/0/1234/frc*") or relative (e.g. "blah").  
+                       If it's a relative path, only nodes in the current session's subtree will be searched.
+    *  @param filter If non-NULL, only nodes whose data Messages match this filter will be added to the (retMatchingNodes) table.
+    *  @param retMatchingNodes A Queue that will on return contain the list of matching nodes.
+    *  @param maxResults Maximum number of matching nodes to return.  Defaults to MUSCLE_NO_LIMIT.
+    *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+    */
+   status_t FindMatchingNodes(const String & nodePath, const ConstQueryFilterRef & filter, Queue<DataNodeRef> & retMatchingNodes, uint32 maxResults = MUSCLE_NO_LIMIT) const;
+
+   /** Convenience method:  Same as FindMatchingNodes(), but finds only the first matching node.  
+     * Returns a reference to the first matching node on success, or a NULL reference on failue.
+     */
+   DataNodeRef FindMatchingNode(const String & nodePath, const ConstQueryFilterRef & filter) const;
 
    /** Convenience method (used by some customized daemons) -- Given a source node and a destination path,
-     * Make (path) a deep, recursive clone of (node).
-     * @param sourceNode Reference to a DataNode to clone.
-     * @param destPath Path of where the newly created node subtree will appear.  Should be relative to our home node.
-     * @param allowOverwriteData If true, we will clobber any previously existing node at the destination path.
-     *                           Otherwise, the existence of a pre-existing node there will cause us to fail.
-     * @param allowCreateNode If true, we will create a node at the destination path if necessary.
-     *                        Otherwise, the non-existence of a pre-existing node there will cause us to fail.
-     * @param quiet If false, no subscribers will be notified of the changes we make.
-     * @param addToTargetIndex If true, the newly created subtree will be added to the target node using InsertOrderedChild().
-     *                         If false, it will be added using PutChild().
-     * @param optInsertBefore If (addToTargetIndex) is true, this argument will be passed on to InsertOrderedChild().
-     *                        Otherwise, this argument is ignored.
-     * @param optPruner If non-NULL, this object can be used as a callback to prune the traversal or filter
-     *                  the MessageRefs cloned.
-     * @return B_NO_ERROR on success, or B_ERROR on failure (may leave a partially cloned subtree on failure)
-     */
+    * Make (path) a deep, recursive clone of (node).
+    * @param sourceNode Reference to a DataNode to clone.
+    * @param destPath Path of where the newly created node subtree will appear.  Should be relative to our home node.
+    * @param allowOverwriteData If true, we will clobber any previously existing node at the destination path.
+    *                           Otherwise, the existence of a pre-existing node there will cause us to fail.
+    * @param allowCreateNode If true, we will create a node at the destination path if necessary.
+    *                        Otherwise, the non-existence of a pre-existing node there will cause us to fail.
+    * @param quiet If false, no subscribers will be notified of the changes we make.
+    * @param addToTargetIndex If true, the newly created subtree will be added to the target node using InsertOrderedChild().
+    *                         If false, it will be added using PutChild().
+    * @param optInsertBefore If (addToTargetIndex) is true, this argument will be passed on to InsertOrderedChild().
+    *                        Otherwise, this argument is ignored.
+    * @param optPruner If non-NULL, this object can be used as a callback to prune the traversal or filter
+    *                  the MessageRefs cloned.
+    * @return B_NO_ERROR on success, or B_ERROR on failure (may leave a partially cloned subtree on failure)
+    */
    status_t CloneDataNodeSubtree(const DataNode & sourceNode, const String & destPath, bool allowOverwriteData=true, bool allowCreateNode=true, bool quiet=false, bool addToTargetIndex=false, const String * optInsertBefore = NULL, const ITraversalPruner * optPruner = NULL);
 
    /** Tells other sessions that we have modified (node) in our node subtree.
@@ -314,7 +353,7 @@ protected:
     *                 held data.  If it is being created, this is a NULL reference.  If the node
     *                 is being destroyed, this will contain the node's current data.
     *  @param isBeingRemoved If true, this node is about to go away.
-   */
+    */
    virtual void NotifySubscribersThatNodeChanged(DataNode & node, const MessageRef & oldData, bool isBeingRemoved);
 
    /** Tells other sessions that we have changed the index of (node) in our node subtree.
@@ -450,6 +489,7 @@ private:
    void UpdateDefaultMessageRoute();
    status_t RemoveParameter(const String & paramName, bool & retUpdateDefaultMessageRoute);
    int PassMessageCallbackAux(DataNode & node, const MessageRef & msgRef, bool matchSelfOkay);
+   void TallyNodeBytes(const DataNode & n, uint32 & retNumNodes, uint32 & retNodeBytes) const;
 
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, KickClientCallback);     /** Sessions of matching nodes are EndSession()'d  */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, InsertOrderedDataCallback); /** Matching nodes have ordered data inserted into them as child nodes */
@@ -460,6 +500,7 @@ private:
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, DoSubscribeRefCallback); /** Matching nodes are ref'd or unref'd with subscribed session IDs */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, ChangeQueryFilterCallback); /** Matching nodes are ref'd or unref'd depending on the QueryFilter change */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, FindSessionsCallback);   /** Sessions of matching nodes are added to the given Hashtable */
+   DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, FindNodesCallback);      /** Matching nodes are added to the given Queue */
    DECLARE_MUSCLE_TRAVERSAL_CALLBACK(StorageReflectSession, SendMessageCallback);    /** Similar to PassMessageCallback except matchSelf is an argument */
 
    /**

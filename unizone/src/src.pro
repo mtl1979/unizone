@@ -94,10 +94,12 @@ SOURCES =	aboutdlgimpl.cpp \
                 muscle/system/Thread.cpp \
                 muscle/util/ByteBuffer.cpp \
                 muscle/util/Directory.cpp \
+		muscle/util/FilePathInfo.cpp \
                 muscle/util/MemoryAllocator.cpp \
                 muscle/util/MiscUtilityFunctions.cpp \
                 muscle/util/NetworkUtilityFunctions.cpp \
                 muscle/util/PulseNode.cpp \
+		muscle/util/SocketMultiplexer.cpp \
                 muscle/util/String.cpp \
                 muscle/zlib/ZLibCodec.cpp \
                 muscle/zlib/ZLibUtilityFunctions.cpp
@@ -134,7 +136,9 @@ HEADERS =       aboutdlgimpl.h \
                 uploadthread.h \
                 winsharewindow.h \
                 muscle/qtsupport/QMessageTransceiverThread.h \
-                muscle/qtsupport/QAcceptSocketsThread.h
+                muscle/qtsupport/QAcceptSocketsThread.h \
+    tokenizer.h \
+    util.h
 
 
 TRANSLATIONS =  unizone_en.ts \
@@ -158,18 +162,18 @@ CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
     SOURCES += debugimpl.cpp
     win32 {
-	LIBS += -L../regex/debug 
-      !contains(CONFIG, zlib):LIBS += -L../zlib/debug
+	LIBS += -L..\\regex\\debug 
+      !contains(CONFIG, zlib):LIBS += -L..\\zlib\\debug
     }
 } else {
     win32 {
-      LIBS += -L../regex/release 
-      !contains(CONFIG, zlib):LIBS += -L../zlib/release
+      LIBS += -L..\\regex\\release 
+      !contains(CONFIG, zlib):LIBS += -L..\\zlib\\release
     }
 }
 win32 {
     DEFINES += WIN32_LEAN_AND_MEAN UNICODE REGEX_USEDLL
-    LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib regex.lib
+    LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib version.lib regex.lib
     !contains(CONFIG, zlib):LIBS += zdll.lib
     SOURCES +=   scanprogressimpl.cpp \
                  windows/_filwbuf.c \
@@ -204,7 +208,7 @@ QT += qt3support
 INCLUDEPATH += muscle ../regex ../zlib
 
 isEmpty(QMAKE_LRELEASE) {
-    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\lrelease.exe
+    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe
     else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
 

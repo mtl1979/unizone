@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleMemoryAllocator_h
 #define MuscleMemoryAllocator_h
 
 #include "support/MuscleSupport.h"
+#include "util/CountedObject.h"
 #include "util/GenericCallback.h"
 #include "util/Queue.h"
 #include "util/RefCount.h"
@@ -13,7 +14,7 @@ namespace muscle {
 class MemoryAllocator;
 
 /** Interface class representing an object that can allocate and free blocks of memory. */
-class MemoryAllocator : public RefCountable
+class MemoryAllocator : public RefCountable, private CountedObject<MemoryAllocator>
 {
 public:
    /** Default constructor; no-op */

@@ -462,7 +462,7 @@ public:
 	void SetRemotePassword(const QString & pw);
 
 	// toolbar layout
-	void GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const;
+	bool GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const;
 	void SetToolBarLayout(int toolbar, int32 dock, int32 index, bool nl, int32 extra);
 
 	// Install ID

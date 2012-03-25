@@ -179,10 +179,10 @@ NetClient::Disconnect()
 		Reset();
 		PRINT("DELETING USERS\n");
 		WUserIter it = fUsers.GetIterator(HTIT_FLAG_BACKWARDS);
-		while (it.HasMoreValues())
+		while (it.HasData())
 		{
-			WUserRef uref;
-			it.GetNextValue(uref);
+			WUserRef uref = it.GetValue();
+			it++;
 			RemoveUser(uref);
 		}
 		PRINT("EMITTING DisconnectedFromServer()\n");
@@ -269,10 +269,10 @@ void
 NetClient::FindUsersByIP(WUserMap & umap, const QString & ip)
 {
 	WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
-	while ( iter.HasMoreValues())
+	while ( iter.HasData())
 	{
-		WUserRef uref;
-		iter.GetNextValue(uref);
+		WUserRef uref = iter.GetValue();
+		iter++;
 		if (uref()->GetUserHostName() == ip)
 		{
 			uint32 uid = uref()->GetUserID().toULong();
@@ -285,10 +285,9 @@ WUserRef
 NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 {
 	WUserIter iter = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
-	while (iter.HasMoreValues())
+	while (iter.HasData())
 	{
-		WUserRef found;
-		iter.GetNextValue(found);
+		WUserRef found = iter.GetValue();
 		if (found()->GetUserHostName() == ip)
 		{
 			if (
@@ -299,6 +298,7 @@ NetClient::FindUserByIPandPort(const QString & ip, uint32 port)
 				return found;
 			}
 		}
+		iter++;
 	}
 	return WUserRef(NULL);
 }
@@ -550,8 +550,10 @@ NetClient::GetChannelList()
 	int i = 0;
 	String channel;
 	MessageFieldNameIterator iter = fChannels()->GetFieldNameIterator(B_MESSAGE_TYPE);
-	while (iter.GetNextFieldName(channel) == B_OK)
+	while (iter.HasData())
 	{
+		channel = iter.GetFieldName();
+		iter++;
 		qChannels[i++] = QString::fromUtf8(channel.Cstr());
 	}
 	fChannelLock.Unlock();
@@ -571,8 +573,10 @@ NetClient::GetChannelUsers(const QString & channel)
 		int i = 0;
 		String user;
 		MessageFieldNameIterator iter = mChannel()->GetFieldNameIterator(B_BOOL_TYPE);
-		while (iter.GetNextFieldName(user) == B_OK)
+		while (iter.HasData())
 		{
+			user = iter.GetFieldName();
+			iter++;
 			users[i++] = QString::fromUtf8(user.Cstr());
 		}
 	}
@@ -725,8 +729,10 @@ NetClient::HandleResultMessage(const MessageRef & ref)
 
 	// look for addition messages
 	MessageFieldNameIterator iter = ref()->GetFieldNameIterator(B_MESSAGE_TYPE);
-	while (iter.GetNextFieldName(nodePath) == B_OK)
+	while (iter.HasData())
 	{
+		nodePath = iter.GetFieldName();
+		iter++;
 		if (GetPathDepth(nodePath.Cstr()) >= BESHARE_HOME_DEPTH)
 		{
 			String prot = GetPathClauseString(BESHARE_HOME_DEPTH, nodePath.Cstr());
@@ -995,13 +1001,17 @@ QString
 NetClient::GetServerIP() const
 {
 	QString ip = "0.0.0.0";
+#ifdef MUSCLE_AVOID_IPV6
 	uint32 address;
-	char host[16];
+#else
+	muscle::ip_address address;
+#endif
+	String host;;
 	address = ResolveAddress(fServer);
 	if (address > 0)
 	{
-		Inet_NtoA(address, host);
-		ip = host;
+		host = Inet_NtoA(address, true);
+		ip = host.Cstr();
 	}
 	return ip;
 }

@@ -1,8 +1,9 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "system/Thread.h"
 #include "util/NetworkUtilityFunctions.h"
 #include "dataio/TCPSocketDataIO.h"  // to get the proper #includes for recv()'ing
+#include "system/SetupSystem.h"  // for GetCurrentThreadID()
 
 #if defined(MUSCLE_PREFER_WIN32_OVER_QT)
 # include <process.h>  // for _beginthreadex()
@@ -14,7 +15,11 @@
 
 namespace muscle {
 
-Thread :: Thread() : _messageSocketsAllocated(false), _threadRunning(false)
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+extern void DeadlockFinder_PrintAndClearLogEventsForCurrentThread();
+#endif
+
+Thread :: Thread(bool useMessagingSockets) : _useMessagingSockets(useMessagingSockets), _messageSocketsAllocated(!useMessagingSockets), _threadRunning(false), _suggestedStackSize(0), _threadStackBase(NULL)
 {
 #if defined(MUSCLE_USE_QT_THREADS)
    _thread.SetOwner(this);
@@ -47,8 +52,11 @@ const ConstSocketRef & Thread :: GetThreadWakeupSocketAux(ThreadSpecificData & t
 
 void Thread :: CloseSockets()
 {
-   for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) _threadData[i]._messageSocket.Reset();
-   _messageSocketsAllocated = false;
+   if (_useMessagingSockets)
+   {
+      for (uint32 i=0; i<NUM_MESSAGE_THREADS; i++) _threadData[i]._messageSocket.Reset();
+      _messageSocketsAllocated = false;
+   }
 }
 
 status_t Thread :: StartInternalThread()
@@ -73,10 +81,16 @@ status_t Thread :: StartInternalThreadAux()
       _threadRunning = true;  // set this first, to avoid a race condition with the thread's startup...
 
 #if defined(MUSCLE_USE_PTHREADS)
-      if (pthread_create(&_thread, NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
+      pthread_attr_t attr;
+      if (_suggestedStackSize != 0)
+      {
+         pthread_attr_init(&attr);
+         pthread_attr_setstacksize(&attr, _suggestedStackSize);
+      }
+      if (pthread_create(&_thread, (_suggestedStackSize!=0)?&attr:NULL, InternalThreadEntryFunc, this) == 0) return B_NO_ERROR;
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       typedef unsigned (__stdcall *PTHREAD_START) (void *);
-      if ((_thread = (::HANDLE)_beginthreadex(NULL, 0, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&_threadID)) != NULL) return B_NO_ERROR;
+      if ((_thread = (::HANDLE)_beginthreadex(NULL, _suggestedStackSize, (PTHREAD_START)InternalThreadEntryFunc, this, 0, (unsigned *)&_threadID)) != NULL) return B_NO_ERROR;
 #elif defined(MUSCLE_USE_QT_THREADS)
 # ifdef QT_HAS_THREAD_PRIORITIES
       _thread.start(GetInternalQThreadPriority());
@@ -161,7 +175,7 @@ void Thread :: SignalAux(int whichSocket)
       if (fd >= 0) 
       {
          char junk = 'S';
-         (void) send(fd, &junk, sizeof(junk), 0);
+         (void) send_ignore_eintr(fd, &junk, sizeof(junk), 0);
       }
    }
 }
@@ -187,68 +201,36 @@ int32 Thread :: WaitForNextMessageAux(ThreadSpecificData & tsd, MessageRef & ref
       int msgfd;
       if ((ret < 0)&&((msgfd = tsd._messageSocket.GetFileDescriptor()) >= 0))  // no Message available?  then we'll have to wait until there is one!
       {
-         uint64 now = GetRunTime64();
-         if (wakeupTime < now) wakeupTime = now;
-
          // block until either 
          //   (a) a new-message-signal-byte wakes us, or 
          //   (b) we reach our wakeup/timeout time, or 
          //   (c) a user-specified socket in the socket set selects as ready-for-something
-         struct timeval timeout;
-         if (wakeupTime != MUSCLE_TIME_NEVER) Convert64ToTimeVal(wakeupTime-now, timeout);
-
-         fd_set sets[NUM_SOCKET_SETS];
-         fd_set * psets[NUM_SOCKET_SETS] = {NULL, NULL, NULL};
-         int maxfd = msgfd;
+         for (uint32 i=0; i<ARRAYITEMS(tsd._socketSets); i++)
          {
-            for (uint32 i=0; i<ARRAYITEMS(sets); i++)
+            const Hashtable<ConstSocketRef, bool> & t = tsd._socketSets[i];
+            if (t.HasItems())
             {
-               const Hashtable<ConstSocketRef, bool> & t = tsd._socketSets[i];
-               if ((i == SOCKET_SET_READ)||(t.HasItems()))
+               for (HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER); iter.HasData(); iter++)
                {
-                  psets[i] = &sets[i];
-                  FD_ZERO(psets[i]);
-                  if (t.HasItems())
-                  {
-                     HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
-                     const ConstSocketRef * nextSocket;
-                     while((nextSocket = iter.GetNextKey()) != NULL)
-                     {
-                        int nextFD = nextSocket->GetFileDescriptor();
-                        if (nextFD >= 0)
-                        {
-                           FD_SET(nextFD, psets[i]);
-                           maxfd = muscleMax(maxfd, nextFD);
-                        }
-                     }
-                  }
+                  int nextFD = iter.GetKey().GetFileDescriptor();
+                  if (nextFD >= 0) tsd._multiplexer.RegisterSocketForEventsByTypeIndex(nextFD, i);
                }
             }
          }
-         FD_SET(msgfd, psets[SOCKET_SET_READ]);  // this pset is guaranteed to be non-NULL at this point
+         tsd._multiplexer.RegisterSocketForReadReady(msgfd);
 
-         if (select(maxfd+1, psets[SOCKET_SET_READ], psets[SOCKET_SET_WRITE], psets[SOCKET_SET_EXCEPTION], (wakeupTime == MUSCLE_TIME_NEVER)?NULL:&timeout) >= 0)
+         if (tsd._multiplexer.WaitForEvents(wakeupTime) >= 0)
          {
-            for (uint32 j=0; j<ARRAYITEMS(psets); j++)
+            for (uint32 j=0; j<ARRAYITEMS(tsd._socketSets); j++)
             {
                Hashtable<ConstSocketRef, bool> & t = tsd._socketSets[j];
-               if ((psets[j])&&(t.HasItems()))
-               {
-                  const ConstSocketRef * nextSocket;
-                  bool * nextValue;
-                  HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER);
-                  while(iter.GetNextKeyAndValue(nextSocket, nextValue) == B_NO_ERROR) 
-                  {
-                     int fd = nextSocket->GetFileDescriptor();  // keep separate to avoid warning from g++ 4.3.1 under Ubuntu/64
-                     *nextValue = FD_ISSET(fd, psets[j]) ? true : false;  // ternary operator used to shut VC++ warnings up
-                  }
-               }
+               if (t.HasItems()) for (HashtableIterator<ConstSocketRef, bool> iter(t, HTIT_FLAG_NOREGISTER); iter.HasData(); iter++) iter.GetValue() = tsd._multiplexer.IsSocketEventOfTypeFlagged(iter.GetKey().GetFileDescriptor(), j);
             }
 
-            if (FD_ISSET(msgfd, psets[SOCKET_SET_READ]))  // any signals from the other thread?
+            if (tsd._multiplexer.IsSocketReadyForRead(msgfd))  // any signals from the other thread?
             {
                uint8 bytes[256];
-               if (ConvertReturnValueToMuscleSemantics(recv(msgfd, (char *)bytes, sizeof(bytes), 0), sizeof(bytes), false) > 0) ret = WaitForNextMessageAux(tsd, ref, wakeupTime);
+               if (ConvertReturnValueToMuscleSemantics(recv_ignore_eintr(msgfd, (char *)bytes, sizeof(bytes), 0), sizeof(bytes), false) > 0) ret = WaitForNextMessageAux(tsd, ref, wakeupTime);
             }
          }
       }
@@ -336,6 +318,9 @@ Thread * Thread :: GetCurrentThread()
 // This method is here to 'wrap' the internal thread's virtual method call with some standard setup/tear-down code of our own
 void Thread::InternalThreadEntryAux()
 {
+   const uint32 threadStackBase = 0;  // only here so we can get its address below
+   _threadStackBase = &threadStackBase;  // remember this stack location so GetCurrentStackUsage() can reference it later on
+
    muscle_thread_key curThreadKey = GetCurrentThreadKey();
    if (_curThreadsMutex.Lock() == B_NO_ERROR)
    {
@@ -352,6 +337,8 @@ void Thread::InternalThreadEntryAux()
       (void) _curThreads.Remove(curThreadKey);
       _curThreadsMutex.Unlock();
    }
+
+   _threadStackBase = NULL;
 }
 
 Thread::muscle_thread_key Thread :: GetCurrentThreadKey()
@@ -387,5 +374,34 @@ bool Thread :: IsCallerInternalThread() const
    #error "Thread::IsCallerInternalThread():  Unsupported platform?"
 #endif
 }
+
+uint32 Thread :: GetCurrentStackUsage() const
+{
+   if ((IsCallerInternalThread() == false)||(_threadStackBase == NULL)) return 0;
+
+   const uint32 curStackPos = 0;
+   const uint32 * curStackPtr = &curStackPos;
+   return (uint32) muscleAbs(curStackPtr-_threadStackBase);
+}
+
+void CheckThreadStackUsage(const char * fileName, uint32 line)
+{
+   Thread * curThread = Thread::GetCurrentThread();
+   if (curThread)
+   {
+      uint32 maxUsage = curThread->GetSuggestedStackSize();
+      if (maxUsage != 0)  // if the Thread doesn't have a suggested stack size, then we don't know what the limit is
+      {
+         uint32 curUsage = curThread->GetCurrentStackUsage();
+         if (curUsage > maxUsage)
+         {
+            LogTime(MUSCLE_LOG_CRITICALERROR, "Thread %lu exceeded its suggested stack usage ("UINT32_FORMAT_SPEC " > " UINT32_FORMAT_SPEC") at (%s:"UINT32_FORMAT_SPEC"), aborting program!\n", GetCurrentThreadID(), curUsage, maxUsage, fileName, line);
+            MCRASH("MUSCLE Thread exceeded its suggested stack allowance");
+         }
+      }
+   }
+   else printf("Warning, CheckThreadStackUsage() called from non-MUSCLE thread %lu at (%s:"UINT32_FORMAT_SPEC")\n", GetCurrentThreadID(), fileName, line);
+}
+
 
 }; // end namespace muscle

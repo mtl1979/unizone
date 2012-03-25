@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.TXT file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.TXT file for details. */
 
 #ifndef MuscleLogCallback_h
 #define MuscleLogCallback_h
 
 #include "syslog/SysLog.h"
+#include "util/CountedObject.h"
 #include "util/RefCount.h"
 
 namespace muscle {
@@ -43,7 +44,7 @@ public:
    /** Returns the name of the source code file that contains the LogLine() call that generated this callback, or "" if it's not available.  */
    const char * GetSourceFile() const {return _sourceFile;}
 
-  /** Returns the the name of the source code function that contains the LogLine() call that generated this callback,
+  /** Returns the name of the source code function that contains the LogLine() call that generated this callback,
     * or "" if it's not available.
     */
    const char * GetSourceFunction() const {return _sourceFunction;}
@@ -103,14 +104,15 @@ private:
    const char * _sourceFunction;
    int _sourceLine;
    const char * _text;
-   va_list * _argList; };
+   va_list * _argList;
+};
 
 /** Callback object that can be added with PutLogCallback() 
  *  Whenever a log message is generated, all added LogCallback
  *  objects will have their Log() methods called.  All log callbacks
  *  are synchronized via a global lock, hence they will be thread safe.
  */
-class LogCallback : public RefCountable
+class LogCallback : public RefCountable, private CountedObject<LogCallback>
 {
 public:
    /** Default constructor */
@@ -137,7 +139,7 @@ DECLARE_REFTYPES(LogCallback);
  *  that all have to do this themselves.  Assumes that all log
  *  lines will be less than 2048 characters long.
  */
-class LogLineCallback : public LogCallback
+class LogLineCallback : public LogCallback, private CountedObject<LogLineCallback>
 {
 public:
    /** Constructor */

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "reflector/RateLimitSessionIOPolicy.h"
 
@@ -52,7 +52,7 @@ RateLimitSessionIOPolicy ::
 GetPulseTime(const PulseArgs & args)
 {
    // Schedule a pulse for when we estimate _transferTally will sink back down to zero.  
-   return ((_maxRate > 0)&&(_transferTally>=CUTOFF))?(args.GetCallbackTime()+((_transferTally*1000000)/_maxRate)):MUSCLE_TIME_NEVER;
+   return ((_maxRate > 0)&&(_transferTally>=CUTOFF))?(args.GetCallbackTime()+((_transferTally*MICROS_PER_SECOND)/_maxRate)):MUSCLE_TIME_NEVER;
 }
 
 void
@@ -69,7 +69,7 @@ UpdateTransferTally(uint64 now)
 {
    if (_maxRate > 0)
    {
-      uint32 newBytesAvailable = (_lastTransferAt > 0) ? ((uint32)(((now-_lastTransferAt)*_maxRate)/1000000)) : MUSCLE_NO_LIMIT;
+      uint32 newBytesAvailable = (_lastTransferAt > 0) ? ((uint32)(((now-_lastTransferAt)*_maxRate)/MICROS_PER_SECOND)) : MUSCLE_NO_LIMIT;
       if (_transferTally > newBytesAvailable) _transferTally -= newBytesAvailable;
                                          else _transferTally = 0;
    }

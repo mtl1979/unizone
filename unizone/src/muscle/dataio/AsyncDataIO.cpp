@@ -1,7 +1,8 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "dataio/AsyncDataIO.h"
 #include "util/NetworkUtilityFunctions.h"
+#include "util/SocketMultiplexer.h"
 
 namespace muscle {
 
@@ -97,32 +98,29 @@ void AsyncDataIO :: InternalThreadEntry()
    uint32 fromSlaveIOBufReadIdx  = 0;  // which byte to read out of (fromSlaveIOBuf) next
    uint32 fromSlaveIOBufNumValid = 0;  // how many bytes are currently in (fromSlaveIOBuf) (including already-read ones)
 
+   SocketMultiplexer multiplexer;
    while(keepGoing)
    {
-      int slaveReadFD  = _slaveIO()?_slaveIO()->GetSelectReadSocket().GetFileDescriptor():-1;
-      int slaveWriteFD = _slaveIO()?_slaveIO()->GetSelectWriteSocket().GetFileDescriptor():-1;
+      int slaveReadFD  = _slaveIO()?_slaveIO()->GetReadSelectSocket().GetFileDescriptor():-1;
+      int slaveWriteFD = _slaveIO()?_slaveIO()->GetWriteSelectSocket().GetFileDescriptor():-1;
       int fromMainFD   = GetInternalThreadWakeupSocket().GetFileDescriptor();
       int notifyFD     = _ioThreadNotifySocket.GetFileDescriptor();
 
-      int maxfd = muscleMax(slaveReadFD, slaveWriteFD, fromMainFD, notifyFD);
-      fd_set readSet, writeSet;
-      FD_ZERO(&readSet); FD_ZERO(&writeSet);
-      
-      if ((slaveReadFD  >= 0)&&(fromSlaveIOBufNumValid    < sizeof(fromSlaveIOBuf)))   FD_SET(slaveReadFD,  &readSet);
-      if ((slaveWriteFD >= 0)&&(fromMainThreadBufNumValid > fromMainThreadBufReadIdx)) FD_SET(slaveWriteFD, &writeSet);
+      if ((slaveReadFD  >= 0)&&(fromSlaveIOBufNumValid    < sizeof(fromSlaveIOBuf)))   multiplexer.RegisterSocketForReadReady(slaveReadFD);
+      if ((slaveWriteFD >= 0)&&(fromMainThreadBufNumValid > fromMainThreadBufReadIdx)) multiplexer.RegisterSocketForWriteReady(slaveWriteFD);
 
       if (fromMainFD >= 0)
       {
-         if (fromMainThreadBufNumValid < sizeof(fromMainThreadBuf)) FD_SET(fromMainFD, &readSet);
-         if (fromSlaveIOBufNumValid > fromSlaveIOBufReadIdx)        FD_SET(fromMainFD, &writeSet);
+         if (fromMainThreadBufNumValid < sizeof(fromMainThreadBuf)) multiplexer.RegisterSocketForReadReady(fromMainFD);
+         if (fromSlaveIOBufNumValid > fromSlaveIOBufReadIdx)        multiplexer.RegisterSocketForWriteReady(fromMainFD);
       }
-      if (notifyFD >= 0) FD_SET(notifyFD, &readSet);  // always be on the lookout for notifications...
+      if (notifyFD >= 0) multiplexer.RegisterSocketForReadReady(notifyFD);  // always be on the lookout for notifications...
 
       // we block here, waiting for data availability
-      if (select(maxfd+1, &readSet, &writeSet, NULL, NULL) < 0) break;
+      if (multiplexer.WaitForEvents() < 0) break;
 
       // All the notify socket needs to do is make select() return.  We just read the junk notify-bytes and ignore them.
-      char junk[128]; if ((notifyFD >= 0)&&(FD_ISSET(notifyFD, &readSet))) (void) ReceiveData(_ioThreadNotifySocket, junk, sizeof(junk), false);
+      char junk[128]; if ((notifyFD >= 0)&&(multiplexer.IsSocketReadyForRead(notifyFD))) (void) ReceiveData(_ioThreadNotifySocket, junk, sizeof(junk), false);
 
       // Determine how many bytes until the next command in the output stream (we want them to be executed at the same point
       // in the I/O thread's output stream as they were called at in the main thread's output stream)
@@ -146,7 +144,7 @@ void AsyncDataIO :: InternalThreadEntry()
       if (bytesUntilNextCommand > 0)
       {
          // Read the data from the slave FD, into our from-slave buffer
-         if ((slaveReadFD >= 0)&&(fromSlaveIOBufNumValid < sizeof(fromSlaveIOBuf))&&(FD_ISSET(slaveReadFD, &readSet)))
+         if ((slaveReadFD >= 0)&&(fromSlaveIOBufNumValid < sizeof(fromSlaveIOBuf))&&(multiplexer.IsSocketReadyForRead(slaveReadFD)))
          {
             int32 bytesRead = SlaveRead(&fromSlaveIOBuf[fromSlaveIOBufNumValid], sizeof(fromSlaveIOBuf)-fromSlaveIOBufNumValid);
             if (bytesRead >= 0) fromSlaveIOBufNumValid += bytesRead;
@@ -157,7 +155,7 @@ void AsyncDataIO :: InternalThreadEntry()
          {
             // Write the data from our from-main-thread buffer, to our slave I/O
             uint32 bytesToWriteToSlave = muscleMin(bytesUntilNextCommand, fromMainThreadBufNumValid-fromMainThreadBufReadIdx);
-            if ((bytesToWriteToSlave > 0)&&(FD_ISSET(slaveWriteFD, &writeSet)))
+            if ((bytesToWriteToSlave > 0)&&(multiplexer.IsSocketReadyForWrite(slaveWriteFD)))
             {
                int32 bytesWritten = SlaveWrite(&fromMainThreadBuf[fromMainThreadBufReadIdx], bytesToWriteToSlave);
                if (bytesWritten >= 0)
@@ -174,7 +172,7 @@ void AsyncDataIO :: InternalThreadEntry()
          if (fromMainFD >= 0)
          {
             // Read the data from the main thread's socket, into our from-main-thread buffer
-            if ((fromMainThreadBufNumValid < sizeof(fromMainThreadBuf))&&(FD_ISSET(fromMainFD, &readSet)))
+            if ((fromMainThreadBufNumValid < sizeof(fromMainThreadBuf))&&(multiplexer.IsSocketReadyForRead(fromMainFD)))
             {
                int32 bytesRead = ReceiveData(GetInternalThreadWakeupSocket(), &fromMainThreadBuf[fromMainThreadBufNumValid], sizeof(fromMainThreadBuf)-fromMainThreadBufNumValid, false);
                if (bytesRead >= 0) fromMainThreadBufNumValid += bytesRead;
@@ -182,7 +180,7 @@ void AsyncDataIO :: InternalThreadEntry()
             }
 
             // Write the data from our from-slave-IO buffer, to the main thread's socket
-            if ((fromSlaveIOBufReadIdx < fromSlaveIOBufNumValid)&&(FD_ISSET(fromMainFD, &writeSet)))
+            if ((fromSlaveIOBufReadIdx < fromSlaveIOBufNumValid)&&(multiplexer.IsSocketReadyForWrite(fromMainFD)))
             {
                int32 bytesWritten = SendData(GetInternalThreadWakeupSocket(), &fromSlaveIOBuf[fromSlaveIOBufReadIdx], fromSlaveIOBufNumValid-fromSlaveIOBufReadIdx, false);
                if (bytesWritten >= 0) 

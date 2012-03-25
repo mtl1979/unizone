@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef AbstractSessionIOPolicy_h
 #define AbstractSessionIOPolicy_h
@@ -31,7 +31,7 @@ public:
    bool IsAsInput() const {return _asInput;}
 
    /** Returns a decent hash code for this object */
-   uint32 HashCode() const {return ((uint32)((unsigned long)_session))+(_asInput?1:0);}  // double-cast for AMD64
+   uint32 HashCode() const {return ((uint32)((uintptr)_session))+(_asInput?1:0);}  // double-cast for AMD64
 
    /** Equality operator;  returns true iff (rhs) has the same two settings as we do */
    bool operator == (const PolicyHolder & rhs) {return ((rhs._session == _session)&&(rhs._asInput == _asInput));}
@@ -59,7 +59,7 @@ private:
  *  <li>Lather, rinse, repeat</li>
  * </ol>
  */
-class AbstractSessionIOPolicy : public PulseNode, public RefCountable
+class AbstractSessionIOPolicy : public PulseNode, public RefCountable, private CountedObject<AbstractSessionIOPolicy>
 {
 public:
    /** Default constructor. */

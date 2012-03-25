@@ -68,7 +68,8 @@ WUniListItem::key(int c, bool /* asc */) const
 {
 	int64 n, m;
 	int32 bw;
-	QString result, q1, q2;
+	QString result;
+	QStringRef q1, q2;
 
 #ifdef _DEBUG
 	WString wres;
@@ -89,7 +90,7 @@ WUniListItem::key(int c, bool /* asc */) const
 #endif
 
 			bool ok;
-			n = toLongLong(result, &ok);
+			n = toLongLong(&result, &ok);
 			if (ok)
 			{
 				// convert our number to hexadecimal! what a thought, huh?
@@ -124,8 +125,8 @@ WUniListItem::key(int c, bool /* asc */) const
 		}
 	case TransferLoad:
 		{
-			q1 = fKey[c].left(fKey[c].find(","));
-			q2 = fKey[c].mid(fKey[c].find(",")+1);
+			q1 = fKey[c].leftRef(fKey[c].find(","));
+			q2 = fKey[c].midRef(fKey[c].find(",")+1);
 			bool ok1,ok2;
 			n = toLongLong(q1, &ok1);
 			m = toLongLong(q2, &ok2);
@@ -225,7 +226,7 @@ WUniListItem::item(int c)
 {
 	int64 n, m, o;
 	int32 bw;
-	QString q1, q2;
+	QStringRef q1, q2;
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -234,7 +235,7 @@ WUniListItem::item(int c)
 	case Time:
 	case Size:
 		{
-		n = toLongLong(fKey[c]);
+		n = toLongLong(&fKey[c]);
 		return n;
 		}
 	case TransferSpeed:
@@ -244,8 +245,8 @@ WUniListItem::item(int c)
 		}
 	case TransferLoad:
 		{
-		q1 = fKey[c].left(fKey[c].find(","));
-		q2 = fKey[c].mid(fKey[c].find(",")+1);
+			q1 = fKey[c].leftRef(fKey[c].find(","));
+			q2 = fKey[c].midRef(fKey[c].find(",")+1);
 		bool ok1,ok2;
 		n = toLongLong(q1, &ok1);
 		m = toLongLong(q2, &ok2);
@@ -329,7 +330,8 @@ WUniListItem::item(int c)
 QString
 WUniListItem::text(int c) const
 {
-	QString postFix, result, q1, q2;
+	QString postFix, result;
+	QStringRef q1, q2;
 	double n;
 	double o;
 	int64 p, q;
@@ -460,8 +462,8 @@ WUniListItem::text(int c) const
 
 	case TransferLoad:
 		{
-		q1 = fKey[c].left(fKey[c].find(","));
-		q2 = fKey[c].mid(fKey[c].find(",")+1);
+		q1 = fKey[c].leftRef(fKey[c].find(","));
+		q2 = fKey[c].midRef(fKey[c].find(",")+1);
 		bool ok1,ok2;
 		p = toLongLong(q1, &ok1);
 		q = toLongLong(q2, &ok2);

@@ -394,7 +394,7 @@ WDownloadThread::InitSession()
 				ResetRate(connectRef);
 			}
 			
-			uint32 sIP = ResolveAddress(fIP); // <postmaster@raasu.org> 20021026
+			muscle::ip_address sIP = ResolveAddress(fIP); // <postmaster@raasu.org> 20021026
 			if (qmtt->AddNewConnectSession(sIP, (uint16)fPort, connectRef) == B_OK)
 			{
 				InitSessionAux();

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleByteBufferDataIO_h
 #define MuscleByteBufferDataIO_h
@@ -13,7 +13,7 @@ namespace muscle {
  *  The ByteBuffer will behave much like a file would (automatically being resized larger when you
  *  Write() past the end of it, etc), except of course it's all in memory, not on disk.
  */
-class ByteBufferDataIO : public DataIO
+class ByteBufferDataIO : public DataIO, private CountedObject<ByteBufferDataIO>
 {
 public:
    /** Constructor.

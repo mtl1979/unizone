@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleXorDataIO_h
 #define MuscleXorDataIO_h
@@ -13,7 +13,7 @@ namespace muscle {
   * holds internally.  This can be useful if you want to obfuscate your data
   * a little bit before sending it out to disk or over the network.
   */
-class XorDataIO : public DataIO
+class XorDataIO : public DataIO, public CountedObject<XorDataIO>
 {
 public:
    /** Default Constructor.  Be sure to set a child dataIO with SetChildDataIO()

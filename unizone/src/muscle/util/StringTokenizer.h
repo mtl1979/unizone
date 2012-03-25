@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStringTokenizer_h
 #define MuscleStringTokenizer_h
@@ -7,7 +7,11 @@
 
 namespace muscle {
 
-/** String tokenizer class, similar to Java's java.util.StringTokenizer */
+/** String tokenizer class, similar to Java's java.util.StringTokenizer.  This class is used
+  * to interpret a specified character string as a series of sub-strings, with each sub-string
+  * differentiated from its neighbors by the presence of one or more of the specified separator-tokens 
+  * between the two sub-strings.
+  */
 class StringTokenizer
 {
 public:
@@ -15,13 +19,13 @@ public:
     *  should be a string of tokens (e.g. words) separated by any 
     *  of the characters specified in (separators)
     *  @param tokenizeMe the string to break up into 'words'.
-    *  @param separators ASCII string representing a list of characters to interpret a word separators.
-    *                    Defaults to ", \t" (where "\t" is of course the tab character)
+    *  @param separators ASCII string representing a list of characters to interpret a substring-separators.
+    *                    Defaults to ", \t\r\n".
     */
-   StringTokenizer(const char * tokenizeMe, const char * separators = ", \t")
+   StringTokenizer(const char * tokenizeMe, const char * separators = ", \t\r\n")
    {
-      int tlen = strlen(tokenizeMe);
-      int slen = strlen(separators);
+      int tlen = (int) strlen(tokenizeMe);
+      int slen = (int) strlen(separators);
  
       char * temp = newnothrow_array(char, slen+1+tlen+1);
       if (temp)
@@ -41,14 +45,14 @@ public:
    }
 
    /** This Constructor is the same as above, only with this one you allow
-    *  the StringTokenizer to operator directly on (tokenizeMe) rather
-    *  than making it allocate a copy first.  (it's a bit more efficient)
+    *  the StringTokenizer to modify (tokenizeMe) directly, rather
+    *  than making a copy of the string first and modifying that.  (it's a bit more efficient)
     *  @param junk Ignored; it's only here to disambiguate the two constructors.
     *  @param tokenizeMe The string to tokenize.  This string will get munged!
-    *  @param separators ASCII string representing a list of characters to interpret a word separators.
+    *  @param separators ASCII string representing a list of characters to interpret as word-separator characters.
     *                    Defaults to ", \t" (where "\t" is of course the tab character)
     */
-   StringTokenizer(bool junk, char * tokenizeMe, const char * separators = ", \t")
+   StringTokenizer(bool junk, char * tokenizeMe, const char * separators = ", \t\r\n")
    {
       (void) junk;
       _next = tokenizeMe;

@@ -152,7 +152,7 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
          if (_areaID >= 0)
          {
             _area = shmat(_areaID, NULL, 0);
-            if (_area)
+            if ((_area)&&(_area != ((void *)-1)))  // FogBugz #7294
             {
                // Now get the stats on our area
                struct shmid_ds buf;

@@ -7,7 +7,7 @@
 namespace muscle {
 
 /** This class lets you communicate over a TCP socket with SSL encryption enabled on it. */
-class SSLSocketDataIO : public TCPSocketDataIO
+class SSLSocketDataIO : public TCPSocketDataIO, private CountedObject<SSLSocketDataIO>
 {
 public:
    /**

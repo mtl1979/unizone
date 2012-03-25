@@ -1,9 +1,9 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQMessageTransceiverThread_h
 #define MuscleQMessageTransceiverThread_h
 
-#include "support/MuscleSupport.h"  // first avoid ordering problems with MUSCLE_FD_SETSIZE
+#include "support/MuscleSupport.h"  // placed first to avoid ordering problems with MUSCLE_FD_SETSIZE
 
 #include <qobject.h>
 #include <qthread.h>
@@ -68,7 +68,7 @@ private:
  *  about event loops and such.  In all other ways it works the
  *  same as any MessageTransceiverThread object.
  */
-class QMessageTransceiverThread : public QObject, public MessageTransceiverThread, public IMessageTransceiverMaster
+class QMessageTransceiverThread : public QObject, public MessageTransceiverThread, public IMessageTransceiverMaster, private CountedObject<QMessageTransceiverThread>
 {
    Q_OBJECT
 
@@ -219,7 +219,7 @@ private:
   * You can specify how many QMessageTransceiverHandler objects may share a single
   * QMessageTransceiverThread at once.
   */
-class QMessageTransceiverThreadPool : public IMessageTransceiverMaster
+class QMessageTransceiverThreadPool : public IMessageTransceiverMaster, private CountedObject<QMessageTransceiverThreadPool>
 {
 public:
    /**
@@ -255,7 +255,7 @@ protected:
 
 private:
    uint32 _maxSessionsPerThread;
-   Hashtable<QMessageTransceiverThread *, bool> _threads;
+   Hashtable<QMessageTransceiverThread *, Void> _threads;
 };
 
 /**
@@ -271,7 +271,7 @@ private:
  * class directly for everything and ignore this class, if you prefer -- this class is here just as
  * an optimization.
  */
-class QMessageTransceiverHandler : public QObject
+class QMessageTransceiverHandler : public QObject, private CountedObject<QMessageTransceiverHandler>
 {
    Q_OBJECT
 
@@ -332,14 +332,19 @@ public:
      *                           be attempted, and the session will be removed when the
      *                           connection breaks.  Specifying this is equivalent to calling
      *                           SetAutoReconnectDelay() on (optSessionRef).
-
+     * @param maxAsyncConnectPeriod If specified, this is the maximum time (in microseconds) that we will
+     *                              wait for the asynchronous TCP connection to complete.  If this amount of time passes
+     *                              and the TCP connection still has not been established, we will force the connection attempt to
+     *                              abort.  If not specified, the default value (as specified by MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS)
+     *                              is used; typically this means that it will be left up to the operating system how long to wait
+     *                              before timing out the connection attempt.
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
+   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, const ThreadWorkerSessionRef & optSessionRef, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER) {return SetupAsNewConnectSession(master, targetIPAddress, port, ThreadWorkerSessionRef(), autoReconnectDelay);}
+   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS) {return SetupAsNewConnectSession(master, targetIPAddress, port, ThreadWorkerSessionRef(), autoReconnectDelay, maxAsyncConnectPeriod);}
 
    /**
      * Associates this handler with a specified IMessageTransceiverMaster, and tells it to connect to
@@ -363,13 +368,19 @@ public:
      *                           be attempted, and the session will be removed when the
      *                           connection breaks.  Specifying this is equivalent to calling
      *                           SetAutoReconnectDelay() on (optSessionRef).
+     * @param maxAsyncConnectPeriod If specified, this is the maximum time (in microseconds) that we will
+     *                              wait for the asynchronous TCP connection to complete.  If this amount of time passes
+     *                              and the TCP connection still has not been established, we will force the connection attempt to
+     *                              abort.  If not specified, the default value (as specified by MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS)
+     *                              is used; typically this means that it will be left up to the operating system how long to wait
+     *                              before timing out the connection attempt.
      * @return B_NO_ERROR on success, or B_ERROR on failure.  Note that if the internal thread is currently running,
      *         then success merely indicates that the add command was enqueued successfully, not that it was executed (yet).
      */
-   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
+   virtual status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, const ThreadWorkerSessionRef & optSessionRef, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS);
 
    /** Convenience method -- calls the above method with a NULL session reference. */
-   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER) {return SetupAsNewConnectSession(master, targetHostName, port, ThreadWorkerSessionRef(), expandLocalhost, autoReconnectDelay);}
+   status_t SetupAsNewConnectSession(IMessageTransceiverMaster & master, const String & targetHostName, uint16 port, bool expandLocalhost = false, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS) {return SetupAsNewConnectSession(master, targetHostName, port, ThreadWorkerSessionRef(), expandLocalhost, autoReconnectDelay, maxAsyncConnectPeriod);}
 
    /**
      * This method is that Requests that the MessageTranceiverThread object send us a MTT_EVENT_OUTPUT_QUEUES_DRAINED event

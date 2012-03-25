@@ -1,4 +1,6 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+
+#ifndef WIN32  // Windows can't handle file descriptors!
 
 #if defined(__linux__)
 # ifndef _FILE_OFFSET_BITS
@@ -13,11 +15,13 @@
 #endif
 
 #include "dataio/FileDescriptorDataIO.h"
+#include "util/MiscUtilityFunctions.h"
+#include "util/NetworkUtilityFunctions.h"  // for read_ignore_eintr() and write_ignore_eintr()
 
 namespace muscle {
 
 FileDescriptorDataIO ::
-FileDescriptorDataIO(const ConstSocketRef & fd, bool blocking) : _fd(fd)
+FileDescriptorDataIO(const ConstSocketRef & fd, bool blocking) : _fd(fd), _dofSyncOnClose(false)
 {
    SetBlockingIOEnabled(blocking);
 }
@@ -25,7 +29,11 @@ FileDescriptorDataIO(const ConstSocketRef & fd, bool blocking) : _fd(fd)
 FileDescriptorDataIO ::
 ~FileDescriptorDataIO() 
 {
-   // empty
+   if (_dofSyncOnClose)
+   {
+      int fd = _fd.GetFileDescriptor();
+      if (fd >= 0) (void) fsync(fd);
+   }
 }
 
 int32 FileDescriptorDataIO :: Read(void * buffer, uint32 size)  
@@ -33,7 +41,7 @@ int32 FileDescriptorDataIO :: Read(void * buffer, uint32 size)
    int fd = _fd.GetFileDescriptor();
    if (fd >= 0)
    {
-      int r = read(fd, buffer, size);
+      int r = read_ignore_eintr(fd, buffer, size);
       return _blocking ? r : ConvertReturnValueToMuscleSemantics(r, size, _blocking);
    }
    else return -1;
@@ -44,7 +52,7 @@ int32 FileDescriptorDataIO :: Write(const void * buffer, uint32 size)
    int fd = _fd.GetFileDescriptor();
    if (fd >= 0)
    {
-      int w = write(fd, buffer, size);
+      int w = write_ignore_eintr(fd, buffer, size);
       return _blocking ? w : ConvertReturnValueToMuscleSemantics(w, size, _blocking);
    }
    else return -1;
@@ -117,3 +125,5 @@ int64 FileDescriptorDataIO :: GetPosition() const
 }
 
 }; // end namespace muscle
+
+#endif

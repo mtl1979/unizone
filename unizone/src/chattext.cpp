@@ -18,7 +18,7 @@
 WChatText::WChatText(QObject * target, QWidget * parent)
 	: Q3MultiLineEdit(parent), fTarget(target) 
 {
-	fBuffer = new Queue<QString>(DEFAULT_SIZE);
+	fBuffer = new Queue<QString>();
 	fCurLine = 0;
 	setAcceptDrops(true);
 }
@@ -225,10 +225,7 @@ WChatText::dropEvent(QDropEvent* event)
 			}
 			if (!files.isEmpty())
 			{
-				files.prepend("beshare:");
-				files.append("@");
-				files.append(uid);
-				insert(files);
+				insert("beshare:" + files + "@" + uid);
 			}
 			return;
 		}
@@ -239,7 +236,7 @@ WChatText::dropEvent(QDropEvent* event)
 void 
 WChatText::dragEnterEvent(QDragEnterEvent* event)
 {
-    if (event->mimeData()->hasUrls())
-         event->acceptProposedAction();
+	if (event->mimeData()->hasUrls())
+		event->acceptProposedAction();
 }
 

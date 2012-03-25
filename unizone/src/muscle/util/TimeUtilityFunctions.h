@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTimeUtilityFunctions_h
 #define MuscleTimeUtilityFunctions_h
@@ -31,14 +31,100 @@ namespace muscle {
 /** A value that GetPulseTime() can return to indicate that Pulse() should never be called. */
 #define MUSCLE_TIME_NEVER ((uint64)-1) // (9223372036854775807LL)
 
+/** How many milliseconds are in one second (1000) */
+#define MILLIS_PER_SECOND  ((int64)1000)
+
+/** How many microseconds are in one second (1000000) */
+#define MICROS_PER_SECOND  ((int64)1000000)
+
+/** How many nanoseconds are in one second (1000000000) */
+#define NANOS_PER_SECOND   ((int64)1000000000)
+
+/** Given a value in seconds, returns the equivalent number of nanoseconds. 
+  * @param s A time value, in seconds.
+  */
+inline int64 SecondsToNanos(int64 s)     {return s*NANOS_PER_SECOND;}
+
+/** Given a value in seconds, returns the equivalent number of microseconds. 
+  * @param s A time value, in seconds.
+  */
+inline int64 SecondsToMicros(int64 s)    {return s*MICROS_PER_SECOND;}
+
+/** Given a value in seconds, returns the equivalent number of milliseconds. 
+  * @param s A time value, in seconds.
+  */
+inline int64 SecondsToMillis(int64 s)    {return s*MILLIS_PER_SECOND;}
+
+/** Given a value in milliseconds, returns the equivalent number of nanoseconds. 
+  * @param ms A time value, in milliseconds.
+  */
+inline int64 MillisToNanos(int64 ms)     {return ms*(1000*1000);}
+
+/** Given a value in milliseconds, returns the equivalent number of nanoseconds. 
+  * @param ms A time value, in milliseconds.
+  */
+inline int64 MillisToMicros(int64 ms)    {return ms*1000;}
+
+/** Given a value in milliseconds, returns the equivalent number of nanoseconds. 
+  * @param ms A time value, in milliseconds.
+  */
+inline int64 MillisToSeconds(int64 ms)   {return ms/MILLIS_PER_SECOND;}
+
+/** Given a value in microseconds, returns the equivalent number of nanoseconds. 
+  * @param us A time value, in microseconds.
+  */
+inline int64 MicrosToNanos(int64 us)     {return us*1000;}
+
+/** Given a value in microseconds, returns the equivalent number of milliseconds. 
+  * @param us A time value, in microseconds.
+  */
+inline int64 MicrosToMillis(int64 us)    {return us/1000;}
+
+/** Given a value in microseconds, returns the equivalent number of seconds. 
+  * @param us A time value, in microseconds.
+  */
+inline int64 MicrosToSeconds(int64 us)   {return us/MICROS_PER_SECOND;}
+
+/** Given a value in nanoseconds, returns the equivalent number of microseconds. 
+  * @param ns A time value, in nanoseconds.
+  */
+inline int64 NanosToMicros(int64 ns)     {return ns/1000;}
+
+/** Given a value in nanoseconds, returns the equivalent number of milliseconds. 
+  * @param ns A time value, in nanoseconds.
+  */
+inline int64 NanosToMillis(int64 ns)     {return ns/(1000*1000);}
+
+/** Given a value in nanoseconds, returns the equivalent number of seconds. 
+  * @param ns A time value, in nanoseconds.
+  */
+inline int64 NanosToSeconds(int64 ns)    {return ns/NANOS_PER_SECOND;}
+
+/** Given a value in minutes, returns the equivalent number of microseconds. 
+  * @param m A time value, in minutes.
+  */
+inline int64 MinutesToMicros(int64 m)    {return SecondsToMicros(m*60);}
+
+/** Given a value in hours, returns the equivalent number of microseconds. 
+  * @param h A time value, in hours.
+  */
+inline int64 HoursToMicros(int64 h)      {return MinutesToMicros(h*60);}
+
+/** Given a value in days, returns the equivalent number of microseconds. 
+  * @param d A time value, in days.
+  */
+inline int64 DaysToMicros(int64 d)       {return HoursToMicros(d*24);}
+
+/** Given a value in weeks, returns the equivalent number of microseconds. 
+  * @param w A time value, in weeks.
+  */
+inline int64 WeeksToMicros(int64 w)      {return DaysToMicros(w*7);}
+
 /** Given a timeval struct, returns the equivalent uint64 value (in microseconds).
  *  @param tv a timeval to convert
  *  @return A uint64 representing the same time.
  */
-inline uint64 ConvertTimeValTo64(const struct timeval & tv)
-{
-   return (((uint64)tv.tv_sec)*1000000) + ((uint64)tv.tv_usec);
-}
+inline uint64 ConvertTimeValTo64(const struct timeval & tv) {return SecondsToMicros(tv.tv_sec) + ((uint64)tv.tv_usec);}
 
 /** Given a uint64, writes the equivalent timeval struct into the second argument.
  *  @param val A uint64 time value in microseconds
@@ -46,8 +132,8 @@ inline uint64 ConvertTimeValTo64(const struct timeval & tv)
  */
 inline void Convert64ToTimeVal(uint64 val, struct timeval & retStruct)
 {
-   retStruct.tv_sec  = (int32)(val / 1000000);
-   retStruct.tv_usec = (int32)(val % 1000000);
+   retStruct.tv_sec  = (int32)(val / MICROS_PER_SECOND);
+   retStruct.tv_usec = (int32)(val % MICROS_PER_SECOND);
 }
 
 /** Convenience function:  Returns true true iff (t1 < t2)
@@ -68,10 +154,10 @@ inline void AddTimeVal(struct timeval & addToThis, const struct timeval & addThi
 {
    addToThis.tv_sec  += addThis.tv_sec;
    addToThis.tv_usec += addThis.tv_usec;
-   if (addToThis.tv_usec > 1000000L)
+   if (addToThis.tv_usec > MICROS_PER_SECOND)
    {
-      addToThis.tv_sec += addToThis.tv_usec / 1000000L;
-      addToThis.tv_usec = addToThis.tv_usec % 1000000L;
+      addToThis.tv_sec += addToThis.tv_usec / MICROS_PER_SECOND;
+      addToThis.tv_usec = addToThis.tv_usec % MICROS_PER_SECOND;
    }
 }
 
@@ -85,8 +171,8 @@ inline void SubtractTimeVal(struct timeval & subtractFromThis, const struct time
    subtractFromThis.tv_usec -= subtractThis.tv_usec;
    if (subtractFromThis.tv_usec < 0L)
    {
-      subtractFromThis.tv_sec += (subtractFromThis.tv_usec / 1000000L)-1;
-      while(subtractFromThis.tv_usec < 0L) subtractFromThis.tv_usec += 1000000L;
+      subtractFromThis.tv_sec += (subtractFromThis.tv_usec / MICROS_PER_SECOND)-1;
+      while(subtractFromThis.tv_usec < 0L) subtractFromThis.tv_usec += MICROS_PER_SECOND;
    }
 }
 
@@ -174,7 +260,7 @@ inline bool OnceEvery(uint64 interval, uint64 & lastTime)
    uint64 now = GetCurrentTime64(); \
    if (startTime == 0) startTime = now; \
    count++; \
-   if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: " UINT64_FORMAT_SPEC "/s\n", x, (1000000*((uint64)count))/(now-startTime)); \
+   if ((OnceEvery(500000, lastTime))&&(now>startTime)) printf("%s: " UINT64_FORMAT_SPEC "/s\n", x, (MICROS_PER_SECOND*((uint64)count))/(now-startTime)); \
 }
 
 /** @} */ // end of timeutilityfunctions doxygen group

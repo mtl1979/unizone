@@ -34,6 +34,7 @@ public:
 	void PutChatText(const QString & fromsid, const QString & msg);
 
 	void AddUser(const WUserRef & user);
+	void AddUsers(const WUserMap & umap);
 	bool RemUser(const WUserRef & user);
 	WUserMap & GetUsers() { return fUsers; }
 

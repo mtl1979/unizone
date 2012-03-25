@@ -47,15 +47,15 @@ WListThread::InternalThreadEntry()
 	{
 		MessageRef mref;
 		HashtableIterator<QString, QString> filesIter = fFileScanThread->GetSharedFilesIterator(HTIT_FLAG_NOREGISTER);
-		while (filesIter.HasMoreKeys())
+		while (filesIter.HasData())
 		{
 			// stop iterating if we are waiting for file scan thread to finish
 			if (fShutdownFlag && *fShutdownFlag)
 				break;
 			
-			QString s;
+			QString s = filesIter.GetKey();
+			filesIter++;
 			MessageRef mref;
-			filesIter.GetNextKey(s);
 			
 			if (fFileScanThread->FindFile(s, mref))
 			{

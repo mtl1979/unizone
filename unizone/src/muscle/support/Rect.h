@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /*******************************************************************************
 /
@@ -11,12 +11,13 @@
 #ifndef MuscleRect_h
 #define MuscleRect_h
 
+#include "support/Flattenable.h"
 #include "support/Point.h"
 
 namespace muscle {
 
 /** A portable version of Be's BRect class. */
-class Rect : public Flattenable, public Tuple<4,float>
+class Rect : public Tuple<4,float>, public PseudoFlattenable
 {
 public:
    /** Default Constructor.  
@@ -29,13 +30,13 @@ public:
    Rect(float l, float t, float r, float b) {Set(l,t,r,b);}
 
    /** Copy constructor */
-   Rect(const Rect & rhs) : Flattenable(), Tuple<4,float>(rhs) {/* empty */}
+   Rect(const Rect & rhs) : Tuple<4,float>(rhs) {/* empty */}
 
    /** Constructor where you specify the leftTop point and the rightBottom point. */
    Rect(Point leftTop, Point rightBottom) {Set(leftTop.x(), leftTop.y(), rightBottom.x(), rightBottom.y());}
 
    /** Destructor */
-   virtual ~Rect() {/* empty */}
+   ~Rect() {/* empty */}
 
    /** convenience method to get the left edge of this Rect */
    inline float   left()   const {return (*this)[0];}
@@ -168,6 +169,9 @@ public:
    /** Returns true iff this rectangle's area is non imaginary (i.e. Width() and Height()) are both non-negative) */
    inline bool IsValid() const {return ((Width() >= 0.0f)&&(Height() >= 0.0f));}
 
+   /** Returns the area of this rectangle. */
+   inline float Area() const {return IsValid() ? (Width()*Height()) : 0.0f;}
+
    /** Returns the width of this rectangle. */
    inline float Width() const {return right() - left();}
 
@@ -186,14 +190,17 @@ public:
    /** Returns true iff this rectangle fully the specified rectangle. */
    inline bool Contains(Rect p) const {return ((Contains(p.LeftTop()))&&(Contains(p.RightTop()))&&(Contains(p.LeftBottom()))&&(Contains(p.RightBottom())));}
 
-   /** Part of the Flattenable API:  Returns true. */
-   virtual bool IsFixedSize() const {return true;}
+   /** Part of the pseudo-Flattenable API:  Returns true. */
+   bool IsFixedSize() const {return true;}
 
-   /** Part of the Flattenable API:  Returns B_RECT_TYPE. */
-   virtual uint32 TypeCode() const {return B_RECT_TYPE;}
+   /** Part of the pseudo-Flattenable API:  Returns B_RECT_TYPE. */
+   uint32 TypeCode() const {return B_RECT_TYPE;}
 
-   /** Part of the Flattenable API:  Returns 4*sizeof(float). */
-   virtual uint32 FlattenedSize() const {return 4*sizeof(float);}
+   /** Returns true iff (tc) equals B_RECT_TYPE. */
+   bool AllowsTypeCode(uint32 tc) const {return (TypeCode()==tc);}
+
+   /** Part of the pseudo-Flattenable API:  Returns 4*sizeof(float). */
+   uint32 FlattenedSize() const {return 4*sizeof(float);}
 
    /** Returns a 32-bit checksum for this object. */
    uint32 CalculateChecksum() const {return CalculateChecksumForFloat(left()) + (3*CalculateChecksumForFloat(top())) + (5*CalculateChecksumForFloat(right())) + (7*CalculateChecksumForFloat(bottom()));}
@@ -201,7 +208,7 @@ public:
    /** Flattens this rectangle into an endian-neutral byte buffer.
     *  @param buffer Points to the byte buffer to write into.  There must be at least FlattenedSize() bytes there. 
     */
-   virtual void Flatten(uint8 * buffer) const
+   void Flatten(uint8 * buffer) const
    {
       float * buf = (float *) buffer;
       uint32 oL = B_HOST_TO_LENDIAN_IFLOAT(left());   muscleCopyOut(&buf[0], oL);
@@ -215,7 +222,7 @@ public:
     *  @param size The number of bytes available in (buffer).  There should be at least FlattenedSize() bytes there.
     *  @return B_NO_ERROR on success, or B_ERROR if (buffer) was too small.
     */
-   virtual status_t Unflatten(const uint8 * buffer, uint32 size)
+   status_t Unflatten(const uint8 * buffer, uint32 size)
    {
       if (size >= FlattenedSize())
       {

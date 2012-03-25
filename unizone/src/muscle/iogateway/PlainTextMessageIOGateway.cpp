@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "iogateway/PlainTextMessageIOGateway.h"
 
@@ -99,12 +99,14 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
    }
    if (bytesRead > 0)
    {
-      ret += bytesRead;
-      buf[bytesRead] = '\0';
+      uint32 filteredBytesRead = bytesRead;
+      FilterInputBuffer(buf, filteredBytesRead, sizeof(buf)-1);
+      ret += filteredBytesRead;
+      buf[filteredBytesRead] = '\0';
 
       MessageRef inMsg;  // demand-allocated
       int32 beginAt = 0;
-      for (int32 i=0; i<bytesRead; i++)
+      for (uint32 i=0; i<filteredBytesRead; i++)
       {
          char nextChar = buf[i];
          if ((nextChar == '\r')||(nextChar == '\n'))
@@ -115,7 +117,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
          }
          _prevCharWasCarriageReturn = (nextChar == '\r');
       }
-      if (beginAt < bytesRead)
+      if (beginAt < (int32)filteredBytesRead)
       {
          if (_flushPartialIncomingLines) inMsg = AddIncomingText(inMsg, &buf[beginAt]);
                                     else _incomingText += &buf[beginAt];
@@ -124,6 +126,14 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
    }
    return ret;
 }
+
+void
+PlainTextMessageIOGateway ::
+FilterInputBuffer(char * /*buf*/, uint32 & /*bufLen*/, uint32 /*maxLen*/)
+{
+   // empty
+}
+
 
 void 
 PlainTextMessageIOGateway :: FlushInput(AbstractGatewayMessageReceiver & receiver)
@@ -157,6 +167,43 @@ Reset()
    _currentSendText.Clear();
    _prevCharWasCarriageReturn = false;
    _incomingText.Clear();
+}
+
+TelnetPlainTextMessageIOGateway :: TelnetPlainTextMessageIOGateway() : _inSubnegotiation(false), _commandBytesLeft(0)
+{
+   // empty
+}
+
+TelnetPlainTextMessageIOGateway :: ~TelnetPlainTextMessageIOGateway()
+{
+   // empty
+}
+
+void
+TelnetPlainTextMessageIOGateway ::
+FilterInputBuffer(char * buf, uint32 & bufLen, uint32 /*maxLen*/)
+{
+   // Based on the document at http://support.microsoft.com/kb/231866
+   static const unsigned char IAC = 255;
+   static const unsigned char SB  = 250;
+   static const unsigned char SE  = 240;
+
+   char * output = buf;
+   for (uint32 i=0; i<bufLen; i++) 
+   {
+      unsigned char c = buf[i];
+      bool keepChar = ((c & 0x80) == 0);
+      switch(c)
+      {
+         case IAC: _commandBytesLeft = 3;                            break;
+         case SB:  _inSubnegotiation = true;                         break;
+         case SE:  _inSubnegotiation = false; _commandBytesLeft = 0; break;
+      }
+      if (_commandBytesLeft > 0) {--_commandBytesLeft; keepChar = false;}
+      if (_inSubnegotiation) keepChar = false; 
+      if (keepChar) *output++ = c;  // strip out any telnet control/escape codes
+   }
+   bufLen = output-buf;
 }
 
 }; // end namespace muscle

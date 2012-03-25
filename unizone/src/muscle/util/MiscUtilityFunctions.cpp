@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <fcntl.h>
 
@@ -27,7 +27,7 @@ namespace muscle {
 
 extern bool _mainReflectServerCatchSignals;  // from SetupSystem.cpp
 
-static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<String> * optAddToQueue)
+static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<String> * optAddToQueue, bool cs)
 {
    // Remove any initial dashes
    String argName = a.Trim();
@@ -42,58 +42,68 @@ static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<Strin
       if (equalsAt >= 0)
       {
          argValue = argName.Substring(equalsAt+1).Trim();  // this must be first!
-         argName  = argName.Substring(0, equalsAt).Trim().ToLowerCase();
+         argName  = argName.Substring(0, equalsAt).Trim();
+         if (cs == false) argName = argName.ToLowerCase();
       }
       if (argName.HasChars())
       { 
          // Don't allow the parsing to fail just because the user specified a section name the same as a param name!
          uint32 tc;
+         static const String _escapedQuote = "\\\"";
+         static const String _quote = "\"";
+         argName.Replace(_escapedQuote, _quote);
+         argValue.Replace(_escapedQuote, _quote);
          if ((optAddToMsg->GetInfo(argName, &tc) == B_NO_ERROR)&&(tc != B_STRING_TYPE)) (void) optAddToMsg->RemoveName(argName);
          return optAddToMsg->AddString(argName, argValue);
       }
       else return B_NO_ERROR;
    }
 }
-status_t ParseArg(const String & a, Message & addTo)       {return ParseArgAux(a, &addTo, NULL);}
-status_t ParseArg(const String & a, Queue<String> & addTo) {return ParseArgAux(a, NULL, &addTo);}
+status_t ParseArg(const String & a, Message & addTo, bool cs)       {return ParseArgAux(a, &addTo, NULL, cs);}
+status_t ParseArg(const String & a, Queue<String> & addTo, bool cs) {return ParseArgAux(a, NULL, &addTo, cs);}
 
 String UnparseArgs(const Message & argsMsg)
 {
-   String ret, next;
-   for (MessageFieldNameIterator it(argsMsg, B_STRING_TYPE); it.HasMoreFieldNames(); it++)
+   String ret, next, tmp;
+   for (MessageFieldNameIterator it(argsMsg, B_STRING_TYPE); it.HasData(); it++)
    {
       const String & fn = it.GetFieldName();
-      const String * s;
-      for (int32 i=0; argsMsg.FindString(fn, i, &s) == B_NO_ERROR; i++)
+      const String * ps;
+      for (int32 i=0; argsMsg.FindString(fn, i, &ps) == B_NO_ERROR; i++)
       {
-         if (s->HasChars())
+         if (ps->HasChars())
          {
             next = fn;
             next += '=';
-            if ((s->IndexOf(' ') >= 0)||(s->IndexOf('\t') >= 0)||(s->IndexOf('\r') >= 0)||(s->IndexOf('\n') >= 0))
+
+            tmp = *ps;
+            tmp.Replace("\"", "\\\"");
+            if ((tmp.IndexOf(' ') >= 0)||(tmp.IndexOf('\t') >= 0)||(tmp.IndexOf('\r') >= 0)||(tmp.IndexOf('\n') >= 0))
             {
                next += '\"';
-               next += *s;
+               next += tmp;
                next += '\"';
             }
-            else next += *s;
+            else next += tmp;
          }
          else next = fn;
+
+         if (next.HasChars())
+         {
+            if (ret.HasChars()) ret += ' ';
+            ret += next;
+         }
+         next.Clear();
       }
-      if (next.HasChars())
-      {
-         if (ret.HasChars()) ret += ' ';
-         ret += next;
-      }
-      next.Clear();
    }
    return ret;
 }
 
-String UnparseArgs(const Queue<String> & args)
+String UnparseArgs(const Queue<String> & args, uint32 startIdx, uint32 endIdx)
 {
    String ret;
-   for (uint32 i=0; i<args.GetNumItems(); i++)
+   endIdx = muscleMin(endIdx, args.GetNumItems());
+   for (uint32 i=startIdx; i<endIdx; i++)
    {
       String subRet = args[i];
       subRet.Replace("\"", "\\\"");
@@ -104,7 +114,7 @@ String UnparseArgs(const Queue<String> & args)
    return ret;
 }
 
-static status_t ParseArgsAux(const String & line, Message * optAddToMsg, Queue<String> * optAddToQueue)
+static status_t ParseArgsAux(const String & line, Message * optAddToMsg, Queue<String> * optAddToQueue, bool cs)
 {
    TCHECKPOINT;
 
@@ -145,7 +155,7 @@ static status_t ParseArgsAux(const String & line, Message * optAddToMsg, Queue<S
             // It's the "x =5" case (2 tokens)
             String n2(next);
             n2.Replace(GUNK_CHAR, ' ');
-            if (ParseArgAux(n+n2, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
+            if (ParseArgAux(n+n2, optAddToMsg, optAddToQueue, cs) != B_NO_ERROR) return B_ERROR;
             t = tok();
          }
          else
@@ -156,12 +166,12 @@ static status_t ParseArgsAux(const String & line, Message * optAddToMsg, Queue<S
             {
                String n3(next);
                n3.Replace(GUNK_CHAR, ' ');
-               if (ParseArgAux(n+"="+n3, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
+               if (ParseArgAux(n+"="+n3, optAddToMsg, optAddToQueue, cs) != B_NO_ERROR) return B_ERROR;
                t = tok();
             }
             else 
             {
-               if (ParseArgAux(n, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;  // for the "x =" case, just parse x and ignore the equals
+               if (ParseArgAux(n, optAddToMsg, optAddToQueue, cs) != B_NO_ERROR) return B_ERROR;  // for the "x =" case, just parse x and ignore the equals
                t = NULL;
             }
          }
@@ -169,41 +179,36 @@ static status_t ParseArgsAux(const String & line, Message * optAddToMsg, Queue<S
       else if (n.EndsWith('='))
       {
          // Try to attach the next keyword
+         String n4(next);
+         n4.Replace(GUNK_CHAR, ' ');
+         if (ParseArgAux(n+n4, optAddToMsg, optAddToQueue, cs) != B_NO_ERROR) return B_ERROR;
          t = tok();
-         if (t)
-         {
-            String n4(t);
-            n4.Replace(GUNK_CHAR, ' ');
-            if (ParseArgAux(n+n4, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
-            t = tok();
-         }
-         else if (ParseArgAux(n, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
       }
       else
       {
          // Nope, it's just the normal case
-         if (ParseArgAux(n, optAddToMsg, optAddToQueue) != B_NO_ERROR) return B_ERROR;
+         if (ParseArgAux(n, optAddToMsg, optAddToQueue, cs) != B_NO_ERROR) return B_ERROR;
          t = next;
       }
    }
    return B_NO_ERROR;
 }
-status_t ParseArgs(const String & line, Message & addTo)       {return ParseArgsAux(line, &addTo, NULL);}
-status_t ParseArgs(const String & line, Queue<String> & addTo) {return ParseArgsAux(line, NULL, &addTo);}
+status_t ParseArgs(const String & line, Message & addTo, bool cs)       {return ParseArgsAux(line, &addTo, NULL, cs);}
+status_t ParseArgs(const String & line, Queue<String> & addTo, bool cs) {return ParseArgsAux(line, NULL, &addTo, cs);}
 
-status_t ParseArgs(int argc, char ** argv, Message & addTo)
+status_t ParseArgs(int argc, char ** argv, Message & addTo, bool cs)
 {
-   for (int i=0; i<argc; i++) if (ParseArg(argv[i], addTo) != B_NO_ERROR) return B_ERROR;
+   for (int i=0; i<argc; i++) if (ParseArg(argv[i], addTo, cs) != B_NO_ERROR) return B_ERROR;
    return B_NO_ERROR;
 }
 
-status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo)
+status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo, bool cs)
 {
-   for (int i=0; i<argc; i++) if (ParseArg(argv[i], addTo) != B_NO_ERROR) return B_ERROR;
+   for (int i=0; i<argc; i++) if (ParseArg(argv[i], addTo, cs) != B_NO_ERROR) return B_ERROR;
    return B_NO_ERROR;
 }
 
-static status_t ParseFileAux(StringTokenizer * optTok, FILE * fpIn, Message * optAddToMsg, Queue<String> * optAddToQueue, char * scratchBuf, uint32 bufSize)
+static status_t ParseFileAux(StringTokenizer * optTok, FILE * fpIn, Message * optAddToMsg, Queue<String> * optAddToQueue, char * scratchBuf, uint32 bufSize, bool cs)
 {
    status_t ret = B_NO_ERROR;
    while(1)
@@ -212,7 +217,8 @@ static status_t ParseFileAux(StringTokenizer * optTok, FILE * fpIn, Message * op
       if (lineOfText == NULL) break;
 
       String checkForSection(lineOfText);
-      checkForSection = optAddToMsg ? checkForSection.Trim().ToLowerCase() : "";  // sections are only supported for Messages, not Queue<String>'s
+      checkForSection = optAddToMsg ? checkForSection.Trim() : "";  // sections are only supported for Messages, not Queue<String>'s
+      if (cs == false) checkForSection = checkForSection.ToLowerCase();
       if ((checkForSection == "begin")||(checkForSection.StartsWith("begin ")))
       {
          checkForSection = checkForSection.Substring(6).Trim();
@@ -224,10 +230,10 @@ static status_t ParseFileAux(StringTokenizer * optTok, FILE * fpIn, Message * op
          if ((optAddToMsg->GetInfo(checkForSection, &tc) == B_NO_ERROR)&&(tc != B_MESSAGE_TYPE)) (void) optAddToMsg->RemoveName(checkForSection);
 
          MessageRef subMsg = GetMessageFromPool();
-         if ((subMsg() == NULL)||(optAddToMsg->AddMessage(checkForSection, subMsg) != B_NO_ERROR)||(ParseFileAux(optTok, fpIn, subMsg(), optAddToQueue, scratchBuf, bufSize) != B_NO_ERROR)) return B_ERROR;
+         if ((subMsg() == NULL)||(optAddToMsg->AddMessage(checkForSection, subMsg) != B_NO_ERROR)||(ParseFileAux(optTok, fpIn, subMsg(), optAddToQueue, scratchBuf, bufSize, cs) != B_NO_ERROR)) return B_ERROR;
       }
       else if ((checkForSection == "end")||(checkForSection.StartsWith("end "))) return B_NO_ERROR;
-      else if (ParseArgsAux(lineOfText, optAddToMsg, optAddToQueue) != B_NO_ERROR)
+      else if (ParseArgsAux(lineOfText, optAddToMsg, optAddToQueue, cs) != B_NO_ERROR)
       {
          ret = B_ERROR;
          break;
@@ -236,14 +242,14 @@ static status_t ParseFileAux(StringTokenizer * optTok, FILE * fpIn, Message * op
    return ret;
 }
 
-static status_t ParseFileAux(const String * optInStr, FILE * fpIn, Message * optAddToMsg, Queue<String> * optAddToQueue)
+static status_t ParseFileAux(const String * optInStr, FILE * fpIn, Message * optAddToMsg, Queue<String> * optAddToQueue, bool cs)
 {
    TCHECKPOINT;
 
    if (optInStr)
    {
       StringTokenizer tok(optInStr->Cstr(), "\r\n");
-      return (tok.GetRemainderOfString() != NULL) ? ParseFileAux(&tok, NULL, optAddToMsg, optAddToQueue, NULL, 0) : B_ERROR;
+      return (tok.GetRemainderOfString() != NULL) ? ParseFileAux(&tok, NULL, optAddToMsg, optAddToQueue, NULL, 0, cs) : B_ERROR;
    } 
    else
    {
@@ -251,7 +257,7 @@ static status_t ParseFileAux(const String * optInStr, FILE * fpIn, Message * opt
       char * buf = newnothrow_array(char, bufSize);
       if (buf)
       {
-         status_t ret = ParseFileAux(NULL, fpIn, optAddToMsg, optAddToQueue, buf, bufSize);
+         status_t ret = ParseFileAux(NULL, fpIn, optAddToMsg, optAddToQueue, buf, bufSize, cs);
          delete [] buf;
          return ret;
       }
@@ -262,10 +268,77 @@ static status_t ParseFileAux(const String * optInStr, FILE * fpIn, Message * opt
       }
    }
 }
-status_t ParseFile(FILE * fpIn, Message & addTo)            {return ParseFileAux(NULL, fpIn, &addTo, NULL  );}
-status_t ParseFile(FILE * fpIn, Queue<String> & addTo)      {return ParseFileAux(NULL, fpIn, NULL,   &addTo);}
-status_t ParseFile(const String & s, Message & addTo)       {return ParseFileAux(&s,   NULL, &addTo, NULL  );}
-status_t ParseFile(const String & s, Queue<String> & addTo) {return ParseFileAux(&s,   NULL, NULL,   &addTo);}
+status_t ParseFile(FILE * fpIn, Message & addTo, bool cs)            {return ParseFileAux(NULL, fpIn, &addTo, NULL,   cs);}
+status_t ParseFile(FILE * fpIn, Queue<String> & addTo, bool cs)      {return ParseFileAux(NULL, fpIn, NULL,   &addTo, cs);}
+status_t ParseFile(const String & s, Message & addTo, bool cs)       {return ParseFileAux(&s,   NULL, &addTo, NULL,   cs);}
+status_t ParseFile(const String & s, Queue<String> & addTo, bool cs) {return ParseFileAux(&s,   NULL, NULL,   &addTo, cs);}
+
+static void AddUnparseFileLine(FILE * optFile, String * optString, const String & indentStr, const String & s)
+{
+#ifdef WIN32
+   static const char * eol = "\r\n";
+#else
+   static const char * eol = "\n";
+#endif
+
+   if (optString) 
+   {
+      *optString += indentStr;
+      *optString += s;
+      *optString += eol;
+   }
+   else fprintf(optFile, "%s%s%s", indentStr(), s(), eol);
+}
+
+static status_t UnparseFileAux(const Message & readFrom, FILE * optFile, String * optString, uint32 indentLevel)
+{
+   if ((optFile == NULL)&&(optString == NULL)) return B_ERROR;
+
+   String indentStr = String().Pad(indentLevel);
+   Message scratchMsg;
+   for (MessageFieldNameIterator fnIter(readFrom); fnIter.HasData(); fnIter++)
+   {
+      const String & fn = fnIter.GetFieldName();
+      uint32 tc;
+      if (readFrom.GetInfo(fn, &tc) == B_NO_ERROR)
+      {
+         switch(tc)
+         {
+            case B_MESSAGE_TYPE:
+            {
+               MessageRef nextVal;
+               for (uint32 i=0; readFrom.FindMessage(fn, i, nextVal) == B_NO_ERROR; i++)
+               {
+                  AddUnparseFileLine(optFile, optString, indentStr, String("begin %1").Arg(fn));
+                  if (UnparseFileAux(*nextVal(), optFile, optString, indentLevel+3) != B_NO_ERROR) return B_ERROR; 
+                  AddUnparseFileLine(optFile, optString, indentStr, "end");
+               }
+            }
+            break;
+
+            case B_STRING_TYPE:
+            {
+               const String * nextVal;
+               for (uint32 i=0; readFrom.FindString(fn, i, &nextVal) == B_NO_ERROR; i++)
+               {
+                  scratchMsg.Clear(); if (scratchMsg.AddString(fn, *nextVal) != B_NO_ERROR) return B_ERROR;
+                  AddUnparseFileLine(optFile, optString, indentStr, UnparseArgs(scratchMsg));
+               }
+            }
+            break;
+
+            default:
+               // do nothing
+            break;
+         }
+      }
+      else return B_ERROR;  // should never happen
+   }
+   return B_NO_ERROR;
+}
+
+status_t UnparseFile(const Message & readFrom, FILE * file) {return UnparseFileAux(readFrom, file, NULL, 0);}
+String UnparseFile(const Message & readFrom) {String s; return (UnparseFileAux(readFrom, NULL, &s, 0) == B_NO_ERROR) ? s : "";}
 
 static status_t ParseConnectArgAux(const String & s, uint32 startIdx, uint16 & retPort, bool portRequired)
 {
@@ -280,15 +353,15 @@ static status_t ParseConnectArgAux(const String & s, uint32 startIdx, uint16 & r
    else return portRequired ? B_ERROR : B_NO_ERROR;
 }
 
-status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired)
+status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired, uint32 argIdx)
 {
    const String * s;
-   return (args.FindString(fn, &s) == B_NO_ERROR) ? ParseConnectArg(*s, retHost, retPort, portRequired) : B_ERROR;
+   return (args.FindString(fn, argIdx, &s) == B_NO_ERROR) ? ParseConnectArg(*s, retHost, retPort, portRequired) : B_ERROR;
 }
 
 status_t ParseConnectArg(const String & s, String & retHost, uint16 & retPort, bool portRequired)
 {
-#ifdef MUSCLE_USE_IPV6
+#ifndef MUSCLE_AVOID_IPV6
    int32 rBracket = s.StartsWith('[') ? s.IndexOf(']') : -1;
    if (rBracket >= 0)
    {
@@ -307,12 +380,12 @@ status_t ParseConnectArg(const String & s, String & retHost, uint16 & retPort, b
    return ParseConnectArgAux(s, retHost.Length(), retPort, portRequired);
 }
 
-status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
+status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort, uint32 argIdx)
 {
    TCHECKPOINT;
 
    const char * v;
-   if (args.FindString(fn, &v) == B_NO_ERROR)
+   if (args.FindString(fn, argIdx, &v) == B_NO_ERROR)
    {
       uint16 r = (uint16) atoi(v);
       if (r > 0)
@@ -324,10 +397,10 @@ status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort)
    return B_ERROR;
 }
 
-#if __linux__
+#if defined(__linux__) || defined(__APPLE__)
 static void CrashSignalHandler(int sig)
 {
-   // Uninstall this handler, to avoid the possibility of an infinite loop
+   // Uninstall this handler, to avoid the possibility of an infinite regress
    signal(SIGSEGV, SIG_DFL);
    signal(SIGBUS,  SIG_DFL);
    signal(SIGILL,  SIG_DFL);
@@ -342,9 +415,75 @@ static void CrashSignalHandler(int sig)
 }
 #endif
 
+#if defined(MUSCLE_USE_MSVC_STACKWALKER) && !defined(MUSCLE_INLINE_LOGGING)
+extern void _Win32PrintStackTraceForContext(FILE * outFile, CONTEXT * context, uint32 maxDepth);
+
+LONG Win32FaultHandler(struct _EXCEPTION_POINTERS * ExInfo)
+{
+   SetUnhandledExceptionFilter(NULL);  // uninstall the handler to avoid the possibility of an infinite regress
+
+   const char * faultDesc = "";
+   switch(ExInfo->ExceptionRecord->ExceptionCode)
+   {
+      case EXCEPTION_ACCESS_VIOLATION      : faultDesc = "ACCESS VIOLATION"         ; break;
+      case EXCEPTION_DATATYPE_MISALIGNMENT : faultDesc = "DATATYPE MISALIGNMENT"    ; break;
+      case EXCEPTION_FLT_DIVIDE_BY_ZERO    : faultDesc = "FLT DIVIDE BY ZERO"       ; break;
+      default                              : faultDesc = "(unknown)"                ; break;
+    }
+
+    int    faultCode   = ExInfo->ExceptionRecord->ExceptionCode;
+    PVOID  CodeAddress = ExInfo->ExceptionRecord->ExceptionAddress;
+    printf("****************************************************\n");
+    printf("*** A Program Fault occurred:\n");
+    printf("*** Error code %08X: %s\n", faultCode, faultDesc);
+    printf("****************************************************\n");
+    printf("***   Address: %08X\n", (int)CodeAddress);
+    printf("***     Flags: %08X\n", ExInfo->ExceptionRecord->ExceptionFlags);
+    _Win32PrintStackTraceForContext(stdout, ExInfo->ContextRecord, MUSCLE_NO_LIMIT);
+    printf("Crashed MUSCLE process aborting now.... bye!\n");
+    fflush(stdout);
+
+    return EXCEPTION_CONTINUE_SEARCH;  // now crash in the usual way
+}
+#endif
+
+#ifdef __linux__
+static status_t SetRealTimePriority(const char * priStr, bool useFifo)
+{
+   struct sched_param schedparam; memset(&schedparam, 0, sizeof(schedparam));
+   int pri = (strlen(priStr) > 0) ? atoi(priStr) : 11;
+   schedparam.sched_priority = pri;
+
+   const char * desc = useFifo ? "SCHED_FIFO" : "SCHED_RR";
+   if (sched_setscheduler(0, useFifo?SCHED_FIFO:SCHED_RR, &schedparam) == 0)
+   {
+      LogTime(MUSCLE_LOG_INFO, "Set process to real-time (%s) priority %i\n", desc, pri);
+      return B_NO_ERROR;
+   }
+   else 
+   {
+      LogTime(MUSCLE_LOG_ERROR, "Could not invoke real time (%s) scheduling priority %i (access denied?)\n", desc, pri);
+      return B_ERROR;
+   }
+}
+#endif
+
 void HandleStandardDaemonArgs(const Message & args)
 {
    TCHECKPOINT;
+
+#ifndef WIN32
+   if (args.HasName("disablestderr"))
+   {
+      LogTime(MUSCLE_LOG_INFO, "Suppressing all further output to stderr!\n");
+      close(STDERR_FILENO);
+   }
+   if (args.HasName("disablestdout"))
+   {
+      LogTime(MUSCLE_LOG_INFO, "Suppressing all further output to stdout!\n");
+      close(STDOUT_FILENO);
+   }
+#endif
 
    // Do this first, so that the stuff below will affect the right process.
    const char * n;
@@ -414,20 +553,26 @@ void HandleStandardDaemonArgs(const Message & args)
       else LogTime(MUSCLE_LOG_ERROR, "Error parsing localhost IP address [%s]!\n", value);
    }
 
-#if __linux__
    if ((args.HasName("debugcrashes"))||(args.HasName("debugcrash")))
    {
+#if defined(__linux__) || defined(__APPLE__)
       LogTime(MUSCLE_LOG_INFO, "Enabling stack-trace printing when a crash occurs.\n");
-
       signal(SIGSEGV, CrashSignalHandler);
       signal(SIGBUS,  CrashSignalHandler);
       signal(SIGILL,  CrashSignalHandler);
       signal(SIGABRT, CrashSignalHandler);
       signal(SIGFPE,  CrashSignalHandler); 
-   }
+#elif MUSCLE_USE_MSVC_STACKWALKER
+# ifndef MUSCLE_INLINE_LOGGING
+      LogTime(MUSCLE_LOG_INFO, "Enabling stack-trace printing when a crash occurs.\n");
+      SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER) Win32FaultHandler);
+# endif
+#else
+      LogTime(MUSCLE_LOG_ERROR, "Can't enable stack-trace printing when a crash occurs, that feature isn't supported on this platform!\n");
 #endif
+   }
 
-#if __linux__ || __APPLE__
+#if defined(__linux__) || defined(__APPLE__)
    {
       const char * niceStr = NULL; (void) args.FindString("nice", &niceStr);
       const char * meanStr = NULL; (void) args.FindString("mean", &meanStr);
@@ -439,8 +584,8 @@ void HandleStandardDaemonArgs(const Message & args)
       if (effectiveLevel)
       {
          errno = 0;  // the only reliable way to check for an error here :^P
-         (void) nice(effectiveLevel);
-         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Could not change process execution priority to "INT32_FORMAT_SPEC".\n", effectiveLevel);
+         int ret = nice(effectiveLevel);  // I'm only looking at the return value to shut gcc 4.4.3 up
+         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Could not change process execution priority to "INT32_FORMAT_SPEC" (ret=%i).\n", effectiveLevel, ret);
                     else LogTime(MUSCLE_LOG_INFO, "Process is now %s (niceLevel=%i)\n", (effectiveLevel<0)?"mean":"nice", effectiveLevel);
       }
    }
@@ -448,15 +593,9 @@ void HandleStandardDaemonArgs(const Message & args)
 
 #ifdef __linux__
    const char * priStr;
-   if (args.FindString("realtime", &priStr) == B_NO_ERROR)
-   {
-      struct sched_param schedparam; memset(&schedparam, 0, sizeof(schedparam));
-      int pri = (strlen(priStr) > 0) ? atoi(priStr) : 11;
-      schedparam.sched_priority = pri;
-
-      if (sched_setscheduler(0, SCHED_RR, &schedparam) == 0) LogTime(MUSCLE_LOG_INFO, "Set process to real-time priority %i\n", pri);
-                                                        else LogTime(MUSCLE_LOG_ERROR, "Could not invoke real time scheduling priority %i (access denied?)\n", pri);
-   }
+        if (args.FindString("realtime",      &priStr) == B_NO_ERROR) SetRealTimePriority(priStr, false);
+   else if (args.FindString("realtime_rr",   &priStr) == B_NO_ERROR) SetRealTimePriority(priStr, false);
+   else if (args.FindString("realtime_fifo", &priStr) == B_NO_ERROR) SetRealTimePriority(priStr, true);
 #endif
 
 #ifdef MUSCLE_CATCH_SIGNALS_BY_DEFAULT
@@ -526,7 +665,7 @@ status_t SpawnDaemonProcess(bool & returningAsParent, const char * optNewDir, co
    //    could make it so that an administrator couldn't unmount a filesystem, because it was our
    //    current directory. [Equivalently, we could change to any directory containing files important
    //    to the daemon's operation.]
-   if (optNewDir) (void) chdir(optNewDir);
+   if ((optNewDir)&&(chdir(optNewDir) != 0)) return B_ERROR;
 
    // 5. umask(0) so that we have complete control over the permissions of anything we write.
    //    We don't know what umask we may have inherited. [This step is optional]
@@ -861,5 +1000,79 @@ void Win32AllocateStdioConsole()
    freopen("conout$", "w", stderr);
 }
 #endif
+
+#if defined(__linux__) || defined(__APPLE__)
+static double ParseMemValue(const char * b)
+{
+   while((*b)&&(muscleInRange(*b, '0', '9') == false)) b++;
+   return muscleInRange(*b, '0', '9') ? atof(b) : -1.0;
+}
+#endif
+
+float GetSystemMemoryUsagePercentage()
+{
+#if defined(__linux__)
+   FILE * fpIn = fopen("/proc/meminfo", "r");
+   if (fpIn)
+   {
+      double memTotal = -1.0, memFree = -1.0, buffered = -1.0, cached = -1.0;
+      char buf[512];
+      while((fgets(buf, sizeof(buf), fpIn) != NULL)&&((memTotal<=0.0)||(memFree<0.0)||(buffered<0.0)||(cached<0.0)))
+      {
+              if (strncmp(buf, "MemTotal:", 9) == 0) memTotal = ParseMemValue(buf+9);
+         else if (strncmp(buf, "MemFree:",  8) == 0) memFree  = ParseMemValue(buf+8);
+         else if (strncmp(buf, "Buffers:",  8) == 0) buffered = ParseMemValue(buf+8);
+         else if (strncmp(buf, "Cached:",   7) == 0) cached   = ParseMemValue(buf+7);
+      }
+      fclose(fpIn);
+
+      if ((memTotal > 0.0)&&(memFree >= 0.0)&&(buffered >= 0.0)&&(cached >= 0.0))
+      {
+         double memUsed = memTotal-(memFree+buffered+cached);
+         return (float) (memUsed/memTotal);
+      }
+   }
+#elif defined(__APPLE__)
+   FILE * fpIn = popen("/usr/bin/vm_stat", "r");
+   if (fpIn)
+   {
+      double pagesUsed = 0.0, totalPages = 0.0;
+      char buf[512];
+      while(fgets(buf, sizeof(buf), fpIn) != NULL)
+      {
+         if (strncmp(buf, "Pages", 5) == 0)
+         {
+            double val = ParseMemValue(buf);
+            if (val >= 0.0)
+            {
+               if ((strncmp(buf, "Pages wired", 11) == 0)||(strncmp(buf, "Pages active", 12) == 0)) pagesUsed += val;
+               totalPages += val;
+            }
+         }
+         else if (strncmp(buf, "Mach Virtual Memory Statistics", 30) != 0) break;  // Stop at "Translation Faults", we don't care about anything at or below that
+      }
+      pclose(fpIn);
+
+      if (totalPages > 0.0) return (float) (pagesUsed/totalPages);
+   }
+#elif defined(WIN32) && !defined(__MINGW32__)
+   MEMORYSTATUSEX stat; memset(&stat, 0, sizeof(stat));
+   stat.dwLength = sizeof(stat);
+   GlobalMemoryStatusEx(&stat);
+   return ((float)stat.dwMemoryLoad)/100.0f;
+#endif
+   return -1.0f;
+}
+
+bool ParseBool(const String & word, bool defaultValue)
+{
+   static const char * _onWords[]  = {"on",  "enable",  "enabled",  "true",  "t", "y", "yes", "1"};
+   static const char * _offWords[] = {"off", "disable", "disabled", "false", "f", "n", "no",  "0"};
+
+   String s = word.Trim().ToLowerCase();
+   for (uint32 i=0; i<ARRAYITEMS(_onWords);  i++) if (s == _onWords[i])  return true;
+   for (uint32 i=0; i<ARRAYITEMS(_offWords); i++) if (s == _offWords[i]) return false;
+   return defaultValue; 
+}
 
 }; // end namespace muscle

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MusclePathMatcher_h
 #define MusclePathMatcher_h
@@ -12,14 +12,12 @@ namespace muscle {
 
 DECLARE_REFTYPES(StringMatcher);
  
-/** Just a reference-countable list of references to StringMatcher objects */
+/** A reference-countable list of references to StringMatcher objects */
 class StringMatcherQueue : public Queue<StringMatcherRef>, public RefCountable
 {
 public:
-   /** Constructor.
-     * @param initialSize passed on to the Queue constructor.
-     */
-   StringMatcherQueue(uint32 initialSize = SMALL_QUEUE_SIZE) : Queue<StringMatcherRef>(initialSize) {/* empty */}
+   /** Constructor. */
+   StringMatcherQueue() {/* empty */}
 
    /** Returns a human-readable string representing this StringMatcherQueue, for easier debugging */
    String ToString() const;
@@ -48,22 +46,22 @@ public:
      * @param parser Reference to the list of StringMatcher objects that represent our wildcarded path.
      * @param filter Optional reference to the QueryFilter object that filters matching nodes by content.
      */
-   PathMatcherEntry(const StringMatcherQueueRef & parser, const QueryFilterRef & filter) : _parser(parser), _filter(filter) {/* empty */}
+   PathMatcherEntry(const StringMatcherQueueRef & parser, const ConstQueryFilterRef & filter) : _parser(parser), _filter(filter) {/* empty */}
 
    /** Returns a reference to our list of StringMatchers. */
    StringMatcherQueueRef GetParser() const {return _parser;}
  
    /** Returns a reference to our QueryFilter object.  May be a NULL reference. */
-   QueryFilterRef GetFilter() const {return _filter;}
+   ConstQueryFilterRef GetFilter() const {return _filter;}
 
    /** Sets our QueryFilter object to the specified reference.  Pass in a NULL reference to remove any existing QueryFilter. */
-   void SetFilter(const QueryFilterRef & filter) {_filter = filter;}
+   void SetFilter(const ConstQueryFilterRef & filter) {_filter = filter;}
 
    /** Returns true iff we our filter matches the given Message, or if either (optMsg) or our filter is NULL. */
-   bool FilterMatches(const Message * optMsg, const DataNode * optNode) const
+   bool FilterMatches(ConstMessageRef & optMsg, const DataNode * optNode) const
    {
       const QueryFilter * filter = GetFilter()();
-      return ((filter == NULL)||(optMsg == NULL)||(filter->Matches(*optMsg, optNode)));
+      return ((filter == NULL)||(optMsg() == NULL)||(filter->Matches(optMsg, optNode)));
    }
 
    /** Returns a human-readable string representing this PathMatcherEntry, for easier debugging */
@@ -71,7 +69,7 @@ public:
 
 private:
    StringMatcherQueueRef _parser;
-   QueryFilterRef _filter;
+   ConstQueryFilterRef _filter;
 };
 
 /** This class is used to do efficient regex-pattern-matching of one or more query strings (e.g. ".*./.*./j*remy/fries*") 
@@ -82,7 +80,7 @@ private:
   * for nodes with name "".
   * As of MUSCLE 2.40, this class also supports QueryFilter objects, so that only nodes whose Messages match the
   * criteria of the QueryFilter are considered to match the query.  This filtering is optional -- specify a null
-  * QueryFilterRef to disable it.
+  * ConstQueryFilterRef to disable it.
   */
 class PathMatcher : public RefCountable
 {
@@ -105,7 +103,7 @@ public:
     *                reference is a NULL reference, then no filtering will be done.
     *  @return B_NO_ERROR on success, B_ERROR if out of memory.
     */
-   status_t PutPathString(const String & path, const QueryFilterRef & filter);
+   status_t PutPathString(const String & path, const ConstQueryFilterRef & filter);
 
    /** Adds all of (matcher)'s StringMatchers to this matcher */
    status_t PutPathsFromMatcher(const PathMatcher & matcher);
@@ -128,7 +126,7 @@ public:
     *                no additional filtering is necessary.
     *  @return B_NO_ERROR on success, or B_ERROR if out of memory.
     */
-   status_t PutPathFromString(const String & path, const QueryFilterRef & filter, const char * optPrependIfNoLeadingSlash);
+   status_t PutPathFromString(const String & path, const ConstQueryFilterRef & filter, const char * optPrependIfNoLeadingSlash);
 
    /** Removes the given path string and its associated StringMatchers from this matcher.
     *  @param wildpath the path string to remove
@@ -162,7 +160,7 @@ public:
      *       up to date.
      * @returns B_NO_ERROR on success, or B_ERROR if an entry with the given path could not be found. 
      */
-   status_t SetFilterForEntry(const String & path, const QueryFilterRef & newFilter);
+   status_t SetFilterForEntry(const String & path, const ConstQueryFilterRef & newFilter);
 
    /** Returns a read-only reference to our table of PathMatcherEntries. */
    const Hashtable<String, PathMatcherEntry> & GetEntries() const {return _entries;}

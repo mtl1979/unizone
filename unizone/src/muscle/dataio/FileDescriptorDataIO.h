@@ -1,21 +1,24 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFileDescriptorDataIO_h
 #define MuscleFileDescriptorDataIO_h
 
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
+// Might as well include there here, since any code using FileDescriptorDataIO is probably going to need them
+#ifndef WIN32
+# include <fcntl.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <errno.h>
+#endif
+
 #include "dataio/DataIO.h"
-#include "util/NetworkUtilityFunctions.h"
 
 namespace muscle {
 
 /**
  *  Data I/O to and from a file descriptor (useful for talking to Linux device drivers and the like)
  */
-class FileDescriptorDataIO : public DataIO
+class FileDescriptorDataIO : public DataIO, private CountedObject<FileDescriptorDataIO>
 {
 public:
    /**
@@ -82,9 +85,18 @@ public:
    virtual const ConstSocketRef & GetReadSelectSocket()  const {return _fd;}
    virtual const ConstSocketRef & GetWriteSelectSocket() const {return _fd;}
 
+   /** Set whether or not this object should call fsync() on our file descriptor in the FileDescriptorDataIO destructor.  Defaults to false.
+     * @param doFsyncOnClose If true, fsync(fd) will be called in our destructor.  If false (the default), it won't be.
+     */
+   void SetFSyncOnClose(bool doFsyncOnClose) {_dofSyncOnClose = doFsyncOnClose;}
+
+   /** Returns whether or not this object should call fsync() on our file descriptor in the FileDescriptorDataIO destructor.  Defaults to false. */
+   bool IsFSyncOnClose() const {return _dofSyncOnClose;}
+
 private:
    ConstSocketRef _fd;
    bool _blocking;
+   bool _dofSyncOnClose;
 };
 
 }; // end namespace muscle

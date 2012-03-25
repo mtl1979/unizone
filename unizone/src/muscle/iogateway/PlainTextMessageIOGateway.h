@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MusclePlainTextMessageIOGateway_h
 #define MusclePlainTextMessageIOGateway_h
@@ -19,7 +19,7 @@ namespace muscle {
  * Incoming and outgoing messages may have one or more strings in their PR_NAME_TEXT_LINE field.
  * Each of these strings represents a line of text (separator chars not included)
  */
-class PlainTextMessageIOGateway : public AbstractMessageIOGateway
+class PlainTextMessageIOGateway : public AbstractMessageIOGateway, private CountedObject<PlainTextMessageIOGateway>
 {
 public:
    /** Default constructor */
@@ -55,6 +55,14 @@ protected:
    virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
 
+   /** Called after each block of data is read from the IO device.  Default implementation
+     * is a no-op.  A subclass may override this to modify the input data, if necessary.
+     * @param buf a pointer to the just-read data, to be inspected and/or modified.
+     * @param bufLen current number of valid bytes in the buffer.  May be modified by method code.
+     * @param maxLen The total size of (buf).  (bufLen) must not be set greater than this value.
+     */
+   virtual void FilterInputBuffer(char * buf, uint32 & bufLen, uint32 maxLen);
+
 private:
    MessageRef AddIncomingText(const MessageRef & msg, const char * s);
 
@@ -66,6 +74,27 @@ private:
    bool _prevCharWasCarriageReturn;
    String _incomingText;
    bool _flushPartialIncomingLines;
+};
+
+/** This class is the same as a PlainTextMessageIOGateway, except that
+  * some filtering logic has been added to strip out telnet control codes.
+  * This class is useful when accepting TCP connections from telnet clients.
+  */
+class TelnetPlainTextMessageIOGateway : public PlainTextMessageIOGateway
+{
+public:
+   /** Default constructor */
+   TelnetPlainTextMessageIOGateway();
+
+   /** Destructor */
+   virtual ~TelnetPlainTextMessageIOGateway();
+
+protected:
+   virtual void FilterInputBuffer(char * buf, uint32 & bufLen, uint32 maxLen);
+
+private:
+   bool _inSubnegotiation;
+   int _commandBytesLeft;
 };
 
 }; // end namespace muscle

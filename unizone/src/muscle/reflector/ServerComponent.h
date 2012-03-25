@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleServerComponent_h
 #define MuscleServerComponent_h
@@ -17,12 +17,16 @@ class ReflectSessionFactory;
 DECLARE_REFTYPES(AbstractReflectSession);
 DECLARE_REFTYPES(ReflectSessionFactory);
 
+#ifndef MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS
+# define MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS MUSCLE_TIME_NEVER
+#endif
+
 /** 
  *  This class represents any object that can be added to a ReflectServer object
  *  in one way or another, to help define the ReflectServer's behaviour.  This
  *  class provides callback wrappers that let you operate on the server's state.
  */
-class ServerComponent : public RefCountable, public PulseNode
+class ServerComponent : public RefCountable, public PulseNode, private CountedObject<ServerComponent>
 {
 public:
    /** Default Constructor. */
@@ -77,6 +81,17 @@ public:
    /** Returns true if we are attached to the ReflectServer object, false if we are not.  */
    bool IsAttachedToServer() const {return (_owner != NULL);}
 
+   /** Returns true if we are attached FULLY to the ReflectServer object, false if we are not. 
+     * The difference between this method and IsAttachedToServer() is that this method only returns
+     * true after AttachedToServer() has completed successully, and before AboutToDetachFromServer()
+     * has been called.  Compare that to IsAttachedToServer()'s which returns true during the
+     * AttachedToServer and AboutToDetachFromServer() calls themselves, also.
+     */
+   bool IsFullyAttachedToServer() const {return _fullyAttached;}
+
+   /** Sets the fully-attached-to-server flag for this session.  Typically only the ReflectServer class should call this. */
+   void SetFullyAttachedToServer(bool fullyAttached) {_fullyAttached = fullyAttached;}
+
    /** Returns the ReflectServer we are currently attached to, or NULL if we aren't currently attached to a ReflectServer. */
    ReflectServer * GetOwner() const {return _owner;}
 
@@ -84,8 +99,8 @@ public:
    void SetOwner(ReflectServer * s) {_owner = s;}
 
 protected:
-   /** Returns the number of milliseconds that the server has been running. */
-   uint64 GetServerUptime() const;
+   /** Returns the value GetRunTime64() was at when this server's ServerProcessLoop() began. */
+   uint64 GetServerStartTime() const;
 
    /** Returns a number that is unique (hopefully) to our ReflectServer object in this process */
    uint64 GetServerSessionID() const;
@@ -148,10 +163,16 @@ protected:
     *                           be attempted, and the session will be removed when the
     *                           connection breaks.  Specifying this is equivalent to calling
     *                           SetAutoReconnectDelay() on (session).
+    * @param maxAsyncConnectPeriod If specified, this is the maximum time (in microseconds) that we will
+    *                              wait for the asynchronous TCP connection to complete.  If this amount of time passes
+    *                              and the TCP connection still has not been established, we will force the connection attempt to
+    *                              abort.  If not specified, the default value (as specified by MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS)
+    *                              is used; typically this means that it will be left up to the operating system how long to wait
+    *                              before timing out the connection attempt.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error 
     *                    (out-of-memory or the connect attempt failed immediately).
     */
-   status_t AddNewConnectSession(const AbstractReflectSessionRef & session, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
+   status_t AddNewConnectSession(const AbstractReflectSessionRef & session, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS);
 
    /**
     * Like AddNewConnectSession(), except that the added session will not initiate
@@ -167,10 +188,16 @@ protected:
     *                           be attempted, and the session will be removed when the
     *                           connection breaks.  Specifying this is equivalent to calling
     *                           SetAutoReconnectDelay() on (ref).
+    * @param maxAsyncConnectPeriod If specified, this is the maximum time (in microseconds) that we will
+    *                              wait for the asynchronous TCP connection to complete.  If this amount of time passes
+    *                              and the TCP connection still has not been established, we will force the connection attempt to
+    *                              abort.  If not specified, the default value (as specified by MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS)
+    *                              is used; typically this means that it will be left up to the operating system how long to wait
+    *                              before timing out the connection attempt.
     * @return B_NO_ERROR if the session was successfully added, or B_ERROR on error
     *                    (out-of-memory, or the connect attempt failed immediately)
     */
-   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER);
+   status_t AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_address & targetIPAddress, uint16 port, uint64 autoReconnectDelay = MUSCLE_TIME_NEVER, uint64 maxAsyncConnectPeriod = MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS);
 
    /** Returns our server's table of attached sessions. */
    const Hashtable<const String *, AbstractReflectSessionRef> & GetSessions() const;
@@ -194,7 +221,7 @@ protected:
      */
    template <class SessionType> SessionType * FindFirstSessionOfType() const
    {
-      for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasMoreKeys(); iter++)
+      for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasData(); iter++)
       {
          SessionType * ret = dynamic_cast<SessionType *>(iter.GetValue()());
          if (ret) return ret;
@@ -211,7 +238,7 @@ protected:
    {
       if (maxSessionsToReturn > 0)
       {
-         for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasMoreKeys(); iter++)
+         for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasData(); iter++)
          {
             SessionType * ret = dynamic_cast<SessionType *>(iter.GetValue()());
             if (ret)
@@ -233,6 +260,7 @@ such factory exists. */
 
 private:
    ReflectServer * _owner;
+   bool _fullyAttached;
 };
 
 }; // end namespace muscle

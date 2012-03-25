@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataNode_h
 #define MuscleDataNode_h
@@ -18,7 +18,7 @@ DECLARE_REFTYPES(DataNode);
 typedef HashtableIterator<const String *, DataNodeRef> DataNodeRefIterator;
 
 /** Each object of this class represents one node in the server-side data-storage tree.  */
-class DataNode : public RefCountable
+class DataNode : public RefCountable, private CountedObject<DataNode>
 {
 public:
    /** Default Constructor.  Don't create DataNode objects yourself though, call StorageReflectSession::GetNewDataNode() instead!  */
@@ -52,14 +52,14 @@ public:
     * Moves the given node (which must be a child of ours) to be just before the node named
     * (moveToBeforeThis) in our index.  If (moveToBeforeThis) is not a node in our index,
     * then (child) will be moved back to the end of the index. 
-    * @param child A child node of ours, to be moved in the node ordering index.
+    * @param child Reference to a child node of ours, to be moved in the node ordering index.
     * @param moveToBeforeThis name of another child node of ours.  If this name is NULL or
     *                         not found in our index, we'll move (child) to the end of the index.
     * @param optNotifyWith If non-NULL, this will be used to sent INDEXUPDATE message to the
     *                      interested clients, notifying them of the change.
     * @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t ReorderChild(const DataNode & child, const String * moveToBeforeThis, StorageReflectSession * optNotifyWith);
+   status_t ReorderChild(const DataNodeRef & child, const String * moveToBeforeThis, StorageReflectSession * optNotifyWith);
 
    /** Returns true iff we have a child with the given name */
    bool HasChild(const String & key) const {return ((_children)&&(_children->ContainsKey(&key)));}
@@ -75,7 +75,7 @@ public:
     *  @param key The name of the child we wish to retrieve
     *  @return On success, a reference to the specified child node is returned.  On failure, a NULL DataNodeRef is returned.
     */
-   DataNodeRef GetChild(const String & key) const {DataNodeRef ret; if (_children) (void) _children->Get(&key, ret); return ret;}
+   DataNodeRef GetChild(const String & key) const {return _children ? _children->GetWithDefault(&key) : DataNodeRef();}
 
    /** Removes the child with the given name.
     *  @param key The name of the child we wish to remove.
@@ -155,10 +155,10 @@ public:
    void IncrementSubscriptionRefCount(const String & sessionID, long delta);
 
    /** Returns an iterator that can be used to iterate over our list of active subscribers */
-   HashtableIterator<const String *, uint32> GetSubscribers() const {return _subscribers.GetIterator();}
+   HashtableIterator<const String *, uint32> GetSubscribers() const {return _subscribers ? _subscribers->GetIterator() : HashtableIterator<const String *, uint32>();}
 
    /** Returns a pointer to our ordered-child index */
-   const Queue<const String *> * GetIndex() const {return _orderedIndex;}
+   const Queue<DataNodeRef> * GetIndex() const {return _orderedIndex;}
 
    /** Insert a new entry into our ordered-child list at the (nth) entry position.
     *  Don't call this function unless you really know what you are doing!
@@ -270,6 +270,12 @@ public:
 
 private:
    friend class StorageReflectSession;
+   friend class ObjectPool<DataNode>;
+
+   /** Assignment operator.  Note that this operator is only here to assist with ObjectPool recycling operations, and doesn't actually
+     * make this DataNode into a copy of (rhs)... that's why we have it marked private, so that it won't be accidentally used in the traditional manner.
+     */
+   DataNode & operator = (const DataNode & /*rhs*/) {Reset(); return *this;}
 
    void Init(const String & nodeName, const MessageRef & initialValue);
    void SetParent(DataNode * _parent, StorageReflectSession * optNotifyWith);
@@ -279,13 +285,13 @@ private:
    MessageRef _data;
    mutable uint32 _cachedDataChecksum;
    Hashtable<const String *, DataNodeRef> * _children;  // lazy-allocated
-   Queue<const String *> * _orderedIndex;  // only used when tracking the ordering of our children (lazy-allocated)
+   Queue<DataNodeRef> * _orderedIndex;  // only used when tracking the ordering of our children (lazy-allocated)
    uint32 _orderedCounter;
    String _nodeName;
    uint32 _depth;  // number of ancestors our node has (e.g. root's _depth is zero)
    uint32 _maxChildIDHint;  // keep track of the largest child ID, for easier allocation of non-conflicting future child IDs
 
-   Hashtable<const String *, uint32> _subscribers; 
+   Hashtable<const String *, uint32> * _subscribers;  // lazy-allocated
 };
 
 }; // end namespace muscle

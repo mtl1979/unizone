@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDumbReflectSession_h
 #define MuscleDumbReflectSession_h
@@ -31,7 +31,7 @@ enum {
  *  This class implements a simple "reflect-all-messages-to-all-clients"
  *  message forwarding strategy, but may be subclassed to perform more complex message routing logic.
  */
-class DumbReflectSession : public AbstractReflectSession
+class DumbReflectSession : public AbstractReflectSession, private CountedObject<DumbReflectSession>
 {
 public:
    /** Default constructor. */

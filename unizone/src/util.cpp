@@ -760,7 +760,7 @@ CalculateFileChecksum(const ByteBufferRef &buf)
 	return CalculateFileChecksum(data, bufsize);
 }
 
-uint32
+muscle::ip_address
 GetHostByName(const QString &name)
 {
 	return GetHostByName((const char *) name.local8Bit());
@@ -826,7 +826,7 @@ SavePicture(QString &file, const ByteBufferRef &buf)
 }
 
 uint64
-toULongLong(const QString &in, bool *ok)
+toULongLong(const QStringRef &in, bool *ok)
 {
 	uint64 out = 0;
 	bool o = true;
@@ -851,18 +851,20 @@ fromULongLong(const uint64 &in)
 {
 	uint64 tmp;
 	QString out;
+	int mlen = 20;
 
 	if (in < 10)
 		return QString(QChar(((int) in) + '0'));
 
 	tmp = in;
+	out.resize(mlen--);
 	while (tmp > 0)
 	{
 		char n = (char) (tmp % 10);
-		out.prepend(QChar(n + '0'));
+		out[mlen--] = QChar(n + '0');
 		tmp /= 10;
 	}
-	return out;
+	return out.mid(++mlen);
 }
 
 QString
@@ -870,27 +872,23 @@ hexFromULongLong(const uint64 &in, int length)
 {
 	uint64 tmp;
 	QString out;
-
 	if (in < 10)
-		out = QString(QChar(((int) in) + '0'));
+		return QChar(((int) in) + '0');
 	else if (in < 16)
-		out = QString(QChar(((int) in) + 55));
-	else
+		return QChar(((int) in) + 55);
+
+	out.fill('0', length--);
+	tmp = in;
+	while (tmp > 0)
 	{
-		tmp = in;
-		while (tmp > 0)
-		{
-			char n = (char) (tmp % 16);
-			out.prepend(QChar(n + ((n < 10) ? '0' : 55)));
-			tmp /= 16;
-		}
+		char n = (char) (tmp % 16);
+		out[length--] = QChar(n + ((n < 10) ? '0' : 55));
+		tmp /= 16;
 	}
-	while (out.length() < length)
-		out.prepend("0");
 	return out;
 }
 
-int64 toLongLong(const QString &in, bool *ok)
+int64 toLongLong(const QStringRef &in, bool *ok)
 {
 	int64 out = 0;
 	bool o = true;
@@ -923,9 +921,12 @@ QString fromLongLong(const int64 &in)
 	uint64 tmp;
 	bool negate = false;
 	QString out;
+	int mlen = 20;
 
 	if (in < 0)
 	{
+		if (in > -10)
+			return QString("-%1").arg(QChar('0' - (int) in));
 		tmp = -in;
 		negate = true;
 	}
@@ -934,17 +935,18 @@ QString fromLongLong(const int64 &in)
 	else
 		tmp = in;
 
+	out.resize(mlen--);
 	while (tmp > 0)
 	{
 		char n = (char) (tmp % 10);
-		out.prepend(QChar(n + '0'));
+		out[mlen--] = QChar(n + '0');
 		tmp /= 10;
 	}
 
 	if (negate)
-		out.prepend("-");
+		out[mlen--] = '-';
 
-	return out;
+	return out.mid(++mlen);
 }
 
 QString hexFromLongLong(const int64 &in, int length)
@@ -1006,9 +1008,7 @@ void BINClean(QString &in)
 		}
 		if (p > 0)
 		{
-			while (part.length() < 8)
-				part.prepend("0");
-			tmp += part;
+			tmp += part.rightJustified(8, '0');
 		}
 	}
 	in = tmp;
@@ -1051,9 +1051,7 @@ void OCTClean(QString &in)
 		}
 		if (p > 0)
 		{
-			while (part.length() < 3)
-				part.prepend("0");
-			tmp += part;
+			tmp += part.rightJustified(3, '0');
 		}
 	}
 	in = tmp;
@@ -1068,12 +1066,12 @@ QString BINDecode(const QString &in)
 
 	for (int x = 0; x < in.length(); x += 8)
 	{
-		QString part = in.mid(x, 8);
+		QStringRef part = in.midRef(x, 8);
 		int xx = 1;
 		int c = 0;
 		for (int y = 7; y > -1; y--)
 		{
-			if (part[y] == '1')
+			if (part.at(y) == '1')
 				c = c + xx;
 			xx *= 2;
 		}
@@ -1089,13 +1087,11 @@ QString BINEncode(const QString &in)
 	for (int x = 0; x < temp.length(); x++)
 	{
 		unsigned char c = temp.at(x);
-		part = QString::null;
+		part = "00000000";
 		for (int xx = 0; xx < 8; xx++)
 		{
 			if (c % 2 == 1)
-				part.prepend("1");
-			else
-				part.prepend("0");
+				part[7-xx] = '1';
 			c /= 2;
 		}
 		out += part;
@@ -1112,12 +1108,12 @@ QString OCTDecode(const QString &in)
 
 	for (int x = 0; x < in.length(); x += 3)
 	{
-		QString part = in.mid(x, 3);
+		QStringRef part = in.midRef(x, 3);
 		int xx = 1;
 		int c = 0;
 		for (int y = 2; y > -1; y--)
 		{
-			c = c + (xx * (part[y].unicode() - '0'));
+			c = c + (xx * (part.at(y).unicode() - '0'));
 			xx *= 7;
 		}
 		out += (char) c;
@@ -1132,10 +1128,10 @@ QString OCTEncode(const QString &in)
 	for (int x = 0; x < temp.length(); x++)
 	{
 		unsigned char c = temp.at(x);
-		part = QString::null;
+		part = "000";
 		for (int xx = 0; xx < 3; xx++)
 		{
-			part.prepend((char) ('0' + (c % 7)));
+			part[2-xx] = ((char) ('0' + (c % 7)));
 			c /= 7;
 		}
 		out += part;

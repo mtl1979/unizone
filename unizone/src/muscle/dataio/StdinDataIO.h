@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef StdinDataIO_h
 #define StdinDataIO_h
@@ -20,7 +20,7 @@ namespace muscle {
  *  blocking mode at all times except when it is actually about to read from
  *  it.  Writing to stdin is not supported, of course.
  */
-class StdinDataIO : public DataIO
+class StdinDataIO : public DataIO, private CountedObject<StdinDataIO>
 {
 public:
    /**

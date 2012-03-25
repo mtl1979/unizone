@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
@@ -10,18 +10,53 @@
 namespace muscle {
 
 static const String MUSCLE_ZLIB_FIELD_NAME_STRING = MUSCLE_ZLIB_FIELD_NAME;
+static Mutex _zlibLock;  // a separate lock because using the global lock was causing deadlockfinder hits
+static ZLibCodec * _codecs[10] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+static bool _cleanupCallbackInstalled = false;
+
+static void FreeZLibCodecs()
+{
+   if (_zlibLock.Lock() == B_NO_ERROR)  // probably isn't necessary since this only gets called during shutdown... but just in case
+   {
+      for (uint32 i=0; i<ARRAYITEMS(_codecs); i++) 
+      { 
+         delete _codecs[i];
+         _codecs[i] = NULL;
+      } 
+      _zlibLock.Unlock();
+   }
+}
+
+static void EnsureCleanupCallbackInstalled()
+{
+   if (_cleanupCallbackInstalled == false)  // check once without locking, to avoid locking every time
+   {
+      const Mutex * m = GetGlobalMuscleLock();
+      if ((m)&&(m->Lock() == B_NO_ERROR))
+      {
+         if (_cleanupCallbackInstalled == false)  // in case we got scooped before could aquire the lock
+         {
+            CompleteSetupSystem * css = CompleteSetupSystem::GetCurrentCompleteSetupSystem();
+            if (css)
+            {
+               static FunctionCallback _freeCodecsCallback(FreeZLibCodecs);
+               if (css->GetCleanupCallbacks().AddTail(GenericCallbackRef(&_freeCodecsCallback, false)) == B_NO_ERROR) _cleanupCallbackInstalled = true;
+            }
+         }
+         m->Unlock();
+      }
+   }
+}
 
 static ZLibCodec * GetZLibCodec(int level)
 {
-   static ZLibCodec * codecs[10] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-
    level = muscleClamp(level, 0, 9);
-   if (codecs[level] == NULL) 
+   if (_codecs[level] == NULL) 
    {
-      codecs[level] = newnothrow ZLibCodec(level);  // demand-allocate
-      if (codecs[level] == NULL) WARN_OUT_OF_MEMORY;
+      _codecs[level] = newnothrow ZLibCodec(level);  // demand-allocate
+      if (_codecs[level] == NULL) WARN_OUT_OF_MEMORY;
    }
-   return codecs[level];
+   return _codecs[level];
 }
 
 bool IsMessageDeflated(const MessageRef & msgRef) 
@@ -32,12 +67,12 @@ bool IsMessageDeflated(const MessageRef & msgRef)
 ByteBufferRef DeflateByteBuffer(const uint8 * buf, uint32 numBytes, int compressionLevel)
 {
    ByteBufferRef ret;
-   Mutex * m = GetGlobalMuscleLock();
-   if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
+   if (_zlibLock.Lock() == B_NO_ERROR)  // serialize so that it's thread safe!
    {
       ZLibCodec * codec = GetZLibCodec(compressionLevel);
       if (codec) ret = codec->Deflate(buf, numBytes, true);
-      m->Unlock();
+      (void) _zlibLock.Unlock();
+      if (codec) EnsureCleanupCallbackInstalled();  // do this outside of the ZLib lock!
    }
    return ret;
 }
@@ -45,12 +80,12 @@ ByteBufferRef DeflateByteBuffer(const uint8 * buf, uint32 numBytes, int compress
 ByteBufferRef InflateByteBuffer(const uint8 * buf, uint32 numBytes)
 {
    ByteBufferRef ret;
-   Mutex * m = GetGlobalMuscleLock();
-   if ((m)&&(m->Lock() == B_NO_ERROR))  // serialize so that it's thread safe!
+   if (_zlibLock.Lock() == B_NO_ERROR)  // serialize so that it's thread safe!
    {
       ZLibCodec * codec = GetZLibCodec(6);  // doesn't matter which compression-level/codec we use, any of them can inflate anything
       if (codec) ret = codec->Inflate(buf, numBytes);
-      m->Unlock();
+      _zlibLock.Unlock();
+      if (codec) EnsureCleanupCallbackInstalled();  // do this outside of the ZLib lock!
    }
    return ret;
 }

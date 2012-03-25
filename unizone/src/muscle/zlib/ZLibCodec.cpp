@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
@@ -35,7 +35,7 @@ ZLibCodec :: ~ZLibCodec()
    if (_inflateOkay)
    {
       inflateEnd(&_inflater);
-      _inflateOkay = _inflateOkay = false;
+      _inflateOkay = false;
    }
    if (_deflateOkay)
    {

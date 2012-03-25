@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/RawDataMessageIOGateway.h"
 
@@ -26,7 +26,7 @@ DoOutputImplementation(uint32 maxBytes)
    if (msg == NULL) 
    {
       // try to get the next message from our queue
-      (void) GetOutgoingMessageQueue().RemoveHead(_sendMsgRef);
+      _sendMsgRef = PopNextOutgoingMessage();
       msg = _sendMsgRef();
       _sendBufLength = _sendBufIndex = _sendBufByteOffset = -1;
    }
@@ -44,7 +44,7 @@ DoOutputImplementation(uint32 maxBytes)
       }
       if ((_sendBufByteOffset >= 0)&&(_sendBufByteOffset < _sendBufLength))
       {
-         // Send as much as we can of the current text line
+         // Send as much as we can of the current data block
          int32 bytesWritten = GetDataIO()()->Write(&((char *)_sendBuf)[_sendBufByteOffset], muscleMin(maxBytes, (uint32) (_sendBufLength-_sendBufByteOffset)));
               if (bytesWritten < 0) return -1;
          else if (bytesWritten > 0)
@@ -126,7 +126,7 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
       else if (bytesRead > 0)
       {
          ret += bytesRead;
-         MessageRef ref = GetMessageFromPool();
+         MessageRef ref = GetMessageFromPool(PR_COMMAND_RAW_DATA);
          if ((ref())&&(ref()->AddData(PR_NAME_DATA_CHUNKS, B_RAW_TYPE, _recvScratchSpace, bytesRead) == B_NO_ERROR)) receiver.CallMessageReceivedFromGateway(ref);
          // note:  don't recurse here!  It would be bad (tm) on a fast feed since we might never return
       }
@@ -150,6 +150,60 @@ Reset()
    AbstractMessageIOGateway::Reset();
    _sendMsgRef.Reset();
    _recvMsgRef.Reset();
+}
+
+MessageRef 
+RawDataMessageIOGateway :: 
+PopNextOutgoingMessage()
+{
+   return GetOutgoingMessageQueue().RemoveHeadWithDefault();
+}
+
+CountedRawDataMessageIOGateway :: CountedRawDataMessageIOGateway(uint32 minChunkSize, uint32 maxChunkSize) : RawDataMessageIOGateway(minChunkSize, maxChunkSize), _outgoingByteCount(0)
+{
+   // empty
+}
+
+status_t CountedRawDataMessageIOGateway :: AddOutgoingMessage(const MessageRef & messageRef)
+{
+   if (RawDataMessageIOGateway::AddOutgoingMessage(messageRef) != B_NO_ERROR) return B_ERROR;
+
+   uint32 msgSize = GetNumRawBytesInMessage(messageRef);
+   if (GetOutgoingMessageQueue().GetNumItems() > 1) _outgoingByteCount += msgSize;
+                                               else _outgoingByteCount  = msgSize;  // semi-paranoia about meddling via GetOutgoingMessageQueue() access
+   return B_NO_ERROR;
+}
+
+void CountedRawDataMessageIOGateway :: Reset()
+{
+   RawDataMessageIOGateway::Reset();
+   _outgoingByteCount = 0;   
+}
+
+MessageRef CountedRawDataMessageIOGateway :: PopNextOutgoingMessage()
+{
+   MessageRef ret = RawDataMessageIOGateway::PopNextOutgoingMessage();
+   if (GetOutgoingMessageQueue().HasItems())
+   {
+      uint32 retSize = GetNumRawBytesInMessage(ret);
+      _outgoingByteCount = (retSize<_outgoingByteCount) ? (_outgoingByteCount-retSize) : 0;  // paranoia to avoid underflow
+   }
+   else _outgoingByteCount = 0;  // semi-paranoia about meddling via GetOutgoingMessageQueue() access
+
+   return ret;
+}
+
+uint32 CountedRawDataMessageIOGateway :: GetNumRawBytesInMessage(const MessageRef & messageRef) const
+{
+   if (messageRef())
+   {
+      uint32 count = 0;
+      const void * junk;
+      uint32 temp;
+      for (int32 i=0; messageRef()->FindData(PR_NAME_DATA_CHUNKS, B_ANY_TYPE, i, &junk, &temp) == B_NO_ERROR; i++) count += temp;
+      return count;
+   }
+   else return 0;
 }
 
 }; // end namespace muscle

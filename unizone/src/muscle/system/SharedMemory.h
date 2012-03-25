@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSharedMemory_h
 #define MuscleSharedMemory_h
 
 #include "util/String.h"
+#include "util/CountedObject.h"
 
 // This needs to be AFTER the MUSCLE includes, so that WIN32 will be defined if appropriate
 #ifndef WIN32
@@ -17,7 +18,7 @@ namespace muscle {
   * The current implementation only works under Windows and POSIX, but other implementations may be
   * added in the future.
   */
-class SharedMemory
+class SharedMemory : private CountedObject<SharedMemory>
 {
 public:
    /** Default constructor.  You'll need to call SetArea() before this object will be useful. */

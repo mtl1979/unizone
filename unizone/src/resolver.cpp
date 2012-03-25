@@ -1,6 +1,8 @@
 #include "resolver.h"
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <ws2tcpip.h>
+#else
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -29,7 +31,11 @@ using muscle::Queue;
 
 struct NetAddress
 {
+#ifdef MUSCLE_AVOID_IPV6
 	uint32 ip;
+#else
+	muscle::ip_address ip;
+#endif
 	QString address;
 	QString aliases;
 	uint64 lastcheck;
@@ -81,20 +87,37 @@ UpdateEntry(NetAddress &na, LPHOSTENT lpHostEntry)
 }
 
 void
+#ifdef MUSCLE_AVOID_IPV6
 UpdateEntry(NetAddress &na, uint32 ip)
+#else
+UpdateEntry(NetAddress &na, muscle::ip_address ip)
+#endif
 {
+#ifdef MUSCLE_AVOID_IPV6
 	struct in_addr iaHost;	   // Internet address structure
+#else
+	struct in6_addr iaHost;	   // Internet address structure
+#endif
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	
 	na.ip = ip;					// We need to remember to initialize this
 
+#ifdef MUSCLE_AVOID_IPV6
 	iaHost.s_addr = htonl(ip);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+#else
+	ip.WriteToNetworkArray((uint8 *)&iaHost, NULL );
+	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in6_addr), AF_INET6);
+#endif
 	UpdateEntry(na, lpHostEntry);
 }
 
 void
+#ifdef MUSCLE_AVOID_IPV6
 ResolveAliasesAux(NetAddress &na, uint32 ip)
+#else
+ResolveAliasesAux(NetAddress &na, muscle::ip_address ip)
+#endif
 {
 	UpdateEntry(na, ip);
 	if (na.address == QString::null)
@@ -105,26 +128,52 @@ ResolveAliasesAux(NetAddress &na, uint32 ip)
 	}
 }
 
+#ifdef MUSCLE_AVOID_IPV6
 uint32
+#else
+muscle::ip_address
+#endif
 ResolveAddress(const QString &address)
 {
+#ifndef MUSCLE_AVOID_IPV6
+	{
+#endif
 	uint32 res;
 	if (ParseIP4(address, res))
 		return res;
+#ifndef MUSCLE_AVOID_IPV6
+	}
+#endif
 
+#ifdef MUSCLE_AVOID_IPV6
+	{
+#endif
+	muscle::ip_address res2;
 	NetAddress na;
-	res = GetHostByName(address);
+	res2 = GetHostByName(address);
+#ifdef MUSCLE_AVOID_IPV6
+	res = res2;
+	}
+#endif
 
 	if (fAddressCache.GetNumItems() > 0)
 	{
 		for (unsigned int i = 0; i < fAddressCache.GetNumItems(); i++)
 		{
 			na = fAddressCache[i];
+#ifdef MUSCLE_AVOID_IPV6
 			if ((na.address == address) || Contains(na.aliases, address) || (na.ip == res))
+#else
+			if ((na.address == address) || Contains(na.aliases, address) || (na.ip == res2))
+#endif
 			{
 				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
 				{
+#ifdef MUSCLE_AVOID_IPV6
 					if (res != 0)
+#else
+					if (res2 != 0)
+#endif
 					{
 						if ((address != na.address) && !Contains(na.aliases, address))
 						{
@@ -137,10 +186,19 @@ ResolveAddress(const QString &address)
 				}
 				else
 				{
+#ifdef MUSCLE_AVOID_IPV6
 					if (res != 0)	// Do not cache failures
+#else
+					if (res2 != 0)	// Do not cache failures
+#endif
 					{
+#ifdef MUSCLE_AVOID_IPV6
 						na.address = ResolveHost(res);		// Double check
 						ResolveAliasesAux(na, res);
+#else
+						na.address = ResolveHost(res2);		// Double check
+						ResolveAliasesAux(na, res2);
+#endif
 						if ((address != na.address) && !Contains(na.aliases, address))
 							AddToList(na.aliases, address);
 						na.lastcheck = GetCurrentTime64();
@@ -154,26 +212,50 @@ ResolveAddress(const QString &address)
 
 	//
 
+#ifdef MUSCLE_AVOID_IPV6
 	if (res != 0)						// Do not cache failures
+#else
+	if (res2 != 0)
+#endif
 	{
+#ifdef MUSCLE_AVOID_IPV6
 		ResolveAliasesAux(na, res);
+#else
+		ResolveAliasesAux(na, res2);
+#endif
 		if ((na.address != address) && !Contains(na.aliases, address))
 			AddToList(na.aliases, address);
 		fAddressCache.AddTail(na);
 	}
+#ifdef MUSCLE_AVOID_IPV6
 	return res;
+#else
+	return res2;
+#endif
 }
 
+#ifdef MUSCLE_AVOID_IPV6
 uint32
+#else
+muscle::ip_address
+#endif
 ResolveAddress(const String &address)
 {
 	return ResolveAddress( QString::fromLocal8Bit( address.Cstr() ) );
 }
 
 QString
+#ifdef MUSCLE_AVOID_IPV6
 ResolveHost(uint32 ip)
+#else
+ResolveHost(muscle::ip_address ip)
+#endif
 {
+#ifdef MUSCLE_AVOID_IPV6
 	struct in_addr iaHost;	   // Internet address structure
+#else
+	struct in6_addr iaHost;	   // Internet address structure
+#endif
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	
 	//
@@ -191,8 +273,13 @@ ResolveHost(uint32 ip)
 					if (!na.address.isEmpty())
 						return na.address;
 				}
+#ifdef MUSCLE_AVOID_IPV6
 				iaHost.s_addr = htonl(ip);
 				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+#else
+				ip.WriteToNetworkArray((uint8 *)&iaHost, NULL);
+				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in6_addr), AF_INET6);
+#endif
 				
 				if (!lpHostEntry)
 				{
@@ -214,15 +301,24 @@ ResolveHost(uint32 ip)
 
 	//
 
+#ifdef MUSCLE_AVOID_IPV6
 	iaHost.s_addr = htonl(ip);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
+#else
+	ip.WriteToNetworkArray((uint8 *)&iaHost, NULL);
+	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in6_addr), AF_INET6);
+#endif
 	if (lpHostEntry)
 		return QString::fromLocal8Bit(lpHostEntry->h_name);
 	return QString::null;
 }
 
 QString
+#ifdef MUSCLE_AVOID_IPV6
 ResolveAliases(uint32 ip)
+#else
+ResolveAliases(muscle::ip_address ip)
+#endif
 {
 	//
 	NetAddress na;

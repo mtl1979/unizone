@@ -106,10 +106,10 @@ WPrivateWindow::~WPrivateWindow()
     // no need to delete child widgets, Qt does it all for us
 	fLock.Lock();
 	WUserIter it = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
-	while ( it.HasMoreValues() )
+	while ( it.HasData() )
 	{
-		WUserRef uref;
-		it.GetNextValue(uref);
+		WUserRef uref = it.GetValue();
+		it++;
 		uref()->RemoveFromListView(fPrivateUsers);
 	}
 	fLock.Unlock();
@@ -229,6 +229,25 @@ WPrivateWindow::AddUser(const WUserRef & user)
 			fUsers.Put(uid, user);
 			user()->AddToListView(fPrivateUsers);
 		}
+	}
+	fLock.Unlock();
+}
+
+void
+WPrivateWindow::AddUsers(const WUserMap &umap)
+{
+	fLock.Lock();
+	WUserIter iter = umap.GetIterator(HTIT_FLAG_NOREGISTER);
+	while (iter.HasData())
+	{
+		uint32 uid = iter.GetKey();
+		WUserRef user = iter.GetValue();
+		if (!fUsers.ContainsKey(uid))
+		{
+			fUsers.Put(uid, user);
+			user()->AddToListView(fPrivateUsers);
+		}
+		iter++;
 	}
 	fLock.Unlock();
 }
@@ -356,10 +375,9 @@ WPrivateWindow::customEvent(QEvent * event)
 									{
 										WUserIter it = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 										bool err = false;
-										while (it.HasMoreValues())
+										while (it.HasData())
 										{
-											WUserRef ref;
-											it.GetNextValue(ref);
+											WUserRef ref = it.GetValue();
 											if (ref()->IsBot() != user()->IsBot())
 											{
 												if (Settings()->GetError())
@@ -372,6 +390,7 @@ WPrivateWindow::customEvent(QEvent * event)
 												err = true;
 												break;
 											}
+											it++;
 										}
 										if (!err)		// No error -> add ;)	
 											AddUser(user);	// the EASY way :)

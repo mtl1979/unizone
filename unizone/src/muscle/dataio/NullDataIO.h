@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNullDataIO_h
 #define MuscleNullDataIO_h
@@ -10,7 +10,7 @@ namespace muscle {
 /**
  *  Data I/O equivalent to /dev/null.  
  */
-class NullDataIO : public DataIO
+class NullDataIO : public DataIO, private CountedObject<NullDataIO>
 {
 public:
    /** Constructor. 

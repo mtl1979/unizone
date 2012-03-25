@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNestCount_h
 #define MuscleNestCount_h
@@ -31,6 +31,11 @@ public:
 
    /** Returns true iff we are in the outermost nesting level of the batch */
    bool IsOutermost() const {return (_count == 1);}
+
+   /** Sets the count to the specified value.  In general it should not be necessary to call
+     * this method, so don't call it unless you know what you are doing!
+     */
+   void SetCount(uint32 c) {_count = c;}
 
 private:
    uint32 _count;

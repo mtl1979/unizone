@@ -1,8 +1,8 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
-#include "dataio/TCPSocketDataIO.h"  // for the fd_set definition (BeOS/PPC)
 #include "system/AcceptSocketsThread.h"
 #include "util/NetworkUtilityFunctions.h"
+#include "util/SocketMultiplexer.h"
 
 namespace muscle {
 
@@ -48,18 +48,17 @@ status_t AcceptSocketsThread :: StartInternalThread()
 
 void AcceptSocketsThread :: InternalThreadEntry()
 {
-   fd_set readSet;
+   SocketMultiplexer multiplexer;
    bool keepGoing = true;
    while(keepGoing)
    {
       int afd = _acceptSocket.GetFileDescriptor();
       int nfd = _notifySocket.GetFileDescriptor();
 
-      FD_ZERO(&readSet);
-      FD_SET(afd, &readSet);
-      FD_SET(nfd, &readSet);
-      if (select(muscleMax(afd, nfd)+1, &readSet, NULL, NULL, NULL) < 0) break;
-      if (FD_ISSET(nfd, &readSet))
+      multiplexer.RegisterSocketForReadReady(afd);
+      multiplexer.RegisterSocketForReadReady(nfd);
+      if (multiplexer.WaitForEvents() < 0) break;
+      if (multiplexer.IsSocketReadyForRead(nfd))
       {
          MessageRef msgRef;
          int32 numLeft;
@@ -72,7 +71,7 @@ void AcceptSocketsThread :: InternalThreadEntry()
             }
          }
       }
-      if (FD_ISSET(afd, &readSet))
+      if (multiplexer.IsSocketReadyForRead(afd))
       {
          ConstSocketRef newSocket = Accept(_acceptSocket);
          if (newSocket())

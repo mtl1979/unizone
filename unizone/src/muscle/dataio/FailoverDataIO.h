@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFailoverDataIO_h
 #define MuscleFailoverDataIO_h
@@ -31,7 +31,7 @@ public:
   * held DataIO and start using the second one instead (and so on).  This is useful
   * for providing automatic failover/redundancy for important connections. 
   */
-class FailoverDataIO : public DataIO
+class FailoverDataIO : public DataIO, private CountedObject<FailoverDataIO>
 {
 public:
    /** Default Constructor.  Be sure to add some child DataIOs to our Queue of

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleMiscUtilityFunctions_h
 #define MuscleMiscUtilityFunctions_h
@@ -23,9 +23,10 @@ namespace muscle {
   * @param argc As passed in to main()
   * @param argv As passed in to main
   * @param addTo The message to add the arguments to
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
   * @returns B_NO_ERROR on success, B_ERROR on failure (out of memory)
   */
-status_t ParseArgs(int argc, char ** argv, Message & addTo);
+status_t ParseArgs(int argc, char ** argv, Message & addTo, bool caseSensitive = false);
 
 /** Parses settings from the given file.  Works similarly to
  *  ParseArgs() (above), only the values are read from a file
@@ -44,33 +45,57 @@ status_t ParseArgs(int argc, char ** argv, Message & addTo);
  *  @param file File pointer to read from.  This file must be
  *              opened for reading, and will not be fclosed() by this function.
   * @param addTo The message to add the arguments to
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ParseFile(FILE * file, Message & addTo);
+status_t ParseFile(FILE * file, Message & addTo, bool caseSensitive = false);
 
 /** Same as above, except that the file data is passed in as a String
-  * instead of as a FILE handle.
+  * instead being read from a FILE handle.
   * @param fileData a String containing the contents of the file to parse.
   * @param addTo The Message to add the arguments to
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
   * @return B_NO_ERROR on success, or B_ERROR on failure.
   */
-status_t ParseFile(const String & fileData, Message & addTo);
+status_t ParseFile(const String & fileData, Message & addTo, bool caseSensitive = false);
+
+/** Does the opposite of ParseFile():  it takes the contents of
+ *  (writeFrom) and saves it into (file) as a human-readable
+ *  text file.
+ *  @param readFrom The Message to scan for data to write to (file).
+ *                  This Message should be of the same structure as returned by ParseFile().
+ *  @param file File pointer to write to.  This file must be
+ *              opened for writing, and will not be fclosed() by this function.
+ *  @return B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t UnparseFile(const Message & readFrom, FILE * file);
+
+/** Same as above, except that the text data returned as a String.
+  * @param readFrom The Message to scan for data to write to (file).
+  *                 This Message should be of the same structure as returned by ParseFile().
+  * @return A string representation of (readFrom) on success, or "" on failure.
+  *         Note that only fields of B_STRING_TYPE and B_MESSAGE_TYPE in (readFrom) 
+  *         will be converted into string format.  Other data types will be ignored.
+  */
+String UnparseFile(const Message & readFrom);
 
 /** Parses the single string argument (arg) and adds the results to (addTo).
  *  Formatting rules for the string are described above in the ParseArgs() documentation.
  *  @param arg string (or string=value pair) to parse.
  *  @param addTo The Message to add the parsed arguments to (as String fields).
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ParseArg(const String & arg, Message & addTo);
+status_t ParseArg(const String & arg, Message & addTo, bool caseSensitive = false);
 
 /** Scans a line for multiple arguments and calls ParseArg() on each one found.
  *  Quotation marks will be used to group tokens if necessary.
  *  @param arg A line of text, e.g.  arg1=blah arg2=borf arg3="quoted borf"
  *  @param addTo Message to add the argument results to.
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ParseArgs(const String & arg, Message & addTo);
+status_t ParseArgs(const String & arg, Message & addTo, bool caseSensitive = false);
 
 /** This does the inverse operation of ParseArgs().  That is to say, it
   * takes a Message that was previously created via ParseArgs() and returns
@@ -90,9 +115,10 @@ String UnparseArgs(const Message & argMsg);
   * @param argc As passed in to main()
   * @param argv As passed in to main
   * @param addTo The Queue to add the arguments to
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
   * @returns B_NO_ERROR on success, B_ERROR on failure (out of memory)
   */
-status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo);
+status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo, bool caseSensitive = false);
 
 /** Parses settings from the given file.  Works similarly to
  *  ParseArgs() (above), only the values are read from a file
@@ -103,44 +129,51 @@ status_t ParseArgs(int argc, char ** argv, Queue<String> & addTo);
  *  @param file File pointer to read from.  This file must be
  *              opened for reading, and will not be fclosed() by this function.
   * @param addTo The Queue to add the arguments to
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ParseFile(FILE * file, Queue<String> & addTo);
+status_t ParseFile(FILE * file, Queue<String> & addTo, bool caseSensitive = false);
 
 /** Same as above, except that the file data is passed in as a String
   * instead of as a FILE handle.
   * @param fileData a String containing the contents of the file to parse.
   * @param addTo The Queue to add the arguments to
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
   * @return B_NO_ERROR on success, or B_ERROR on failure.
   */
-status_t ParseFile(const String & fileData, Queue<String> & addTo);
+status_t ParseFile(const String & fileData, Queue<String> & addTo, bool caseSensitive = false);
 
 /** Parses the single string argument (arg) and adds the results to (addTo).
  *  Formatting rules for the string are described above in the ParseArgs() documentation.
  *  @param arg string to parse.
  *  @param addTo The Queue to add the argument to.
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ParseArg(const String & arg, Queue<String> & addTo);
+status_t ParseArg(const String & arg, Queue<String> & addTo, bool caseSensitive = false);
 
 /** Scans a line for multiple arguments and calls ParseArg() on each one found.
  *  Quotation marks will be used to group tokens if necessary.
  *  @param arg A line of text, e.g.  arg1=blah arg2=borf arg3="quoted borf"
  *  @param addTo Queue to add the argument results to.
+  * @param caseSensitive Defaults to false.  If true, the case of the arguments will be retained; if false, they will be forced to lower case.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ParseArgs(const String & arg, Queue<String> & addTo);
+status_t ParseArgs(const String & arg, Queue<String> & addTo, bool caseSensitive = false);
 
 /** This does the inverse operation of ParseArgs().  That is to say, it
   * takes a Queue that was previously created via ParseArgs() and returns
   * a String representing the same data.  Note that the returned String isn't
   * guaranteed to be identical to the one that was previously passed in to 
   * ParseArgs(); in particular, any comments will have been stripped out.
-  * @param argMsg A Queue containing String field indicating the arguments
-  *               to add to the String
+  * @param argQ A Queue containing String field indicating the arguments to add to the String
+  * @param startIdx Index to start reading the Queue at.  Defaults to zero.
+  * @param afterEndIdx One greater than the largest index in the Queue to read.  If this value
+  *                    is greater than the length of the queue, it will be treated as if it was the
+  *                    length of the Queue.  Defaults to MUSCLE_NO_LIMIT. 
   * @return The resulting String.
   */
-String UnparseArgs(const Queue<String> & argMsg);
+String UnparseArgs(const Queue<String> & argQ, uint32 startIdx=0, uint32 afterEndIdx=MUSCLE_NO_LIMIT);
 
 /** Convenience method:  Looks for a given hostname or hostname:port string in 
  *  the given field of the args Message, and returns the appropriate parsed
@@ -152,9 +185,10 @@ String UnparseArgs(const Queue<String> & argMsg);
  *  @param portRequired If false, this function will succeed even if no port was specified. 
  *                      If true, the function will fail if a port was not specified (e.g. "localhost:5555").
  *                      Defaults to false.
+ *  @param argIdx The field index to use when parsing the argument string from (args).  Defaults to zero.
  *  @returns B_NO_ERROR if an argument was parsed, or B_ERROR if it wasn't.
  */
-status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired = false);
+status_t ParseConnectArg(const Message & args, const String & fn, String & retHost, uint16 & retPort, bool portRequired = false, uint32 argIdx = 0);
 
 /** Same as above, except that instead of looking for the specified string in a Message, in this
  *  case the string is passed in directly.
@@ -180,9 +214,18 @@ String GetConnectString(const String & host, uint16 port);
  *  @param args the Message that was returned by ParseArg().
  *  @param fn the field name to look for in (args)
  *  @param retPort On successful return, if a port number was parsed it will be written here.
+ *  @param argIdx optional index to look in for the string to parse.
  *  @returns B_NO_ERROR if an argument was parsed, or B_ERROR if it wasn't.
  */
-status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort);
+status_t ParsePortArg(const Message & args, const String & fn, uint16 & retPort, uint32 argIdx = 0);
+
+/** Given an English word representing a boolean (e.g. "on", "off", "enable", "disable", "true", "false", "1", "0", etc),
+  * returns the corresponding boolean value.
+  * @param word The english word string to parse.
+  * @param defaultValue what to return if the passed-in string is not recognized.
+  * @returns true or false, depending on the word.  If the word isn't recognized, (defaultValue) will be returned.  Defaults to true.
+  */
+bool ParseBool(const String & word, bool defaultValue=true);
 
 /** Looks for some globally useful startup arguments in the (args)
  *  Message and handles them by calling the appropriate setup routines.  
@@ -311,7 +354,7 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
 /** This is a convenience function for debugging.  It will print to stdout the
   * specified array of bytes in human-readable hexadecimal format, along with
   * an ASCII sidebar when possible.
-  * @param bytes The bytes to print out
+  * @param bytes The bytes to print out.  May be NULL.
   * @param numBytes How many bytes (bytes) points to
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
   * @param numColumns If specified non zero, then the bytes will be printed
@@ -321,6 +364,32 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
   * @param optFile Optional file to print the output to.  If left NULL, printing will go to stdout.
   */
 void PrintHexBytes(const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16, FILE * optFile = NULL);
+
+/** This is a convenience function for debugging.  It will print to stdout the
+  * specified array of bytes in human-readable hexadecimal format, along with
+  * an ASCII sidebar when possible.
+  * @param bbRef A ByteBufferRef referencing the bytes to print.  May be NULL.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be printed
+  *                   out with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  * @param optFile Optional file to print the output to.  If left NULL, printing will go to stdout.
+  */
+void PrintHexBytes(const ConstByteBufferRef & bbRef, const char * optDesc = NULL, uint32 numColumns = 16, FILE * optFile = NULL);
+
+/** This is a convenience function for debugging.  It will print to stdout the
+  * specified array of bytes in human-readable hexadecimal format, along with
+  * an ASCII sidebar when possible.
+  * @param bb A ByteBufferRef referencing the bytes to print.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be printed
+  *                   out with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  * @param optFile Optional file to print the output to.  If left NULL, printing will go to stdout.
+  */
+void PrintHexBytes(const ByteBuffer & bb, const char * optDesc = NULL, uint32 numColumns = 16, FILE * optFile = NULL);
 
 /** This is a convenience function for debugging.  It will print to stdout the
   * specified array of bytes in human-readable hexadecimal format, along with
@@ -337,7 +406,7 @@ void PrintHexBytes(const Queue<uint8> & bytes, const char * optDesc = NULL, uint
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
   * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
-  * @param bytes The bytes to print out
+  * @param bytes The bytes to print out.  May be NULL.
   * @param numBytes How many bytes (bytes) points to
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
   * @param numColumns If specified non zero, then the bytes will be printed
@@ -346,6 +415,28 @@ void PrintHexBytes(const Queue<uint8> & bytes, const char * optDesc = NULL, uint
   *                   on a single line, using a simpler hex-only format.
   */
 void LogHexBytes(int logLevel, const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16);
+
+/** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
+  * @param bbRef Reference to the ByteBuffer to print out.  May be a NULL reference.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be printed
+  *                   out with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  */
+void LogHexBytes(int logLevel, const ConstByteBufferRef & bbRef, const char * optDesc = NULL, uint32 numColumns = 16);
+
+/** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
+  * @param bb The ByteBuffer to print out.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be printed
+  *                   out with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  */
+void LogHexBytes(int logLevel, const ByteBuffer & bb, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
   * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
@@ -434,6 +525,16 @@ String GetHumanReadableProgramNameFromArgv0(const char * argv0);
   */
 void Win32AllocateStdioConsole();
 #endif
+
+/** Returns a value between 0.0f and 1.0f, indicating what percentage of the
+  * host computer's RAM is currently in use.  Does not include filesystem
+  * cache in this figure.  The intent is that values close to 1.0 indicate
+  * that the system is close to memory exhaustion.
+  * @note This function is implemented only under Linux, MacOS/X, and Windows.
+  * @returns a value between 0.0f and 1.0f representing memory usage,
+  *          or a negative value on failure.
+  */
+float GetSystemMemoryUsagePercentage();
 
 /** @} */ // end of miscutilityfunctions doxygen group
 

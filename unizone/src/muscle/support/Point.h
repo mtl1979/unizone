@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /*******************************************************************************
 /
@@ -11,6 +11,7 @@
 #ifndef MusclePoint_h
 #define MusclePoint_h
 
+#include <math.h>  // for sqrt()
 #include "support/Flattenable.h"
 #include "support/Tuple.h"
 
@@ -20,7 +21,7 @@ namespace muscle {
 /*----- Point class --------------------------------------------*/
 
 /** A portable version of Be's BPoint class. */
-class Point : public Flattenable, public Tuple<2,float>
+class Point : public Tuple<2,float>, public PseudoFlattenable
 {
 public:
    /** Default constructor, sets the point to be (0.0f, 0.0f) */
@@ -33,10 +34,10 @@ public:
    Point(float ax, float ay) {Set(ax, ay);}
 
    /** Copy Constructor. */
-   Point(const Point & rhs) : Flattenable(), Tuple<2,float>(rhs) {/* empty */}
+   Point(const Point & rhs) : Tuple<2,float>(rhs) {/* empty */}
 
    /** Destructor */
-   virtual ~Point() {/* empty */}
+   ~Point() {/* empty */}
  
    /** convenience method to set the x value of this Point */
    inline float & x()       {return (*this)[0];}
@@ -78,14 +79,17 @@ public:
       fprintf(optFile, "Point: %f %f\n", x(), y());
    }
       
-   /** Part of the Flattenable interface:  Returns true */
-   virtual bool IsFixedSize() const {return true;} 
+   /** Part of the Flattenable pseudo-interface:  Returns true */
+   bool IsFixedSize() const {return true;} 
 
-   /** Part of the Flattenable interface:  Returns B_POINT_TYPE */
-   virtual uint32 TypeCode() const {return B_POINT_TYPE;}
+   /** Part of the Flattenable pseudo-interface:  Returns B_POINT_TYPE */
+   uint32 TypeCode() const {return B_POINT_TYPE;}
 
-   /** Part of the Flattenable interface:  2*sizeof(float) */
-   virtual uint32 FlattenedSize() const {return 2*sizeof(float);}
+   /** Returns true iff (tc) equals B_POINT_TYPE. */
+   bool AllowsTypeCode(uint32 tc) const {return (TypeCode()==tc);}
+
+   /** Part of the Flattenable pseudo-interface:  2*sizeof(float) */
+   uint32 FlattenedSize() const {return 2*sizeof(float);}
 
    /** Returns a 32-bit checksum for this object. */
    uint32 CalculateChecksum() const {return CalculateChecksumForFloat(x()) + (3*CalculateChecksumForFloat(y()));}
@@ -93,7 +97,7 @@ public:
    /** Copies this point into an endian-neutral flattened buffer.
     *  @param buffer Points to an array of at least FlattenedSize() bytes.
     */
-   virtual void Flatten(uint8 * buffer) const 
+   void Flatten(uint8 * buffer) const 
    {
       float * buf = (float *) buffer;
       uint32 ox = B_HOST_TO_LENDIAN_IFLOAT(x()); muscleCopyOut(&buf[0], ox);
@@ -105,7 +109,7 @@ public:
     *  @param size The number of bytes (buffer) points to (should be at least FlattenedSize())
     *  @return B_NO_ERROR on success, B_ERROR on failure (size was too small)
     */
-   virtual status_t Unflatten(const uint8 * buffer, uint32 size) 
+   status_t Unflatten(const uint8 * buffer, uint32 size) 
    {
       if (size >= FlattenedSize())
       {
@@ -122,6 +126,24 @@ public:
      * AutoChooseHashFunctor doesn't check the superclasses when it looks for a HashCode method)
      */
    uint32 HashCode() const {return Tuple<2,float>::HashCode();}
+
+   /** Returns the distance between this point and (pt).  
+     * @param pt The point we want to calculate the distance to.
+     * @returns a non-negative distance value.
+     */
+   float GetDistanceTo(const Point & pt) const {return (float)sqrt(GetDistanceToSquared(pt));}
+
+   /** Returns the square of the distance between this point and (pt).  
+     * @param pt The point we want to calculate the distance to.
+     * @returns a non-negative distance-squared value.
+     * @note this method is more efficient that calling GetDistanceTo(), since it doesn't have to call sqrt().
+     */
+   float GetDistanceToSquared(const Point & pt) const
+   {
+      float dx = pt.x()-x();
+      float dy = pt.y()-y();
+      return ((dx*dx)+(dy*dy));
+   }
 };
 
 DECLARE_ALL_TUPLE_OPERATORS(Point,float);

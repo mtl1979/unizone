@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleByteBuffer_h
 #define MuscleByteBuffer_h
@@ -9,7 +9,7 @@ namespace muscle {
 
 class IMemoryAllocationStrategy;
 
-/** This class is used to hold a raw buffer of bytes, and is also Flattenable and RefCountable. */
+/** This class is used to hold a dynamically-resizable buffer of raw bytes (aka uint8s), and is also Flattenable and RefCountable. */
 class ByteBuffer : public FlatCountable
 {
 public:
@@ -33,7 +33,7 @@ public:
    /** Assigment operator.  Copies the byte buffer from (rhs).  If there is an error copying (out of memory), we become an empty ByteBuffer.
     *  @note We do NOT adopt (rhs)'s allocation strategy pointer!
     */
-   ByteBuffer &operator=(const ByteBuffer & rhs) {if ((this != &rhs)&&(SetBuffer(rhs.GetNumBytes(), rhs.GetBuffer()) != B_NO_ERROR)) Clear(); return *this;}
+   ByteBuffer & operator=(const ByteBuffer & rhs) {if ((this != &rhs)&&(SetBuffer(rhs.GetNumBytes(), rhs.GetBuffer()) != B_NO_ERROR)) Clear(); return *this;}
 
    /** Read/Write Accessor.  Returns a pointer to our held buffer, or NULL if we are not currently holding a buffer. */
    uint8 * GetBuffer() {return _buffer;}
@@ -60,6 +60,21 @@ public:
 
    /** Returns true iff the data (rhs) is holding is different from our own (byte-for-byte). */
    bool operator !=(const ByteBuffer &rhs) const {return !(*this == rhs);}
+
+   /** Appends the bytes contained in (rhs) to this ByteBuffer. */
+   ByteBuffer & operator += (const ByteBuffer & rhs) {(void) AppendBytes(rhs); return *this;}
+
+   /** Appends the specified byte to this ByteBuffer. */
+   ByteBuffer & operator += (uint8 byte) {(void) AppendByte(byte); return *this;}
+
+   /** Appends the specified byte to this ByteBuffer's contents.
+     * @param theByte The byte to append
+     * @param allocExtra If true, and we need to resize the buffer larger, we will use an exponential resize
+     *                   so that the number of reallocations is small.  This is useful if you are going to be
+     *                   doing a number of small appends.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+     */
+   status_t AppendByte(uint8 theByte, bool allocExtra = true) {return AppendBytes(&theByte, 1, allocExtra);}
 
    /** Appends the specified bytes to the byte array held by this buffer.
      * @param bytes Pointer to the bytes to append.  If NULL, the added bytes will be undefined.
@@ -167,6 +182,11 @@ public:
    /** Returns the current value of our allocation strategy pointer (may be NULL if the default strategy is in use) */
    IMemoryAllocationStrategy * GetMemoryAllocationStrategy() const {return _allocStrategy;}
 
+   /** Returns true iff (byte) is part of our held buffer of bytes.
+     * @param byte a pointer to a byte of data.  This pointer will not be derefenced by this method.
+     */
+   bool IsByteInLocalBuffer(const uint8 * byte) const {return ((_buffer)&&(byte >= _buffer)&&(byte < (_buffer+_numValidBytes)));}
+
 protected:
    /** Overridden to set our buffer directly from (copyFrom)'s Flatten() method */
    virtual status_t CopyFromImplementation(const Flattenable & copyFrom);
@@ -178,6 +198,8 @@ private:
    IMemoryAllocationStrategy * _allocStrategy;
 };
 DECLARE_REFTYPES(ByteBuffer);
+
+ByteBuffer operator+(const ByteBuffer & lhs, const ByteBuffer & rhs);
 
 /** This function returns a pointer to a singleton ObjectPool that can be used to minimize the number of 
  *  ByteBuffer allocations and frees by recycling the ByteBuffer objects.
@@ -206,18 +228,26 @@ ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numByt
  *  @param flattenMe A Flattenable object to flatten.
  *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
  */
-ByteBufferRef GetByteBufferFromPool(const Flattenable & flattenMe);               
+template <class T> inline ByteBufferRef GetFlattenedByteBufferFromPool(const T & flattenMe) {return GetFlattenedByteBufferFromPool(*GetByteBufferPool(), flattenMe);}
 
 /** Convenience method:  Gets a ByteBuffer from the specified ByteBuffer pool, flattens (flattenMe) into the byte buffer, and 
  *  returns a reference to the new ByteBuffer.
  *  @param pool The ObjectPool to retrieve the new ByteBuffer object from.
- *  @param flattenMe A Flattenable object to flatten.
+ *  @param flattenMe A Flattenable object (or at least an object with Flatten() and FlattenedSize() methods) to flatten.
  *  @return Reference to a ByteBuffer object as specified, or a NULL ref on failure (out of memory).
  */
-ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, const Flattenable & flattenMe);
+template <class T> inline ByteBufferRef GetFlattenedByteBufferFromPool(ObjectPool<ByteBuffer> & pool, const T & flattenMe)
+{
+   ByteBufferRef bufRef = GetByteBufferFromPool(pool, flattenMe.FlattenedSize());
+   if (bufRef()) flattenMe.Flatten(bufRef()->GetBuffer());
+   return bufRef;
+}
+
+/** Convenience method:  returns a read-only reference to an empty ByteBuffer */
+const ByteBuffer & GetEmptyByteBuffer();
 
 /** Convenience method:  returns a read-only reference to a ByteBuffer that contains no data. */
-ByteBufferRef GetEmptyByteBufferRef();
+ConstByteBufferRef GetEmptyByteBufferRef();
 
 /** This interface is used to represent any object that knows how to allocate, reallocate, and free memory in a special way. */
 class IMemoryAllocationStrategy 

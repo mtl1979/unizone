@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleRawDataMessageIOGateway_h
 #define MuscleRawDataMessageIOGateway_h
@@ -17,7 +17,7 @@ namespace muscle {
  * This gateway is very crude; it can be used to write raw data to a TCP socket, and
  * to retrieve data from the socket in chunks of a specified size range.
  */
-class RawDataMessageIOGateway : public AbstractMessageIOGateway
+class RawDataMessageIOGateway : public AbstractMessageIOGateway, private CountedObject<RawDataMessageIOGateway>
 {
 public:
    /** Constructor.
@@ -35,6 +35,14 @@ public:
 protected:
    virtual int32 DoOutputImplementation(uint32 maxBytes = MUSCLE_NO_LIMIT);
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
+
+   /** Removes the next MessageRef from the head of our outgoing-Messages
+     * queue and returns it.  Returns a NULL MessageRef if there is no
+     * outgoing Message in the queue.
+     * (broken out into a virtual method so its behavior can be modified
+     * by subclasses, if necessary)
+     */
+   virtual MessageRef PopNextOutgoingMessage();
 
 private:
    void FlushPendingInput();
@@ -55,6 +63,31 @@ private:
 
    uint32 _minChunkSize;
    uint32 _maxChunkSize;
+};
+
+/** 
+ * This class is the same as a RawDataMessageIOGateway, except that it is instrumented
+ * to keep track of the number of bytes of raw data currently in its outgoing-Message 
+ * queue.
+ */
+class CountedRawDataMessageIOGateway : public RawDataMessageIOGateway
+{
+public:
+   CountedRawDataMessageIOGateway(uint32 minChunkSize=0, uint32 maxChunkSize=MUSCLE_NO_LIMIT);
+
+   virtual status_t AddOutgoingMessage(const MessageRef & messageRef);
+
+   uint32 GetNumOutgoingDataBytes() const {return _outgoingByteCount;}
+
+   virtual void Reset();
+
+protected:
+   virtual MessageRef PopNextOutgoingMessage();
+ 
+private:
+   uint32 GetNumRawBytesInMessage(const MessageRef & messageRef) const;
+
+   uint32 _outgoingByteCount;
 };
 
 }; // end namespace muscle

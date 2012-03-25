@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef NEW_H_NOT_AVAILABLE
 # include <new>
@@ -45,6 +45,8 @@
 # endif
 
 namespace muscle {
+
+extern void SetFailedMemoryRequestSize(uint32 numBytes);  // FogBugz #7547
 
 # if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
 
@@ -126,11 +128,6 @@ static inline void   *  CONVERT_INTERNAL_TO_USER_POINTER(size_t * iptr) {return 
 
 # endif
 
-static MemoryAllocatorRef _globalAllocatorRef;
-
-void SetCPlusPlusGlobalMemoryAllocator(const MemoryAllocatorRef & maRef) {_globalAllocatorRef = maRef;}
-MemoryAllocatorRef GetCPlusPlusGlobalMemoryAllocator() {return _globalAllocatorRef;}
-
 static size_t _currentlyAllocatedBytes = 0;  // Running tally of how many bytes our process has allocated
 
 size_t GetNumAllocatedBytes() {return _currentlyAllocatedBytes;}
@@ -142,13 +139,14 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
    size_t internalSize = CONVERT_USER_TO_INTERNAL_SIZE(userSize);
 
    void * userPtr = NULL;
-   MemoryAllocator * ma = _globalAllocatorRef();
+   MemoryAllocator * ma = GetCPlusPlusGlobalMemoryAllocator()();
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
    Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
    if ((glock)&&(glock->Lock() != B_NO_ERROR))
    {
       printf("Error, muscleAlloc() could not lock the global muscle lock!\n");
+      SetFailedMemoryRequestSize(userSize);   // FogBugz #7547
       return NULL;  // serialize access to (ma)
    }
 #endif
@@ -160,12 +158,12 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
       {
          *internalPtr = internalSize;  // our little header tag so that muscleFree() will know how big the allocation was
          _currentlyAllocatedBytes += internalSize;
-//printf("+"UINT32_FORMAT_SPEC" = "UINT32_FORMAT_SPEC"\n", (uint32)internalSize, (uint32)_currentlyAllocatedBytes);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
          MemoryParanoiaPrepareBuffer(internalPtr, 0);
 #endif
          userPtr = CONVERT_INTERNAL_TO_USER_POINTER(internalPtr);
+//printf("+"UINT32_FORMAT_SPEC" = "UINT32_FORMAT_SPEC" userPtr=%p\n", (uint32)internalSize, (uint32)_currentlyAllocatedBytes, userPtr);
       }
       else if (ma) ma->AboutToFree(_currentlyAllocatedBytes+internalSize, internalSize);  // FogBugz #4494:  roll back the call to AboutToAllocate()!
    }
@@ -191,6 +189,7 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
    if (glock) (void) glock->Unlock();
 #endif
 
+   if (userPtr == NULL) SetFailedMemoryRequestSize(userSize);   // FogBugz #7547
    return userPtr;
 }
 
@@ -216,13 +215,14 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
    if (newInternalSize == oldInternalSize) return oldUserPtr;  // same size as before?  Then we are already done!
 
    void * newUserPtr = NULL;
-   MemoryAllocator * ma = _globalAllocatorRef();
+   MemoryAllocator * ma = GetCPlusPlusGlobalMemoryAllocator()();
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
    Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
    if ((glock)&&(glock->Lock() != B_NO_ERROR)) 
    {
       printf("Error, muscleRealloc() could not lock the global muscle lock!\n");
+      SetFailedMemoryRequestSize(newUserSize);   // FogBugz #7547
       return NULL;  // serialize access to (ma)
    }
 #endif
@@ -239,7 +239,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
             _currentlyAllocatedBytes += growBy;  // only reflect the newly-allocated bytes
             *newInternalPtr = newInternalSize;  // our little header tag so that muscleFree() will know how big the allocation was
             newUserPtr = CONVERT_INTERNAL_TO_USER_POINTER(newInternalPtr);
-//printf("r+"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC"\n", (uint32)growBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
+//printf("r+"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC" oldUserPtr=%p newUserPtr=%p\n", (uint32)growBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes, oldUserPtr, newUserPtr);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
             MemoryParanoiaPrepareBuffer(newInternalPtr, oldUserSize);
@@ -274,7 +274,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
       {
          *newInternalPtr = newInternalSize;  // our little header tag so that muscleFree() will know how big the allocation is now
          _currentlyAllocatedBytes -= shrinkBy;
-//printf("r-"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC"\n", (uint32)shrinkBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes);
+//printf("r-"UINT32_FORMAT_SPEC"(->"UINT32_FORMAT_SPEC") = "UINT32_FORMAT_SPEC" oldUserPtr=%p newUserPtr=%p\n", (uint32)shrinkBy, (uint32)newInternalSize, (uint32)_currentlyAllocatedBytes, oldUserPtr, newUserPtr);
 
 #if MUSCLE_ENABLE_MEMORY_PARANOIA > 0
          MemoryParanoiaPrepareBuffer(newInternalPtr, MUSCLE_NO_LIMIT);
@@ -293,6 +293,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
    if (glock) (void) glock->Unlock();
 #endif
 
+   if (newUserPtr == NULL) SetFailedMemoryRequestSize(newUserSize);   // FogBugz #7547
    return newUserPtr;
 }
 
@@ -306,7 +307,7 @@ void muscleFree(void * userPtr)
       MemoryParanoiaCheckBuffer(userPtr);
 #endif
 
-      MemoryAllocator * ma = _globalAllocatorRef();
+      MemoryAllocator * ma = GetCPlusPlusGlobalMemoryAllocator()();
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
       Mutex * glock = ma ? GetGlobalMuscleLock() : NULL;
@@ -321,7 +322,7 @@ void muscleFree(void * userPtr)
       _currentlyAllocatedBytes -= *internalPtr;
 
       if (ma) ma->AboutToFree(_currentlyAllocatedBytes, *internalPtr);
-//printf("-"UINT32_FORMAT_SPEC" = "UINT32_FORMAT_SPEC"\n", (uint32)*internalPtr, (uint32)_currentlyAllocatedBytes);
+//printf("-"UINT32_FORMAT_SPEC" = "UINT32_FORMAT_SPEC" userPtr=%p\n", (uint32)*internalPtr, (uint32)_currentlyAllocatedBytes, userPtr);
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
       if (glock) (void) glock->Unlock();

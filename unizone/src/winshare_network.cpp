@@ -626,10 +626,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (uc > 0)
 				{
 					WUserIter iter = umap.GetIterator(HTIT_FLAG_NOREGISTER);
-					while (iter.HasMoreValues())
+					while (iter.HasData())
 					{
-						WUserRef tu;
-						iter.GetNextValue(tu);
+						WUserRef tu = iter.GetValue();
+						iter++;
 						QString to("/*/");
 						to += tu()->GetUserID();
 						to += "/unishare";
@@ -1354,10 +1354,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				base += lt;
 			}
 
-			QString fname = base;
-			fname += ".jpg";
-			fname = FixFileName(fname);
-			fname.prepend("shared/");
+			QString fname = "shared/" + FixFileName(base + ".jpg");
 			QDesktopWidget * desk = QApplication::desktop();
 			QPixmap pmap = QPixmap::grabWindow(desk->winId());
 			pmap.save(fname, "JPEG");
@@ -1388,10 +1385,10 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			{
 				QString list;
 				WUserIter uiter = wmap.GetIterator(HTIT_FLAG_NOREGISTER);
-				while (uiter.HasMoreValues())
+				while (uiter.HasData())
 				{
-					WUserRef uref;
-					uiter.GetNextValue(uref);
+					WUserRef uref = uiter.GetValue();
+					uiter++;
 					AddToList(list, uref()->GetUserID());
 				}
 				
@@ -1766,10 +1763,10 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 					WUserMap & winusers = win->GetUsers();
 					
 					WUserIter uit = winusers.GetIterator(HTIT_FLAG_NOREGISTER);
-					while ( uit.HasMoreValues() )
+					while ( uit.HasData() )
 					{
-						WUserRef user;
-						uit.GetNextValue(user);
+						WUserRef user = uit.GetValue();
+						uit++;
 						if (user()->GetUserID() == userID)
 						{
 							WChatEvent *wce = new WChatEvent(userID, text);
@@ -2882,14 +2879,14 @@ WinShareWindow::FindUser(const QString & user)
 
 	WUserMap & umap = fNetClient->Users();
 	WUserIter iter = umap.GetIterator(HTIT_FLAG_NOREGISTER);
-	while (iter.HasMoreValues())
+	while (iter.HasData())
 	{
-		WUserRef uref;
-		iter.GetNextValue(uref);
+		WUserRef uref = iter.GetValue();
 		if (MatchUserFilter(uref, user))
 		{
 			return uref;
 		}
+		iter++;
 	}
 	return WUserRef(NULL);
 }
@@ -3055,7 +3052,7 @@ void
 WinShareWindow::ConnectionAccepted(const ConstSocketRef &socketRef)
 {
 	PRINT("\tWinShareWindow::ConnectionAccepted\n");
-	uint32 ip;
+	muscle::ip_address ip;
 	if (socketRef() && (ip = GetPeerIPAddress(socketRef, true)) > 0)
 	{
 		OpenUpload();

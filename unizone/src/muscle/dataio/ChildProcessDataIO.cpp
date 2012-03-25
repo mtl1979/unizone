@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "dataio/ChildProcessDataIO.h"
 #include "util/MiscUtilityFunctions.h"     // for ExitWithoutCleanup()
@@ -8,7 +8,7 @@
 # include <process.h>  // for _beginthreadex()
 # define USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 #else
-# ifdef __linux__
+# if defined(__linux__) || defined(__HAIKU__)
 #  include <pty.h>     // for forkpty() on Linux
 # else
 #  include <util.h>    // for forkpty() on MacOS/X
@@ -24,7 +24,7 @@
 
 namespace muscle {
 
-ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOkay(true), _maxChildWaitTime(0), _signalNumber(-1), _childProcessInheritFileDescriptors(false)
+ChildProcessDataIO :: ChildProcessDataIO(bool blocking) : _blocking(blocking), _killChildOkay(true), _maxChildWaitTime(0), _signalNumber(-1), _childProcessInheritFileDescriptors(false), _childProcessIsIndependent(false)
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
    , _readFromStdout(INVALID_HANDLE_VALUE), _writeToStdin(INVALID_HANDLE_VALUE), _ioThread(INVALID_HANDLE_VALUE), _wakeupSignal(INVALID_HANDLE_VALUE), _childProcess(INVALID_HANDLE_VALUE), _childThread(INVALID_HANDLE_VALUE), _requestThreadExit(false)
 #else
@@ -45,16 +45,16 @@ static void SafeCloseHandle(::HANDLE & h)
 }
 #endif
 
-status_t ChildProcessDataIO :: LaunchChildProcess(const Queue<String> & argq, bool usePty)
+status_t ChildProcessDataIO :: LaunchChildProcess(const Queue<String> & argq, uint32 launchBits)
 {
    uint32 numItems = argq.GetNumItems();
    if (numItems == 0) return B_ERROR;
 
-   const char ** argv = newnothrow_array(const char *, numItems);
+   const char ** argv = newnothrow_array(const char *, numItems+1);
    if (argv == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-
    for (uint32 i=0; i<numItems; i++) argv[i] = argq[i]();
-   status_t ret = LaunchChildProcess(numItems, argv, usePty);
+   argv[numItems] = NULL;
+   status_t ret = LaunchChildProcess(numItems, argv, launchBits);
    delete [] argv;
    return ret;
 }
@@ -66,18 +66,26 @@ void ChildProcessDataIO :: SetChildProcessShutdownBehavior(bool okayToKillChild,
    _maxChildWaitTime = maxChildWaitTime;
 }
 
-status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args, bool usePty)
+#ifdef WIN32
+static void SetWindowsSocketInheritable(const ConstSocketRef & sock, bool inheritable)
+{
+   int s = sock.GetFileDescriptor();
+   if ((s < 0)||(SetHandleInformation((HANDLE)s, HANDLE_FLAG_INHERIT, inheritable?HANDLE_FLAG_INHERIT:0) == false)) printf("SetWindowsSocketInheritable:  SetHandleInformation() failed for socket %i\n", s);
+}
+#endif
+
+status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args, uint32 launchBits)
 {
    TCHECKPOINT;
 
    Close();  // paranoia
 
 #ifdef MUSCLE_AVOID_FORKPTY
-   usePty = false;   // no sense trying to use pseudo-terminals if they were forbidden at compile time
+   launchBits &= ~CHILD_PROCESS_LAUNCH_BIT_USE_FORKPTY;   // no sense trying to use pseudo-terminals if they were forbidden at compile time
 #endif
 
 #ifdef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-   (void) usePty;    // just to shut the compiler up
+   (void) launchBits;  // avoid compiler warning
 
    SECURITY_ATTRIBUTES saAttr;
    {
@@ -135,6 +143,12 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                      _wakeupSignal = CreateEvent(0, false, false, 0);
                      if ((_wakeupSignal != INVALID_HANDLE_VALUE)&&(CreateConnectedSocketPair(_masterNotifySocket, _slaveNotifySocket, false) == B_NO_ERROR))
                      {
+                        // work-around for FogBugz #5787 -- otherwise a second ChildProcessDataIO's child process might hold 
+                        // open these sockets of the first ChilddProcessDataIO, making it impossible for the main thread to detect
+                        // when the first ChildProcessDataIO's I/O thread has exited.
+                        SetWindowsSocketInheritable(_masterNotifySocket, false);
+                        SetWindowsSocketInheritable(_slaveNotifySocket,  false);
+
                         DWORD junkThreadID;
                         typedef unsigned (__stdcall *PTHREAD_START) (void *);
                         if ((_ioThread = (::HANDLE) _beginthreadex(NULL, 0, (PTHREAD_START)IOThreadEntryFunc, this, 0, (unsigned *) &junkThreadID)) != INVALID_HANDLE_VALUE) return B_NO_ERROR;
@@ -152,8 +166,26 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
    Close();  // free all allocated object state we may have
    return B_ERROR;
 #else
+   // First, set up our arguments array here in the parent process, since the child process won't be able to do any dynamic allocations.
+   Queue<String> scratchChildArgQ;  // holds the strings that the pointers in the argv buffer will point to
+   bool isParsed = (argc<0);
+   if (argc < 0)
+   {
+      if (ParseArgs(String((const char *)args), scratchChildArgQ) != B_NO_ERROR) return B_ERROR;
+      argc = scratchChildArgQ.GetNumItems();
+   }
+
+   ByteBuffer scratchChildArgv;  // the child process's argv array, NULL terminated
+   if (scratchChildArgv.SetNumBytes((argc+1)*sizeof(char *), false) != B_NO_ERROR) return B_ERROR;
+
+   // Populate the argv array for our child process to use
+   const char ** argv = (const char **) scratchChildArgv.GetBuffer();
+   if (isParsed) for (int i=0; i<argc; i++) argv[i] = scratchChildArgQ[i]();
+            else memcpy(argv, (char **) args, argc*sizeof(char *));
+   argv[argc] = NULL; // argv array must be NULL terminated!
+
    pid_t pid = (pid_t) -1;
-   if (usePty)
+   if (launchBits & CHILD_PROCESS_LAUNCH_BIT_USE_FORKPTY)
    {
 # ifdef MUSCLE_AVOID_FORKPTY
       return B_ERROR;  // this branch should never be taken, due to the ifdef at the top of this function... but just in case
@@ -185,12 +217,32 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
       else if (pid == 0)
       {
          int fd = slaveSock()->GetFileDescriptor();
-         if ((dup2(fd, STDIN_FILENO) < 0)||(dup2(fd, STDOUT_FILENO) < 0)||(dup2(fd, STDERR_FILENO) < 0)) ExitWithoutCleanup(20);
+         if (((launchBits & CHILD_PROCESS_LAUNCH_BIT_EXCLUDE_STDIN)  == 0)&&(dup2(fd, STDIN_FILENO)  < 0)) ExitWithoutCleanup(20);
+         if (((launchBits & CHILD_PROCESS_LAUNCH_BIT_EXCLUDE_STDOUT) == 0)&&(dup2(fd, STDOUT_FILENO) < 0)) ExitWithoutCleanup(20);
+         if (((launchBits & CHILD_PROCESS_LAUNCH_BIT_EXCLUDE_STDERR) == 0)&&(dup2(fd, STDERR_FILENO) < 0)) ExitWithoutCleanup(20);
       }
    }
 
         if (pid < 0) return B_ERROR;      // fork failure!
-   else if (pid == 0) RunChildProcess(argc, args);  // we are the child process -- never returns
+   else if (pid == 0)
+   {
+      // we are the child process
+      (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
+
+      // Close any file descriptors leftover from the parent process
+      if (_childProcessInheritFileDescriptors == false)
+      {
+         int fdlimit = sysconf(_SC_OPEN_MAX);
+         for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
+      }
+
+      if (_childProcessIsIndependent) (void) BecomeDaemonProcess();  // used by the LaunchIndependentChildProcess() static methods only
+
+      char ** argv = (char **) scratchChildArgv.GetBuffer();
+      ChildProcessReadyToRun();
+      if (execvp(argv[0], argv) < 0) perror("ChildProcessDataIO::execvp");  // execvp() should never return
+      ExitWithoutCleanup(20);
+   }
    else if (_handle())   // if we got this far, we are the parent process
    {
       _childPID = pid;
@@ -216,59 +268,6 @@ bool ChildProcessDataIO :: IsChildProcessAvailable() const
    return (_handle.GetFileDescriptor() >= 0);
 #endif
 } 
-
-#ifndef USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
-void ChildProcessDataIO :: RunChildProcess(int argc, const void * args)
-{
-   // we are the child process
-   int ret = 20;
-   (void) signal(SIGHUP, SIG_DFL);  // FogBugz #2918
-
-   // Close any file descriptors leftover from the parent process
-   if (_childProcessInheritFileDescriptors == false)
-   {
-      int fdlimit = sysconf(_SC_OPEN_MAX);
-      for (int i=STDERR_FILENO+1; i<fdlimit; i++) close(i);
-   }
-
-   if (argc < 0) 
-   {
-      // I can't use system() here because it spawns an extra
-      // process, which means that the parent process tries
-      // to kill the wrong _childPID.  We need to have it all
-      // execute in _this_ process, which means we gotta use exec()!
-      Queue<String> argv;
-      if (ParseArgs(String((const char *)args), argv) == B_NO_ERROR)
-      {
-         argc = argv.GetNumItems();
-         char ** newArgv = newnothrow_array(char *, argc+1);
-         if (newArgv)
-         {
-            for (int i=0; i<argc; i++) newArgv[i] = (char *) argv[i]();
-            newArgv[argc] = NULL;   // make sure it's terminated!
-            ChildProcessReadyToRun();
-            ret = execvp(argv[0](), newArgv);
-            delete [] newArgv;  // only executed if execvp() fails
-         }
-      }
-   }
-   else
-   {
-      const char ** argv = (const char **) args;
-      char ** newArgv = newnothrow_array(char *, argc+1);
-      if (newArgv)
-      {
-         memcpy(newArgv, argv, argc*sizeof(char *));
-         newArgv[argc] = NULL;   // make sure the array is terminated!
-         ChildProcessReadyToRun();
-         ret = execvp(argv[0], newArgv);
-         delete [] newArgv;  // only executed if execvp() fails
-      }
-      else ret = 20;
-   }
-   ExitWithoutCleanup(ret);
-}
-#endif
 
 status_t ChildProcessDataIO :: KillChildProcess()
 {
@@ -319,7 +318,7 @@ void ChildProcessDataIO :: Close()
    SafeCloseHandle(_wakeupSignal);
    SafeCloseHandle(_readFromStdout);
    SafeCloseHandle(_writeToStdin);
-   if (_childProcess != INVALID_HANDLE_VALUE) DoGracefulChildShutdown();
+   if ((_childProcess != INVALID_HANDLE_VALUE)&&(_childProcessIsIndependent == false)) DoGracefulChildShutdown();  // Windows can't double-fork, so in the independent case we just won't wait for him
    SafeCloseHandle(_childProcess);
    SafeCloseHandle(_childThread);
 #else
@@ -338,14 +337,14 @@ void ChildProcessDataIO :: DoGracefulChildShutdown()
 bool ChildProcessDataIO :: WaitForChildProcessToExit(uint64 maxWaitTimeMicros)
 {
 #ifdef WIN32
-   return ((_childProcess == INVALID_HANDLE_VALUE)||(WaitForSingleObject(_childProcess, (maxWaitTimeMicros==MUSCLE_TIME_NEVER)?INFINITE:(maxWaitTimeMicros/1000)) == WAIT_OBJECT_0));
+   return ((_childProcess == INVALID_HANDLE_VALUE)||(WaitForSingleObject(_childProcess, (maxWaitTimeMicros==MUSCLE_TIME_NEVER)?INFINITE:((DWORD)(maxWaitTimeMicros/1000))) == WAIT_OBJECT_0));
 #else
    if (_childPID < 0) return true;   // a non-existent child process is an exited child process, if you ask me.
    if (maxWaitTimeMicros == MUSCLE_TIME_NEVER) return (waitpid(_childPID, NULL, 0) == _childPID);
    else
    {
       // The tricky case... waiting for the child process to exit, with a timeout.
-      // I'm implementing it via a polling loop, which is a sucky wait to implement
+      // I'm implementing it via a polling loop, which is a sucky way to implement
       // it but the only alternative would involve mucking about with signal handlers,
       // and doing it that way would be unreliable in multithreaded environments.
       uint64 endTime = GetRunTime64()+maxWaitTimeMicros;
@@ -386,7 +385,7 @@ int32 ChildProcessDataIO :: Read(void *buf, uint32 len)
          return ret;
       }
 #else
-      int r = read(_handle.GetFileDescriptor(), buf, len);
+      int r = read_ignore_eintr(_handle.GetFileDescriptor(), buf, len);
       return _blocking ? r : ConvertReturnValueToMuscleSemantics(r, len, _blocking);
 #endif
    }
@@ -412,7 +411,7 @@ int32 ChildProcessDataIO :: Write(const void *buf, uint32 len)
          return ret;
       }
 #else
-      return ConvertReturnValueToMuscleSemantics(write(_handle.GetFileDescriptor(), buf, len), len, _blocking);
+      return ConvertReturnValueToMuscleSemantics(write_ignore_eintr(_handle.GetFileDescriptor(), buf, len), len, _blocking);
 #endif
    }
    return -1;
@@ -572,40 +571,67 @@ void ChildProcessDataIO :: IOThreadEntry()
 }
 #endif
 
-status_t ChildProcessDataIO :: System(int argc, const char * argv[], bool usePty)
+status_t ChildProcessDataIO :: System(int argc, const char * argv[], uint32 launchBits, uint64 maxWaitTimeMicros)
 {
    ChildProcessDataIO cpdio(false);
-   if (cpdio.LaunchChildProcess(argc, argv, usePty) == B_NO_ERROR)
+   if (cpdio.LaunchChildProcess(argc, argv, launchBits) == B_NO_ERROR)
    {
-      cpdio.WaitForChildProcessToExit();
+      cpdio.WaitForChildProcessToExit(maxWaitTimeMicros);
       return B_NO_ERROR;
    }
    else return B_ERROR;
 }
 
-status_t ChildProcessDataIO :: System(const Queue<String> & argq, bool usePty)
+status_t ChildProcessDataIO :: System(const Queue<String> & argq, uint32 launchBits, uint64 maxWaitTimeMicros)
 {
    uint32 numItems = argq.GetNumItems();
    if (numItems == 0) return B_ERROR;
 
-   const char ** argv = newnothrow_array(const char *, numItems);
+   const char ** argv = newnothrow_array(const char *, numItems+1);
    if (argv == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-
    for (uint32 i=0; i<numItems; i++) argv[i] = argq[i]();
-   status_t ret = System(numItems, argv, usePty);
+   argv[numItems] = NULL;
+   status_t ret = System(numItems, argv, launchBits, maxWaitTimeMicros);
    delete [] argv;
    return ret;
 }
 
-status_t ChildProcessDataIO :: System(const char * cmdLine, bool usePty)
+status_t ChildProcessDataIO :: System(const char * cmdLine, uint32 launchBits, uint64 maxWaitTimeMicros)
 {
    ChildProcessDataIO cpdio(false);
-   if (cpdio.LaunchChildProcess(cmdLine, usePty) == B_NO_ERROR)
+   if (cpdio.LaunchChildProcess(cmdLine, launchBits) == B_NO_ERROR)
    {
-      cpdio.WaitForChildProcessToExit();
+      cpdio.WaitForChildProcessToExit(maxWaitTimeMicros);
       return B_NO_ERROR;
    }
    else return B_ERROR;
+}
+
+status_t ChildProcessDataIO :: LaunchIndependentChildProcess(int argc, const char * argv[], bool inheritFileDescriptors)
+{
+   ChildProcessDataIO cpdio(true);
+   cpdio._childProcessIsIndependent = true;  // so the cpdio dtor won't block waiting for the child to exit
+   cpdio.SetChildProcessInheritFileDescriptors(inheritFileDescriptors);
+   cpdio.SetChildProcessShutdownBehavior(false);
+   return cpdio.LaunchChildProcess(argc, argv, false);
+}
+
+status_t ChildProcessDataIO :: LaunchIndependentChildProcess(const char * cmdLine, bool inheritFileDescriptors)
+{
+   ChildProcessDataIO cpdio(true);
+   cpdio._childProcessIsIndependent = true;  // so the cpdio dtor won't block waiting for the child to exit
+   cpdio.SetChildProcessInheritFileDescriptors(inheritFileDescriptors);
+   cpdio.SetChildProcessShutdownBehavior(false);
+   return cpdio.LaunchChildProcess(cmdLine, false);
+}
+
+status_t ChildProcessDataIO :: LaunchIndependentChildProcess(const Queue<String> & argv, bool inheritFileDescriptors)
+{
+   ChildProcessDataIO cpdio(true);
+   cpdio._childProcessIsIndependent = true;  // so the cpdio dtor won't block waiting for the child to exit
+   cpdio.SetChildProcessInheritFileDescriptors(inheritFileDescriptors);
+   cpdio.SetChildProcessShutdownBehavior(false);
+   return cpdio.LaunchChildProcess(argv, false);
 }
 
 }; // end namespace muscle

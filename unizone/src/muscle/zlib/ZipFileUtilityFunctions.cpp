@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
@@ -63,23 +63,23 @@ static int ZCALLBACK ferror_dataio_func (voidpf /*opaque*/, voidpf /*stream*/)
 
 static status_t WriteZipFileAux(zipFile zf, const String & baseName, const Message & msg, int compressionLevel, zip_fileinfo * fileInfo)
 {
-   MessageFieldNameIterator iter = msg.GetFieldNameIterator();
-   const String * fn;
-   while((fn = iter.GetNextFieldNameString()) != NULL)
+   for (MessageFieldNameIterator iter = msg.GetFieldNameIterator(); iter.HasData(); iter++)
    {
+      const String & fn = iter.GetFieldName();
+
       uint32 fieldType;
-      if (msg.GetInfo(*fn, &fieldType) != B_NO_ERROR) return B_ERROR;
+      if (msg.GetInfo(fn, &fieldType) != B_NO_ERROR) return B_ERROR;
       switch(fieldType)
       {
          case B_MESSAGE_TYPE:
          {
             String newBaseName = baseName;
             if ((newBaseName.HasChars())&&(newBaseName.EndsWith('/') == false)) newBaseName += '/';
-            newBaseName += *fn;
+            newBaseName += fn;
 
             // Message fields we treat as sub-directories   
             MessageRef subMsg;
-            for (int32 i=0; msg.FindMessage(*fn, i, subMsg) == B_NO_ERROR; i++) if (WriteZipFileAux(zf, newBaseName, *subMsg(), compressionLevel, fileInfo) != B_NO_ERROR) return B_ERROR;
+            for (int32 i=0; msg.FindMessage(fn, i, subMsg) == B_NO_ERROR; i++) if (WriteZipFileAux(zf, newBaseName, *subMsg(), compressionLevel, fileInfo) != B_NO_ERROR) return B_ERROR;
          }
          break;
 
@@ -87,11 +87,11 @@ static status_t WriteZipFileAux(zipFile zf, const String & baseName, const Messa
          {
             String fileName = baseName;
             if ((fileName.HasChars())&&(fileName.EndsWith('/') == false)) fileName += '/';
-            fileName += *fn;
+            fileName += fn;
 
             const void * data;
             uint32 numBytes;
-            for (int32 i=0; msg.FindData(*fn, B_RAW_TYPE, i, &data, &numBytes) == B_NO_ERROR; i++)
+            for (int32 i=0; msg.FindData(fn, B_RAW_TYPE, i, &data, &numBytes) == B_NO_ERROR; i++)
             {
                if (zipOpenNewFileInZip2(zf,
                                         fileName(),  // file name

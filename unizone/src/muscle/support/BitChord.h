@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleBitChord_h
 #define MuscleBitChord_h
@@ -120,7 +120,7 @@ public:
       String ret; (void) ret.Prealloc(1+(8*NumBits/3));
       const uint8 * b = (const uint8 *) _words;
       bool foundNonZero = false;
-      for (int32 i=NUM_WORDS/sizeof(unsigned int)-1; i>=0; i--)
+      for (int32 i=NUM_WORDS*sizeof(unsigned int)-1; i>=0; i--)
       {
          uint8 c = b[i];
          if (c != 0) foundNonZero = true;

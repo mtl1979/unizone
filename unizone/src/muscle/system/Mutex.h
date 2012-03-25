@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMutex_h
 #define MuscleMutex_h
@@ -43,9 +43,22 @@
 # endif
 #endif
 
-#include "support/MuscleSupport.h"
-
 namespace muscle {
+
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+# define Lock()   DeadlockFinderLockWrapper  (__FILE__, __LINE__)
+# define Unlock() DeadlockFinderUnlockWrapper(__FILE__, __LINE__)
+extern void DeadlockFinder_LogEvent(bool isLock, const void * mutexPtr, const char * fileName, int fileLine);
+extern unsigned long GetCurrentThreadID();  // from SetupSystem.h, but I don't want to #include that here
+extern bool _enableDeadlockFinderPrints;
+#define LOG_DEADLOCK_FINDER_EVENT(val)                                   \
+      if ((_enableDeadlockFinderPrints)&&(_inDeadlockCallbackCount == 0)) \
+      {                                                                  \
+         _inDeadlockCallbackCount++;                                     \
+         DeadlockFinder_LogEvent(val, this, fileName, fileLine);         \
+         _inDeadlockCallbackCount--;                                    \
+      }
+#endif
 
 // If false, then we must not assume that we are running in single-threaded mode.
 // This variable should be set by the ThreadSetupSystem constructor ONLY!
@@ -78,6 +91,10 @@ public:
 # endif
 #endif
    {
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+      _inDeadlockCallbackCount = 0;
+#endif
+
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
       if (_isEnabled)
       {
@@ -98,6 +115,9 @@ public:
      */
    ~Mutex() {Cleanup();}
 
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+   status_t DeadlockFinderLockWrapper(const char * fileName, int fileLine) const
+#else
    /** Attempts to lock the lock. 
      * Any thread that tries to Lock() this object while it is already locked by another thread
      * will block until the other thread unlocks the lock.  The lock is recursive, however;
@@ -106,38 +126,57 @@ public:
      * @returns B_NO_ERROR on success, or B_ERROR if the lock could not be locked for some reason.
      */
    status_t Lock() const
+#endif
    {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       return B_NO_ERROR;
 #else
       if (_isEnabled == false) return B_NO_ERROR;
+
 # if defined(MUSCLE_USE_PTHREADS)
-      return (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
+      status_t ret = (pthread_mutex_lock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       EnterCriticalSection(&_locker);
-      return B_NO_ERROR;
+      status_t ret = B_NO_ERROR;
 # elif defined(MUSCLE_QT_HAS_THREADS)
       _locker.lock();
-      return B_NO_ERROR;
+      status_t ret = B_NO_ERROR;
 # elif defined(__BEOS__) || defined(__HAIKU__)
-      return _locker.Lock() ? B_NO_ERROR : B_ERROR;
+      status_t ret = _locker.Lock() ? B_NO_ERROR : B_ERROR;
 # elif defined(__ATHEOS__)
-      return _locker.Lock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
+      status_t ret = _locker.Lock() ? B_ERROR : B_NO_ERROR;  // Is this correct?  Kurt's documentation sucks
 # endif
+
+# ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+      // We gotta do the logging after we are locked, otherwise our counter can suffer from race conditions
+      if (ret == B_NO_ERROR) LOG_DEADLOCK_FINDER_EVENT(true);
+# endif
+
+      return ret;
 #endif
    }
 
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+   status_t DeadlockFinderUnlockWrapper(const char * fileName, int fileLine) const
+#else
    /** Unlocks the lock.  Once this is done, any other thread that is blocked in the Lock()
      * method will gain ownership of the lock and return.
      * @returns B_NO_ERROR on success, or B_ERROR on failure (perhaps you tried to unlock a lock
      *          that wasn't locked?  This method should never fail in typical usage)
      */
    status_t Unlock() const
+#endif
    {
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       return B_NO_ERROR;
 #else
       if (_isEnabled == false) return B_NO_ERROR;
+
+# ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+      // We gotta do the logging while we are still are locked, otherwise our counter can suffer from race conditions
+      LOG_DEADLOCK_FINDER_EVENT(false);
+# endif
+
 # if defined(MUSCLE_USE_PTHREADS)
       return (pthread_mutex_unlock(&_locker) == 0) ? B_NO_ERROR : B_ERROR;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
@@ -158,6 +197,10 @@ public:
    /** Turns this Mutex into a no-op object.  Irreversible! */
    void Neuter() {Cleanup();}
 
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+   void AvoidFindDeadlockCallbacks() {_inDeadlockCallbackCount++;}
+#endif
+
 private:
    void Cleanup()
    {
@@ -171,7 +214,6 @@ private:
 # elif defined(MUSCLE_QT_HAS_THREADS)
          // do nothing
 # endif
-
          _isEnabled = false;
       }
 #endif
@@ -190,6 +232,10 @@ private:
 # elif defined(__ATHEOS__)
    mutable os::Locker _locker;
 # endif
+#endif
+
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+   mutable uint32 _inDeadlockCallbackCount;
 #endif
 };
 
@@ -229,18 +275,6 @@ private:
 /** A macro to quickly and safely put a MutexGuard on the stack for the given Mutex. */
 #define DECLARE_MUTEXGUARD(mutex) MutexGuard MUSCLE_UNIQUE_NAME(mutex)
  
-#ifdef MUSCLE_USE_PTHREADS
-// These calls are useful in conjunction with tests/deadlockfinder.cpp, for tracking
-// down potential synchronization deadlocks in multithreaded code.  Note that they only
-// work when using a pThreads environment, however.
-#define PLOCK(  name,pointer) _PLOCKimp(  name,pointer,__FILE__,__LINE__)
-#define PUNLOCK(name,pointer) _PUNLOCKimp(name,pointer,__FILE__,__LINE__)
-
-// don't call these directly -- call the PLOCK() and PUNLOCK() macros instead!
-static inline void _PLOCKimp(  const char * n, const void * p, const char * f, int ln) {printf(INT64_FORMAT_SPEC" plock   p=%p [%s] %s:%i\n", (int64)((long)pthread_self()), p, n, f, ln);}
-static inline void _PUNLOCKimp(const char * n, const void * p, const char * f, int ln) {printf(INT64_FORMAT_SPEC" punlock p=%p [%s] %s:%i\n", (int64)((long)pthread_self()), p, n, f, ln);}
-#endif
-
 }; // end namespace muscle
 
 #endif

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "regex/QueryFilter.h"
 #include "regex/StringMatcher.h"
@@ -44,7 +44,7 @@ status_t ValueQueryFilter :: SaveToArchive(Message & archive) const
            ((_index == 0)||(archive.AddInt32("idx", _index) == B_NO_ERROR))) ? B_NO_ERROR : B_ERROR;
 }
 
-status_t ValueQueryFilter ::SetFromArchive(const Message & archive)
+status_t ValueQueryFilter :: SetFromArchive(const Message & archive)
 {
    if (QueryFilter::SetFromArchive(archive) != B_NO_ERROR) return B_ERROR;
    if (archive.FindInt32("idx", _index) != B_NO_ERROR) _index = 0;
@@ -84,7 +84,7 @@ status_t MultiQueryFilter :: SetFromArchive(const Message & archive)
    MessageRef next;
    for (uint32 i=0; archive.FindMessage("kid", i, next) == B_NO_ERROR; i++)
    {
-      QueryFilterRef kid = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*next());
+      ConstQueryFilterRef kid = GetGlobalQueryFilterFactory()()->CreateQueryFilter(*next());
       if ((kid() == NULL)||(_children.AddTail(kid) != B_NO_ERROR)) return B_ERROR;
    }
    return B_NO_ERROR;
@@ -103,9 +103,9 @@ status_t AndOrQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool AndOrQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
+bool AndOrQueryFilter :: Matches(ConstMessageRef & msg, const DataNode * optNode) const
 {
-   const Queue<QueryFilterRef> & kids = GetChildren();
+   const Queue<ConstQueryFilterRef> & kids = GetChildren();
    uint32 numKids = kids.GetNumItems();
    uint32 matchCount = 0;
    uint32 threshold  = muscleMin(_minMatches, numKids);
@@ -130,9 +130,9 @@ status_t NandNotQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool NandNotQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
+bool NandNotQueryFilter :: Matches(ConstMessageRef & msg, const DataNode * optNode) const
 {
-   const Queue<QueryFilterRef> & kids = GetChildren();
+   const Queue<ConstQueryFilterRef> & kids = GetChildren();
    uint32 numKids = kids.GetNumItems();
    uint32 matchCount = 0;
    uint32 threshold  = muscleMin(_maxMatches, numKids);
@@ -144,9 +144,9 @@ bool NandNotQueryFilter :: Matches(const Message & msg, const DataNode * optNode
    return (matchCount < numKids);
 }
 
-bool XorQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
+bool XorQueryFilter :: Matches(ConstMessageRef & msg, const DataNode * optNode) const
 {
-   const Queue<QueryFilterRef> & kids = GetChildren();
+   const Queue<ConstQueryFilterRef> & kids = GetChildren();
    uint32 numKids = kids.GetNumItems();
    uint32 matchCount = 0;
    for (uint32 i=0; i<numKids; i++)
@@ -179,10 +179,14 @@ status_t MessageQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool MessageQueryFilter :: Matches(const Message & msg, const DataNode * optNode) const
+bool MessageQueryFilter :: Matches(ConstMessageRef & msg, const DataNode * optNode) const
 {
    MessageRef subMsg;
-   return (msg.FindMessage(GetFieldName(), GetIndex(), subMsg) == B_NO_ERROR) ? ((_childFilter() == NULL)||(_childFilter()->Matches(*subMsg(), optNode))) : false;
+   if (msg()->FindMessage(GetFieldName(), GetIndex(), subMsg) != B_NO_ERROR) return false;
+   if (_childFilter() == NULL) return true;
+
+   ConstMessageRef constSubMsg = subMsg;
+   return _childFilter()->Matches(constSubMsg, optNode);
 }
 
 status_t StringQueryFilter :: SaveToArchive(Message & archive) const
@@ -200,10 +204,10 @@ status_t StringQueryFilter :: SetFromArchive(const Message & archive)
    return ((ValueQueryFilter::SetFromArchive(archive) == B_NO_ERROR)&&(archive.FindString("val", _value) == B_NO_ERROR)) ? archive.FindInt8("op", _op) : B_ERROR;
 }
 
-bool StringQueryFilter :: Matches(const Message & msg, const DataNode *) const
+bool StringQueryFilter :: Matches(ConstMessageRef & msg, const DataNode *) const
 {
    const String * ps;
-   if (msg.FindString(GetFieldName(), GetIndex(), &ps) != B_NO_ERROR)
+   if (msg()->FindString(GetFieldName(), GetIndex(), &ps) != B_NO_ERROR)
    {
       if (_assumeDefault) ps = &_default;
                      else return false;
@@ -316,11 +320,11 @@ status_t RawDataQueryFilter :: SetFromArchive(const Message & archive)
    return B_NO_ERROR;
 }
 
-bool RawDataQueryFilter :: Matches(const Message & msg, const DataNode *) const
+bool RawDataQueryFilter :: Matches(ConstMessageRef & msg, const DataNode *) const
 {
    const void * hb;
    uint32 hisNumBytes;
-   if (msg.FindData(GetFieldName(), _typeCode, &hb, &hisNumBytes) != B_NO_ERROR)
+   if (msg()->FindData(GetFieldName(), _typeCode, &hb, &hisNumBytes) != B_NO_ERROR)
    {
       if (_default())
       {

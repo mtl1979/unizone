@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNetworkUtilityFunctions_h
 #define MuscleNetworkUtilityFunctions_h
 
 #include "support/MuscleSupport.h"
+#include "util/CountedObject.h"
 #include "util/Queue.h"
 #include "util/Socket.h"
 #include "util/String.h"
@@ -28,7 +29,48 @@ namespace muscle {
  *  @{
  */
 
-#ifdef MUSCLE_USE_IPV6
+// The total maximum size of a packet (including all headers and user data) that can be sent
+// over a network without causing packet fragmentation
+#ifndef MUSCLE_EXPECTED_MTU_SIZE_BYTES
+# define MUSCLE_EXPECTED_MTU_SIZE_BYTES 1500  // Default to the MTU that good old Ethernet uses
+#endif
+
+// Some extra room, just in case some router or VLAN headers need to be added also
+#ifndef MUSCLE_POTENTIAL_EXTRA_HEADERS_SIZE_BYTES
+# define MUSCLE_POTENTIAL_EXTRA_HEADERS_SIZE_BYTES 64
+#endif
+
+#ifdef MUSCLE_AVOID_IPV6
+# define MUSCLE_IP_HEADER_SIZE_BYTES 24  // IPv4: assumes worst-case scenario (i.e. that the options field is included)
+#else
+# define MUSCLE_IP_HEADER_SIZE_BYTES 40  // IPv6: assuming no additional header chunks, of course
+#endif
+
+#define MUSCLE_UDP_HEADER_SIZE_BYTES (4*sizeof(uint16))  // (sourceport, destport, length, checksum)
+
+#ifndef MUSCLE_MAX_PAYLOAD_BYTES_PER_UDP_ETHERNET_PACKET
+# define MUSCLE_MAX_PAYLOAD_BYTES_PER_UDP_ETHERNET_PACKET (MUSCLE_EXPECTED_MTU_SIZE_BYTES-(MUSCLE_IP_HEADER_SIZE_BYTES+MUSCLE_UDP_HEADER_SIZE_BYTES+MUSCLE_POTENTIAL_EXTRA_HEADERS_SIZE_BYTES))
+#endif
+
+#ifdef MUSCLE_AVOID_IPV6
+
+/** IPv4 addressing support */
+typedef uint32 ip_address;
+
+/** Given an IP address, returns a 32-bit hash code for it.  IPv4 implementation. */
+inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return CalculateHashCode(ip);}
+
+/** IPv4 Numeric representation of a all-zeroes invalid/guard address */
+const ip_address invalidIP = 0;
+
+/** IPv4 Numeric representation of localhost (127.0.0.1), for convenience */
+const ip_address localhostIP = ((((uint32)127)<<24)|((uint32)1));
+
+/** IPv4 Numeric representation of broadcast (255.255.255.255), for convenience */
+const ip_address broadcastIP = ((uint32)-1);
+
+#else
+
 /* IPv6 addressing support */
 
 /** This function sets a global flag that indicates whether or not automatic translation of
@@ -39,7 +81,7 @@ namespace muscle {
   * traffic without having to open separate IPv4 and IPv6 sockets and without having to do any 
   * special modification of IPv4 addresses.   The only time you'd need to set this flag to false
   * is if you need to run IPv6 traffic over non-IPv6-aware routers, in which case you'd need
-  * to use the :::x.y.z.w address space for actual IPv6 traffic instead.
+  * to use the ::x.y.z.w address space for actual IPv6 traffic instead.
   * @param enabled True if the transparent remapping should be enabled (the default state), or false to disable it.
   */
 void SetAutomaticIPv4AddressMappingEnabled(bool enabled);
@@ -108,8 +150,8 @@ public:
    /** Writes our address into the specified uint8 array, in the required network-friendly order.
      * @param networkBuf If non-NULL, the 16-byte network-array to write to.  Typically you would pass in 
      *                   mySockAddr_in6.sin6_addr.s6_addr as the argument to this function.
-     * @param interfaceIndex If non-NULL, this value will receive a copy of our interface index.  Typically
-     *                       you would pass a pointer to mySockAddr_in6.sin6_addr.sin6_scope_id here.
+     * @param optInterfaceIndex If non-NULL, this value will receive a copy of our interface index.  Typically
+     *                          you would pass a pointer to mySockAddr_in6.sin6_addr.sin6_scope_id here.
      */
    void WriteToNetworkArray(uint8 * networkBuf, uint32 * optInterfaceIndex) const
    {
@@ -124,8 +166,7 @@ public:
    /** Reads our address in from the specified uint8 array, in the required network-friendly order.
      * @param networkBuf If non-NULL, a 16-byte network-endian-array to read from.  Typically you would pass in 
      *                    mySockAddr_in6.sin6_addr.s6_addr as the argument to this function.
-     * @param interfaceIndex If non-NULL, this value will receive a copy of our interface index.  Typically
-     *                       you would pass a pointer to mySockAddr_in6.sin6_addr.sin6_scope_id here.
+     * @param optInterfaceIndex If non-NULL, this value will be used to set this object's _interfaceIndex value.
      */
    void ReadFromNetworkArray(const uint8 * networkBuf, const uint32 * optInterfaceIndex)
    {
@@ -157,24 +198,6 @@ const ip_address localhostIP(0x01);
 
 /** IPv6 Numeric representation of link-local broadcast (ff02::1), for convenience */
 const ip_address broadcastIP(0x01, ((uint64)0xFF02)<<48);
-
-#else
-
-/** IPv4 addressing support */
-
-typedef uint32 ip_address;
-
-/** Given an IP address, returns a 32-bit hash code for it.  IPv4 implementation. */
-inline uint32 GetHashCodeForIPAddress(const ip_address & ip) {return CalculateHashCode(ip);}
-
-/** IPv4 Numeric representation of a all-zeroes invalid/guard address */
-const ip_address invalidIP = 0;
-
-/** IPv4 Numeric representation of localhost (127.0.0.1), for convenience */
-const ip_address localhostIP = ((((uint32)127)<<24)|((uint32)1));
-
-/** IPv4 Numeric representation of broadcast (255.255.255.255), for convenience */
-const ip_address broadcastIP = ((uint32)-1);
 
 #endif
 
@@ -273,7 +296,7 @@ public:
 
    /** Sets this object's state from the passed-in character string.
      * IPv4 address may be of the form "192.168.1.102", or of the form "192.168.1.102:2960".
-     * When -DMUSCLE_USE_IPV6 is enabled, IPv6 address (e.g. "::1") are also supported.
+     * As long as -DMUSCLE_AVOID_IPV6 is not defined, IPv6 address (e.g. "::1") are also supported.
      * Note that if you want to specify an IPv6 address and a port number at the same
      * time, you will need to enclose the IPv6 address in brackets, like this:  "[::1]:2960"
      * @param s The user-readable IP-address string, with optional port specification
@@ -287,8 +310,10 @@ public:
    /** Returns a string representation of this object, similar to the forms
      * described in the SetFromString() documentation, above.
      * @param includePort If true, the port will be included in the string.  Defaults to true.
+     * @param preferIPv4Style If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1" or "::ffff:192.168.1.1".
+     *                        Defaults to false.  If MUSCLE_AVOID_IPV6 is defined, then this argument isn't used.
      */
-   String ToString(bool includePort = true) const;
+   String ToString(bool includePort = true, bool preferIPv4Style = false) const;
 
 private:
    ip_address _ip;
@@ -351,7 +376,7 @@ inline ConstSocketRef Connect(const IPAddressAndPort & iap, const char * debugHo
 
 /** Convenience function for accepting a TCP connection on a given socket.  Has the same semantics as accept().
  *  (This is somewhat better than calling accept() directly, as certain cross-platform issues get transparently taken care of)
- * @param socket socket FD to accept from (e.g. a socket that was previously returned by CreateAcceptingSocket())
+ * @param sock socket FD to accept from (e.g. a socket that was previously returned by CreateAcceptingSocket())
  * @param optRetLocalInfo if non-NULL, then on success, some information about the local side of the new
  *                        connection will be written here.  In particular, optRetLocalInfo()->GetIPAddress()
  *                        will return the IP address of the local network interface that the connection was
@@ -359,20 +384,20 @@ inline ConstSocketRef Connect(const IPAddressAndPort & iap, const char * debugHo
  *                        the connection was received on.  Defaults to NULL.
  * @return A non-NULL ConstSocketRef if the accept was successful, or a NULL ConstSocketRef if the accept failed.
  */
-ConstSocketRef Accept(const ConstSocketRef & socket, ip_address * optRetLocalInfo = NULL);
+ConstSocketRef Accept(const ConstSocketRef & sock, ip_address * optRetLocalInfo = NULL);
 
 /** Reads as many bytes as possible from the given socket and places them into (buffer).
- *  @param socket The socket to read from.
+ *  @param sock The socket to read from.
  *  @param buffer Location to write the received bytes into.
  *  @param bufferSizeBytes Number of bytes available at the location indicated by (buffer).
  *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
  *  @return The number of bytes read into (buffer), or a negative value if there was an error.
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
-int32 ReceiveData(const ConstSocketRef & socket, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
+int32 ReceiveData(const ConstSocketRef & sock, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
 
 /** Identical to ReceiveData(), except that this function's logic is adjusted to handle UDP semantics properly. 
- *  @param socket The socket to read from.
+ *  @param sock The socket to read from.
  *  @param buffer Location to place the received bytes into.
  *  @param bufferSizeBytes Number of bytes available at the location indicated by (buffer).
  *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
@@ -383,7 +408,7 @@ int32 ReceiveData(const ConstSocketRef & socket, void * buffer, uint32 bufferSiz
  *  @return The number of bytes read into (buffer), or a negative value if there was an error.
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
-int32 ReceiveDataUDP(const ConstSocketRef & socket, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, ip_address * optRetFromIP = NULL, uint16 * optRetFromPort = NULL);
+int32 ReceiveDataUDP(const ConstSocketRef & sock, void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, ip_address * optRetFromIP = NULL, uint16 * optRetFromPort = NULL);
 
 /** Similar to ReceiveData(), except that it will call read() instead of recv().
  *  This is the function to use if (fd) is referencing a file descriptor instead of a socket.
@@ -397,17 +422,17 @@ int32 ReceiveDataUDP(const ConstSocketRef & socket, void * buffer, uint32 buffer
 int32 ReadData(const ConstSocketRef & fd, void * buffer, uint32 bufferSizeBytes, bool fdIsBlockingIO);
 
 /** Transmits as many bytes as possible from the given buffer over the given socket.
- *  @param socket The socket to transmit over.
+ *  @param sock The socket to transmit over.
  *  @param buffer Buffer to read the outgoing bytes from.
  *  @param bufferSizeBytes Number of bytes to send.
  *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
  *  @return The number of bytes sent from (buffer), or a negative value if there was an error.
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
-int32 SendData(const ConstSocketRef & socket, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
+int32 SendData(const ConstSocketRef & sock, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO);
 
 /** Similar to SendData(), except that this function's logic is adjusted to handle UDP semantics properly.
- *  @param socket The socket to transmit over.
+ *  @param sock The socket to transmit over.
  *  @param buffer Buffer to read the outgoing bytes from.
  *  @param bufferSizeBytes Number of bytes to send.
  *  @param socketIsBlockingIO Pass in true if the given socket is set to use blocking I/O, or false otherwise.
@@ -418,7 +443,7 @@ int32 SendData(const ConstSocketRef & socket, const void * buffer, uint32 buffer
  *  @return The number of bytes sent from (buffer), or a negative value if there was an error.
  *          Note that this value may be smaller than (bufferSizeBytes).
  */
-int32 SendDataUDP(const ConstSocketRef & socket, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, const ip_address & optDestIP = invalidIP, uint16 destPort = 0);
+int32 SendDataUDP(const ConstSocketRef & sock, const void * buffer, uint32 bufferSizeBytes, bool socketIsBlockingIO, const ip_address & optDestIP = invalidIP, uint16 destPort = 0);
 
 /** Similar to SendData(), except that the implementation calls write() instead of send().  This
  *  is the function to use when (fd) refers to a file descriptor instead of a socket.
@@ -459,7 +484,7 @@ inline ConstSocketRef ConnectAsync(const IPAddressAndPort & iap, bool & retIsRea
   * selects ready-for-write to indicate that the asynchronous connect 
   * attempt has reached a conclusion, call this method.  It will finalize
   * the connection and make it ready for use.
-  * @param socket The socket that was connecting asynchronously
+  * @param sock The socket that was connecting asynchronously
   * @returns B_NO_ERROR if the connection is ready to use, or B_ERROR if the connect failed.
   * @note Under Windows, select() won't return ready-for-write if the connection fails... instead
   *       it will select-notify for your socket on the exceptions fd_set (if you provided one).
@@ -468,17 +493,17 @@ inline ConstSocketRef ConnectAsync(const IPAddressAndPort & iap, bool & retIsRea
   *       failed.  Successful asynchronous connect()s do exhibit the standard (select ready-for-write)
   *       behaviour, though.
   */
-status_t FinalizeAsyncConnect(const ConstSocketRef & socket);
+status_t FinalizeAsyncConnect(const ConstSocketRef & sock);
 
 /** Shuts the given socket down.  (Note that you don't generally need to call this function; it's generally
  *  only useful if you need to half-shutdown the socket, e.g. stop the output direction but not the input
  *  direction)
- *  @param socket The socket to shutdown communication on. 
+ *  @param sock The socket to shutdown communication on. 
  *  @param disableReception If true, further reception of data will be disabled on this socket.
  *  @param disableTransmission If true, further transmission of data will be disabled on this socket.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t ShutdownSocket(const ConstSocketRef & socket, bool disableReception = true, bool disableTransmission = true);
+status_t ShutdownSocket(const ConstSocketRef & sock, bool disableReception = true, bool disableTransmission = true);
 
 /** Convenience function for creating a TCP socket that is listening on a given local port for incoming TCP connections.
  *  @param port Which port to listen on, or 0 to have the system should choose a port for you
@@ -493,17 +518,16 @@ ConstSocketRef CreateAcceptingSocket(uint16 port, int maxbacklog = 20, uint16 * 
 /** Translates the given 4-byte IP address into a string representation.
  *  @param address The 4-byte IP address to translate into text.
  *  @param outBuf Buffer where the NUL-terminated ASCII representation of the string will be placed.
- *                This buffer must be at least 16 bytes long if compiled in IPv4 mode,
- *                or at least 64 bytes long if -DMUSCLE_USE_IPV6 is enabled in the Makefile.
+ *                This buffer must be at least 64 bytes long (or at least 16 bytes long if MUSCLE_AVOID_IPV6 is defined)
+ *  @param preferIPv4Style If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1" or "::ffff:192.168.1.1".
+ *                         Defaults to false.  If MUSCLE_AVOID_IPV6 is defined, then this argument isn't used.
  */
-void Inet_NtoA(const ip_address & address, char * outBuf);
+void Inet_NtoA(const ip_address & address, char * outBuf, bool preferIPv4Style = false);
 
-/** A more convenient version of Inet_Ntoa().  Given an IP address, returns a 
-  * human-readable String representation of that address (e.g. "192.168.0.1",
-  * or IPv6 equivalent if -DMUSCLE_USE_IPV6 is defined).
+/** A more convenient version of INet_NtoA().  Given an IP address, returns a human-readable String representation of that address.
   *  @param ipAddress the IP address to return in String form.
-  *  @param preferIPv4Style If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1".
-  *                         Defaults to false.  If MUSCLE_USE_UPV6 is not defined, this value won't be used.
+  *  @param preferIPv4Style If set true, then IPv4 addresses will be returned as e.g. "192.168.1.1", not "::192.168.1.1" or "::ffff:192.168.1.1".
+  *                         Defaults to false.  If MUSCLE_AVOID_IPV6 is defined, then this argument isn't used.
   */
 String Inet_NtoA(const ip_address & ipAddress, bool preferIPv4Style = false);
 
@@ -525,14 +549,15 @@ ip_address Inet_AtoN(const char * buf);
 String GetLocalHostName();
 
 /** Reurns the IP address that the given socket is connected to.
- *  @param socket The socket descriptor to find out info about.
+ *  @param sock The socket descriptor to find out info about.
  *  @param expandLocalhost If true, then if the peer's ip address is reported as 127.0.0.1, this 
  *                         function will attempt to determine the host machine's actual primary IP
  *                         address and return that instead.  Otherwise, 127.0.0.1 will be
  *                         returned in this case.
- *  @return The IP address on success, or 0 on failure (such as if the socket isn't valid and connected).
+ *  @param optRetPort if non-NULL, the port we are connected to on the remote peer will be written here.  Defaults to NULL.
+ *  @return The IP address on success, or invalidIP on failure (such as if the socket isn't valid and connected).
  */
-ip_address GetPeerIPAddress(const ConstSocketRef & socket, bool expandLocalhost);
+ip_address GetPeerIPAddress(const ConstSocketRef & sock, bool expandLocalhost, uint16 * optRetPort = NULL);
 
 /** Creates a pair of sockets that are connected to each other,
  *  so that any bytes you pass into one socket come out the other socket.
@@ -547,39 +572,145 @@ status_t CreateConnectedSocketPair(ConstSocketRef & retSocket1, ConstSocketRef &
 
 /** Enables or disables blocking I/O on the given socket. 
  *  (Default for a socket is blocking mode enabled)
- *  @param socket the socket descriptor to act on.
+ *  @param sock the socket descriptor to act on.
  *  @param enabled Whether I/O on this socket should be enabled or not.
  *  @return B_NO_ERROR on success, or B_ERROR on failure.
  */
-status_t SetSocketBlockingEnabled(const ConstSocketRef & socket, bool enabled);
+status_t SetSocketBlockingEnabled(const ConstSocketRef & sock, bool enabled);
+
+/** Returns true iff the given socket has blocking I/O enabled.
+ *  @param sock the socket descriptor to query.
+ *  @returns true iff the socket is in blocking I/O mode, or false if it is not (or if it is an invalid socket)
+ *  @note this function is not implemented under Windows (as Windows doesn't appear to provide any method to
+ *        obtain this information from a socket).  Under Windows, this method will simply log an erorr message
+ *        and return false.
+ */ 
+bool GetSocketBlockingEnabled(const ConstSocketRef & sock);
 
 /**
   * Turns Nagle's algorithm (output packet buffering/coalescing) on or off.
-  * @param socket the socket descriptor to act on.
+  * @param sock the socket descriptor to act on.
   * @param enabled If true, data will be held momentarily before sending, 
   *                to allow for bigger packets.  If false, each Write() 
   *                call will cause a new packet to be sent immediately.
   * @return B_NO_ERROR on success, B_ERROR on error.
   */
-status_t SetSocketNaglesAlgorithmEnabled(const ConstSocketRef & socket, bool enabled);
+status_t SetSocketNaglesAlgorithmEnabled(const ConstSocketRef & sock, bool enabled);
+
+/** Returns true iff the given socket has Nagle's algorithm enabled.
+ *  @param sock the socket descriptor to query.
+ *  @returns true iff the socket is has Nagle's algorithm enabled, or false if it does not (or if it is an invalid socket)
+ */ 
+bool GetSocketNaglesAlgorithmEnabled(const ConstSocketRef & sock);
 
 /**
   * Sets the size of the given socket's TCP send buffer to the specified
   * size (or as close to that size as is possible).
-  * @param socket the socket descriptor to act on.
+  * @param sock the socket descriptor to act on.
   * @param sendBufferSizeBytes New size of the TCP send buffer, in bytes.
   * @returns B_NO_ERROR on success, or B_ERROR on failure.
   */
-status_t SetSocketSendBufferSize(const ConstSocketRef & socket, uint32 sendBufferSizeBytes);
+status_t SetSocketSendBufferSize(const ConstSocketRef & sock, uint32 sendBufferSizeBytes);
+
+/** 
+  * Returns the current size of the socket's TCP send buffer.
+  * @param sock The socket to query.
+  * @return The size of the socket's TCP send buffer, in bytes, or -1 on error (e.g. invalid socket)
+  */
+int32 GetSocketSendBufferSize(const ConstSocketRef & sock);
 
 /**
   * Sets the size of the given socket's TCP receive buffer to the specified
   * size (or as close to that size as is possible).
-  * @param socket the socket descriptor to act on.
+  * @param sock the socket descriptor to act on.
   * @param receiveBufferSizeBytes New size of the TCP receive buffer, in bytes.
   * @returns B_NO_ERROR on success, or B_ERROR on failure.
   */
-status_t SetSocketReceiveBufferSize(const ConstSocketRef & socket, uint32 receiveBufferSizeBytes);
+status_t SetSocketReceiveBufferSize(const ConstSocketRef & sock, uint32 receiveBufferSizeBytes);
+
+/** 
+  * Returns the current size of the socket's TCP receive buffer.
+  * @param sock The socket to query.
+  * @return The size of the socket's TCP receive buffer, in bytes, or -1 on error (e.g. invalid socket)
+  */
+int32 GetSocketReceiveBufferSize(const ConstSocketRef & sock);
+
+/** This class is an interface to an object that can have its SocketCallback() method called
+  * at the appropriate times when certain actions are performed on a socket.  By installing
+  * a GlobalSocketCallback object via SetGlobalSocketCallback(), behaviors can be set for all 
+  * sockets in the process, which can be simpler than changing every individual code path
+  * to install those behaviors on a per-socket basis.
+  */ 
+class GlobalSocketCallback : private CountedObject<GlobalSocketCallback>
+{
+public:
+   /** Default constructor */
+   GlobalSocketCallback() {/* empty */}
+
+   /** Destructor */
+   virtual ~GlobalSocketCallback() {/* empty */}
+
+   /** Called by certain functions in NetworkUtilityFunctions.cpp
+     * @note this method may be called by different threads, so it needs to be thread-safe.
+     * @param eventType a SOCKET_CALLBACK_* value indicating what caused this callback call.
+     * @param sock The socket in question
+     * @returns B_NO_ERROR on success, or B_ERROR if the calling operation should be aborted.
+     */
+   virtual status_t SocketCallback(uint32 eventType, const ConstSocketRef & sock) = 0;
+
+   enum {
+      SOCKET_CALLBACK_CREATE_UDP = 0,   // socket was just created by CreateUDPSocket()
+      SOCKET_CALLBACK_CREATE_ACCEPTING, // socket was just created by CreateAcceptingSocket()
+      SOCKET_CALLBACK_ACCEPT,           // socket was just created by Accept()
+      SOCKET_CALLBACK_CONNECT,          // socket was just created by Connect() or ConnectAsync()
+      NUM_SOCKET_CALLBACKS
+   };
+};
+
+/** Set the global socket-callback object for this process.
+  * @param cb The object whose SocketCallback() method should be called by Connect(),
+  *           Accept(), FinalizeAsyncConnect(), etc, or NULL to have no more callbacks
+  */ 
+void SetGlobalSocketCallback(GlobalSocketCallback * cb);
+
+/** Returns the currently installed GlobalSocketCallback object, or NULL if there is none installed. */
+GlobalSocketCallback * GetGlobalSocketCallback();
+
+#ifdef MUSCLE_ENABLE_KEEPALIVE_API
+
+/**
+  * This function modifies the TCP keep-alive behavior for the given TCP socket -- that is, you can use this
+  * function to control how often the TCP socket checks to see if the remote peer is still accessible when the
+  * TCP connection is idle.  If this function is never called, the default TCP behavior is to never check the
+  * remote peer when the connection is idle -- it will only check when there is data buffered up to send to the
+  * remote peer.
+  * @param sock The TCP socket to adjust the keepalive behavior of.
+  * @param maxProbeCount The number of keepalive-ping probes that must go unanswered before the TCP connection is closed.
+  *                      Passing zero to this argument will disable keepalive-ping behavior.
+  * @param idleTime The amount of time (in microseconds) of inactivity on the TCP socket that must pass before the
+  *                 first keepalive-ping probe is sent.  Note that the granularity of the timeout is determined by  
+  *                 the operating system, so the actual timeout period may be somewhat more or less than the specified number
+  *                 of microseconds.  (Currently it gets rounded up to the nearest second)
+  * @param retransmitTime The amount of time (in microseconds) of further inactivity on the TCP socket that must pass before the
+  *                       next keepalive-ping probe is sent.  Note that the granularity of the timeout is determined by  
+  *                       the operating system, so the actual timeout period may be somewhat more or less than the specified number
+  *                       of microseconds.  (Currently it gets rounded up to the nearest second)
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketKeepAliveBehavior(const ConstSocketRef & sock, uint32 maxProbeCount, uint64 idleTime, uint64 retransmitTime);
+
+/**
+  * Queries the values previously set on the socket by SetSocketKeepAliveBehavior().
+  * @param sock The TCP socket to return the keepalive behavior of.
+  * @param retMaxProbeCount if non-NULL, the max-probe-count value of the socket will be written into this argument.
+  * @param retIdleTime if non-NULL, the idle-time of the socket will be written into this argument.
+  * @param retRetransmitTime if non-NULL, the transmit-time of the socket will be written into this argument.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  * @see SetSocketKeepAliveBehavior()
+  */ 
+status_t GetSocketKeepAliveBehavior(const ConstSocketRef & sock, uint32 * retMaxProbeCount, uint64 * retIdleTime, uint64 * retRetransmitTime);
+
+#endif
 
 /** Set a user-specified IP address to return from GetHostByName() and GetPeerIPAddress() instead of 127.0.0.1.
   * Note that this function <b>does not</b> change the computer's IP address -- it merely changes what
@@ -629,14 +760,6 @@ status_t BindUDPSocket(const ConstSocketRef & sock, uint16 port, uint16 * optRet
  */
 status_t SetUDPSocketTarget(const ConstSocketRef & sock, const ip_address & remoteIP, uint16 remotePort);
 
-/** Enable/disable sending of broadcast packets on the given UDP socket.
- *  @param sock UDP socket to enable or disable the sending of broadcast UDP packets with.
- *              (Note that the default state of newly created UDP sockets is broadcast-disabled)
- *  @param broadcast True if broadcasting should be enabled, false if broadcasting should be disabled.
- *  @returns B_NO_ERROR on success, or B_ERROR on failure.
- */
-status_t SetUDPSocketBroadcastEnabled(const ConstSocketRef & sock, bool broadcast);
-
 /** As above, except that the remote host is specified by hostname instead of IP address.
  *  Note that this function may take involve a DNS lookup, and so may take a significant
  *  amount of time to complete.
@@ -650,6 +773,20 @@ status_t SetUDPSocketBroadcastEnabled(const ConstSocketRef & sock, bool broadcas
  *  @returns B_NO_ERROR on success, or B_ERROR on failure.
  */
 status_t SetUDPSocketTarget(const ConstSocketRef & sock, const char * remoteHostName, uint16 remotePort, bool expandLocalhost = false);
+
+/** Enable/disable sending of broadcast packets on the given UDP socket.
+ *  @param sock UDP socket to enable or disable the sending of broadcast UDP packets with.
+ *              (Note that the default state of newly created UDP sockets is broadcast-disabled)
+ *  @param broadcast True if broadcasting should be enabled, false if broadcasting should be disabled.
+ *  @returns B_NO_ERROR on success, or B_ERROR on failure.
+ */
+status_t SetUDPSocketBroadcastEnabled(const ConstSocketRef & sock, bool broadcast);
+
+/** Returns true iff the specified UDP socket has broadcast enabled; or false if it does not.
+  * @param sock The UDP socket to query.
+  * @returns true iff the socket is enabled for UDP broadcast; false otherwise.
+  */
+bool GetUDPSocketBroadcastEnabled(const ConstSocketRef & sock);
 
 /** This function returns true iff (ip) is one of the standard, well-known addresses for the
   * localhost loopback device.  (e.g. 127.0.0.1 or ::1 or fe80::1)
@@ -679,13 +816,6 @@ bool IsValidAddress(const ip_address & ip);
   */
 bool IsIPv4Address(const ip_address & ip);
 
-/** Returns true iff (ip) is an IPv4-style (32-bits-only) or IPv4-mapped
-  * (32-bits-only plus ffff prefix) address.
-  * @param ip The IP address to examine.
-  * @returns treu if (ip) is an IPv4 or IPv4-mapped address, else false.
-  */
-bool IsIPv6Address(const ip_address & ip);
-
 /** This little container class is used to return data from the GetNetworkInterfaceInfos() function, below */
 class NetworkInterfaceInfo
 {
@@ -709,9 +839,7 @@ public:
    /** Returns a (human-readable) description of this interface, or "" if a description is unavailable. */
    const String & GetDescription() const {return _desc;}
 
-   /** Returns the IP address of this interface 
-     * NOTE:  This value has no meaning for an IPv6 interface; use GetInterfaceIndex() instead!
-     */
+   /** Returns the IP address of this interface */
    const ip_address & GetLocalAddress() const {return _ip;}
 
    /** Returns the netmask of this interface */
@@ -751,11 +879,11 @@ enum {
    GNII_INCLUDE_DISABLED_INTERFACES    = 0x20, // If set, disabled (aka "down") interfaces will be returned
    GNII_INCLUDE_LOOPBACK_INTERFACES_ONLY_AS_LAST_RESORT = 0x40, // If set, loopback interfaces will be returned only if no other interfaces are found
 
-   // For convenience, GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES will specify interfaces of the family specified by MUSCLE_USE_IPV6's presence/abscence.
-#ifdef MUSCLE_USE_IPV6
-   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV6_INTERFACES,
-#else
+   // For convenience, GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES will specify interfaces of the family specified by MUSCLE_AVOID_IPV6's presence/abscence.
+#ifdef MUSCLE_AVOID_IPV6
    GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV4_INTERFACES,
+#else
+   GNII_INCLUDE_MUSCLE_PREFERRED_INTERFACES = GNII_INCLUDE_IPV6_INTERFACES,
 #endif
 
    GNII_INCLUDE_ALL_INTERFACES  = 0xFFFFFFFF,  // If set, all interfaces will be returned
@@ -787,7 +915,7 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
   */
 status_t GetNetworkInterfaceAddresses(Queue<ip_address> & retAddresses, uint32 includeBits = GNII_INCLUDE_ALL_INTERFACES);
 
-#ifdef MUSCLE_ENABLE_MULTICAST_API
+#ifndef MUSCLE_AVOID_MULTICAST_API
 
 /** Sets whether multicast data sent on this socket should be received by
   * this socket or not (IP_MULTICAST_LOOP).  Default state is enabled/true.
@@ -820,44 +948,9 @@ status_t SetSocketMulticastTimeToLive(const ConstSocketRef & sock, uint8 ttl);
   */
 uint8 GetSocketMulticastTimeToLive(const ConstSocketRef & sock);
 
-#ifdef MUSCLE_USE_IPV6
+#ifdef MUSCLE_AVOID_IPV6
 
-/** Specify the interface index of the local network interface that the given socket should
-  * send multicast packets on.  If this isn't called, the kernel will choose an appropriate
-  * default interface to send multicast packets over.
-  * @param sock The socket to set the sending interface for.
-  * @param interfaceIndex Optional index of the interface to send the multicast packets on.
-  *                       Zero means the default interface, larger values mean another interface.
-  *                       You can call GetNetworkInterfaceInfos() to get the list of available interfaces.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure.
-  */
-status_t SetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock, uint32 interfaceIndex);
-
-/** Returns the index of the local interface that the given socket will
-  * try to send multicast packets on, or -1 on failure.
-  * @param sock The socket to query the sending interface index of.
-  * @returns the socket's interface index, or -1 on error.
-  */
-int32 GetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock);
-
-/** Attempts to add the specified socket to the specified multicast group.
-  * @param sock The socket to add to the multicast group
-  * @param groupAddress The IP address of the multicast group.
-  * @note Under Windows this call will fail unless the socket has already
-  *       been bound to a port (e.g. with BindUDPSocket()).  Other OS's don't
-  *       seem to have that requirement.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure.
-  */
-status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress);
-
-/** Attempts to remove the specified socket from the specified multicast group that it was previously added to.
-  * @param sock The socket to add to the multicast group
-  * @param groupAddress The IP address of the multicast group.
-  * @returns B_NO_ERROR on success, or B_ERROR on failure.
-  */
-status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress);
-
-#else
+// IPv4 multicast
 
 /** Specify the address of the local interface that the given socket should
   * send multicast packets on.  If this isn't called, the kernel will try to choose
@@ -896,9 +989,69 @@ status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address
   */
 status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress, const ip_address & localInterfaceAddress = invalidIP);
 
-#endif  // IPv4 multicast
+#else  // end IPv4 multicast, begin IPv6 multicast
 
-#endif  // MUSCLE_ENABLE_MULTICAST_API
+/** Specify the interface index of the local network interface that the given socket should
+  * send multicast packets on.  If this isn't called, the kernel will choose an appropriate
+  * default interface to send multicast packets over.
+  * @param sock The socket to set the sending interface for.
+  * @param interfaceIndex Optional index of the interface to send the multicast packets on.
+  *                       Zero means the default interface, larger values mean another interface.
+  *                       You can call GetNetworkInterfaceInfos() to get the list of available interfaces.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t SetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock, uint32 interfaceIndex);
+
+/** Returns the index of the local interface that the given socket will
+  * try to send multicast packets on, or -1 on failure.
+  * @param sock The socket to query the sending interface index of.
+  * @returns the socket's interface index, or -1 on error.
+  */
+int32 GetSocketMulticastSendInterfaceIndex(const ConstSocketRef & sock);
+
+/** Attempts to add the specified socket to the specified multicast group.
+  * @param sock The socket to add to the multicast group
+  * @param groupAddress The IP address of the multicast group.
+  * @note Under Windows this call will fail unless the socket has already
+  *       been bound to a port (e.g. with BindUDPSocket()).  Other OS's don't
+  *       seem to have that requirement.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t AddSocketToMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress);
+
+/** Attempts to remove the specified socket from the specified multicast group that it was previously added to.
+  * @param sock The socket to add to the multicast group
+  * @param groupAddress The IP address of the multicast group.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t RemoveSocketFromMulticastGroup(const ConstSocketRef & sock, const ip_address & groupAddress);
+
+#endif  // end IPv6 multicast
+
+#endif  // !MUSCLE_AVOID_MULTICAST_API
+
+/// @cond HIDDEN_SYMBOLS
+
+// Different OS's use different types for pass-by-reference in accept(), etc.
+// So I define my own muscle_socklen_t to avoid having to #ifdef all my code
+#if defined(__amd64__) || defined(__FreeBSD__) || defined(BSD) || defined(__PPC64__) || defined(__HAIKU__) || defined(ANDROID) || defined(_SOCKLEN_T)
+typedef socklen_t muscle_socklen_t;
+#elif defined(__BEOS__) || defined(__HAIKU__) || defined(__APPLE__) || defined(__CYGWIN__) || defined(WIN32) || defined(__QNX__) || defined(__osf__)
+typedef int muscle_socklen_t;
+#else
+typedef size_t muscle_socklen_t;
+#endif
+
+static inline long recv_ignore_eintr(    int s, void *b, unsigned long numBytes, int flags) {int ret; do {ret = recv(s, (char *)b, numBytes, flags);} while((ret<0)&&(PreviousOperationWasInterrupted())); return ret;}
+static inline long recvfrom_ignore_eintr(int s, void *b, unsigned long numBytes, int flags, struct sockaddr *a, muscle_socklen_t * alen) {int ret; do {ret = recvfrom(s, (char *)b, numBytes, flags, a,  alen);} while((ret<0)&&(PreviousOperationWasInterrupted())); return ret;}
+static inline long send_ignore_eintr(    int s, const void *b, unsigned long numBytes, int flags) {int ret; do {ret = send(s, (char *)b, numBytes, flags);} while((ret<0)&&(PreviousOperationWasInterrupted())); return ret;}
+static inline long sendto_ignore_eintr(  int s, const void *b, unsigned long numBytes, int flags, const struct sockaddr * d, int dlen) {int ret; do {ret = sendto(s, (char *)b, numBytes, flags,  d, dlen);} while((ret<0)&&(PreviousOperationWasInterrupted())); return ret;}
+#ifndef WIN32
+static inline long read_ignore_eintr(    int f, void *b, unsigned long nbyte) {int ret; do {ret = read(f, (char *)b, nbyte);} while((ret<0)&&(PreviousOperationWasInterrupted())); return ret;}
+static inline long write_ignore_eintr(   int f, const void *b, unsigned long nbyte) {int ret; do {ret = write(f, (char *)b, nbyte);} while((ret<0)&&(PreviousOperationWasInterrupted())); return ret;}
+#endif
+
+/// @endcond
 
 /** @} */ // end of networkutilityfunctions doxygen group
 

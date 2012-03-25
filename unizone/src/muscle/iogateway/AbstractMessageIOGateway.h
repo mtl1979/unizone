@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAbstractMessageIOGateway_h
 #define MuscleAbstractMessageIOGateway_h
@@ -103,7 +103,7 @@ protected:
  *  Abstract base class representing an object that can send/receive 
  *  Messages via a DataIO byte-stream.
  */
-class AbstractMessageIOGateway : public RefCountable, public AbstractGatewayMessageReceiver, public PulseNode
+class AbstractMessageIOGateway : public RefCountable, public AbstractGatewayMessageReceiver, public PulseNode, private CountedObject<AbstractMessageIOGateway>
 {
 public:
    /** Default Constructor. */
@@ -117,7 +117,7 @@ public:
     * @param messageRef A reference to the Message to send out through the gateway.
     * @return B_NO_ERROR on success, B_ERROR iff for some reason the message can't be queued (out of memory?)
     */
-   status_t AddOutgoingMessage(const MessageRef & messageRef) {return _hosed ? B_ERROR : _outgoingMessages.AddTail(messageRef);}
+   virtual status_t AddOutgoingMessage(const MessageRef & messageRef) {return _hosed ? B_ERROR : _outgoingMessages.AddTail(messageRef);}
 
    /**
     * Writes some of our outgoing message bytes to the wire.

@@ -292,10 +292,11 @@ void
 WUser::UpdateListViews()
 {
 	HashtableIterator<Q3ListView *, Q3ListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_NOREGISTER);
-	Q3ListView *view;
-	while (iter.GetNextKey(view) == B_OK)
+	while (iter.HasData())
 	{
+		Q3ListView *view = iter.GetKey();
 		AddToListView(view);
+		iter++;
 	}
 }
 
@@ -316,12 +317,14 @@ WUser::RemoveFromListView(Q3ListView * view)
 	{
 		// remove from all views
 		HashtableIterator<Q3ListView *, Q3ListViewItem *> iter = fLists.GetIterator(HTIT_FLAG_BACKWARDS);
-		while ((iter.GetNextKey(view) == B_OK) && (iter.GetNextValue(item) == B_OK))
+		while (iter.HasData())
 		{
+			item = iter.GetValue();
 			PRINT("Deleting item\n");
 			delete item;
 			PRINT("Done\n");
 			fLists.Remove(view);
+			iter++;
 		}
 	}
 }

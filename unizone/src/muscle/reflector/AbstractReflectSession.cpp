@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/AbstractReflectSession.h"
 #include "reflector/AbstractSessionIOPolicy.h"
@@ -48,7 +48,8 @@ status_t ProxySessionFactory :: AttachedToServer()
    {
       _slaveRef()->SetOwner(GetOwner());
       ret = _slaveRef()->AttachedToServer();
-      if (ret != B_NO_ERROR) _slaveRef()->SetOwner(NULL);
+      if (ret == B_NO_ERROR) _slaveRef()->SetFullyAttachedToServer(true);
+                        else _slaveRef()->SetOwner(NULL);
    }
    return ret;
 }
@@ -57,6 +58,7 @@ void ProxySessionFactory :: AboutToDetachFromServer()
 {
    if (_slaveRef())
    {
+      _slaveRef()->SetFullyAttachedToServer(false);
       _slaveRef()->AboutToDetachFromServer();
       _slaveRef()->SetOwner(NULL);
    }
@@ -64,7 +66,7 @@ void ProxySessionFactory :: AboutToDetachFromServer()
 }
 
 AbstractReflectSession ::
-AbstractReflectSession() : _sessionID(GetNextGlobalID(_sessionIDCounter)), _connectingAsync(false), _isConnected(false), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER), _autoReconnectDelay(MUSCLE_TIME_NEVER), _reconnectTime(MUSCLE_TIME_NEVER), _wasConnected(false)
+AbstractReflectSession() : _sessionID(GetNextGlobalID(_sessionIDCounter)), _connectingAsync(false), _isConnected(false), _maxAsyncConnectPeriod(MUSCLE_MAX_ASYNC_CONNECT_DELAY_MICROSECONDS), _asyncConnectTimeoutTime(MUSCLE_TIME_NEVER), _lastByteOutputAt(0), _maxInputChunk(MUSCLE_NO_LIMIT), _maxOutputChunk(MUSCLE_NO_LIMIT), _outputStallLimit(MUSCLE_TIME_NEVER), _autoReconnectDelay(MUSCLE_TIME_NEVER), _reconnectTime(MUSCLE_TIME_NEVER), _wasConnected(false), _isExpendable(false)
 {
    char buf[64]; sprintf(buf, UINT32_FORMAT_SPEC, _sessionID);
    _idString = buf;
@@ -123,7 +125,8 @@ Reconnect()
       _gateway()->Reset();                 // set gateway back to its virgin state
    }
 
-   _isConnected = _wasConnected = _connectingAsync = false;
+   _isConnected = _wasConnected = false;
+   SetConnectingAsync(false);
 
    bool doTCPConnect = ((_reconnectViaTCP)&&(_asyncConnectDest.GetIPAddress() != invalidIP));
    bool isReady = false;
@@ -152,13 +155,12 @@ Reconnect()
          if (isReady) 
          {
             _isConnected = _wasConnected = true;
-            _connectingAsync = false;
             AsyncConnectCompleted();
          }
          else 
          {
-            _isConnected     = false;
-            _connectingAsync = doTCPConnect;
+            _isConnected = false;
+            SetConnectingAsync(doTCPConnect);
          }
          _scratchReconnected = true;   // tells ReflectServer not to shut down our new IO!
          return B_NO_ERROR;
@@ -211,11 +213,9 @@ BroadcastToAllSessions(const MessageRef & msgRef, void * userData, bool toSelf)
 {
    TCHECKPOINT;
 
-   HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
-   AbstractReflectSessionRef * next;
-   while((next = iter.GetNextValue()) != NULL)
+   for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasData(); iter++)
    {
-      AbstractReflectSession * session = next->GetItemPointer();
+      AbstractReflectSession * session = iter.GetValue()();
       if ((session)&&((toSelf)||(session != this))) session->MessageReceivedFromSession(*this, msgRef, userData);
    }
 }
@@ -226,11 +226,9 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData)
 {
    TCHECKPOINT;
 
-   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories());
-   ReflectSessionFactoryRef * next;
-   while((next = iter.GetNextValue()) != NULL)
+   for (HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories()); iter.HasData(); iter++)
    {
-      ReflectSessionFactory * factory = next->GetItemPointer();
+      ReflectSessionFactory * factory = iter.GetValue()();
       if (factory) factory->MessageReceivedFromSession(*this, msgRef, userData);
    }
 }
@@ -272,8 +270,7 @@ void
 AbstractReflectSession ::
 EndSession()
 {
-   MASSERT(IsAttachedToServer(), "Can not call EndSession() while not attached to the server");
-   GetOwner()->EndSession(this);
+   if (IsAttachedToServer()) GetOwner()->EndSession(this);
 }
 
 bool
@@ -343,11 +340,9 @@ BroadcastToAllSessions(const MessageRef & msgRef, void * userData)
 {
    TCHECKPOINT;
 
-   HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions());
-   AbstractReflectSessionRef * next;
-   while((next = iter.GetNextValue()) != NULL)
+   for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(GetSessions()); iter.HasData(); iter++)
    {
-      AbstractReflectSession * session = next->GetItemPointer();
+      AbstractReflectSession * session = iter.GetValue()();
       if (session) session->MessageReceivedFromFactory(*this, msgRef, userData);
    }
 }
@@ -358,11 +353,9 @@ BroadcastToAllFactories(const MessageRef & msgRef, void * userData, bool toSelf)
 {
    TCHECKPOINT;
 
-   HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories());
-   ReflectSessionFactoryRef * next;
-   while((next = iter.GetNextValue()) != NULL)
+   for (HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories()); iter.HasData(); iter++)
    {
-      ReflectSessionFactory * factory = next->GetItemPointer();
+      ReflectSessionFactory * factory = iter.GetValue()();
       if ((factory)&&((toSelf)||(factory != this))) factory->MessageReceivedFromFactory(*this, msgRef, userData);
    }
 }
@@ -379,7 +372,7 @@ uint64
 AbstractReflectSession :: 
 GetPulseTime(const PulseArgs &)
 {
-   return _reconnectTime;
+   return muscleMin(_reconnectTime, _asyncConnectTimeoutTime);
 }
 
 void
@@ -402,14 +395,21 @@ Pulse(const PulseArgs & args)
          }
       }
    }
+   else if ((IsConnectingAsync())&&(args.GetCallbackTime() >= _asyncConnectTimeoutTime)) (void) DisconnectSession();  // force us to terminate our async-connect now 
+}
+
+void AbstractReflectSession :: SetConnectingAsync(bool isConnectingAsync)
+{
+   _connectingAsync = isConnectingAsync;
+   _asyncConnectTimeoutTime = ((_connectingAsync)&&(_maxAsyncConnectPeriod != MUSCLE_TIME_NEVER)) ? (GetRunTime64()+_maxAsyncConnectPeriod) : MUSCLE_TIME_NEVER;
+   InvalidatePulseTime();
 }
 
 const DataIORef &
 AbstractReflectSession :: 
 GetDataIO() const
 {
-   static const DataIORef _emptyRef;
-   return _gateway() ? _gateway()->GetDataIO() : _emptyRef;
+   return _gateway() ? _gateway()->GetDataIO() : GetDefaultObjectForType<DataIORef>();
 }
 
 const ConstSocketRef &

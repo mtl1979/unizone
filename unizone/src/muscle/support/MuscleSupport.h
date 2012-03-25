@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2009 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -12,8 +12,8 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "5.11"
-#define MUSCLE_VERSION        51100  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
+#define MUSCLE_VERSION_STRING "5.68"
+#define MUSCLE_VERSION        56800  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
 
 /*! \mainpage MUSCLE Documentation Page
  *
@@ -68,13 +68,12 @@
 # define MUSCLE_USE_MSVC_SWAP_FUNCTIONS 1
 #endif
 
-#ifndef __cplusplus
-# define NEW_H_NOT_AVAILABLE
+#if (_MSC_VER >= 1300) && !defined(MUSCLE_AVOID_WINDOWS_STACKTRACE)
+# define MUSCLE_USE_MSVC_STACKWALKER 1
 #endif
 
-/* these CPUs can't handle non-aligned word reads, so we'll accomodate them by using memcpy() instead. */
-#if defined(MIPS) || defined(mc68000) || defined(sparc) || defined(__sparc) || defined(m68k) || defined(__68k__) || defined(__sparc__)
-# define MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
+#ifndef __cplusplus
+# define NEW_H_NOT_AVAILABLE
 #endif
 
 /* Borland C++ builder also runs under Win32, but it doesn't set this flag So we'd better set it ourselves. */
@@ -130,12 +129,8 @@ using std::set_new_handler;
 #if defined(__BEOS__) || defined(__HAIKU__)
 # include <kernel/debugger.h>
 # define MCRASH_IMPL debugger("muscle assertion failure")
-#elif defined(WIN32)
-# if defined(UNICODE)
-#  define MCRASH_IMPL FatalAppExit(0, L"muscle assertion failure")
-# else
-#  define MCRASH_IMPL FatalAppExit(0, "muscle assertion failure")
-# endif
+#elif defined(__GNUC__)
+# define MCRASH_IMPL __builtin_trap()
 #else
 # define MCRASH_IMPL *((uint32*)NULL) = 0x666
 #endif
@@ -165,7 +160,7 @@ using std::set_new_handler;
 
 #define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
 #define MEXIT(retVal,msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); ExitWithoutCleanup(retVal);}
-#define WARN_OUT_OF_MEMORY muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (%s:%i)\n",__FILE__,__LINE__)
+#define WARN_OUT_OF_MEMORY muscle::WarnOutOfMemory(__FILE__, __LINE__)
 #define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
 
 #ifdef __cplusplus
@@ -238,39 +233,54 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 # endif  /* !__ATHEOS__*/
 #endif  /* __BEOS__ || __HAIKU__ */
 
+#if defined(MUSCLE_64_BIT_PLATFORM)
+typedef uint64 uintptr;
+typedef int64 ptrdiff;
+#else
+typedef uint32 uintptr;
+typedef int32 ptrdiff;
+#endif
+
 /** Ugly platform-neutral macros for problematic sprintf()-format-strings */
 #if defined(MUSCLE_64_BIT_PLATFORM)
 # define  INT32_FORMAT_SPEC_NOPERCENT "i"
-# define XINT32_FORMAT_SPEC_NOPERCENT "x"
 # define UINT32_FORMAT_SPEC_NOPERCENT "u"
+# define XINT32_FORMAT_SPEC_NOPERCENT "x"
 # ifdef __APPLE__
 #  define  INT64_FORMAT_SPEC_NOPERCENT "lli"
 #  define UINT64_FORMAT_SPEC_NOPERCENT "llu"
+#  define XINT64_FORMAT_SPEC_NOPERCENT "llx"
 # else
 #  define  INT64_FORMAT_SPEC_NOPERCENT "li"
 #  define UINT64_FORMAT_SPEC_NOPERCENT "lu"
+#  define XINT64_FORMAT_SPEC_NOPERCENT "lx"
 # endif
 #else
 # define  INT32_FORMAT_SPEC_NOPERCENT "li"
-# define XINT32_FORMAT_SPEC_NOPERCENT "lx"
 # define UINT32_FORMAT_SPEC_NOPERCENT "lu"
+# define XINT32_FORMAT_SPEC_NOPERCENT "lx"
 # if defined(_MSC_VER)
 #  define  INT64_FORMAT_SPEC_NOPERCENT "I64i"
 #  define UINT64_FORMAT_SPEC_NOPERCENT "I64u"
+#  define XINT64_FORMAT_SPEC_NOPERCENT "I64x"
 # elif (defined(__BEOS__) && !defined(__HAIKU__)) || defined(__MWERKS__) || defined(__BORLANDC__)
 #  define  INT64_FORMAT_SPEC_NOPERCENT "Li"
 #  define UINT64_FORMAT_SPEC_NOPERCENT "Lu"
+#  define XINT64_FORMAT_SPEC_NOPERCENT "Lx"
 # else
 #  define  INT64_FORMAT_SPEC_NOPERCENT "lli"
 #  define UINT64_FORMAT_SPEC_NOPERCENT "llu"
+#  define XINT64_FORMAT_SPEC_NOPERCENT "llx"
 # endif
 #endif
 
-# define  INT32_FORMAT_SPEC "%" INT32_FORMAT_SPEC_NOPERCENT
-# define XINT32_FORMAT_SPEC "%" XINT32_FORMAT_SPEC_NOPERCENT
+# define  INT32_FORMAT_SPEC "%"  INT32_FORMAT_SPEC_NOPERCENT
 # define UINT32_FORMAT_SPEC "%" UINT32_FORMAT_SPEC_NOPERCENT
-# define  INT64_FORMAT_SPEC "%" INT64_FORMAT_SPEC_NOPERCENT
+# define XINT32_FORMAT_SPEC "%" XINT32_FORMAT_SPEC_NOPERCENT
+
+# define  INT64_FORMAT_SPEC "%"  INT64_FORMAT_SPEC_NOPERCENT
 # define UINT64_FORMAT_SPEC "%" UINT64_FORMAT_SPEC_NOPERCENT
+# define XINT64_FORMAT_SPEC "%" XINT64_FORMAT_SPEC_NOPERCENT
 
 #define MAKETYPE(x) ((((unsigned long)(x[0])) << 24) | \
                      (((unsigned long)(x[1])) << 16) | \
@@ -325,31 +335,14 @@ template<typename T> inline T muscleSwapBytes(T swapMe)
    return u2._iWide;
 }
 
-/* This template safely copies a value in from an untyped byte buffer to a typed value.
- * (Make sure MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT is defined if you are on a CPU
- * that doesn't like non-word-aligned data reads and writes)
- */
-template<typename T> inline void muscleCopyIn(T & dest, const void * source)
-{
-#ifdef MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
-   memcpy(&dest, source, sizeof(dest));
-#else
-   dest = *((const T*)source);
-#endif
-}
+/* This template safely copies a value in from an untyped byte buffer to a typed value, and returns the typed value.  */
+template<typename T> inline T muscleCopyIn(const void * source) {T dest; memcpy(&dest, source, sizeof(dest)); return dest;}
 
-/** This template safely copies a value in from a typed value to an untyped byte buffer.
-  * (Make sure MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT is defined if you are on a CPU
-  *  that doesn't like non-word-aligned data reads and writes)
-  */
-template<typename T> inline void muscleCopyOut(void * dest, const T & source)
-{
-#ifdef MUSCLE_CPU_REQUIRES_DATA_ALIGNMENT
-   memcpy(dest, &source, sizeof(source));
-#else
-   *((T*)dest) = source;
-#endif
-}
+/* This template safely copies a value in from an untyped byte buffer to a typed value.  */
+template<typename T> inline void muscleCopyIn(T & dest, const void * source) {memcpy(&dest, source, sizeof(dest));}
+
+/** This template safely copies a value in from a typed value to an untyped byte buffer.  */
+template<typename T> inline void muscleCopyOut(void * dest, const T & source) {memcpy(dest, &source, sizeof(source));}
 
 /** This macro should be used instead of "newnothrow T[count]".  It works the
   * same, except that it hacks around an ugly bug in gcc 3.x where newnothrow
@@ -365,6 +358,37 @@ template <typename T> inline T * broken_gcc_newnothrow_array(size_t count)
 # define newnothrow_array(T, count) broken_gcc_newnothrow_array<T>(count)
 #else
 # define newnothrow_array(T, count) newnothrow T[count]
+#endif
+
+/** This function returns a reference to a read-only, default-constructed
+  * static object of type T.  There will be exactly one of these objects
+  * present per instantiated type, per process.
+  */
+template <typename T> const T & GetDefaultObjectForType()
+{
+   static T _defaultObject;
+   return _defaultObject;
+}
+
+/** This function returns a reference to a read/write, default-constructed
+  * static object of type T.  There will be exactly one of these objects
+  * present per instantiated type, per process.
+  *
+  * Note that this object is different from the one returned by
+  * GetDefaultObjectForType(); the difference (other than there being
+  * possibly two separate objects) is that this one can be written to,
+  * whereas GetDefaultObjectForType()'s object must always be in its default state.
+  */
+template <typename T> T & GetGlobalObjectForType()
+{
+   static T _defaultObject;
+   return _defaultObject;
+}
+
+#if __GNUC__ >= 4
+# define MUSCLE_MAY_ALIAS __attribute__((__may_alias__))
+#else
+# define MUSCLE_MAY_ALIAS
 #endif
 
 /** Returns the smallest of the two arguments */
@@ -839,23 +863,6 @@ static inline void StoreTraceValue(uint32 v) {(void) v;}  /* named param is nece
 #define TCHECKPOINT {/* empty */}
 #endif
 
-/** This is a convenience function that will read through the passed-in byte
-  * buffer and create a 32-bit checksum corresponding to its contents.
-  * @param buffer Pointer to the data to creata checksum for.
-  * @param numBytes Number of bytes that (buffer) points to.
-  * @returns A 32-bit number based on the contents of the buffer.
-  */
-uint32 CalculateChecksum(const uint8 * buffer, uint32 numBytes);
-
-/** Convenience method:  Given a uint64, returns a corresponding 32-bit checksum value */
-static inline uint32 CalculateChecksumForUint64(uint64 v) {return ((uint32)(v&0xFFFFFFFF)) + ((uint32)((v>>32)&0xFFFFFFFF));}
-
-/** Convenience method:  Given a float, returns a corresponding 32-bit checksum value */
-static inline uint32 CalculateChecksumForFloat(float v) {return B_HOST_TO_LENDIAN_IFLOAT(v);}
-
-/** Convenience method:  Given a double, returns a corresponding 32-bit checksum value */
-static inline uint32 CalculateChecksumForDouble(double v) {return CalculateChecksumForUint64(B_HOST_TO_LENDIAN_IDOUBLE(v));}
-
 #ifdef __cplusplus
 
 /** This templated class is used as a "comparison callback" for sorting items in a Queue or Hashtable.
@@ -954,6 +961,24 @@ template<typename T> inline uint32 CalculateHashCode(const T & val) {return Calc
   */
 template<typename T> inline uint64 CalculateHashCode64(const T & val) {return CalculateHashCode64(&val, sizeof(val));}
 
+/** This is a convenience function that will read through the passed-in byte
+  * buffer and create a 32-bit checksum corresponding to its contents.
+  * Note:  As of MUSCLE 5.22, this function is merely a synonym for CalculateHashCode().
+  * @param buffer Pointer to the data to creat a checksum for.
+  * @param numBytes Number of bytes that (buffer) points to.
+  * @returns A 32-bit number based on the contents of the buffer.
+  */
+static inline uint32 CalculateChecksum(const void * buffer, uint32 numBytes) {return CalculateHashCode(buffer, numBytes);}
+
+/** Convenience method:  Given a uint64, returns a corresponding 32-bit checksum value */
+static inline uint32 CalculateChecksumForUint64(uint64 v) {uint64 le = B_HOST_TO_LENDIAN_INT64(v);   return CalculateChecksum(&le, sizeof(le));}
+
+/** Convenience method:  Given a float, returns a corresponding 32-bit checksum value */
+static inline uint32 CalculateChecksumForFloat(float v)   {uint32 le = (v==0.0f) ? 0 : B_HOST_TO_LENDIAN_IFLOAT(v); return CalculateChecksum(&le, sizeof(le));}  // yes, the special case for 0.0f IS necessary, because the sign-bit might be set.  :(
+
+/** Convenience method:  Given a double, returns a corresponding 32-bit checksum value */
+static inline uint32 CalculateChecksumForDouble(double v) {uint64 le = (v==0.0) ? 0 : B_HOST_TO_LENDIAN_IDOUBLE(v); return CalculateChecksum(&le, sizeof(le));}  // yes, the special case for 0.0 IS necessary, because the sign-bit might be set.  :(
+
 /** This hashing functor type handles the trivial cases, where the KeyType is
  *  Plain Old Data that we can just feed directly into the CalculateHashCode() function.
  *  For more complicated key types, you should define a method in your KeyType class
@@ -1009,7 +1034,7 @@ namespace ugly_implementation_details
    template <typename T> struct test_hashcode_impl {static const bool value = sizeof(hashcode_tester<T>(0)) == sizeof(yes);};
 
    template <class T> struct has_hashcode_method : test_hashcode_impl<T> {};
-   template <bool Condition, typename TrueResult, typename FalseResult> class if_;
+   template <bool Condition, typename TrueResult, typename FalseResult> struct if_;
    template <typename TrueResult, typename FalseResult> struct if_<true,  TrueResult, FalseResult> {typedef TrueResult  result;};
    template <typename TrueResult, typename FalseResult> struct if_<false, TrueResult, FalseResult> {typedef FalseResult result;};
 }
@@ -1034,7 +1059,7 @@ public:
    /** Returns a hash code for the given C string.
      * @param str The C string to compute a hash code for.
      */
-   uint32 operator () (const char * str) const {return CalculateHashCode(str, strlen(str));}
+   uint32 operator () (const char * str) const {return CalculateHashCode(str, (uint32)strlen(str));}
    bool AreKeysEqual(const char * k1, const char * k2) const {return (strcmp(k1,k2)==0);}
 };
 
