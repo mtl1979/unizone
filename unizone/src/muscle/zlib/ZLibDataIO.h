@@ -5,7 +5,7 @@
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
-# include "zlib/zlib/zlib.h"
+# include "zlib.h"
 # include "dataio/DataIO.h"
 
 namespace muscle {
