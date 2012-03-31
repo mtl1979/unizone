@@ -6,6 +6,9 @@
 using muscle::String;
 
 class QString;
+
+bool ParseIP4(const QString &address, uint32 &result);
+
 #ifdef MUSCLE_AVOID_IPV6
 uint32 ResolveAddress(const QString &address);
 uint32 ResolveAddress(const String &address);

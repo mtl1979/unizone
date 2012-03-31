@@ -33,6 +33,8 @@ SOURCES =	aboutdlgimpl.cpp \
                 prefsimpl.cpp \
                 privatewindowimpl.cpp \
                 resolver.cpp \
+		resolver4.cpp \
+		resolver6.cpp \
                 resolverthread.cpp \
                 search.cpp \
                 searchitem.cpp \
