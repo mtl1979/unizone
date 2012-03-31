@@ -93,12 +93,15 @@ ResolveAddress4(const QString &address)
 	if (ParseIP4(address, res))
 		return res;
 
+#ifdef MUSCLE_AVOID_IPV6
+		res = GetHostByName(address);
+#else
 	{
 		muscle::ip_address res2;
 		res2 = GetHostByName(address);
 		res = res2.GetLowBits() & 0xFFFFFFF;
 	}
-
+#endif
 	NetAddress4 na;
 
 	if (fAddressCache4.GetNumItems() > 0)
