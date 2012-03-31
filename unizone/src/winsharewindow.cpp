@@ -804,6 +804,9 @@ WinShareWindow::ServerChanged(const QString & newServer)
 	if (fServer.endsWith(":2960"))
 		fServer.truncate(fServer.length() - 5); // strip default port
 
+	if (fServer.startsWith("[") && fServer.endsWith("]"))
+		fServer = fServer.mid(1, fServer.length() - 2); // strip brackets from IPv6 address with default or no port
+
 	if (fNetClient->IsConnected() || fReconnectTimer->isActive())
 		Connect();
 }

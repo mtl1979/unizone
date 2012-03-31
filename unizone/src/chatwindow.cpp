@@ -47,9 +47,9 @@ ChatWindow::ParseChatText(const QString & str)
 				qLabels.Tail() += qToken.left(qToken.length() - 1);
 				inLabel = false;
 			}
-			else if (qToken.find("]") >= 0)
+			else if (qToken.findRev("]") >= 0)
 			{
-				qLabels.Tail() += qToken.left(qToken.find("]") - 1);
+				qLabels.Tail() += qToken.left(qToken.findRev("]"));
 				inLabel = false;
 			}
 			else
@@ -133,6 +133,12 @@ ChatWindow::ParseChatText(const QString & str)
 							break;
 					}
 
+					if (qToken.endsWith("]"))
+					{
+//						if (qToken.contains("[") == qToken.contains("]"))
+							break;
+					}
+
 					if 	(
 						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||
 						muscleInRange(last.unicode(), (unichar) 'a', (unichar) 'z') ||
@@ -160,9 +166,9 @@ ChatWindow::ParseChatText(const QString & str)
 			if (qToken.startsWith("[")) // Start of label?
 			{
 				if (qToken.endsWith("]"))
-					qLabels.Tail() = qToken.mid(1, qToken.length() - 2);
-				else if (qToken.find("]") >= 0)
-					qLabels.Tail() = qToken.mid(1, qToken.find("]") - 1);
+					qLabels.Tail() = qToken.mid(1, qToken.length() - 1);
+				else if (qToken.findRev("]") >= 0)
+					qLabels.Tail() = qToken.mid(1, qToken.findRev("]") - 1);
 				else
 				{
 					qLabels.Tail() += qToken.mid(1) + " ";
@@ -216,10 +222,10 @@ ChatWindow::ParseChatText(const QString & str)
 			if (!qLabel.isEmpty())
 			{
 				lb = qText.find("\n");
-				le = qText.find("]");
+				le = qText.find(qLabel + "]");
 				if (!muscleInRange(lb, 0, le))
 				{
-					qText = qText.mid(le + 1);
+					qText = qText.mid(le + qLabel.length() + 1);
 					if (qText.startsWith("]"))	// Fix for ']' in end of label
 						qText = qText.mid(1);
 				}

@@ -426,8 +426,14 @@ BandwidthToString(uint32 bps)
 QString
 GetServerName(const QString & server)
 {
+	int pSquare = server.find("[");
+	if (pSquare == 0)
+	{
+		pSquare = server.find("]");
+		return server.mid(1, pSquare - 1);
+	}
 	int pColon = server.find(":");
-	if (pColon >= 0)
+	if (pColon >= 0 && server.count(":") == 1)
 	{
 		return server.left(pColon);
 	}
@@ -440,8 +446,13 @@ GetServerName(const QString & server)
 uint16
 GetServerPort(const QString & server)
 {
+	int pSquare = server.find("]:");
+	if (pSquare > 0)
+	{
+		return server.mid(pSquare+2).toUShort();
+	}
 	int pColon = server.find(":");
-	if (pColon >= 0)
+	if (pColon >= 0 && server.count(":") == 1)
 	{
 		return server.mid(pColon+1).toUShort();
 	}
