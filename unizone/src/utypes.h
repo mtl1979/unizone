@@ -57,12 +57,10 @@ typedef unsigned long	uint32;
 typedef int32						status_t;
 #endif
 #endif
-#if defined(MUSCLE_64_BIT_PLATFORM)
-# ifndef UINT32_MAX
+#ifndef UINT32_MAX
+# if defined(MUSCLE_64_BIT_PLATFORM)
 #  define UINT32_MAX				UINT_MAX
-# endif
-#else
-# ifndef UINT32_MAX
+# else
 #  define UINT32_MAX				ULONG_MAX
 # endif
 #endif
