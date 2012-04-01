@@ -100,7 +100,7 @@ QString
 ResolveHost(muscle::ip_address ip)
 {
 	if (IsIPv4Address(ip))
-		return ResolveHost4(ip.GetLowBits() & 0xFFFFFFFF);
+		return ResolveHost4(ConvertIP4(ip));
 	return ResolveHost6(ip);
 }
 
@@ -108,8 +108,18 @@ QString
 ResolveAliases(muscle::ip_address ip)
 {
 	if (IsIPv4Address(ip))
-		return ResolveAliases4(ip.GetLowBits() & 0xFFFFFFFF);
+		return ResolveAliases4(ConvertIP4(ip));
 	return ResolveAliases6(ip);
+}
+
+uint32
+ConvertIP4(muscle::ip_address ip)
+{
+	if (IsIPv4Address(ip))
+	{
+		return ip.GetLowBits() & 0xFFFFFFFF;
+	}
+	return 0;
 }
 #endif
 

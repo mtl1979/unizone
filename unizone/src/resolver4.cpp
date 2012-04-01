@@ -99,7 +99,7 @@ ResolveAddress4(const QString &address)
 #else
 		muscle::ip_address res2;
 		res2 = GetHostByName(address);
-		res = res2.GetLowBits() & 0xFFFFFFFF;
+		res = ConvertIP4(res2);
 #endif
 	}
 
