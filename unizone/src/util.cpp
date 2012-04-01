@@ -883,10 +883,14 @@ hexFromULongLong(const uint64 &in, int length)
 {
 	uint64 tmp;
 	QString out;
-	if (in < 10)
-		return QChar(((int) in) + '0');
-	else if (in < 16)
-		return QChar(((int) in) + 55);
+	if (length == 1) // 1 == no padding
+	{
+		if (in < 10)
+			return QChar(((int) in) + '0');
+		else if (in < 16)
+			return QChar(((int) in) + 55);
+		return QString::null; // Not enough space...
+	}
 
 	out.fill('0', length--);
 	tmp = in;
@@ -895,6 +899,7 @@ hexFromULongLong(const uint64 &in, int length)
 		char n = (char) (tmp % 16);
 		out[length--] = QChar(n + ((n < 10) ? '0' : 55));
 		tmp /= 16;
+		if (length == -1) return QString::null; // Not enough space
 	}
 	return out;
 }
