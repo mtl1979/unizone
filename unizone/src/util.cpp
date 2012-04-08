@@ -102,11 +102,21 @@ StripURL(const String & strip)
 			int left = strip.IndexOf('[');	// see if it contains a label..
 			if (left == (sp + 1))
 			{
-				left++;
-				int right = strip.IndexOf(']');
-				if (right > left)	// make sure right is than greater left :D
+				int right = strip.IndexOf(']', left + 1);
+				if (right != -1)	// ']' does exist
 				{
-					String label = strip.Substring(left, right).Trim();
+					String label;
+					while (strip.Substring(left, right).GetNumInstancesOf("[") > 
+							strip.Substring(left, right).GetNumInstancesOf("]")
+							)
+					{
+						int next = strip.IndexOf("]", right + 1);
+						if (next == -1)
+							break;
+						right = next;
+					}
+					left++;
+					label = strip.Substring(left, right).Trim();
 					if ((right + 1) < (int) strip.Length())
 					{
 						String rest = strip.Substring(right + 1);
@@ -120,9 +130,9 @@ StripURL(const String & strip)
 					else
 						return label;
 				}
-				else if (right == -1) // ']' is missing?
+				else // ']' is missing?
 				{
-					String label = strip.Substring(left).Trim();
+					String label = strip.Substring(left + 1).Trim();
 					return label;
 				}
 			}

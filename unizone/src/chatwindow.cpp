@@ -42,18 +42,27 @@ ChatWindow::ParseChatText(const QString & str)
 
 		if (inLabel)			// label contains space(s) ???
 		{
-			if (qToken.endsWith("]"))
+			qLabels.Tail() += qToken;
+			if (qLabels.Tail().findRev("]") >= 0)
 			{
-				qLabels.Tail() += qToken.left(qToken.length() - 1);
-				inLabel = false;
+				QString tmp = qLabels.Tail();
+				// Match number of [ and ] inside label
+				while (tmp.count("[") < tmp.count("]"))
+				{
+					int pb = tmp.findRev("]");
+					if (pb == -1)
+						break;
+					else
+						tmp.truncate(pb);
+				}
+				if (tmp.count("[") == tmp.count("]"))
+				{
+					qLabels.Tail() = tmp;
+					inLabel = false;
+				}
 			}
-			else if (qToken.findRev("]") >= 0)
-			{
-				qLabels.Tail() += qToken.left(qToken.findRev("]"));
-				inLabel = false;
-			}
-			else
-				qLabels.Tail() += qToken + " ";
+			if (inLabel)
+					qLabels.Tail() += " "; // continue
 		}
 		else if (IsURL(qToken))
 		{
@@ -68,11 +77,11 @@ ChatWindow::ParseChatText(const QString & str)
 					bool bInTag = true;
 					while (bInTag)
 					{
-						if (qToken.endsWith("<"))
+						int pos = qToken.findRev("<");
+						if (pos != -1)
+							qToken.truncate(pos);
+						if (!qToken.endsWith(">"))
 							bInTag = false;
-						qToken.truncate(qToken.length() - 1);
-						if (qToken.endsWith(">"))
-							bInTag = true;
 					}
 				}
 				// ...and ensure that URL doesn't end with a dot, comma or colon
@@ -110,14 +119,12 @@ ChatWindow::ParseChatText(const QString & str)
 						//
 						while (bInTag)
 						{
-							if (qToken.endsWith("<"))
-								bInTag = false;
-
-							qToken.truncate(qToken.length() - 1);
-
+							int pos = qToken.findRev("<");
+							if (pos != -1)
+								qToken.truncate(pos);
 							// another tag?
-							if (qToken.endsWith(">"))
-								bInTag = true;
+							if (!qToken.endsWith(">"))
+								bInTag = false;
 						}
 
 						last = qToken.at(qToken.length() - 1);
@@ -134,10 +141,7 @@ ChatWindow::ParseChatText(const QString & str)
 					}
 
 					if (qToken.endsWith("]"))
-					{
-//						if (qToken.contains("[") == qToken.contains("]"))
-							break;
-					}
+						break;
 
 					if 	(
 						muscleInRange(last.unicode(), (unichar) '0', (unichar) '9') ||
@@ -165,15 +169,26 @@ ChatWindow::ParseChatText(const QString & str)
 
 			if (qToken.startsWith("[")) // Start of label?
 			{
-				if (qToken.endsWith("]"))
-					qLabels.Tail() = qToken.mid(1, qToken.length() - 1);
-				else if (qToken.findRev("]") >= 0)
-					qLabels.Tail() = qToken.mid(1, qToken.findRev("]") - 1);
-				else
+				inLabel = true; // Worst case scenario
+				int cb = qToken.findRev("]");
+				if (cb != -1)
 				{
-					qLabels.Tail() += qToken.mid(1) + " ";
-					inLabel = true;
+					// match count of [ and ] inside label
+					while (qToken.leftRef(cb + 1).count("[") < qToken.leftRef(cb + 1).count("]"))
+					{
+						int pb = qToken.findRev("]", cb - 1);
+						if (pb == -1)
+							break;
+						cb = pb;
+					}
+					if (qToken.leftRef(cb + 1).count("[") == qToken.leftRef(cb + 1).count("]"))
+					{
+						qLabels.Tail() = qToken.mid(1, cb - 1);
+						inLabel = false;
+					}
 				}
+				if (inLabel)
+					qLabels.Tail() = qToken.mid(1) + " ";
 			}
 		}
 	}
@@ -224,11 +239,7 @@ ChatWindow::ParseChatText(const QString & str)
 				lb = qText.find("\n");
 				le = qText.find(qLabel + "]");
 				if (!muscleInRange(lb, 0, le))
-				{
 					qText = qText.mid(le + qLabel.length() + 1);
-					if (qText.startsWith("]"))	// Fix for ']' in end of label
-						qText = qText.mid(1);
-				}
 			}
 
 		}
