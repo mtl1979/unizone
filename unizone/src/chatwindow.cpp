@@ -782,7 +782,7 @@ ChatWindow::FormatLocalText(const QString &session, const QString &name,
 	QString temp = QString("<font size=\"%1\"><b>(%2)</b> <b>")
 		.arg(QString::number(GetFontSize()), session);
 	temp += FormatUserName(name.stripWhiteSpace(), GetColor(WColors::LocalName));
-	temp += QString("</b> : <font color=\"%1\">%2</font></font>")
+	temp += QString("</b>: <font color=\"%1\">%2</font></font>")
 		.arg(GetColor(WColors::Text), text);
 	return temp;
 }
