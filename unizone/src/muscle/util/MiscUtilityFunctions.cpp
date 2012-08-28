@@ -437,7 +437,7 @@ LONG Win32FaultHandler(struct _EXCEPTION_POINTERS * ExInfo)
     printf("*** A Program Fault occurred:\n");
     printf("*** Error code %08X: %s\n", faultCode, faultDesc);
     printf("****************************************************\n");
-    printf("***   Address: %08X\n", (int)CodeAddress);
+    printf("***   Address: %08X\n", (uintptr)CodeAddress);
     printf("***     Flags: %08X\n", ExInfo->ExceptionRecord->ExceptionFlags);
     _Win32PrintStackTraceForContext(stdout, ExInfo->ContextRecord, MUSCLE_NO_LIMIT);
     printf("Crashed MUSCLE process aborting now.... bye!\n");
@@ -736,7 +736,7 @@ void RemoveANSISequences(String & s)
 	       if (*data) data++;  // and skip over the trailing letter too.
 	    break;
          }
-	 s = s.Substring(0, idx) + s.Substring(data-s());  // remove the escape substring
+	 s = s.Substring(0, idx) + s.Substring((uint32)(data-s()));  // remove the escape substring
       }
       else break;
    }
@@ -805,6 +805,12 @@ status_t NybbleizeData(const ByteBuffer & buf, String & retString)
 status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf)
 {
    uint32 numBytes = nybbleizedText.Length();
+   if ((numBytes%2)!=0)
+   {
+      LogTime(MUSCLE_LOG_ERROR, "DenybblizeData:  Nybblized text [%s] has an odd length; that shouldn't ever happen!\n", nybbleizedText());
+      return B_ERROR;
+   }
+
    if (retBuf.SetNumBytes(numBytes/2, false) != B_NO_ERROR) return B_ERROR;
 
    uint8 * b = retBuf.GetBuffer();
@@ -812,6 +818,11 @@ status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf)
    {
       char c1 = nybbleizedText[i+0];
       char c2 = nybbleizedText[i+1];
+      if ((muscleInRange(c1, 'A', 'P') == false)||(muscleInRange(c2, 'A', 'P') == false))
+      {
+         LogTime(MUSCLE_LOG_ERROR, "DenybblizeData:  Nybblized text [%s] contains characters other than A through P!\n", nybbleizedText());
+         return B_ERROR;
+      }
       *b++ = ((c1-'A')<<0)|((c2-'A')<<4);
    }
    return B_NO_ERROR;
@@ -873,7 +884,7 @@ String HexBytesToString(const uint8 * buf, uint32 numBytes)
 
 ByteBufferRef ParseHexBytes(const char * buf)
 {
-   ByteBufferRef bb = GetByteBufferFromPool(strlen(buf));
+   ByteBufferRef bb = GetByteBufferFromPool((uint32)strlen(buf));
    if (bb())
    {
       uint8 * b = bb()->GetBuffer();

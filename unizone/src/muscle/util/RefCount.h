@@ -5,6 +5,7 @@
 
 #include "util/Cloneable.h" 
 #include "util/ObjectPool.h" 
+#include "util/PointerAndBool.h" 
 #include "system/AtomicCounter.h"
 
 namespace muscle {
@@ -84,11 +85,7 @@ public:
     *  Default constructor.
     *  Creates a NULL reference (suitable for later initialization with SetRef(), or the assignment operator)
     */
-   ConstRef() : _item(NULL)
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      , _doRefCount(true)
-#endif
-      {/* empty */}
+   ConstRef() : _item(NULL, true) {/* empty */}
 
    /** 
      * Creates a new reference-count for the given item.
@@ -102,24 +99,15 @@ public:
      *                   But if you do that, it allows the possibility of the object going away while
      *                   other Refs are still using it, so be careful!
      */
-   explicit ConstRef(const Item * item, bool doRefCount = true) :
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      _item(item), _doRefCount(doRefCount)
-#else
-      _item(doRefCount ? item : SetLowBit(item))
-#endif
+   explicit ConstRef(const Item * item, bool doRefCount = true) : _item(item, doRefCount)
    {
-      CheckItemAlignment(item); 
       RefItem();
    } 
 
    /** Copy constructor.  Creates an additional reference to the object referenced by (copyMe).
     *  The referenced object won't be deleted until ALL Refs that reference it are gone.
     */
-   ConstRef(const ConstRef & copyMe) : _item(NULL)
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      , _doRefCount(true)
-#endif
+   ConstRef(const ConstRef & copyMe) : _item(NULL, true)
    {
       *this = copyMe;
    }
@@ -129,14 +117,11 @@ public:
      * @param ref The read-only RefCountable reference to set ourselves from.
      * @param junk This parameter is ignored; it is just here to disambiguate constructors.
      */
-   ConstRef(const ConstRefCountableRef & ref, bool junk) : _item(NULL)
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      , _doRefCount(true)
-#endif
-    {
-       (void) junk; 
-       (void) SetFromRefCountableRef(ref);
-    }
+   ConstRef(const ConstRefCountableRef & ref, bool junk) : _item(NULL, true)
+   {
+      (void) junk; 
+      (void) SetFromRefCountableRef(ref);
+   }
 
    /** Unreferences the held data item.  If this is the last ConstRef that
     *  references the held data item, the data item will be deleted or recycled at this time.
@@ -180,15 +165,7 @@ public:
       {
          // switch items
          UnrefItem();
-
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-         _item       = item;
-         _doRefCount = doRefCount; 
-#else
-         CheckItemAlignment(item);
-         _item = doRefCount ? item : SetLowBit(item);
-#endif
-
+         _item.SetPointerAndBool(item, doRefCount);
          RefItem();
       }
    }
@@ -226,11 +203,7 @@ public:
    /** Returns the ref-counted data item.  The returned data item
     *  is only guaranteed valid for as long as this RefCount object exists.
     */
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-   const Item * GetItemPointer() const {return _item;}
-#else
-   const Item * GetItemPointer() const {return ClearLowBit(_item);}
-#endif
+   const Item * GetItemPointer() const {return _item.GetPointer();}
 
    /** Convenience synonym for GetItemPointer(). */
    const Item * operator()() const {return this->GetItemPointer();}
@@ -245,14 +218,9 @@ public:
      */
    void Neutralize() 
    {
-      bool irc = this->IsRefCounting();
-      const Item * item = irc ? this->GetItemPointer() : NULL;
-      if (item) item->DecrementRefCount();
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      _item = NULL;
-#else
-      _item = irc ? SetLowBit((const Item *)NULL) : NULL;
-#endif
+      const Item * item = this->IsRefCounting() ? this->GetItemPointer() : NULL;
+      if (item) (void) item->DecrementRefCount();  // remove our ref-count from the item but deliberately never delete the item 
+      _item.SetPointer(NULL);
    }
 
    /** Swaps this ConstRef's contents with those of the specified ConstRef.
@@ -260,23 +228,13 @@ public:
      */
    void SwapContents(ConstRef & swapWith)
    {
-      muscleSwap(_item,       swapWith._item); 
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      muscleSwap(_doRefCount, swapWith._doRefCount);
-#endif
+      muscleSwap(_item, swapWith._item); 
    }
 
    /** Returns true iff we are refcounting our held object, or false
      * if we are merely pointing to it (see constructor documentation for details)
      */
-   bool IsRefCounting() const 
-   {
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      return _doRefCount;
-#else
-      return (IsLowBitSet(_item) == false);
-#endif
-   }
+   bool IsRefCounting() const {return _item.GetBool();}
 
    /** Convenience method:  Returns a ConstRefCountableRef object referencing the same RefCountable as this typed ref. */
    ConstRefCountableRef GetRefCountableRef() const {return ConstRefCountableRef(this->GetItemPointer(), this->IsRefCounting());}
@@ -374,26 +332,7 @@ public:
    uint32 HashCode() const {return CalculateHashCode(this->GetItemPointer());}
 
 private:
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-   void CheckItemAlignment(const Item *) const {/* empty */}  // no particular alignment is required in this mode
-#else
-   // Convenience methods for manipulating the boolean that we've stuffed into the item pointer.
-   Item * SetLowBit(              Item * ptr) const {return (Item*)(((uintptr)ptr)| ((uintptr)0x1));}
-   Item * ClearLowBit(            Item * ptr) const {return (Item*)(((uintptr)ptr)&~((uintptr)0x1));}
-   const Item * SetLowBit(  const Item * ptr) const {return (Item*)(((uintptr)ptr)| ((uintptr)0x1));}
-   const Item * ClearLowBit(const Item * ptr) const {return (Item*)(((uintptr)ptr)&~((uintptr)0x1));}
-   bool IsLowBitSet(        const Item * ptr) const {return ((((uintptr)ptr)&((uintptr)0x1))!=0);}
-   void CheckItemAlignment( const Item * ptr) const {MASSERT((IsLowBitSet(ptr) == false), "Unaligned RefCountable pointer detected!  RefCount's bit-stuffing code can't handle that.  Either align your RefCountables to even memory addresses, or recompile with -DMUSCLE_AVOID_REFCOUNTABLE_BITSTUFFING."); (void) ptr;}
-#endif
-
-   void SetRefCounting(bool rc)
-   {
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-      _doRefCount = rc;
-#else
-      _item = rc ? ClearLowBit(_item) : SetLowBit(_item);
-#endif
-   }
+   void SetRefCounting(bool rc) {_item.SetBool(rc);}
 
    void RefItem() 
    {
@@ -413,18 +352,11 @@ private:
             if (m) m->RecycleObject(const_cast<Item *>(item));
               else delete item;
          }
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-         _item = NULL;
-#else
-         _item = isRefCounting ? NULL : SetLowBit((const Item *)NULL);
-#endif
+         _item.SetPointer(NULL);
       }
    }
    
-   const Item * _item;   // note:  when bit-stuffing, the least significant bit of this pointer encodes (!_doRefCount)
-#ifdef MUSCLE_AVOID_REFCOUNT_BITSTUFFING
-   bool _doRefCount;
-#endif
+   PointerAndBool<const Item> _item;
 };
 
 /** When we compare references, we really want to be comparing what those references point to */

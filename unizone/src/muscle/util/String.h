@@ -110,9 +110,8 @@ public:
    {
       if (EnsureBufferSize(Length()+2, true) == B_NO_ERROR)
       {
-         char * b = GetBuffer();
-         b[_length++] = ch;
-         b[_length]   = '\0';
+         GetBuffer()[_length++] = ch;
+         WriteNULTerminatorByte();
       }
       return *this;
    }
@@ -242,7 +241,7 @@ public:
    void operator ++ (int) {(*this) += ' ';}
 
    /** Remove the last character from the end of this string.  It's a no-op if the string is already empty. */
-   void operator -- (int) {if (_length > 0) GetBuffer()[--_length] = '\0';}
+   void operator -- (int) {TruncateChars(1);}
 
    /** Returns the character at the (index)'th position in the string.
     *  @param index A value between 0 and (Length()-1), inclusive.
@@ -276,8 +275,8 @@ public:
    /** Convenience synonym for Cstr(). */
    const char * operator()() const {return Cstr();}  
 
-   /** Clears this string so that it contains no characters.  Equivalent to setting it to "". */
-   void Clear() {GetBuffer()[0] = '\0'; _length = 0;}
+   /** Clears this string so that it contains no characters.  Equivalent to setting this string to "". */
+   void Clear() {_length = 0; WriteNULTerminatorByte();}
 
    /** Similar to Clear(), except this version also frees up any dynamically allocated character arary we may have cached. */
    void ClearAndFlush();
@@ -304,6 +303,11 @@ public:
 
    /** Returns true iff this string is a zero-length string. */
    bool IsEmpty() const {return (_length == 0);}
+
+   /** Returns true iff this string starts with a number.
+     * @param allowNegativeValues if true, negative values will be considered as numbers also.  Defaults to true.
+     */
+   bool StartsWithNumber(bool allowNegativeValues = true) const {const char * s = Cstr(); return ((isdigit(*s))||((allowNegativeValues)&&(s[0]=='-')&&(isdigit(s[1]))));}
 
    /** Returns true iff this string is not a zero-length string. */
    bool HasChars() const {return (_length > 0);}
@@ -460,7 +464,7 @@ public:
    /** Returns true iff this string starts with (c) 
      * @param c The character to see if this string starts with or not
      */
-   bool StartsWith(char c) const {return (_length > 0)&&(Cstr()[0] == c);}
+   bool StartsWith(char c) const {return (*Cstr() == c);}
 
    /** Returns true iff this string starts with (prefix) 
      * @param prefix The prefix to see whether this string starts with or not
@@ -548,6 +552,14 @@ public:
     *  @returns the new, padded String.
     */
    String Pad(uint32 minLength, bool padOnRight = false, char padChar = ' ') const;
+
+   /** Returns a string that is the same as this one, except that the beginning of each line in the string has (numIndentChars)
+     * instances of (indentChar) prepended to it.
+     * @param numIndentChars How many indent characters to prepend to each line
+     * @param indentChar The character to use to make the indentations.  Defaults to ' '.
+     * @returns the indented string.
+     */
+   String Indent(uint32 numIndentChars, char indentChar = ' ') const;
 
    /** Returns a string that consists of only the last part of this string, starting with index (beginIndex).  Does not modify the string it is called on. */
    String Substring(uint32 beginIndex) const {return String(*this, beginIndex);}
@@ -733,6 +745,18 @@ public:
     */ 
    status_t Prealloc(uint32 numChars) {return EnsureBufferSize(numChars+1, true);}
 
+   /** Removes (numCharsToTruncate) characters from the end of this string.
+     * @param numCharsToTruncate How many characters to truncate.  If greater than the
+     *                           length of this String, this String will become empty.
+     */
+   void TruncateChars(uint32 numCharsToTruncate) {_length -= muscleMin(_length, numCharsToTruncate); WriteNULTerminatorByte();}
+
+   /** Makes sure this string is no longer than (maxLength) characters long by truncating
+     * any extra characters, if necessary
+     * @param maxLength Maximum length that this string should be allowed to be.
+     */
+   void TruncateToLength(uint32 maxLength) {_length = muscleMin(_length, maxLength); WriteNULTerminatorByte();}
+
    /** Returns a string like this string, but with the appropriate %# tokens
      * replaced with a textual representation of the values passed in as (value).
      * For example, String("%1 is a %2").Arg(13).Arg("bakers dozen") would return
@@ -745,31 +769,37 @@ public:
      *            more than 256 bytes being written.
      * @returns a new String with the appropriate tokens replaced.
      */
-   String Arg(bool value,   const char * fmt = "%s")   const;
+   String Arg(bool value, const char * fmt = "%s") const;
 
-   /** As above, but for int8 values. */
-   String Arg(int8 value,   const char * fmt = "%i")   const;
+   /** As above, but for char values. */
+   String Arg(char value, const char * fmt = "%i") const;
 
-   /** As above, but for uint8 values. */
-   String Arg(uint8 value,  const char * fmt = "%u")   const;
+   /** As above, but for unsigned char values. */
+   String Arg(unsigned char value, const char * fmt = "%u") const;
 
-   /** As above, but for int16 values. */
-   String Arg(int16 value,  const char * fmt = "%i")   const;
+   /** As above, but for short values. */
+   String Arg(short value, const char * fmt = "%i") const;
 
-   /** As above, but for uint16 values. */
-   String Arg(uint16 value, const char * fmt = "%u")   const;
+   /** As above, but for unsigned shot values. */
+   String Arg(unsigned short value, const char * fmt = "%u") const;
 
-   /** As above, but for int32 values. */
-   String Arg(int32 value,  const char * fmt = INT32_FORMAT_SPEC)  const;
+   /** As above, but for int values. */
+   String Arg(int value, const char * fmt = "%i")  const;
 
-   /** As above, but for uint32 values. */
-   String Arg(uint32 value, const char * fmt = UINT32_FORMAT_SPEC) const;
+   /** As above, but for unsigned int values. */
+   String Arg(unsigned int value, const char * fmt = "%u") const;
 
-   /** As above, but for int64 values. */
-   String Arg(int64 value,  const char * fmt = INT64_FORMAT_SPEC)  const;
+   /** As above, but for long values. */
+   String Arg(long value, const char * fmt = "%li")  const;
 
-   /** As above, but for uint64 values. */
-   String Arg(uint64 value, const char * fmt = UINT64_FORMAT_SPEC) const;
+   /** As above, but for unsigned long values. */
+   String Arg(unsigned long value, const char * fmt = "%lu") const;
+
+   /** As above, but for long long values. */
+   String Arg(long long value, const char * fmt = INT64_FORMAT_SPEC)  const;
+
+   /** As above, but for unsigned long long values. */
+   String Arg(unsigned long long value, const char * fmt = UINT64_FORMAT_SPEC) const;
 
    /** As above, but for double values. */
    String Arg(double value, const char * fmt = "%f")   const;
@@ -789,6 +819,58 @@ public:
    /** As above, but for printing pointer values. */
    String Arg(const void * value) const;
 
+   /** If this string already ends with the specified character, returns this string verbatim.
+     * Otherwise, returns a String equivalent to this one but with the specified character appended.
+     * @param c The char we want to be sure is at the end of the returned String.
+     */
+   String WithSuffix(char c) const {return EndsWith(c) ? *this : Append(c);}
+
+   /** If this string already ends with the specified string, returns this string verbatim.
+     * Otherwise, returns a String equivalent to this one but with the specified string appended.
+     * @param str The string we want to be sure is at the end of the returned String.
+     */
+   String WithSuffix(const String & str) const {return EndsWith(str) ? *this : Append(str);}
+
+   /** If this string already begins with the specified character, returns this string verbatim.
+     * Otherwise, returns a String equivalent to this one but with the specified character prepended.
+     * @param c The character we want to be sure is at the beginning of the returned String.
+     */
+   String WithPrefix(char c) const {return StartsWith(c) ? *this : Prepend(c);}
+
+   /** If this string already begins with the specified string, returns this string verbatim.
+     * Otherwise, returns a String equivalent to this one but with the specified string prepended.
+     * @param str The string we want to be sure is at the beginning of the returned String.
+     */
+   String WithPrefix(const String & str) const {return StartsWith(str) ? *this : Prepend(str);}
+
+   /** Returns a String like this one, but with any characters (c) removed from the end.
+     * @param c The char we want to be sure is not at the end of the returned String.
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all trailing (c) chars.
+     */
+   String WithoutSuffix(char c, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
+   /** Returns a String like this one, but with any instances of (str) removed from the end.
+     * @param str The substring we want to be sure is not at the end of the returned String.
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all trailing (str) substrings.
+     */
+   String WithoutSuffix(const String & str, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
+   /** Returns a String like this one, but with any characters (c) removed from the beginning.
+     * @param c The char we want to be sure is not at the beginning of the returned String.
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all starting (c) chars.
+     */
+   String WithoutPrefix(char c, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
+   /** Returns a String like this one, but with any instances of (str) removed from the beginning.
+     * @param str The substring we want to be sure is not at the beginning of the returned String.
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all starting (str) substrings.
+     */
+   String WithoutPrefix(const String & str, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
    /** Returns a 32-bit checksum corresponding to this String's contents.
      * Note that this method method is O(N).
      */
@@ -806,6 +888,7 @@ private:
    bool IsArrayDynamicallyAllocated() const {return (_bufferLen>sizeof(_strData._smallBuffer));}
    char * GetBuffer() {return IsArrayDynamicallyAllocated() ? _strData._bigBuffer : _strData._smallBuffer;}
    void ClearSmallBuffer() {memset(_strData._smallBuffer, 0, sizeof(_strData._smallBuffer));}
+   void WriteNULTerminatorByte() {GetBuffer()[_length] = '\0';}
 
    union StringUnion {  // the StringUnion name is apparently necessary for muscleSwap() to work on the union
       char * _bigBuffer;                                // Pointer to allocated array.  Valid iff (_bufferLen >  sizeof(_smallBuffer))
@@ -853,8 +936,8 @@ public:
 inline const String & GetEmptyString() {return GetDefaultObjectForType<String>();}
 
 inline String operator+(const String & lhs, const String & rhs)  {String ret; (void) ret.Prealloc(lhs.Length()+rhs.Length());        ret = lhs; ret += rhs; return ret;}
-inline String operator+(const String & lhs, const char *rhs)     {String ret; (void) ret.Prealloc(lhs.Length()+(rhs?strlen(rhs):0)); ret = lhs; ret += rhs; return ret;}
-inline String operator+(const char * lhs,   const String & rhs)  {String ret; (void) ret.Prealloc((lhs?strlen(lhs):0)+rhs.Length()); ret = lhs; ret += rhs; return ret;}
+inline String operator+(const String & lhs, const char *rhs)     {String ret; (void) ret.Prealloc(lhs.Length()+(rhs?(uint32)strlen(rhs):0)); ret = lhs; ret += rhs; return ret;}
+inline String operator+(const char * lhs,   const String & rhs)  {String ret; (void) ret.Prealloc((lhs?(uint32)strlen(lhs):0)+rhs.Length()); ret = lhs; ret += rhs; return ret;}
 inline String operator+(const String & lhs, char rhs)            {String ret; (void) ret.Prealloc(lhs.Length()+1);                   ret = lhs; ret += rhs; return ret;}
 inline String operator+(char lhs,           const String & rhs)  {String ret; (void) ret.Prealloc(1+rhs.Length());                   ret.SetCstr(&lhs, 1); ret += rhs; return ret;}
 inline String operator-(const String & lhs, const String & rhs)  {String ret = lhs; ret -= rhs; return ret;}

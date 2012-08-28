@@ -111,6 +111,8 @@ bool AndOrQueryFilter :: Matches(ConstMessageRef & msg, const DataNode * optNode
    uint32 threshold  = muscleMin(_minMatches, numKids);
    for (uint32 i=0; i<numKids; i++)
    {
+      if ((threshold-matchCount) > (numKids-i)) return false;  // might as well give up, even all-true wouldn't get us there now
+
       const QueryFilter * next = kids[i]();
       if ((next)&&(next->Matches(msg, optNode))&&(++matchCount == threshold)) return true;
    }
@@ -138,6 +140,8 @@ bool NandNotQueryFilter :: Matches(ConstMessageRef & msg, const DataNode * optNo
    uint32 threshold  = muscleMin(_maxMatches, numKids);
    for (uint32 i=0; i<numKids; i++)
    {
+      if ((threshold-matchCount) > (numKids-i)) return true;  // might as well give up, even all-true wouldn't get us there now
+
       const QueryFilter * next = kids[i]();
       if ((next)&&(next->Matches(msg, optNode))&&(++matchCount > threshold)) return false;
    }

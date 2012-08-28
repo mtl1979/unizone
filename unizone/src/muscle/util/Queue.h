@@ -1032,7 +1032,17 @@ Clear(bool releaseCachedBuffers)
       _queueSize = 0;
       _itemCount = 0;
    }
-   else while(RemoveTail() == B_NO_ERROR) {/* empty */}
+   else if (HasItems())
+   {
+      for (uint32 i=0; i<2; i++)
+      {
+         uint32 arrayLen = 0;  // set to zero just to shut the compiler up
+         const ItemType & defaultItem = GetDefaultItem();
+         ItemType * p = GetArrayPointer(i, arrayLen);
+         if (p) {for (uint32 j=0; j<arrayLen; j++) p[j] = defaultItem;}
+      }
+      FastClear();
+   }
 }
 
 template <class ItemType>

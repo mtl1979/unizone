@@ -79,7 +79,6 @@ ByteBufferRef ZLibCodec :: Deflate(const uint8 * rawBytes, uint32 numRaw, bool i
       ret = GetByteBufferFromPool(ZLIB_CODEC_HEADER_SIZE+((numRaw*101)/100)+13);
       if (ret())
       {
-
          _deflater.next_in   = (Bytef *)rawBytes;
          _deflater.total_in  = 0;
          _deflater.avail_in  = numRaw;

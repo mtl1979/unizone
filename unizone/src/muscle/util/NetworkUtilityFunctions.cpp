@@ -960,7 +960,7 @@ NetworkInterfaceInfo :: NetworkInterfaceInfo(const String &name, const String & 
 
 String NetworkInterfaceInfo :: ToString() const
 {
-   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5] Enabled=%6").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP)).Arg((int8)_enabled);
+   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5] Enabled=%6").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP)).Arg(_enabled);
 }
 
 uint32 NetworkInterfaceInfo :: HashCode() const
@@ -1292,7 +1292,7 @@ ip_address Inet_AtoN(const char * buf)
    {
       // Gah... Inet_PtoN() won't accept the @idx suffix, so
       // I have to chop that out and parse it separately.  What a pain.
-      uint32 charsBeforeAt = at-buf;
+      uint32 charsBeforeAt = (uint32)(at-buf);
       char * tmp = newnothrow_array(char, 1+charsBeforeAt);
       if (tmp)
       {

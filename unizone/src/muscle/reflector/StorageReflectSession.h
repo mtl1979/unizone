@@ -135,7 +135,7 @@ protected:
     *  @param nodePath A relative path indicating node(s) to remove.  Wildcarding is okay.
     *  @param filterRef If non-NULL, we'll use the given QueryFilter object to filter out our result set.
     *                   Only nodes whose Messages match the QueryFilter will be removed.  Default is a NULL reference.
-    *  @param quiet If set to true, subscriber's won't be updated regarding this change to the database
+    *  @param quiet If set to true, subscribers won't be updated regarding this change to the database
     *  @return B_NO_ERROR on success, or B_ERROR on failure.
     */
    virtual status_t RemoveDataNodes(const String & nodePath, const ConstQueryFilterRef & filterRef = ConstQueryFilterRef(), bool quiet = false);
@@ -168,9 +168,10 @@ protected:
     *                 If (maxDepth) is zero, only (node) will be restored.
     * @param optPruner If set non-NULL, this object will be used as a callback to prune the traversal, and optionally
     *                  to filter the data that gets loaded from (msg).
+    * @param quiet If set to true, subscribers won't be updated regarding this change to the database
     * @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
     */
-   status_t RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex = false, uint32 maxDepth = MUSCLE_NO_LIMIT, const ITraversalPruner * optPruner = NULL);
+   status_t RestoreNodeTreeFromMessage(const Message & msg, const String & path, bool loadData, bool appendToIndex = false, uint32 maxDepth = MUSCLE_NO_LIMIT, const ITraversalPruner * optPruner = NULL, bool quiet = false);
 
    /** 
      * Create and insert a new node into one or more ordered child indices in the node tree.
@@ -235,8 +236,9 @@ protected:
        * @param useFilters If true, we will only call (cb) on nodes whose Messages match our filter; otherwise
        *                   we'll call (cb) on any node whose path matches, regardless of filtering status.
        * @param userData Any value you wish; it will be passed along to the callback method.
+       * @returns The number of times (cb) was called by this traversal.
        */
-      void DoTraversal(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, bool useFilters, void * userData);
+      uint32 DoTraversal(PathMatchCallback cb, StorageReflectSession * This, DataNode & node, bool useFilters, void * userData);
  
       /**
        * Returns the number of path-strings that we contain that match (node).
@@ -252,18 +254,25 @@ protected:
       class TraversalContext
       {
       public:
-         TraversalContext(PathMatchCallback cb, StorageReflectSession * This, bool useFilters, void * userData, int rootDepth) : _cb(cb), _This(This), _useFilters(useFilters), _userData(userData), _rootDepth(rootDepth) {/* empty */}
+         TraversalContext(PathMatchCallback cb, StorageReflectSession * This, bool useFilters, void * userData, int rootDepth) : _cb(cb), _This(This), _useFilters(useFilters), _userData(userData), _rootDepth(rootDepth), _visitCount(0) {/* empty */}
 
+         int CallCallbackMethod(DataNode & nextChild) {_visitCount++; return _cb(_This, nextChild, _userData);}
+         uint32 GetVisitCount() const {return _visitCount;}
+         int GetRootDepth() const {return _rootDepth;}
+         bool IsUseFiltersOkay() const {return _useFilters;}
+
+      private:
          PathMatchCallback _cb;
          StorageReflectSession * _This;
          bool _useFilters;
          void * _userData;
          int _rootDepth;
+         uint32 _visitCount;
       };
 
-      int DoTraversalAux(const TraversalContext & data, DataNode & node);
+      int DoTraversalAux(TraversalContext & data, DataNode & node);
       bool PathMatches(DataNode & node, ConstMessageRef & optData, const PathMatcherEntry & entry, int rootDepth) const;
-      bool CheckChildForTraversal(const TraversalContext & data, DataNode * nextChild, int & depth);
+      bool CheckChildForTraversal(TraversalContext & data, DataNode * nextChild, int & depth);
    };
 
    friend class DataNode;
@@ -402,7 +411,7 @@ protected:
     * Executes a node-removal traversal using the given NodePathMatcher.
     * Note that you may find it easier to call RemoveDataNodes() than to call this method directly.
     * @param matcher Reference to the NodePathMatcher object to use to guide the node-removal traversal.
-    * @param quiet If set to true, subscriber's won't be updated regarding this change to the database
+    * @param quiet If set to true, subscribers won't be updated regarding this change to the database
     */
    void DoRemoveData(NodePathMatcher & matcher, bool quiet = false);
 

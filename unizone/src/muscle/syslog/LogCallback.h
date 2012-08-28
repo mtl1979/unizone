@@ -3,9 +3,11 @@
 #ifndef MuscleLogCallback_h
 #define MuscleLogCallback_h
 
+#include "dataio/FileDataIO.h"
 #include "syslog/SysLog.h"
 #include "util/CountedObject.h"
 #include "util/RefCount.h"
+#include "util/String.h"
 
 namespace muscle {
 
@@ -183,6 +185,118 @@ status_t RemoveLogCallback(const LogCallbackRef & cbRef);
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */ 
 status_t ClearLogCallbacks();
+
+/** This class is used to send log information to stdout.  An object of this class is instantiated 
+  * and used internally by MUSCLE, so typically you don't need to instantiate one yourself, but the class
+  * is exposed here anyway in case it might come in useful for other reasons.
+  */
+class DefaultConsoleLogger : public LogCallback
+{
+public:
+   /** Default constructor */
+   DefaultConsoleLogger();
+
+   virtual void Log(const LogCallbackArgs & a);
+   virtual void Flush();
+
+   /** Returns the maximum MUSCLE_LOG_* log level we will log to stdout for.  Default value is MUSCLE_LOG_INFO. */
+   int GetConsoleLogLevel() {return _consoleLogLevel;}
+
+   /** Sets the maximum MUSCLE_LOG_* log level we will log to stdout for.
+     * @param logLevel a MUSCLE_LOG_* value. 
+     */
+   void SetConsoleLogLevel(int logLevel) {_consoleLogLevel = logLevel;}
+
+private:
+   int _consoleLogLevel;
+};
+
+/** This class is used to send log information to a file, rotate log files, etc.  An object of this class 
+  * is instantiated and used internally by MUSCLE, so typically you don't need to instantiate one yourself, 
+  * but the class is exposed here anyway in case it comes in useful for other reasons (e.g. for creating and
+  * rotating a separate set of log files in an additional directory)
+  */
+class DefaultFileLogger : public LogCallback
+{
+public:
+   /** Default constructor */
+   DefaultFileLogger();
+
+   virtual ~DefaultFileLogger();
+
+   virtual void Log(const LogCallbackArgs & a);
+
+   virtual void Flush();
+
+   /** Specify a pattern of already-existing log files to include in our log-file-history.
+     * This would be called at startup, in case there are old log files already extant from previous runs.
+     * @param filePattern a filepath with wildcards indicating which files to match on.
+     * @returns the number of existing files found and added to our files-list.
+     */
+   uint32 AddPreExistingLogFiles(const String & filePattern);
+
+   /** Returns the threshold MUSCLE_LOG_* level that we will output to the log file.  Default value is MUSCLE_LOG_NONE. */
+   int GetFileLogLevel() const {return _fileLogLevel;}
+
+   /** Returns the name of the log file we will output to.  Default is an empty string (i.e. file logging disabled) */
+   const String & GetFileLogName() const {return _prototypeLogFileName;}
+
+   /** Returns the maximum size of the log file we will output to.  When the file reaches this size we'll create another.  Default is MUSCLE_NO_LIMIT (aka no maximum size). */
+   uint32 GetMaxLogFileSize() const {return _maxLogFileSize;}
+
+   /** Returns the maximum number of log files we will keep present on disk at once (before starting to delete the old ones).  Default is MUSCLE_NO_LIMIT (aka no maximum number of files) */
+   uint32 GetMaxNumLogFiles() const {return _maxNumLogFiles;}
+
+   /** Returns whether or not we should compress old log files to save disk space.  Defaults to false. */
+   bool GetFileCompressionEnabled() {return _compressionEnabled;}
+
+   /** Sets the name of the file to log to.
+     * @param logName File name/path (including %-tokens as necessary)
+     */
+   void SetLogFileName(const String & logName) {_prototypeLogFileName = logName;}
+
+   /** Sets the maximum log file size, in bytes.
+     * @param maxSizeBytes New maximum log file size.
+     */
+   void SetMaxLogFileSize(uint32 maxSizeBytes) {_maxLogFileSize = maxSizeBytes;}
+
+   /** Sets the maximum allowed number of log files.
+     * @param maxNumLogFiles New maximum number of log files, or MUSCLE_NO_LIMIT.
+     */
+   void SetMaxNumLogFiles(uint32 maxNumLogFiles) {_maxNumLogFiles = maxNumLogFiles;}
+
+   /** Set whether old log files should be gzip-compressed, or not.
+     * @param enable True if old log files should be compressed, or false otherwise.
+     */
+   void SetFileCompressionEnabled(bool enable) {_compressionEnabled = enable;}
+
+   /** Set the severity-threshold under which log entries will be added to the log file.
+     * @param logLevel a MUSCLE_LOG_* value.
+     */
+   void SetFileLogLevel(int logLevel) {_fileLogLevel = logLevel;}
+
+protected:
+   /** May be overridden by a subclass to generate a line of text that will be placed at the top of
+     * each generated log file.  Default implementation always returns an empty string.
+     * @param a Info about the first log message that will be placed into the new file.
+     */
+   virtual String GetLogFileHeaderString(const LogCallbackArgs & a) const {(void) a; return GetEmptyString();}
+
+private:
+   status_t EnsureLogFileCreated(const LogCallbackArgs & a);
+   void CloseLogFile();
+
+   int _fileLogLevel;
+   String _prototypeLogFileName;
+   uint32 _maxLogFileSize;
+   uint32 _maxNumLogFiles;
+   bool _compressionEnabled;
+
+   String _activeLogFileName;
+   FileDataIO _logFile;
+   bool _logFileOpenAttemptFailed;
+   Queue<String> _oldLogFileNames;
+};
 
 }; // end namespace muscle
 

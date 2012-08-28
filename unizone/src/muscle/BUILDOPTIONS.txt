@@ -197,9 +197,9 @@ of your Makefile to alter muscle's behaviour:
    fewer memory allocations, but potentially more memory wasted if all the objects
    in the slabs aren't needed.  This value should be specified in bytes.
 
--DMUSCLE_AVOID_REFCOUNT_BITSTUFFING
-   If set, this flag will cause the RefCount class to use a separate
-   boolean for its _doRefCount state, rather than stuffing that bit
+-DMUSCLE_AVOID_BITSTUFFING
+   If set, this flag will cause the RefCount and ByteBuffer classes
+   to use a separate boolean state value, rather than stuffing that bit
    into its held pointer.  This flag might be necessary on systems
    that don't word-align their object pointers (if such systems exist)
 

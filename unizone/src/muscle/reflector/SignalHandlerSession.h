@@ -38,4 +38,17 @@ private:
    ConstSocketRef _handlerSocket;
 };
 
+/** Returns true iff any SignalHandlerSession ever caught a signal since this process was started. */
+bool WasSignalCaught();
+
+/** Sets whether or not the ReflectServer in the main thread should try to handle signals.
+  * Default state is false, unless MUSCLE_CATCH_SIGNALS_BY_DEFAULT was defined at compile time.
+  * Note that this flag is read at the beginning of ReflectServer::ServerProcessLoop(), so
+  * you must set it before then for it to have any effect.
+  */
+void SetMainReflectServerCatchSignals(bool enable);
+
+/** Returns true iff the main-ReflectServer-handle-signals flags is set to true. */
+bool GetMainReflectServerCatchSignals();
+
 }; // end namespace muscle

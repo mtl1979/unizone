@@ -12,8 +12,8 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "5.68"
-#define MUSCLE_VERSION        56800  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
+#define MUSCLE_VERSION_STRING "5.72"
+#define MUSCLE_VERSION        57200  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
 
 /*! \mainpage MUSCLE Documentation Page
  *
@@ -232,14 +232,6 @@ typedef void * muscleVoidPointer;  /* it's a bit easier, syntax-wise, to use thi
 #  endif  /* !MUSCLE_TYPES_PREDEFINED */
 # endif  /* !__ATHEOS__*/
 #endif  /* __BEOS__ || __HAIKU__ */
-
-#if defined(MUSCLE_64_BIT_PLATFORM)
-typedef uint64 uintptr;
-typedef int64 ptrdiff;
-#else
-typedef uint32 uintptr;
-typedef int32 ptrdiff;
-#endif
 
 /** Ugly platform-neutral macros for problematic sprintf()-format-strings */
 #if defined(MUSCLE_64_BIT_PLATFORM)
@@ -602,8 +594,10 @@ static inline uint16 MuscleX86SwapInt16(uint16 val)
       xchg al, ah;
       mov val, ax;
    };
+#elif defined(MUSCLE_64_BIT_PLATFORM)
+   __asm__ ("xchgb %h0, %b0" : "+Q" (val));
 #else
-   __asm__ ("xchgb %b0,%h0" : "=q" (val) : "0" (val));
+   __asm__ ("xchgb %h0, %b0" : "+q" (val));
 #endif
    return val;
 }
@@ -756,6 +750,19 @@ static inline void MakePrettyTypeCodeString(uint32 typecode, char *buf)
 
 #ifdef WIN32
 # include <winsock2.h>  // this will bring in windows.h for us
+#endif
+
+#ifdef _MSC_VER
+typedef UINT_PTR uintptr;   // Use these under MSVC so that the compiler
+typedef INT_PTR  ptrdiff;   // doesn't give spurious warnings in /Wp64 mode
+#else
+# if defined(MUSCLE_64_BIT_PLATFORM)
+typedef uint64 uintptr;
+typedef int64 ptrdiff;
+# else
+typedef uint32 uintptr;
+typedef int32 ptrdiff;
+# endif
 #endif
 
 #ifdef __cplusplus

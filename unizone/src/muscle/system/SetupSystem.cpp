@@ -149,6 +149,7 @@ SanitySetupSystem :: SanitySetupSystem()
    if (sizeof(float)  != 4) GoInsane("sizeof(float)  != 4");
    if (sizeof(double) != 8) GoInsane("sizeof(double) != 8");
    if (sizeof(uintptr) != sizeof(void *)) GoInsane("sizeof(uintptr) != sizeof(void *)");
+   if (sizeof(ptrdiff) != sizeof(uintptr)) GoInsane("sizeof(ptrdiff) != sizeof(uintptr)");
 
    // Make sure our endian-ness info is correct
    static const uint32 one = 1;
@@ -967,6 +968,18 @@ void Socket :: SetFileDescriptor(int newFD, bool okayToClose)
    _okayToClose = okayToClose;
 }
 
+static void FlushStringAsciiChars(String & s, int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
+{
+   while(count<numColumns) ascBuf[count++] = ' ';
+   ascBuf[count] = '\0';
+   char tempBuf[32]; sprintf(tempBuf, "%04i: ", idx); s += tempBuf;
+   s += ascBuf;
+   s += " [";
+   s += hexBuf;
+   s += "]\n";
+   hexBuf[0] = '\0';
+}
+
 static void FlushAsciiChars(FILE * file, int idx, char * ascBuf, char * hexBuf, uint32 count, uint32 numColumns)
 {
    while(count<numColumns) ascBuf[count++] = ' ';
@@ -1211,6 +1224,124 @@ void LogHexBytes(int logLevel, const ConstByteBufferRef & bbRef, const char * op
    LogHexBytes(logLevel, bbRef()?bbRef()->GetBuffer():NULL, bbRef()?bbRef()->GetNumBytes():0, optDesc, numColumns);
 }
 
+String HexBytesToAnnotatedString(const void * vbuf, uint32 numBytes, const char * optDesc, uint32 numColumns)
+{
+   String ret;
+
+   const uint8 * buf = (const uint8 *) vbuf;
+   if (numColumns == 0)
+   {
+      // A simple, single-line format
+      if (optDesc) {ret += optDesc; ret += ": ";}
+      ret += '[';
+      if (buf) for (uint32 i=0; i<numBytes; i++) {char buf[32]; sprintf(buf, "%s%02x", (i==0)?"":" ", buf[i]); ret += buf;}
+          else ret += "NULL buffer";
+      ret += ']';
+   }
+   else
+   {
+      // A more useful columnar format with ASCII sidebar
+      char headBuf[256]; 
+      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      ret += headBuf;
+
+      const int hexBufSize = (numColumns*8)+1;
+      int numDashes = 8+(4*numColumns)-strlen(headBuf);
+      for (int i=0; i<numDashes; i++) ret += '-';
+      ret += '\n';
+      if (buf)
+      {
+         char * ascBuf = newnothrow_array(char, numColumns+1);
+         char * hexBuf = newnothrow_array(char, hexBufSize);
+         if ((ascBuf)&&(hexBuf))
+         {
+            ascBuf[0] = hexBuf[0] = '\0';
+
+            uint32 idx = 0;
+            while(idx<numBytes)
+            {
+               uint8 c = buf[idx];
+               ascBuf[idx%numColumns] = muscleInRange(c,(uint8)' ',(uint8)'~')?c:'.';
+               char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
+               strncat(hexBuf, temp, hexBufSize);
+               idx++;
+               if ((idx%numColumns) == 0) FlushStringAsciiChars(ret, idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+            }
+            uint32 leftovers = (numBytes%numColumns);
+            if (leftovers > 0) FlushStringAsciiChars(ret, numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+         }
+         else WARN_OUT_OF_MEMORY;
+
+         delete [] ascBuf;
+         delete [] hexBuf;
+      }
+      else ret += "NULL buffer";
+   }
+   return ret;
+}
+
+String HexBytesToAnnotatedString(const Queue<uint8> & buf, const char * optDesc, uint32 numColumns)
+{
+   String ret;
+
+   uint32 numBytes = buf.GetNumItems();
+   if (numColumns == 0)
+   {
+      // A simple, single-line format
+      if (optDesc) {ret += optDesc; ret += ": ";}
+      ret += '[';
+      for (uint32 i=0; i<numBytes; i++) {char xbuf[32]; sprintf(xbuf, "%s%02x", (i==0)?"":" ", buf[i]); ret += xbuf;}
+      ret += ']';
+   }
+   else
+   {
+      // A more useful columnar format with ASCII sidebar
+      char headBuf[256]; 
+      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      ret += headBuf;
+
+      const int hexBufSize = (numColumns*8)+1;
+      int numDashes = 8+(4*numColumns)-strlen(headBuf);
+      for (int i=0; i<numDashes; i++) ret += '-';
+      ret += '\n';
+
+      char * ascBuf = newnothrow_array(char, numColumns+1);
+      char * hexBuf = newnothrow_array(char, hexBufSize);
+      if ((ascBuf)&&(hexBuf))
+      {
+         ascBuf[0] = hexBuf[0] = '\0';
+
+         uint32 idx = 0;
+         while(idx<numBytes)
+         {
+            uint8 c = buf[idx];
+            ascBuf[idx%numColumns] = muscleInRange(c,(uint8)' ',(uint8)'~')?c:'.';
+            char temp[8]; sprintf(temp, "%s%02x", ((idx%numColumns)==0)?"":" ", (unsigned int)(((uint32)buf[idx])&0xFF));
+            strncat(hexBuf, temp, hexBufSize);
+            idx++;
+            if ((idx%numColumns) == 0) FlushStringAsciiChars(ret, idx-numColumns, ascBuf, hexBuf, numColumns, numColumns);
+         }
+         uint32 leftovers = (numBytes%numColumns);
+         if (leftovers > 0) FlushStringAsciiChars(ret, numBytes-leftovers, ascBuf, hexBuf, leftovers, numColumns);
+      }
+      else WARN_OUT_OF_MEMORY;
+
+      delete [] ascBuf;
+      delete [] hexBuf;
+   }
+   return ret;
+}
+
+String HexBytesToAnnotatedString(const ByteBuffer & bb, const char * optDesc, uint32 numColumns)
+{
+   return HexBytesToAnnotatedString(bb.GetBuffer(), bb.GetNumBytes(), optDesc, numColumns);
+}
+
+String HexBytesToAnnotatedString(const ConstByteBufferRef & bbRef, const char * optDesc, uint32 numColumns)
+{
+   return HexBytesToAnnotatedString(bbRef()?bbRef()->GetBuffer():NULL, bbRef()?bbRef()->GetNumBytes():0, optDesc, numColumns);
+}
+
 DebugTimer :: DebugTimer(const String & title, uint64 mlt, uint32 startMode, int debugLevel) : _currentMode(startMode+1), _title(title), _minLogTime(mlt), _debugLevel(debugLevel), _enableLog(true)
 {
    SetMode(startMode);
@@ -1323,7 +1454,7 @@ uint32 CalculateHashCode(const void * key, uint32 numBytes, uint32 seed)
 
    const unsigned char * data = (const unsigned char *)key;
    uint32 h = seed ^ numBytes;
-   uint32 align = ((long)data) & 3;
+   uint32 align = ((uint32)((uintptr)data)) & 3;
    if ((align!=0)&&(numBytes >= 4))
    {
       // Pre-load the temp registers
@@ -1585,6 +1716,16 @@ void PrintCountedObjectInfo()
    }
    else printf("PrintCountedObjectInfo:  GetCountedObjectInfo() failed!\n");
 #endif
+}
+
+void SetMainReflectServerCatchSignals(bool enable)
+{
+   _mainReflectServerCatchSignals = enable;
+}
+
+bool GetMainReflectServerCatchSignals() 
+{
+   return _mainReflectServerCatchSignals;
 }
 
 }; // end namespace muscle

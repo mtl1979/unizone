@@ -620,6 +620,79 @@ String String :: Pad(uint32 minLength, bool padOnRight, char padChar) const
    else return *this;
 }
 
+String String :: Indent(uint32 numIndentChars, char indentChar) const
+{
+   if ((numIndentChars == 0)||(indentChar == '\0')) return *this;
+
+   String pad = String().Pad(numIndentChars);
+   String ret;
+   if ((StartsWith('\r'))||(StartsWith('\n'))) ret = pad;
+
+   bool seenChars = false;
+   const char * s = Cstr();
+   while(*s)
+   {
+           if ((*s == '\n')||(*s == '\r')) seenChars = false;
+      else if (seenChars == false)
+      {
+         ret += pad; 
+         seenChars = true;
+      }
+      ret += *s;
+      s++;
+   }
+   return ret;
+}
+
+String String :: WithoutSuffix(char c, uint32 maxToRemove) const
+{
+   String ret = *this;
+   while(ret.EndsWith(c)) 
+   {
+      ret--;
+      if (--maxToRemove == 0) break;
+   }
+   return ret;
+}
+
+String String :: WithoutSuffix(const String & str, uint32 maxToRemove) const
+{
+   String ret = *this;
+   while(ret.EndsWith(str)) 
+   {
+      ret.TruncateChars(str.Length());
+      if (--maxToRemove == 0) break;
+   }
+   return ret;  
+}
+
+String String :: WithoutPrefix(char c, uint32 maxToRemove) const
+{
+   String ret = *this;
+   uint32 numInitialChars = 0;
+   for (uint32 i=0; i<ret.Length(); i++)
+   {
+      if ((*this)[i] == c) 
+      {
+         numInitialChars++;
+         if (--maxToRemove == 0) break;
+      }
+      else break;
+   }
+   return Substring(numInitialChars);
+}
+
+String String :: WithoutPrefix(const String & str, uint32 maxToRemove) const 
+{
+   String ret = *this;
+   while(ret.StartsWith(str)) 
+   {
+      ret = ret.Substring(str.Length());
+      if (--maxToRemove == 0) break;
+   }
+   return ret;
+}
+
 #define ARG_IMPLEMENTATION   \
    char buf[256];            \
    sprintf(buf, fmt, value); \
@@ -631,17 +704,19 @@ String String :: Arg(bool   value, const char * fmt) const
                      else {ARG_IMPLEMENTATION;}
 }
 
-String String :: Arg(int8   value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(uint8  value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(int16  value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(uint16 value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(int32  value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(uint32 value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(int64  value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(uint64 value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(double value, const char * fmt) const {ARG_IMPLEMENTATION;}
-String String :: Arg(const String & value)           const {return ArgAux(value());}
-String String :: Arg(const char * value)             const {return ArgAux(value);}
+String String :: Arg(char value,               const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(unsigned char value,      const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(short value,              const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(unsigned short value,     const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(int value,                const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(unsigned int value,       const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(long value,               const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(unsigned long int value,  const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(long long value,          const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(unsigned long long value, const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(double value,             const char * fmt) const {ARG_IMPLEMENTATION;}
+String String :: Arg(const String & value)                       const {return ArgAux(value());}
+String String :: Arg(const char * value)                         const {return ArgAux(value);}
 
 String String :: Arg(const Point & value, const char * fmt) const
 {

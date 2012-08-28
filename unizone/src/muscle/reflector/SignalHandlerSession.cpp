@@ -49,6 +49,9 @@ void SignalHandlerSession :: SignalReceived(int whichSignal)
    EndServer();
 }
 
+static bool _wasSignalCaught = false;
+bool WasSignalCaught() {return _wasSignalCaught;}
+
 void SignalHandlerSession :: SignalHandlerFunc(int sigNum)
 {
    // Note that this method is called within the context of the POSIX/Win32 signal handler and thus we have to
@@ -62,6 +65,7 @@ void SignalHandlerSession :: SignalHandlerFunc(int sigNum)
       {
          if (sigNum == nextSigNum)
          {
+            _wasSignalCaught = true;
             char c = (char) sigNum;
             (void) SendData(_handlerSocket, &c, 1, false);  // send the signal value to the main thread so it can handle it later
             break;

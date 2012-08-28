@@ -405,7 +405,7 @@ void PrintHexBytes(const ByteBuffer & bb, const char * optDesc = NULL, uint32 nu
 void PrintHexBytes(const Queue<uint8> & bytes, const char * optDesc = NULL, uint32 numColumns = 16, FILE * optFile = NULL);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
-  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to log the hex bytes at.
   * @param bytes The bytes to print out.  May be NULL.
   * @param numBytes How many bytes (bytes) points to
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
@@ -417,7 +417,7 @@ void PrintHexBytes(const Queue<uint8> & bytes, const char * optDesc = NULL, uint
 void LogHexBytes(int logLevel, const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
-  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to log the hex bytes at.
   * @param bbRef Reference to the ByteBuffer to print out.  May be a NULL reference.
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
   * @param numColumns If specified non zero, then the bytes will be printed
@@ -428,7 +428,7 @@ void LogHexBytes(int logLevel, const void * bytes, uint32 numBytes, const char *
 void LogHexBytes(int logLevel, const ConstByteBufferRef & bbRef, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
-  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to log the hex bytes at.
   * @param bb The ByteBuffer to print out.
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
   * @param numColumns If specified non zero, then the bytes will be printed
@@ -439,7 +439,7 @@ void LogHexBytes(int logLevel, const ConstByteBufferRef & bbRef, const char * op
 void LogHexBytes(int logLevel, const ByteBuffer & bb, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** This function is the same as PrintHexBytes(), but the output is sent to Log() instead of fprintf().
-  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to the log the hex bytes at.
+  * @param logLevel The MUSCLE_LOG_* value indicating the severity level to log the hex bytes at.
   * @param bytes A Queue of uint8s representing the bytes to print out.
   * @param optDesc if non-NULL, this will be used as a prefix/title string.
   * @param numColumns If specified non zero, then the bytes will be printed
@@ -448,6 +448,47 @@ void LogHexBytes(int logLevel, const ByteBuffer & bb, const char * optDesc = NUL
   *                   on a single line, using a simpler hex-only format.
   */
 void LogHexBytes(int logLevel, const Queue<uint8> & bytes, const char * optDesc = NULL, uint32 numColumns = 16);
+
+/** This function is the same as PrintHexBytes(), but the output is returned as a String.
+  * @param bytes The bytes to return a structured-text description of.  May be NULL.
+  * @param numBytes How many bytes (bytes) points to
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be generated
+  *                   with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  */
+String HexBytesToAnnotatedString(const void * bytes, uint32 numBytes, const char * optDesc = NULL, uint32 numColumns = 16);
+
+/** This function is the same as PrintHexBytes(), but the output is returned as a String.
+  * @param bbRef Reference to the ByteBuffer to return a structured-text description of.  May be a NULL reference.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be generated
+  *                   with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  */
+String HexBytesToAnnotatedString(const ConstByteBufferRef & bbRef, const char * optDesc = NULL, uint32 numColumns = 16);
+
+/** This function is the same as PrintHexBytes(), but the output is returned as a String.
+  * @param bb The ByteBuffer to return a structured-text description of.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be generated
+  *                   with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  */
+String HexBytesToAnnotatedString(const ByteBuffer & bb, const char * optDesc = NULL, uint32 numColumns = 16);
+
+/** This function is the same as PrintHexBytes(), but the output is returned as a String.
+  * @param bytes A Queue of uint8s representing the bytes to return a structured-text description of.
+  * @param optDesc if non-NULL, this will be used as a prefix/title string.
+  * @param numColumns If specified non zero, then the bytes will be generated
+  *                   with this many bytes per row.  Defaults to 16.
+  *                   If set to zero, then all the output will be placed
+  *                   on a single line, using a simpler hex-only format.
+  */
+String HexBytesToAnnotatedString(const Queue<uint8> & bytes, const char * optDesc = NULL, uint32 numColumns = 16);
 
 /** Given a string with an ASCII representation of hexadecimal bytes,
   * returns the corresponding binary data.

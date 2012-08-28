@@ -8,7 +8,7 @@
 # include <process.h>  // for _beginthreadex()
 # define USE_WINDOWS_CHILDPROCESSDATAIO_IMPLEMENTATION
 #else
-# if defined(__linux__) || defined(__HAIKU__)
+# if defined(__linux__)
 #  include <pty.h>     // for forkpty() on Linux
 # else
 #  include <util.h>    // for forkpty() on MacOS/X

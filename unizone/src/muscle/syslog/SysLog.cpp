@@ -1346,218 +1346,198 @@ static const char * const _logLevelKeywords[] = {
    "trace"
 };
 
-class DefaultConsoleLogger : public LogCallback
+DefaultConsoleLogger :: DefaultConsoleLogger() : _consoleLogLevel(MUSCLE_LOG_INFO)
 {
-public:
-   DefaultConsoleLogger() : _consoleLogLevel(MUSCLE_LOG_INFO)
-   {
-       // empty
-   }
+    // empty
+}
 
-   virtual void Log(const LogCallbackArgs & a)
+void DefaultConsoleLogger :: Log(const LogCallbackArgs & a)
+{
+   if (a.GetLogLevel() <= _consoleLogLevel) 
    {
-      if (a.GetLogLevel() <= _consoleLogLevel) 
-      {
-         vprintf(a.GetText(), *a.GetArgList());                  
-         fflush(stdout);
-      }
-   }
-
-   virtual void Flush()
-   {
+      vprintf(a.GetText(), *a.GetArgList());                  
       fflush(stdout);
    }
+}
 
-   int _consoleLogLevel;
-};
-
-class DefaultFileLogger : public LogCallback
+void DefaultConsoleLogger :: Flush()
 {
-public:
-   DefaultFileLogger() : _fileLogLevel(MUSCLE_LOG_NONE), _maxLogFileSize(MUSCLE_NO_LIMIT), _maxNumLogFiles(MUSCLE_NO_LIMIT), _compressionEnabled(false), _logFileOpenAttemptFailed(false)
-   {
-       // empty
-   }
+   fflush(stdout);
+}
 
-   virtual ~DefaultFileLogger()
-   {
-      CloseLogFile();
-   }
+DefaultFileLogger :: DefaultFileLogger() : _fileLogLevel(MUSCLE_LOG_NONE), _maxLogFileSize(MUSCLE_NO_LIMIT), _maxNumLogFiles(MUSCLE_NO_LIMIT), _compressionEnabled(false), _logFileOpenAttemptFailed(false)
+{
+   // empty
+}
 
-   virtual void Log(const LogCallbackArgs & a)
+DefaultFileLogger :: ~DefaultFileLogger()
+{
+   CloseLogFile();
+}
+
+void DefaultFileLogger :: Log(const LogCallbackArgs & a)
+{
+   if ((a.GetLogLevel() <= GetFileLogLevel())&&(EnsureLogFileCreated(a) == B_NO_ERROR))
    {
-      if ((a.GetLogLevel() <= _fileLogLevel)&&(EnsureLogFileCreated(a) == B_NO_ERROR))
-      {                                         
-         vfprintf(_logFile.GetFile(), a.GetText(), *a.GetArgList());
-         _logFile.FlushOutput();
-         if ((_maxLogFileSize != MUSCLE_NO_LIMIT)&&(_inLogPreamble.IsInBatch() == false))  // wait until we're outside the preamble to avoid breaking up lines too much
+      vfprintf(_logFile.GetFile(), a.GetText(), *a.GetArgList());
+      _logFile.FlushOutput();
+      if ((_maxLogFileSize != MUSCLE_NO_LIMIT)&&(_inLogPreamble.IsInBatch() == false))  // wait until we're outside the preamble to avoid breaking up lines too much
+      {
+         int64 curFileSize = _logFile.GetPosition();
+         if ((curFileSize < 0)||(curFileSize >= (int64)_maxLogFileSize))
          {
-            int64 curFileSize = _logFile.GetPosition();
-            if ((curFileSize < 0)||(curFileSize >= (int64)_maxLogFileSize))
-            {
-               uint32 tempStoreSize = _maxLogFileSize;
-               _maxLogFileSize = MUSCLE_NO_LIMIT;  // otherwise we'd recurse indefinitely here!
-               CloseLogFile();
-               _maxLogFileSize = tempStoreSize;
-
-               (void) EnsureLogFileCreated(a);  // force the opening of the new log file right now, so that the open message show up in the right order
-            }
+            uint32 tempStoreSize = _maxLogFileSize;
+            _maxLogFileSize = MUSCLE_NO_LIMIT;  // otherwise we'd recurse indefinitely here!
+            CloseLogFile();
+            _maxLogFileSize = tempStoreSize;
+            (void) EnsureLogFileCreated(a);  // force the opening of the new log file right now, so that the open message show up in the right order
          }
       }
    }
+}
 
-   virtual void Flush()
+void DefaultFileLogger :: Flush()
+{
+   _logFile.FlushOutput();
+}
+
+uint32 DefaultFileLogger :: AddPreExistingLogFiles(const String & filePattern)
+{
+   String dirPart, filePart;
+   int32 lastSlash = filePattern.LastIndexOf(GetFilePathSeparator());   
+   if (lastSlash >= 0)
    {
-      _logFile.FlushOutput();
+      dirPart = filePattern.Substring(0, lastSlash);
+      filePart = filePattern.Substring(lastSlash+1);
+   }
+   else 
+   {
+      dirPart  = ".";
+      filePart = filePattern;
    }
 
-   uint32 AddPreExistingLogFiles(const String & filePattern)
+   Hashtable<String, uint64> pathToTime;
+   if (filePart.HasChars())
    {
-      String dirPart, filePart;
-      int32 lastSlash = filePattern.LastIndexOf(GetFilePathSeparator());   
-      if (lastSlash >= 0)
+      StringMatcher sm(filePart);
+
+      Directory d(dirPart());
+      if (d.IsValid())
       {
-         dirPart = filePattern.Substring(0, lastSlash);
-         filePart = filePattern.Substring(lastSlash+1);
+         const char * nextName; 
+         while((nextName = d.GetCurrentFileName()) != NULL)
+         {
+            String fn = nextName;
+            if (sm.Match(fn))
+            {
+               String fullPath = dirPart+GetFilePathSeparator()+fn;
+               FilePathInfo fpi(fullPath());
+               if ((fpi.Exists())&&(fpi.IsRegularFile())) pathToTime.Put(fullPath, fpi.GetCreationTime());
+            }
+            d++;
+         }
+      }
+
+      // Now we sort by creation time...
+      pathToTime.SortByValue();
+
+      // And add the results to our _oldFileNames queue.  That way when the log file is opened, the oldest files will be deleted (if appropriate)
+      for (HashtableIterator<String, uint64> iter(pathToTime); iter.HasData(); iter++) (void) _oldLogFileNames.AddTail(iter.GetKey());
+   }
+   return pathToTime.GetNumItems();
+}
+
+status_t DefaultFileLogger :: EnsureLogFileCreated(const LogCallbackArgs & a)
+{
+   if ((_logFile.GetFile() == NULL)&&(_logFileOpenAttemptFailed == false))
+   {
+      String logFileName = _prototypeLogFileName;
+      if (logFileName.IsEmpty()) logFileName = "%f.log";
+
+      HumanReadableTimeValues hrtv; (void) GetHumanReadableTimeValues(SecondsToMicros(a.GetWhen()), hrtv);
+      logFileName = hrtv.ExpandTokens(logFileName);
+
+      _logFile.SetFile(fopen(logFileName(), "w"));
+      if (_logFile.GetFile() != NULL) 
+      {
+         _activeLogFileName = logFileName;
+         LogTime(MUSCLE_LOG_DEBUG, "Created Log file [%s]\n", _activeLogFileName());
+
+         while(_oldLogFileNames.GetNumItems() >= _maxNumLogFiles)
+         {
+            const char * c = _oldLogFileNames.Head()();
+                 if (remove(c) == 0)  LogTime(MUSCLE_LOG_DEBUG, "Deleted old Log file [%s]\n", c);
+            else if (errno != ENOENT) LogTime(MUSCLE_LOG_ERROR, "Error deleting old Log file [%s]\n", c);
+            _oldLogFileNames.RemoveHead();
+         }
+
+         String headerString = GetLogFileHeaderString(a);
+         if (headerString.HasChars()) fprintf(_logFile.GetFile(), "%s\n", headerString()); 
       }
       else 
       {
-         dirPart  = ".";
-         filePart = filePattern;
+         _activeLogFileName.Clear();
+         _logFileOpenAttemptFailed = true;  // avoid an indefinite number of log-failed messages
+         LogTime(MUSCLE_LOG_ERROR, "Failed to open Log file [%s], logging to file is now disabled.\n", logFileName());
       }
-
-      Hashtable<String, uint64> pathToTime;
-      if (filePart.HasChars())
-      {
-         StringMatcher sm(filePart);
-
-         Directory d(dirPart());
-         if (d.IsValid())
-         {
-            const char * nextName; 
-            while((nextName = d.GetCurrentFileName()) != NULL)
-            {
-               String fn = nextName;
-               if (sm.Match(fn))
-               {
-                  String fullPath = dirPart+GetFilePathSeparator()+fn;
-                  FilePathInfo fpi(fullPath());
-                  if ((fpi.Exists())&&(fpi.IsRegularFile())) pathToTime.Put(fullPath, fpi.GetCreationTime());
-               }
-               d++;
-            }
-         }
-
-         // Now we sort by creation time...
-         pathToTime.SortByValue();
-
-         // And add the results to our _oldFileNames queue.  That way when the log file is opened, the oldest files will be deleted (if appropriate)
-         for (HashtableIterator<String, uint64> iter(pathToTime); iter.HasData(); iter++) (void) _oldLogFileNames.AddTail(iter.GetKey());
-      }
-      return pathToTime.GetNumItems();
    }
+   return (_logFile.GetFile() != NULL) ? B_NO_ERROR : B_ERROR;
+}
 
-   int _fileLogLevel;
-   String _prototypeLogFileName;
-   uint32 _maxLogFileSize;
-   uint32 _maxNumLogFiles;
-   bool _compressionEnabled;
-
-private:
-   status_t EnsureLogFileCreated(const LogCallbackArgs & a)
+void DefaultFileLogger :: CloseLogFile()
+{
+   if (_logFile.GetFile())
    {
-      if ((_logFile.GetFile() == NULL)&&(_logFileOpenAttemptFailed == false))
-      {
-         String logFileName = _prototypeLogFileName;
-         if (logFileName.IsEmpty()) logFileName = "%f.log";
-
-         HumanReadableTimeValues hrtv; (void) GetHumanReadableTimeValues(SecondsToMicros(a.GetWhen()), hrtv);
-         logFileName = hrtv.ExpandTokens(logFileName);
-
-         _logFile.SetFile(fopen(logFileName(), "w"));
-         if (_logFile.GetFile() != NULL) 
-         {
-            _activeLogFileName = logFileName;
-            LogTime(MUSCLE_LOG_DEBUG, "Created Log file [%s]\n", _activeLogFileName());
-
-            while(_oldLogFileNames.GetNumItems() >= _maxNumLogFiles)
-            {
-               const char * c = _oldLogFileNames.Head()();
-                    if (remove(c) == 0)  LogTime(MUSCLE_LOG_DEBUG, "Deleted old Log file [%s]\n", c);
-               else if (errno != ENOENT) LogTime(MUSCLE_LOG_ERROR, "Error deleting old Log file [%s]\n", c);
-               _oldLogFileNames.RemoveHead();
-            }
-         }
-         else 
-         {
-            _activeLogFileName.Clear();
-            _logFileOpenAttemptFailed = true;  // avoid an indefinite number of log-failed messages
-            LogTime(MUSCLE_LOG_ERROR, "Failed to open Log file [%s], logging to file is now disabled.\n", logFileName());
-         }
-      }
-      return (_logFile.GetFile() != NULL) ? B_NO_ERROR : B_ERROR;
-   }
-
-   void CloseLogFile()
-   {
-      if (_logFile.GetFile())
-      {
-         LogTime(MUSCLE_LOG_DEBUG, "Closing Log file [%s]\n", _activeLogFileName());
-         String oldFileName = _activeLogFileName;  // default file to delete later, will be changed if/when we've made the .gz file
-         _activeLogFileName.Clear();   // do this first to avoid reentrancy issues
-         _logFile.Shutdown();
+      LogTime(MUSCLE_LOG_DEBUG, "Closing Log file [%s]\n", _activeLogFileName());
+      String oldFileName = _activeLogFileName;  // default file to delete later, will be changed if/when we've made the .gz file
+      _activeLogFileName.Clear();   // do this first to avoid reentrancy issues
+      _logFile.Shutdown();
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
-         if (_compressionEnabled)
+      if (_compressionEnabled)
+      {
+         FileDataIO inIO(fopen(oldFileName(), "rb"));
+         if (inIO.GetFile() != NULL)
          {
-            FileDataIO inIO(fopen(oldFileName(), "rb"));
-            if (inIO.GetFile() != NULL)
+            String gzName = oldFileName + ".gz";
+            gzFile gzOut = gzopen(gzName(), "wb9"); // 9 for maximum compression
+            if (gzOut != Z_NULL)
             {
-               String gzName = oldFileName + ".gz";
-               gzFile gzOut = gzopen(gzName(), "wb9"); // 9 for maximum compression
-               if (gzOut != Z_NULL)
+               bool ok = true;
+               while(1)
                {
-                  bool ok = true;
-                  while(1)
-                  {
-                     char buf[128*1024];
-                     int32 bytesRead = inIO.Read(buf, sizeof(buf));
-                     if (bytesRead < 0) break;  // EOF
+                  char buf[128*1024];
+                  int32 bytesRead = inIO.Read(buf, sizeof(buf));
+                  if (bytesRead < 0) break;  // EOF
 
-                     int bytesWritten = gzwrite(gzOut, buf, bytesRead);
-                     if (bytesWritten <= 0)
-                     {
-                        ok = false;  // write error, oh dear
-                        break;
-                     }
-                  } 
-                  gzclose(gzOut);
+                  int bytesWritten = gzwrite(gzOut, buf, bytesRead);
+                  if (bytesWritten <= 0)
+                  {
+                     ok = false;  // write error, oh dear
+                     break;
+                  }
+               } 
+               gzclose(gzOut);
 
-                  if (ok)
-                  {
-                     inIO.Shutdown();
-                     if (remove(oldFileName()) != 0) LogTime(MUSCLE_LOG_ERROR, "Error deleting log file [%s] after compressing it to [%s]!\n", oldFileName(), gzName());
-                     oldFileName = gzName;
-                  }
-                  else 
-                  {
-                     if (remove(gzName()) != 0) LogTime(MUSCLE_LOG_ERROR, "Error deleting gzip'd log file [%s] after compression failed!\n", gzName());
-                  }
+               if (ok)
+               {
+                  inIO.Shutdown();
+                  if (remove(oldFileName()) != 0) LogTime(MUSCLE_LOG_ERROR, "Error deleting log file [%s] after compressing it to [%s]!\n", oldFileName(), gzName());
+                  oldFileName = gzName;
                }
-               else LogTime(MUSCLE_LOG_ERROR, "Could not open compressed Log file [%s]!\n", gzName());
+               else 
+               {
+                  if (remove(gzName()) != 0) LogTime(MUSCLE_LOG_ERROR, "Error deleting gzip'd log file [%s] after compression failed!\n", gzName());
+               }
             }
-            else LogTime(MUSCLE_LOG_ERROR, "Could not reopen Log file [%s] to compress it!\n", oldFileName());
+            else LogTime(MUSCLE_LOG_ERROR, "Could not open compressed Log file [%s]!\n", gzName());
          }
-#endif
-         if (_maxNumLogFiles != MUSCLE_NO_LIMIT) (void) _oldLogFileNames.AddTail(oldFileName);  // so we can delete it later
+         else LogTime(MUSCLE_LOG_ERROR, "Could not reopen Log file [%s] to compress it!\n", oldFileName());
       }
+#endif
+      if (_maxNumLogFiles != MUSCLE_NO_LIMIT) (void) _oldLogFileNames.AddTail(oldFileName);  // so we can delete it later
    }
-
-   String _activeLogFileName;
-   FileDataIO _logFile;
-   bool _logFileOpenAttemptFailed;
-   Queue<String> _oldLogFileNames;
-};
+}
 
 LogLineCallback :: LogLineCallback() : _writeTo(_buf)
 {
@@ -1679,47 +1659,44 @@ int ParseLogLevelKeyword(const char * keyword)
 
 int GetFileLogLevel()
 {
-   return _dfl._fileLogLevel;
+   return _dfl.GetFileLogLevel();
 }
 
 String GetFileLogName()
 {
-   return _dfl._prototypeLogFileName;
+   return _dfl.GetFileLogName();
 }
 
 uint32 GetFileLogMaximumSize()
 {
-   return _dfl._maxLogFileSize;
+   return _dfl.GetMaxLogFileSize();
 }
 
 uint32 GetMaxNumLogFiles()
 {
-   return _dfl._maxNumLogFiles;
+   return _dfl.GetMaxNumLogFiles();
 }
 
 bool GetFileLogCompressionEnabled()
 {
-   return _dfl._compressionEnabled;
+   return _dfl.GetFileCompressionEnabled();
 }
 
 int GetConsoleLogLevel()
 {
-   return _dcl._consoleLogLevel;
+   return _dcl.GetConsoleLogLevel();
 }
 
 int GetMaxLogLevel()
 {
-   bool isLogLocked = (LockLog() == B_NO_ERROR);
-   int ret = muscleMax(_dcl._consoleLogLevel, _dfl._fileLogLevel);
-   if (isLogLocked) (void) UnlockLog();
-   return ret;
+   return muscleMax(_dcl.GetConsoleLogLevel(), _dfl.GetFileLogLevel());
 }
 
 status_t SetFileLogName(const String & logName)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      _dfl._prototypeLogFileName = logName;
+      _dfl.SetLogFileName(logName);
       LogTime(MUSCLE_LOG_DEBUG, "File log name set to: %s\n", logName());
       (void) UnlockLog();
       return B_NO_ERROR;
@@ -1743,7 +1720,7 @@ status_t SetFileLogMaximumSize(uint32 maxSizeBytes)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      _dfl._maxLogFileSize = maxSizeBytes;
+      _dfl.SetMaxLogFileSize(maxSizeBytes);
       if (maxSizeBytes == MUSCLE_NO_LIMIT) LogTime(MUSCLE_LOG_DEBUG, "File log maximum size set to: (unlimited).\n");
                                       else LogTime(MUSCLE_LOG_DEBUG, "File log maximum size set to: "UINT32_FORMAT_SPEC" bytes.\n", maxSizeBytes);
       (void) UnlockLog();
@@ -1756,7 +1733,7 @@ status_t SetMaxNumLogFiles(uint32 maxNumLogFiles)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      _dfl._maxNumLogFiles = maxNumLogFiles;
+      _dfl.SetMaxNumLogFiles(maxNumLogFiles);
       if (maxNumLogFiles == MUSCLE_NO_LIMIT) LogTime(MUSCLE_LOG_DEBUG, "Maximum number of log files set to: (unlimited).\n");
                                         else LogTime(MUSCLE_LOG_DEBUG, "Maximum number of log files to: "UINT32_FORMAT_SPEC"\n", maxNumLogFiles);
       (void) UnlockLog();
@@ -1770,7 +1747,7 @@ status_t SetFileLogCompressionEnabled(bool enable)
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
    if (LockLog() == B_NO_ERROR)
    {
-      _dfl._compressionEnabled = enable;
+      _dfl.SetFileCompressionEnabled(enable);
       LogTime(MUSCLE_LOG_DEBUG, "File log compression %s.\n", enable?"enabled":"disabled");
       (void) UnlockLog();
       return B_NO_ERROR;
@@ -1790,8 +1767,8 @@ status_t SetFileLogLevel(int loglevel)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      _dfl._fileLogLevel = loglevel;
-      LogTime(MUSCLE_LOG_DEBUG, "File logging level set to: %s\n", GetLogLevelName(_dfl._fileLogLevel));
+      _dfl.SetFileLogLevel(loglevel);
+      LogTime(MUSCLE_LOG_DEBUG, "File logging level set to: %s\n", GetLogLevelName(_dfl.GetFileLogLevel()));
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -1802,8 +1779,8 @@ status_t SetConsoleLogLevel(int loglevel)
 {
    if (LockLog() == B_NO_ERROR)
    {
-      _dcl._consoleLogLevel = loglevel;
-      LogTime(MUSCLE_LOG_DEBUG, "Console logging level set to: %s\n", GetLogLevelName(_dcl._consoleLogLevel));
+      _dcl.SetConsoleLogLevel(loglevel);
+      LogTime(MUSCLE_LOG_DEBUG, "Console logging level set to: %s\n", GetLogLevelName(_dcl.GetConsoleLogLevel()));
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -2090,7 +2067,7 @@ static bool MUSCLE_TzSpecificLocalTimeToSystemTime(LPTIME_ZONE_INFORMATION tzi, 
    FreeLibrary(lib);
    return ret;
 # else
-   return (bool) TzSpecificLocalTimeToSystemTime(tzi, st, st);
+   return (TzSpecificLocalTimeToSystemTime(tzi, st, st) != 0);
 # endif
 }
 #endif
@@ -2161,18 +2138,18 @@ String HumanReadableTimeValues :: ExpandTokens(const String & origString) const
    static const char * _daysOfWeek[]   = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
    static const char * _monthsOfYear[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-   (void) newString.Replace("%Y", String("%1").Arg((int32)GetYear()));
-   (void) newString.Replace("%M", String("%1").Arg((int32)(GetMonth()+1),      "%02i"));
+   (void) newString.Replace("%Y", String("%1").Arg(GetYear()));
+   (void) newString.Replace("%M", String("%1").Arg(GetMonth()+1,      "%02i"));
    (void) newString.Replace("%Q", String("%1").Arg(_monthsOfYear[muscleClamp(GetMonth(), 0, (int)(ARRAYITEMS(_monthsOfYear)-1))]));
-   (void) newString.Replace("%D", String("%1").Arg((int32)(GetDayOfMonth()+1), "%02i"));
-   (void) newString.Replace("%d", String("%1").Arg((int32)(GetDayOfMonth()+1), "%02i"));
-   (void) newString.Replace("%W", String("%1").Arg((int32)(GetDayOfWeek()+1),  "%02i"));
-   (void) newString.Replace("%w", String("%1").Arg((int32)(GetDayOfWeek()+1),  "%02i"));
+   (void) newString.Replace("%D", String("%1").Arg(GetDayOfMonth()+1, "%02i"));
+   (void) newString.Replace("%d", String("%1").Arg(GetDayOfMonth()+1, "%02i"));
+   (void) newString.Replace("%W", String("%1").Arg(GetDayOfWeek()+1,  "%02i"));
+   (void) newString.Replace("%w", String("%1").Arg(GetDayOfWeek()+1,  "%02i"));
    (void) newString.Replace("%q", String("%1").Arg(_daysOfWeek[muscleClamp(GetDayOfWeek(), 0, (int)(ARRAYITEMS(_daysOfWeek)-1))]));
-   (void) newString.Replace("%h", String("%1").Arg((int32)GetHour(),           "%02i"));
-   (void) newString.Replace("%m", String("%1").Arg((int32)GetMinute(),         "%02i"));
-   (void) newString.Replace("%s", String("%1").Arg((int32)GetSecond(),         "%02i"));
-   (void) newString.Replace("%x", String("%1").Arg((int32)GetMicrosecond(),    "%06i"));
+   (void) newString.Replace("%h", String("%1").Arg(GetHour(),           "%02i"));
+   (void) newString.Replace("%m", String("%1").Arg(GetMinute(),         "%02i"));
+   (void) newString.Replace("%s", String("%1").Arg(GetSecond(),         "%02i"));
+   (void) newString.Replace("%x", String("%1").Arg(GetMicrosecond(),    "%06i"));
 
    uint32 r1 = rand();
    uint32 r2 = rand();
@@ -2292,6 +2269,16 @@ static const char * _timeUnitNames[NUM_TIME_UNITS] = {
    "year",
 };
 
+static bool IsFloatingPointNumber(const char * d)
+{
+   while(1)
+   {
+           if (*d == '.')            return true;
+      else if (isdigit(*d) == false) return false;
+      else                           d++;
+   }
+}
+
 uint64 ParseHumanReadableTimeIntervalString(const String & s)
 {
    if ((s.EqualsIgnoreCase("forever"))||(s.EqualsIgnoreCase("never"))||(s.StartsWithIgnoreCase("inf"))) return MUSCLE_TIME_NEVER;
@@ -2321,7 +2308,7 @@ uint64 ParseHumanReadableTimeIntervalString(const String & s)
    const char * afterLetters = l;
    while((*afterLetters)&&((*afterLetters==',')||(isalpha(*afterLetters)||(isspace(*afterLetters))))) afterLetters++;
 
-   uint64 ret = Atoull(d)*multiplier;
+   uint64 ret = IsFloatingPointNumber(d) ? (uint64)(atof(d)*multiplier) : (Atoull(d)*multiplier);
    if (*afterLetters) ret += ParseHumanReadableTimeIntervalString(afterLetters);
    return ret;
 }
