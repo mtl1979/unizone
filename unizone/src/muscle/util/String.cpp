@@ -318,21 +318,6 @@ String String::Trim() const
    return String(*this, (uint32)startIdx, (uint32)(endIdx+1));
 }
 
-uint32 String :: FlattenedSize() const
-{
-   return Length()+1;   
-}
-
-void String :: Flatten(uint8 *buffer) const
-{
-   memcpy((char *)buffer, Cstr(), Length()+1);
-}
-
-status_t String :: Unflatten(const uint8 *buf, uint32 size)
-{
-   return SetCstr((const char *)buf, size);
-}
-
 uint32 String :: GetNumInstancesOf(char ch) const
 {
    uint32 ret = 0;

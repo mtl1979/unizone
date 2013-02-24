@@ -7,6 +7,13 @@
 
 namespace muscle {
 
+FilePathInfo :: FilePathInfo(bool exists, bool isRegularFile, bool isDir, bool isSymlink, uint64 fileSizeBytes, uint64 aTime, uint64 cTime, uint64 mTime) 
+   : _flags((exists?(1<<FPI_FLAG_EXISTS):0)|(isRegularFile?(1<<FPI_FLAG_ISREGULARFILE):0)|(isDir?(1<<FPI_FLAG_ISDIRECTORY):0)|(isSymlink?(1<<FPI_FLAG_ISSYMLINK):0)),
+     _size(fileSizeBytes), _atime(aTime), _ctime(cTime), _mtime(mTime)
+{
+   // empty
+}
+
 void FilePathInfo :: SetFilePath(const char * optFilePath)
 {
    int sLen = optFilePath ? strlen(optFilePath) : 0;

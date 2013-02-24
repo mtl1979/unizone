@@ -720,7 +720,7 @@ public:
    /** Part of the Flattenable pseudo-interface.
     *  @return Length()+1  (the +1 is for the terminating NUL byte)
     */
-   uint32 FlattenedSize() const;
+   uint32 FlattenedSize() const {return Length()+1;}
 
    /** Part of the Flattenable pseudo-interface.  Flattens our string into (buffer).
     *  @param buffer A byte array to receive the flattened version of this string.
@@ -728,14 +728,14 @@ public:
     *  The clever secret here is that a flattened String is just a C-style
     *  null-terminated character array, and can be used interchangably as such.
     */
-   void Flatten(uint8 *buffer) const;
+   void Flatten(uint8 *buffer) const {memcpy((char *)buffer, Cstr(), Length()+1);}
 
    /** Unflattens a String from (buf).
     *  @param buf an array of (size) bytes.
     *  @param size the number of bytes in (buf).
     *  @return B_NO_ERROR (never fails!)
     */
-   status_t Unflatten(const uint8 *buf, uint32 size);
+   status_t Unflatten(const uint8 *buf, uint32 size) {return SetCstr((const char *)buf, size);}
 
    /** Makes sure that we have pre-allocated enough space for a NUL-terminated string 
     *  at least (numChars) bytes long (not including the NUL byte).

@@ -266,7 +266,7 @@ public:
    bool IsMutexLocked() const {return _isMutexLocked;}
 
 private:
-   MutexGuard(const Mutex &);  // copy ctor, deliberately inaccessible
+   MutexGuard(const MutexGuard &);  // copy ctor, deliberately inaccessible
 
    Mutex & _mutex;
    bool _isMutexLocked;

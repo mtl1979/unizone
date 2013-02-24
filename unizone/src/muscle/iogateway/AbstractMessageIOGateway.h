@@ -269,30 +269,6 @@ protected:
     */
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT) = 0;
 
-   /**
-    * Convenience method to allocate or reallocate a buffer.  When this method returns
-    * successfully, (*bufPtr) will point to a buffer that is at least (desiredSize) bytes long.
-    * @param bufPtr points to a pointer to the buffer.  (May point to a NULL
-    *               pointer if no buffer is currently allocated)
-    * @param bufSize points to the current size of the buffer.  On return, this value is changed to
-    *                reflect the new buffer size.
-    * @param desiredSize indicates the minimum new buffer size required.
-    * @param copySize indicates the number of bytes to copy out of the
-    *                 old buffer and into the new one, if a reallocation is necessary.
-    * @return B_NO_ERROR on success, B_ERROR on failure (i.e. out of memory).
-    */
-   status_t EnsureBufferSize(uint8 ** bufPtr, uint32 * bufSize, uint32 desiredSize, uint32 copySize);
-
-   /**
-    * Convenience method; frees the given buffer and resets it to NULL, if the buffer is greater
-    * than 10 kilobytes big.  (Buffers smaller than that are not effected, since it's probably cheaper
-    * to keep them around and avoid having to deallocate and reallocate them all the time).
-    * @param bufPtr points to a pointer to the buffer.  (May point to a NULL pointer if
-    *               no buffer is currently allocated).  The pointer may be set to NULL if the buffer was freed.
-    * @param bufSize points to the size-value of the buffer.  May be set to 0 if the buffer was freed.
-    */
-   void FreeLargeBuffer(uint8 ** bufPtr, uint32 * bufSize);
-
    /** Call this method to flag this gateway as hosed--that is, to say that an unrecoverable error has occurred. */
    void SetHosed() {_hosed = true;}
   

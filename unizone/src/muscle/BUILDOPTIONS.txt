@@ -209,3 +209,19 @@ of your Makefile to alter muscle's behaviour:
 
 -DMUSCLE_AVOID_OBJECT_COUNTING
    If defined, the CountedObject<> class will compile down to a no-op.
+
+-DMUSCLE_AVOID_THREAD_LOCAL_STORAGE
+   If defined, the MUSCLE code will try to avoid using the ThreadLocalStorage
+   class where possible (in particular, it will use Mutexes inside the
+   ZLibUtilityFunctions.cpp file rather than ThreadLocalStorage objects --
+   this might be useful on systems where ThreadLocalStorage isn't implemented)
+
+-DMUSCLE_AVOID_MINIMIZED_HASHTABLES
+   If defined, the MUSCLE Hashtable class will not used variable-sized
+   indexing in its HashtableEntries.  Variable-sized indexing saves memory
+   when tables have less than 65,535 slots in them, but increases the
+   number of "if" statesments in common Hashtable codepaths.  Whether or
+   not it increases or decreases performance will depend on the architecture
+   of the host computer (e.g. on cache size, CPU speed, etc).
+
+

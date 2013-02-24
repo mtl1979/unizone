@@ -1021,6 +1021,13 @@ bool IsMulticastIPAddress(const ip_address & ip)
 #ifndef MUSCLE_AVOID_IPV6
    // In IPv6, any address that starts with 0xFF is a multicast address
    if (((ip.GetHighBits() >> 56)&((uint64)0xFF)) == 0xFF) return true;
+
+   const uint64 mapBits = (((uint64)0xFFFF)<<32);
+   if ((ip.GetHighBits() == 0)&&((ip.GetLowBits() & mapBits) == mapBits))
+   {
+      ip_address temp = ip; temp.SetLowBits(temp.GetLowBits() & ~mapBits);
+      return IsMulticastIPAddress(temp);  // don't count the map-to-IPv6 bits when determining multicast-ness
+   }
 #endif
 
    // check for IPv4 address-ness
@@ -1362,7 +1369,7 @@ String IPAddressAndPort :: ToString(bool includePort, bool preferIPv4Style) cons
 #ifdef MUSCLE_AVOID_IPV6
       bool useIPv4Style = true;
 #else
-      bool useIPv4Style = IsIPv4Address(_ip);
+      bool useIPv4Style = ((preferIPv4Style)&&(IsIPv4Address(_ip)));  // FogBugz #8985
 #endif
       if (useIPv4Style) sprintf(buf, "%s:%u", s(), _port);
                    else sprintf(buf, "[%s]:%u", s(), _port);

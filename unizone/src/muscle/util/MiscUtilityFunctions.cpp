@@ -25,6 +25,10 @@
 
 namespace muscle {
 
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+   extern bool _enableDeadlockFinderPrints;
+#endif
+
 extern bool _mainReflectServerCatchSignals;  // from SetupSystem.cpp
 
 static status_t ParseArgAux(const String & a, Message * optAddToMsg, Queue<String> * optAddToQueue, bool cs)
@@ -501,6 +505,13 @@ void HandleStandardDaemonArgs(const Message & args)
    if (args.HasName("console")) Win32AllocateStdioConsole();
 #endif
 
+#ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
+   {
+      const char * df = args.GetCstr("deadlockfinder");
+      if (df) _enableDeadlockFinderPrints = ParseBool(df, true);
+   }
+#endif
+
    const char * value;
    if (args.FindString("displaylevel", &value) == B_NO_ERROR)
    {
@@ -889,7 +900,7 @@ ByteBufferRef ParseHexBytes(const char * buf)
    {
       uint8 * b = bb()->GetBuffer();
       uint32 count = 0;
-      StringTokenizer tok(buf, ", \t\r\n");
+      StringTokenizer tok(buf, " \t\r\n");
       const char * next;
       while((next = tok()) != NULL) 
       {

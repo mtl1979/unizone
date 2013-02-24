@@ -40,7 +40,7 @@ public:
 #endif
 
 #if defined(MUSCLE_USE_PTHREADS)
-      _isKeyValid = (pthread_key_create(&_key, NULL) == 0);
+      _isKeyValid = (pthread_key_create(&_key, (PthreadDestructorFunction)DeleteObjFunc) == 0);
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       _tlsIndex = TlsAlloc();
 #endif
@@ -57,7 +57,7 @@ public:
          TlsFree(_tlsIndex);
 #endif
       }
-#ifndef MUSCLE_USE_QT_THREADLOCALSTORAGE
+#if !(defined(MUSCLE_USE_QT_THREADLOCALSTORAGE) || defined(MUSCLE_USE_PTHREADS))
       if (_freeHeldObjects) for (uint32 i=0; i<_allocedObjs.GetNumItems(); i++) delete _allocedObjs[i];
 #endif
    }
@@ -102,8 +102,8 @@ public:
       ObjType * oldObj = GetThreadLocalObjectAux();
       if (oldObj == newObj) return B_NO_ERROR;  // nothing to do!
 
-#if defined(MUSCLE_USE_QT_THREADLOCALSTORAGE)
-      return SetThreadLocalObjectAux(newObj);   // Qt manages memory so we don't have to
+#if defined(MUSCLE_USE_QT_THREADLOCALSTORAGE) || defined(MUSCLE_USE_PTHREADS)
+      return SetThreadLocalObjectAux(newObj);   // pthreads and Qt manage memory so we don't have to
 #else
       if (_allocedObjsMutex.Lock() != B_NO_ERROR) return B_ERROR;
 
@@ -136,6 +136,8 @@ private:
    QThreadStorage<ObjType *> _storage;
 #else
 # if defined(MUSCLE_USE_PTHREADS)
+   typedef void (*PthreadDestructorFunction )(void *);
+   static void DeleteObjFunc(void * o) {delete ((ObjType *)o);}
    bool _isKeyValid;
    pthread_key_t _key;
 # elif defined(MUSCLE_PREFER_WIN32_OVER_QT)

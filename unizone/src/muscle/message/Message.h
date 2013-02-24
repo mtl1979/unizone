@@ -1294,6 +1294,39 @@ public:
     */
    status_t ShareName(const String & oldFieldName, Message & shareTo, const String & newFieldName) const;
 
+   /** Moves the field with the specified name to the beginning of the field-names-iteration-list.
+     * @param fieldNameToMove Name of the field to move to the beginning of the iteration list.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (field name not found?)
+     */
+   status_t MoveNameToFront(const String & fieldNameToMove) {return _entries.MoveToFront(fieldNameToMove);}
+
+   /** Moves the field with the specified name to the end of the field-names-iteration-list.
+     * @param fieldNameToMove Name of the field to move to the end of the iteration list.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (field name not found?)
+     */
+   status_t MoveNameToBack(const String & fieldNameToMove) {return _entries.MoveToBack(fieldNameToMove);}
+
+   /** Moves the field with the specified name to just before the second specified field name.
+     * @param fieldNameToMove Name of the field to move
+     * @param toBeforeMe Name of the field that (fieldNameToMove) should appear just before.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (field name not found?)
+     */
+   status_t MoveNameToBefore(const String & fieldNameToMove, const String & toBeforeMe) {return _entries.MoveToBefore(fieldNameToMove, toBeforeMe);}
+
+   /** Moves the field with the specified name to just after the second specified field name.
+     * @param fieldNameToMove Name of the field to move
+     * @param toBehindMe Name of the field that (fieldNameToMove) should appear just after.
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (field name not found?)
+     */
+   status_t MoveNameToBehind(const String & fieldNameToMove, const String & toBehindMe) {return _entries.MoveToBehind(fieldNameToMove, toBehindMe);}
+
+   /** Moves the field with the specified name to the nth position in the field-names-iteration-list.
+     * @param fieldNameToMove Name of the field to move
+     * @param toPosition The position to move it to (0==first, 1=second, and so on)
+     * @returns B_NO_ERROR on success, or B_ERROR on failure (field name not found?)
+     */
+   status_t MoveNameToPosition(const String & fieldNameToMove, uint32 toPosition) {return _entries.MoveToPosition(fieldNameToMove, toPosition);}
+
    /** Examines the specified field to see if it is referenced more than once (e.g. by
      * another Message object).  If it is referenced more than once, makes a copy of the
      * field (including its contents) and replaces the shared field with the copy.

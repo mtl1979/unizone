@@ -24,7 +24,7 @@
 namespace muscle {
 
 /** @defgroup networkutilityfunctions The NetworkUtilityFunctions function API
- *  These functions are all defined in NetworkUtilityFunctions.{cpp,h}, and are stand-alone
+ *  These functions are all defined in NetworkUtilityFunctions(.cpp,.h), and are stand-alone
  *  functions that do various network-related tasks
  *  @{
  */

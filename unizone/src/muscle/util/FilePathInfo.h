@@ -19,6 +19,18 @@ public:
      */
    FilePathInfo(const char * optFilePath) {SetFilePath(optFilePath);}
 
+   /** Manual constructor, for creating a fake FilePathInfo with the specified attributes
+     * @param exists true iff this FilePathInfo should indicate that the referenced file path exists.
+     * @param isRegularFile true iff this FilePathInfo should indicate that the referenced file path is a regular-file.
+     * @param isDir true iff this FilePathInfo should indicate that the referenced file path is a directory.
+     * @param isSymlink true iff this FilePathInfo should indicate that the referenced file path is a symlink.
+     * @param fileSizeBytes Size of the file, in bytes.
+     * @param aTime Access time, in microseconds-since-1970.
+     * @param cTime Creation time, in microseconds-since-1970.
+     * @param mTime Modification time, in microseconds-since-1970.
+     */
+   FilePathInfo(bool exists, bool isRegularFile, bool isDir, bool isSymlink, uint64 fileSizeBytes, uint64 aTime, uint64 cTime, uint64 mTime);
+
    /** Destructor.  */
    ~FilePathInfo() {/* empty */}
 

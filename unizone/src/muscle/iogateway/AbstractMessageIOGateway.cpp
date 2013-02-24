@@ -16,40 +16,6 @@ AbstractMessageIOGateway :: ~AbstractMessageIOGateway()
    // empty
 }
 
-// Handles buffer allocation and re-allocation
-status_t
-AbstractMessageIOGateway ::
-EnsureBufferSize(uint8 ** bufPtr, uint32 * bufSize, uint32 desiredSize, uint32 copySize)
-{
-   uint8 * oldBuffer = *bufPtr;
-   uint32 oldBufSize = *bufSize;
-
-   if ((oldBuffer == NULL)||(oldBufSize < desiredSize))
-   {
-      uint8 * newBuffer = newnothrow_array(uint8, desiredSize);
-      if (newBuffer == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
-
-      *bufPtr  = newBuffer;
-      *bufSize = desiredSize;
-
-      if (copySize > 0) memcpy(newBuffer, oldBuffer, copySize);
-      delete [] oldBuffer;
-   }
-   return B_NO_ERROR;
-}
-
-void 
-AbstractMessageIOGateway :: 
-FreeLargeBuffer(uint8 ** buf, uint32 * size)
-{
-   if ((*buf)&&(*size > 10*1024))  // if the buffer is greater than 10KB, free it
-   {
-      delete [] (*buf);
-      *buf = NULL;
-      *size = 0;
-   }
-}
-
 void
 AbstractMessageIOGateway ::
 SetFlushOnEmpty(bool f)

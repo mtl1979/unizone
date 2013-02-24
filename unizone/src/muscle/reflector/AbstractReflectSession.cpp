@@ -297,7 +297,7 @@ GetSessionDescriptionString() const
    String ret = GetTypeName();
    ret += " ";
    ret += GetSessionIDString();
-   ret += (port>0)?" from [":" to [";
+   ret += (port>0)?" at [":" to [";
    ret += _hostName;
    char buf[64]; sprintf(buf, ":%u]", (port>0)?port:_asyncConnectDest.GetPort()); ret += buf;
    return ret;
