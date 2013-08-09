@@ -33,7 +33,7 @@ public:
 	operator wchar_t *() const { return buffer; };
 	operator const char *() const;
 	wchar_t *getBuffer() const { return buffer; };
-	int length() const; 
+	size_t length() const; 
 	QString toQString() const;
 
 	WString &operator=(const wchar_t *);
@@ -65,6 +65,6 @@ private:
 	void free();						// Free internal buffer
 
 	mutable char * utfbuf;
-	mutable int utflen;
+	mutable size_t utflen;
 };
 #endif

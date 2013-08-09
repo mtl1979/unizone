@@ -110,11 +110,13 @@ typedef FILE    _FILEX;
 #endif  /* !defined (_FILEX_DEFINED) && defined (_WINDOWS_) */
 
 
+#if !defined(UNALIGNED)
 #if defined (_M_MRX000) || defined (_M_ALPHA) || defined (_M_PPC) || defined (_M_IA64)
 #define UNALIGNED __unaligned
 #else  /* defined (_M_MRX000) || defined (_M_ALPHA) || defined (_M_PPC) || defined (_M_IA64) */
 #define UNALIGNED
 #endif  /* defined (_M_MRX000) || defined (_M_ALPHA) || defined (_M_PPC) || defined (_M_IA64) */
+#endif
 
 #define EXCEPTION_EXECUTE_HANDLER       1
 #define EXCEPTION_CONTINUE_SEARCH       0

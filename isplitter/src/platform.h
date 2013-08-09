@@ -113,6 +113,8 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 
 #if defined(__APPLE__)
 # include <string.h>
+#elif defined(__LINUX__)
+# include <unistd.h>
 #else
 # if !defined(ssize_t)
 typedef int ssize_t;

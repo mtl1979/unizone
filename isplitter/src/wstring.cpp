@@ -21,7 +21,7 @@ WString::WString()
 
 WString::WString(const wchar_t *str)
 {
-	int len = wcslen(str);
+	size_t len = wcslen(str);
 	buffer = new wchar_t[len+1];
 	if (buffer)
 		wcopy(buffer, str, len);
@@ -40,9 +40,9 @@ WString::WString(const char * str)
 {
 	int len;
 #if defined(WIN32) || defined(_WIN32)
-	len = MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), NULL, 0);
+	len = MultiByteToWideChar(CP_UTF8, 0, str, (unsigned int) strlen(str), NULL, 0);
 	buffer = new wchar_t[len+1];
-	(void) MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), buffer, len);
+	(void) MultiByteToWideChar(CP_UTF8, 0, str, (unsigned int) strlen(str), buffer, len);
 #else
 	len = mbstowcs(NULL, str, MB_CUR_MAX);
 	buffer = new wchar_t[len+1];
@@ -108,8 +108,8 @@ WString::operator+=(const wchar_t *str)
 {
 	if (length() != -1)
 	{
-		int oldlen = length();
-		int newlen = oldlen + wcslen(str) + 1;
+		size_t oldlen = length();
+		size_t newlen = oldlen + wcslen(str) + 1;
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
@@ -134,8 +134,8 @@ WString::operator+=(const WString &str)
 {
 	if (length() != -1)
 	{
-		int oldlen = length();
-		int newlen = oldlen + str.length() + 1;
+		size_t oldlen = length();
+		size_t newlen = oldlen + str.length() + 1;
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
@@ -156,8 +156,8 @@ WString::operator+=(const QString &str)
 {
 	if (length() != -1)
 	{
-		int oldlen = length();
-		int newlen = oldlen + str.length() + 1;
+		size_t oldlen = length();
+		size_t newlen = oldlen + str.length() + 1;
 		wchar_t *buf2 = new wchar_t[newlen];
 		if (buf2)
 		{
@@ -216,7 +216,7 @@ WString::operator==(const QString &str)
 
 WString::operator const char *() const
 {
-	int len = wcstombs(NULL, buffer, 0);
+	size_t len = wcstombs(NULL, buffer, 0);
 	if (utfbuf && (len > utflen))
 	{
 		delete utfbuf;
@@ -312,7 +312,7 @@ WString::reverse() const
 	if (buffer)
 	{
 		wchar_t *buf2;
-		int len = wcslen(buffer);
+		size_t len = wcslen(buffer);
 		buf2 = new wchar_t[len + 1];
 		wreverse(buf2, buffer, len);
 		s2.setBuffer(buf2);
@@ -320,7 +320,7 @@ WString::reverse() const
 	return s2;
 }
 
-int
+size_t
 WString::length() const
 { 
 	if (buffer) 

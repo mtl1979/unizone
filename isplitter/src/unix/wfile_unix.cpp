@@ -85,7 +85,7 @@ WFile::At(int64 pos)
 }
 
 int32
-WFile::ReadBlock32(uint8 *buf, uint32 size)
+WFile::ReadBlock32(uint8 *buf, size_t size)
 {
 	return read(file, buf, size);
 }
@@ -142,7 +142,7 @@ WFile::ReadLine(char *buf, int size)
 }
 
 int32
-WFile::WriteBlock32(const uint8 *buf, uint32 size)
+WFile::WriteBlock32(const uint8 *buf, size_t size)
 {
 	return write(file, buf, (unsigned int) size);
 }
