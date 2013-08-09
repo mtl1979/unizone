@@ -43,15 +43,11 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 #if defined(lrint)
 #  define HAVE_LRINT
 #elif defined(_MSC_VER)
-# ifdef QT_HAVE_SSE2
+# ifdef _M_AMD64
 #  include <emmintrin.h>
 
 #  define lrint(dbl) _mm_cvttsd_si32(_mm_set_sd(dbl))
-#  ifdef _M_AMD64
-#   define llrint(dbl) _mm_cvttsd_si64x(_mm_set_sd(dbl))
-#  else
-#   define llrint(dbl) _mm_cvttsd_si64(_mm_set_sd(dbl))
-#  endif 
+#  define llrint(dbl) _mm_cvttsd_si64x(_mm_set_sd(dbl))
 #  define lrintf(flt) _mm_cvttss_si32(_mm_set_ss(flt)) 
 #  define HAVE_LRINT
 # elif defined(_M_IX86)
