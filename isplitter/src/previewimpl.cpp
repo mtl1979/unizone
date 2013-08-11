@@ -1,6 +1,6 @@
 #include "previewimpl.h"
 #include "mainwindowimpl.h"
-#include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "platform.h"
 #include "util.h"
 
