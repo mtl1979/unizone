@@ -8,7 +8,7 @@ TEMPLATE = lib
 CONFIG += dll
 
 win32 {
-	DEFINES += _CRT_SECURE_NO_WARNINGS
+	DEFINES += _CRT_SECURE_NO_WARNINGS WINAPI_FAMILY
 	RC_FILE = win32\\zlib1.rc
 	DEF_FILE = win32\\zlib.def
 	QMAKE_LFLAGS_DLL += /implib:$(DESTDIR)zdll.lib
