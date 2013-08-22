@@ -1,11 +1,11 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef ZLibDataIO_h
 #define ZLibDataIO_h
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
-# include "zlib.h"
+# include "zlib/zlib/zlib.h"
 # include "dataio/DataIO.h"
 
 namespace muscle {

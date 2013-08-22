@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMessageIOGateway_h
 #define MuscleMessageIOGateway_h
@@ -162,27 +162,28 @@ protected:
    virtual int32 DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes = MUSCLE_NO_LIMIT);
 
    /**
-    * Flattens a specified Message object into a flat ByteBuffer object.
+    * Should flatten the specified Message object into a newly allocated ByteBuffer
+    * object and return the ByteBufferRef.  The returned ByteBufferRef's contents
+    * should consiste of (GetHeaderSize()) bytes of header, followed by the flattened
+    * Message data.
     * @param msgRef Reference to a Message to flatten into a byte array.
-    * @param header Pointer to a buffer that is (GetHeaderSize()) bytes long.
-    *               The appropriate header bytes should be written in to this buffer.
-    * @return A reference to a ByteBuffer object containing the flattened Message data on success,
-    *         or a NULL reference on failure.
-    * The default implementation uses msg.Flatten() and then (optionally) ZLib compression to produce the bytes.
+    * @return A reference to a ByteBuffer object (containing the appropriate header
+    *         bytes, followed flattened Message data) on success, or a NULL reference on failure.
+    * The default implementation uses msg.Flatten() and then (optionally) ZLib compression to produce 
+    * the flattened bytes.
     */
-   virtual ByteBufferRef FlattenMessage(const MessageRef & msgRef, uint8 * header) const;
+   virtual ByteBufferRef FlattenHeaderAndMessage(const MessageRef & msgRef) const;
 
    /**
     * Unflattens a specified ByteBuffer object back into a MessageRef object.
-    * @param bufRef Reference to a ByteBuffer object to unflatten back into a Message.
-    * @param header Points to the header bytes that were received for this Message.  This
-    *               array is (GetHeaderSize()) bytes long.
+    * @param bufRef Reference to a ByteBuffer object that contains the appropriate header
+    *               bytes, followed by some flattened Message bytes.
     * @returns a Reference to a Message object containing the Message that was encoded in
     *          the ByteBuffer on success, or a NULL reference on failure.
     * The default implementation uses (optional) ZLib decompression (depending on the header bytes)
     * and then msg.Unflatten() to produce the Message.
     */
-   virtual MessageRef UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * header) const;
+   virtual MessageRef UnflattenHeaderAndMessage(const ByteBufferRef & bufRef) const;
  
    /**
     * Returns the size of the pre-flattened-message header section, in bytes.
@@ -258,14 +259,14 @@ private:
       uint32 _offset;
    };
 
-   status_t SendData(TransferBuffer & buf, int32 & sentBytes, uint32 & maxBytes);
-   status_t ReadData(TransferBuffer & buf, int32 & readBytes, uint32 & maxBytes);
+   status_t SendMoreData(int32 & sentBytes, uint32 & maxBytes);
+   status_t ReceiveMoreData(int32 & readBytes, uint32 & maxBytes, uint32 maxArraySize);
 
-   TransferBuffer _sendHeaderBuffer;
-   TransferBuffer _sendBodyBuffer;
+   TransferBuffer _sendBuffer;
+   TransferBuffer _recvBuffer;
 
-   TransferBuffer _recvHeaderBuffer;
-   TransferBuffer _recvBodyBuffer;
+   uint8 _scratchRecvBufferBytes[2048];  // so we can receive smaller Messages without constantly allocating and freeing data
+   ByteBuffer _scratchRecvBuffer;
 
    uint32 _maxIncomingMessageSize;
    int32 _outgoingEncoding;

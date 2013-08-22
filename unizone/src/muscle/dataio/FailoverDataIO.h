@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleFailoverDataIO_h
 #define MuscleFailoverDataIO_h
@@ -93,6 +93,8 @@ public:
    virtual bool HasBufferedOutput() const {return HasChild() ? GetChild()->HasBufferedOutput() : false;}
 
    virtual void WriteBufferedOutput() {if (HasChild()) GetChild()->WriteBufferedOutput();}
+
+   virtual uint32 GetPacketMaximumSize() const {return (HasChild()) ? GetChild()->GetPacketMaximumSize() : 0:}
 
    /** Returns a read-only reference to our list of child DataIO objects. */
    const Queue<DataIORef> & GetChildDataIOs() const {return _childIOs;}

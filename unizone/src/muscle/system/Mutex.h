@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleMutex_h
 #define MuscleMutex_h
@@ -49,7 +49,6 @@ namespace muscle {
 # define Lock()   DeadlockFinderLockWrapper  (__FILE__, __LINE__)
 # define Unlock() DeadlockFinderUnlockWrapper(__FILE__, __LINE__)
 extern void DeadlockFinder_LogEvent(bool isLock, const void * mutexPtr, const char * fileName, int fileLine);
-extern unsigned long GetCurrentThreadID();  // from SetupSystem.h, but I don't want to #include that here
 extern bool _enableDeadlockFinderPrints;
 #define LOG_DEADLOCK_FINDER_EVENT(val)                                   \
       if ((_enableDeadlockFinderPrints)&&(_inDeadlockCallbackCount == 0)) \

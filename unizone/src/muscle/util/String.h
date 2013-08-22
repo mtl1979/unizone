@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /* NOTE TO MACOS/X X-CODE USERS:  If you are trying to #include <string.h>
  * and X-Code is "helpfully" pulling in this file instead (because the
@@ -610,6 +610,14 @@ public:
    /** Swaps the state of this string with (swapWithMe).  Very efficient since little or no data copying is required. */
    void SwapContents(String & swapWithMe);
 
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Constructor */
+   String(String && rhs) : _bufferLen(0), _length(0) {if (rhs.IsArrayDynamicallyAllocated()) SwapContents(rhs); else *this = rhs;}
+
+   /** C++11 Move Assignment Operator */
+   String & operator =(String && rhs) {if (rhs.IsArrayDynamicallyAllocated()) SwapContents(rhs); else *this = rhs; return *this;}
+#endif
+
    /** Like CompareTo(), but case insensitive. */
    int CompareToIgnoreCase(const String & s) const {return Strcasecmp(Cstr(), s());}
 
@@ -629,7 +637,7 @@ public:
    bool EndsWithIgnoreCase(const String & s) const             {return ToLowerCase().EndsWith(s.ToLowerCase());}
 
    /** Like Equals(), but case insensitive. */
-   bool EqualsIgnoreCase(const String & s) const               {return ToLowerCase().Equals(s.ToLowerCase());}
+   bool EqualsIgnoreCase(const String & s) const               {return (Strcasecmp(Cstr(), s()) == 0);}
 
    /** Like Equals(), but case insensitive. */
    bool EqualsIgnoreCase(char c) const                         {return (_length==1)&&(tolower(Cstr()[0])==tolower(c));}

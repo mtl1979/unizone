@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 
@@ -333,6 +333,14 @@ int32 SendDataUDP(const ConstSocketRef & sock, const void * buffer, uint32 size,
    }
 #endif
 
+#if !defined(MUSCLE_AVOID_IPV6) && !defined(MUSCLE_AVOID_MULTICAST_API)
+# define MUSCLE_USE_IFIDX_WORKAROUND 1
+#endif
+
+#ifdef MUSCLE_USE_IFIDX_WORKAROUND
+   bool doUnsetInterfaceIndex = false;  // and remember to set it back afterwards
+#endif
+
    int fd = sock.GetFileDescriptor();
    if (fd >= 0)
    {
@@ -346,13 +354,7 @@ int32 SendDataUDP(const ConstSocketRef & sock, const void * buffer, uint32 size,
              muscle_socklen_t length = sizeof(sockaddr_in);
              if ((getpeername(fd, (struct sockaddr *)&toAddr, &length) != 0)||(GET_SOCKADDR_FAMILY(toAddr) != MUSCLE_SOCKET_FAMILY)) return -1;
           }
-#if !defined(MUSCLE_AVOID_IPV6) && !defined(MUSCLE_AVOID_MULTICAST_API)
-# define MUSCLE_USE_IFIDX_WORKAROUND 1
-#endif
 
-#ifdef MUSCLE_USE_IFIDX_WORKAROUND
-          bool doUnsetInterfaceIndex = false;  // and remember to set it back afterwards
-#endif
           if (optToIP != invalidIP) 
           {
              SET_SOCKADDR_IP(toAddr, optToIP);
@@ -368,14 +370,15 @@ int32 SendDataUDP(const ConstSocketRef & sock, const void * buffer, uint32 size,
           }
           if (optToPort) SET_SOCKADDR_PORT(toAddr, optToPort);
           s = sendto_ignore_eintr(fd, (const char *)buffer, size, 0L, (struct sockaddr *)&toAddr, sizeof(toAddr));
-#ifdef MUSCLE_USE_IFIDX_WORKAROUND
-          if (doUnsetInterfaceIndex) (void) SetSocketMulticastSendInterfaceIndex(sock, 0);
-#endif
        }
        else s = send_ignore_eintr(fd, (const char *)buffer, size, 0L);
 
        if (s == 0) return 0;  // for UDP, zero is a valid send() size, since there is no EOS
-       return ConvertReturnValueToMuscleSemantics(s, size, bm);
+       int32 ret = ConvertReturnValueToMuscleSemantics(s, size, bm);
+#ifdef MUSCLE_USE_IFIDX_WORKAROUND
+       if (doUnsetInterfaceIndex) (void) SetSocketMulticastSendInterfaceIndex(sock, 0);  // gotta do this AFTER computing the return value, as it clears errno!
+#endif
+       return ret;
    }
    else return -1;
 }
@@ -640,50 +643,117 @@ static void ExpandLocalhostAddress(ip_address & ipAddress)
    }
 }
 
+// This stores the result of a GetHostByName() lookup, along with its expiration time.
+class DNSRecord
+{
+public:
+   DNSRecord() : _expirationTime(0) {/* empty */}
+   DNSRecord(const ip_address & ip, uint64 expTime) : _ipAddress(ip), _expirationTime(expTime) {/* empty */}
+
+   const ip_address & GetIPAddress() const {return _ipAddress;}
+   uint64 GetExpirationTime() const {return _expirationTime;}
+
+private:
+   ip_address _ipAddress;
+   uint64 _expirationTime;
+};
+
+static Mutex _hostCacheMutex;                // serialize access to the cache data
+static uint32 _maxHostCacheSize = 0;         // DNS caching is disabled by default
+static uint64 _hostCacheEntryLifespan = 0;   // how many microseconds before a cache entry is expired
+static Hashtable<String, DNSRecord> _hostCache;
+
+void SetHostNameCacheSettings(uint32 maxEntries, uint64 expirationTime)
+{
+   MutexGuard mg(_hostCacheMutex);
+   _maxHostCacheSize = expirationTime ? maxEntries : 0;  // no sense storing entries that expire instantly
+   _hostCacheEntryLifespan = expirationTime;
+   while(_hostCache.GetNumItems() > _maxHostCacheSize) (void) _hostCache.Remove(*_hostCache.GetLastKey());
+}
+
+static String GetHostByNameKey(const char * name, bool expandLocalhost)
+{
+   String ret(name);
+   ret = ret.ToLowerCase();
+   if (expandLocalhost) ret += '!';  // so that a cached result from GetHostByName("foo", false) won't be returned for GetHostByName("foo", true)
+   return ret;
+}
+
 ip_address GetHostByName(const char * name, bool expandLocalhost)
 {
-   ip_address ret;
-   if (IsIPAddress(name)) ret = Inet_AtoN(name);
-   else
+   if (IsIPAddress(name))
    {
-#ifdef MUSCLE_AVOID_IPV6
-      struct hostent * he = gethostbyname(name);
-      ret = ntohl(he ? *((ip_address*)he->h_addr) : 0);
-#else
-      ret = invalidIP;
-      struct addrinfo * result;
-      struct addrinfo hints; memset(&hints, 0, sizeof(hints));
-      hints.ai_family   = AF_UNSPEC;     // We're not too particular, for now
-      hints.ai_socktype = SOCK_STREAM;   // so we don't get every address twice (once for UDP and once for TCP)
-      if (getaddrinfo(name, NULL, &hints, &result) == 0)
+      // No point in ever caching this result, since Inet_AtoN() is always fast anyway
+      ip_address ret = Inet_AtoN(name);
+      if (expandLocalhost) ExpandLocalhostAddress(ret);
+      return ret;
+   }
+   else if (_maxHostCacheSize > 0)
+   {
+      String s = GetHostByNameKey(name, expandLocalhost);
+      MutexGuard mg(_hostCacheMutex);
+      const DNSRecord * r = _hostCache.Get(s);
+      if (r)
       {
-         struct addrinfo * next = result;
-         while(next)
+         if ((r->GetExpirationTime() == MUSCLE_TIME_NEVER)||(GetRunTime64() < r->GetExpirationTime()))
          {
-            switch(next->ai_family)
-            {
-               case AF_INET:
-                  ret.SetBits(ntohl(((struct sockaddr_in *) next->ai_addr)->sin_addr.s_addr), 0);  // read IPv4 address into low bits of IPv6 address structure
-                  ret.SetLowBits(ret.GetLowBits() | ((uint64)0xFFFF)<<32);                         // and make it IPv6-mapped (why doesn't AI_V4MAPPED do this?)
-               break;
-
-               case AF_INET6:
-               {
-                  struct sockaddr_in6 * sin6 = (struct sockaddr_in6 *) next->ai_addr;
-                  uint32 tmp = sin6->sin6_scope_id;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
-                  ret.ReadFromNetworkArray(sin6->sin6_addr.s6_addr, &tmp);
-               }
-               break;
-            }
-            if (ret == invalidIP) next = next->ai_next;
-                             else break;
+            (void) _hostCache.MoveToFront(s);  // LRU logic
+            return r->GetIPAddress();
          }
-         freeaddrinfo(result);
       }
-#endif
    }
 
+   ip_address ret = invalidIP;
+#ifdef MUSCLE_AVOID_IPV6
+   struct hostent * he = gethostbyname(name);
+   if (he) ret = ntohl(*((ip_address*)he->h_addr));
+#else
+   struct addrinfo * result;
+   struct addrinfo hints; memset(&hints, 0, sizeof(hints));
+   hints.ai_family   = AF_UNSPEC;     // We're not too particular, for now
+   hints.ai_socktype = SOCK_STREAM;   // so we don't get every address twice (once for UDP and once for TCP)
+   if (getaddrinfo(name, NULL, &hints, &result) == 0)
+   {
+      struct addrinfo * next = result;
+      while(next)
+      {
+         switch(next->ai_family)
+         {
+            case AF_INET:
+               ret.SetBits(ntohl(((struct sockaddr_in *) next->ai_addr)->sin_addr.s_addr), 0);  // read IPv4 address into low bits of IPv6 address structure
+               ret.SetLowBits(ret.GetLowBits() | ((uint64)0xFFFF)<<32);                         // and make it IPv6-mapped (why doesn't AI_V4MAPPED do this?)
+            break;
+
+            case AF_INET6:
+            {
+               struct sockaddr_in6 * sin6 = (struct sockaddr_in6 *) next->ai_addr;
+               uint32 tmp = sin6->sin6_scope_id;  // MacOS/X uses __uint32_t, which isn't quite the same somehow
+               ret.ReadFromNetworkArray(sin6->sin6_addr.s6_addr, &tmp);
+            }
+            break;
+         }
+         if (ret == invalidIP) next = next->ai_next;
+                          else break;
+      }
+      freeaddrinfo(result);
+   }
+#endif
+
    if (expandLocalhost) ExpandLocalhostAddress(ret);
+
+   if (_maxHostCacheSize > 0)
+   {
+      // Store our result in the cache for later
+      String s = GetHostByNameKey(name, expandLocalhost);
+      MutexGuard mg(_hostCacheMutex);
+      DNSRecord * r = _hostCache.PutAndGet(s, DNSRecord(ret, (_hostCacheEntryLifespan==MUSCLE_TIME_NEVER)?MUSCLE_TIME_NEVER:(GetRunTime64()+_hostCacheEntryLifespan)));
+      if (r)
+      {
+         _hostCache.MoveToFront(s);  // LRU logic
+         while(_hostCache.GetNumItems() > _maxHostCacheSize) (void) _hostCache.Remove(*_hostCache.GetLastKey());
+      }
+   }
+
    return ret;
 }
 
@@ -1219,7 +1289,7 @@ status_t GetNetworkInterfaceAddresses(Queue<ip_address> & results, uint32 includ
 
 static void Inet4_NtoA(uint32 addr, char * buf)
 {
-   sprintf(buf, INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC"."INT32_FORMAT_SPEC, (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
+   sprintf(buf, INT32_FORMAT_SPEC "." INT32_FORMAT_SPEC "." INT32_FORMAT_SPEC "." INT32_FORMAT_SPEC, (addr>>24)&0xFF, (addr>>16)&0xFF, (addr>>8)&0xFF, (addr>>0)&0xFF);
 }
 
 void Inet_NtoA(const ip_address & addr, char * ipbuf, bool preferIPv4)
@@ -1238,7 +1308,7 @@ void Inet_NtoA(const ip_address & addr, char * ipbuf, bool preferIPv4)
          if (iIdx > 0)
          {
             // Add the index suffix
-            char buf[32]; sprintf(buf, "@"UINT32_FORMAT_SPEC, iIdx);
+            char buf[32]; sprintf(buf, "@" UINT32_FORMAT_SPEC, iIdx);
             strcat(ipbuf, buf);
          }
       }

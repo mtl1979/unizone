@@ -1,19 +1,18 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
 /     File:     MuscleSupport.h
 /
 /     Description:  Standard types, macros, functions, etc, for MUSCLE.
-/                   Many of them are suspiciously BeOS-like.  ;^)
 /
 *******************************************************************************/
 
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "5.83"
-#define MUSCLE_VERSION        58300  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
+#define MUSCLE_VERSION_STRING "5.90"
+#define MUSCLE_VERSION        59000  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
 
 /*! \mainpage MUSCLE Documentation Page
  *
@@ -795,6 +794,21 @@ static inline int PreviousOperationWasInterrupted()
 #endif
 }
 
+/** Checks errno and returns true iff the last I/O operation
+  * failed because of a transient condition which wasn't fatal to the socket.
+  * NOTE:  Returns int so that it will compile even in C environments where no bool type is defined.
+  */
+static inline int PreviousOperationHadTransientFailure()
+{
+#ifdef WIN32
+   int e = WSAGetLastError();
+   return ((e == WSAEINTR)||(e == WSAENOBUFS));
+#else
+   int e = errno;
+   return ((e == EINTR)||(e == ENOBUFS));
+#endif
+}
+
 /** This function applies semi-standard logic to convert the return value
   * of a system I/O call and (errno) into a proper MUSCLE-standard return value.
   * (A MUSCLE-standard return value's semantics are:  Negative on error,
@@ -807,7 +821,7 @@ static inline int PreviousOperationWasInterrupted()
 static inline int32 ConvertReturnValueToMuscleSemantics(int origRet, uint32 maxSize, int blocking)
 {
    int32 retForBlocking = ((origRet > 0)||(maxSize == 0)) ? origRet : -1;
-   return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationWasInterrupted()))) ? 0 : retForBlocking;
+   return blocking ? retForBlocking : ((origRet<0)&&((PreviousOperationWouldBlock())||(PreviousOperationHadTransientFailure()))) ? 0 : retForBlocking;
 }
 
 #ifdef __cplusplus

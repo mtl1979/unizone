@@ -1,7 +1,10 @@
-muscled should compile fine with nothing more than a "make", but
-if you feel like hacking around, here is a list of some 
+muscled should compile fine with nothing more than a "cd muscle/server ; make" 
+but if you feel like hacking around, here is a list of some 
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
+
+-DMUSCLE_USE_CPLUSPLUS11
+   Set this to enable C++11-specific features such as move-constructors.
 
 -DMUSCLE_AVOID_IPV6
    Set this to indicate that Muscle should be compiled without IPv6
@@ -224,4 +227,21 @@ of your Makefile to alter muscle's behaviour:
    not it increases or decreases performance will depend on the architecture
    of the host computer (e.g. on cache size, CPU speed, etc).
 
+-DMUSCLE_AVOID_THREAD_SAFE_HASHTABLE_ITERATORS
+   As of v5.90, the Hashtable class includes logic to ensure that
+   HashtableIterators are thread safe, even if multiple threads are
+   iterating over the same Hashtable at the same time (as long the
+   Hashtable is not being modified, at least).  This extra safety
+   does impose some overhead, though -- about 16 bytes of RAM per
+   Hashtable object, and a small amount of CPU overhead imposed
+   by using an AtomicCounter.  If you want to avoid that overhead
+   and you're confident that you will always supply the 
+   HTIT_FLAG_NOREGISTER argument whenever you are doing 
+   concurrent iterations over a Hashtable (or Message), you can
+   supply this flag on the command line to avoid the overhead.
+
+-DMUSCLE_FAKE_SHARED_MEMORY
+   If defined, the SharedMemory class will allocate a non-shared memory
+   buffer (using muscleAlloc()) rather than actual shared memory.  Handy
+   for debugging if you suspect that shared-memory is causing a problem.
 

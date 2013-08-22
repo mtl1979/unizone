@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "system/Thread.h"
 #include "util/NetworkUtilityFunctions.h"
@@ -395,12 +395,17 @@ void CheckThreadStackUsage(const char * fileName, uint32 line)
          uint32 curUsage = curThread->GetCurrentStackUsage();
          if (curUsage > maxUsage)
          {
-            LogTime(MUSCLE_LOG_CRITICALERROR, "Thread %lu exceeded its suggested stack usage ("UINT32_FORMAT_SPEC " > " UINT32_FORMAT_SPEC") at (%s:"UINT32_FORMAT_SPEC"), aborting program!\n", GetCurrentThreadID(), curUsage, maxUsage, fileName, line);
+            char buf[20];
+            LogTime(MUSCLE_LOG_CRITICALERROR, "Thread %s exceeded its suggested stack usage (" UINT32_FORMAT_SPEC " > " UINT32_FORMAT_SPEC") at (%s:" UINT32_FORMAT_SPEC "), aborting program!\n", muscle_thread_id::GetCurrentThreadID().ToString(buf), curUsage, maxUsage, fileName, line);
             MCRASH("MUSCLE Thread exceeded its suggested stack allowance");
          }
       }
    }
-   else printf("Warning, CheckThreadStackUsage() called from non-MUSCLE thread %lu at (%s:"UINT32_FORMAT_SPEC")\n", GetCurrentThreadID(), fileName, line);
+   else 
+   {
+      char buf[20];
+      printf("Warning, CheckThreadStackUsage() called from non-MUSCLE thread %s at (%s:" UINT32_FORMAT_SPEC ")\n", muscle_thread_id::GetCurrentThreadID().ToString(buf), fileName, line);
+   }
 }
 
 

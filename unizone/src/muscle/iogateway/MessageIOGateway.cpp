@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/StorageReflectConstants.h"  // for PR_COMMAND_PING, PR_RESULT_PONG
@@ -17,47 +17,17 @@ MessageIOGateway :: MessageIOGateway(int32 encoding) :
 #endif
    , _syncPingCounter(0), _pendingSyncPingCounter(-1)
 {
-   /* empty */
+   _scratchRecvBuffer.AdoptBuffer(sizeof(_scratchRecvBufferBytes), _scratchRecvBufferBytes);
 }
 
 MessageIOGateway :: ~MessageIOGateway() 
 {
+   (void) _scratchRecvBuffer.ReleaseBuffer();  // otherwise it will try to delete[] _scratchRecvBufferBytes and that would be bad
+
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
    delete _sendCodec;
    delete _recvCodec;
 #endif
-}
-
-// For this method, B_NO_ERROR means "keep sending", and B_ERROR means "stop sending for now", and isn't fatal to the stream
-// If there is a fatal error in the stream it will call SetHosed() to indicate that.
-status_t 
-MessageIOGateway :: SendData(TransferBuffer & buf, int32 & sentBytes, uint32 & maxBytes)
-{
-   TCHECKPOINT;
-
-   const ByteBuffer * bb = buf._buffer();
-   if (bb)
-   {
-      const uint8 * bytes = bb->GetBuffer();
-      if (bytes)
-      {
-         int32 attemptSize = muscleMin(maxBytes, bb->GetNumBytes()-buf._offset);
-         int32 numSent     = GetDataIO()()->Write(&bytes[buf._offset], attemptSize);
-
-         if (numSent >= 0)
-         {
-            maxBytes    -= numSent;
-            sentBytes   += numSent;
-            buf._offset += numSent;
-         }
-         else SetHosed();
-
-         if (buf._offset >= bb->GetNumBytes()) buf.Reset();  // when we've sent it all, forget about it
-         if (numSent < attemptSize) return B_ERROR;  // assume this means buffers are full; we'll send the rest later
-      }
-      else buf.Reset();
-   }
-   return B_NO_ERROR;
 }
 
 status_t
@@ -65,6 +35,27 @@ MessageIOGateway ::
 PopNextOutgoingMessage(MessageRef & retMsg)
 {
    return GetOutgoingMessageQueue().RemoveHead(retMsg);
+}
+
+// For this method, B_NO_ERROR means "keep sending", and B_ERROR means "stop sending for now", and isn't fatal to the stream
+// If there is a fatal error in the stream it will call SetHosed() to indicate that.
+status_t 
+MessageIOGateway :: SendMoreData(int32 & sentBytes, uint32 & maxBytes)
+{
+   TCHECKPOINT;
+
+   const ByteBuffer * bb = _sendBuffer._buffer();
+   int32 attemptSize     = muscleMin(maxBytes, bb->GetNumBytes()-_sendBuffer._offset);
+   int32 numSent         = GetDataIO()()->Write(bb->GetBuffer()+_sendBuffer._offset, attemptSize);
+   if (numSent >= 0)
+   {
+      maxBytes            -= numSent;
+      sentBytes           += numSent;
+      _sendBuffer._offset += numSent;
+   }
+   else SetHosed();
+
+   return (numSent < attemptSize) ? B_ERROR : B_NO_ERROR;
 }
 
 int32 
@@ -77,7 +68,7 @@ DoOutputImplementation(uint32 maxBytes)
    while((maxBytes > 0)&&(IsHosed() == false))
    {
       // First, make sure our outgoing byte-buffer has data.  If it doesn't, fill it with the next outgoing message.
-      if (_sendBodyBuffer._buffer() == NULL)
+      if (_sendBuffer._buffer() == NULL)
       {
          while(true)
          {
@@ -93,25 +84,47 @@ DoOutputImplementation(uint32 maxBytes)
             {
                if (_aboutToFlattenCallback) _aboutToFlattenCallback(nextRef, _aboutToFlattenCallbackData);
 
-               _sendHeaderBuffer._offset = 0;
-               _sendHeaderBuffer._buffer = GetByteBufferFromPool(GetHeaderSize());
-               if (_sendHeaderBuffer._buffer() == NULL) {SetHosed(); break;}
-               
-               _sendBodyBuffer._offset = 0;
-               _sendBodyBuffer._buffer = FlattenMessage(nextRef, _sendHeaderBuffer._buffer()->GetBuffer());
-               if (_sendBodyBuffer._buffer() == NULL) {SetHosed(); break;}
+               _sendBuffer._offset = 0;
+               _sendBuffer._buffer = FlattenHeaderAndMessage(nextRef);
+               if (_sendBuffer._buffer() == NULL) {SetHosed(); return -1;}
 
                if (_flattenedCallback) _flattenedCallback(nextRef, _flattenedCallbackData);
+
+#ifdef DELIBERATELY_INJECT_ERRORS_INTO_OUTGOING_MESSAGE_FOR_TESTING_ONLY_DONT_ENABLE_THIS_UNLESS_YOU_LIKE_CHAOS
+ uint32 hs    = GetHeaderSize();
+ uint32 bs    = _sendBuffer._buffer()->GetNumBytes() - hs;
+ uint32 start = rand()%bs;
+ uint32 end   = (start+5)%bs;
+ if (start > end) muscleSwap(start, end);
+ printf("Bork! %u->%u\n", start, end);
+ for (uint32 i=start; i<=end; i++) _sendBuffer._buffer()->GetBuffer()[i+hs] = (uint8) (rand()%256);
+#endif
 
                break;  // now go on to the sending phase
             }
          }
+         if (IsHosed()) break;  // in case our callbacks called SetHosed()
       }
 
-      if (IsHosed() == false)
+      // At this point, _sendBuffer._buffer() is guaranteed not to be NULL!
+      const uint32 mtuSize = GetDataIO()()->GetPacketMaximumSize();
+      if (mtuSize > 0)
       {
-         if ((_sendHeaderBuffer._buffer() != NULL)&&(SendData(_sendHeaderBuffer, sentBytes, maxBytes) != B_NO_ERROR)) break;
-         if ((_sendHeaderBuffer._buffer() == NULL)&&(SendData(_sendBodyBuffer,   sentBytes, maxBytes) != B_NO_ERROR)) break;
+         const ByteBuffer * bb = _sendBuffer._buffer();
+         int32 numSent         = GetDataIO()()->Write(bb->GetBuffer(), bb->GetNumBytes());
+         if (numSent > 0)
+         {
+            maxBytes   = (maxBytes>(uint32)numSent)?(maxBytes-numSent):0;
+            sentBytes += numSent;
+            _sendBuffer.Reset();
+         }
+         else if (numSent < 0) SetHosed();
+         else break;
+      }
+      else
+      {
+         if (SendMoreData(sentBytes, maxBytes) != B_NO_ERROR) break;  // output buffer is temporarily full
+         if (_sendBuffer._offset == _sendBuffer._buffer()->GetNumBytes()) _sendBuffer.Reset();
       }
    }
    return IsHosed() ? -1 : sentBytes;
@@ -123,83 +136,123 @@ DoInputImplementation(AbstractGatewayMessageReceiver & receiver, uint32 maxBytes
 {
    TCHECKPOINT;
 
+   const uint32 hs = GetHeaderSize();
    bool firstTime = true;  // always go at least once, to avoid live-lock
    int32 readBytes = 0;
    while((maxBytes > 0)&&(IsHosed() == false)&&((firstTime)||(IsSuggestedTimeSliceExpired() == false)))
    {
       firstTime = false;
 
-      if (_recvHeaderBuffer._buffer() == NULL)
+      const uint32 mtuSize = GetDataIO()()->GetPacketMaximumSize();
+      if (mtuSize > 0)
       {
-         _recvHeaderBuffer._offset = 0;
-         _recvHeaderBuffer._buffer = GetByteBufferFromPool(GetHeaderSize());
-         if (_recvHeaderBuffer._buffer() == NULL) {SetHosed(); break;}
-      }
-
-      ByteBuffer * rHead = _recvHeaderBuffer._buffer();  // guaranteed not to be NULL!
-      if ((_recvHeaderBuffer._offset < rHead->GetNumBytes())&&(ReadData(_recvHeaderBuffer, readBytes, maxBytes) != B_NO_ERROR)) break;
-      if (_recvHeaderBuffer._offset == rHead->GetNumBytes())
-      {
-         ByteBuffer * rBody = _recvBodyBuffer._buffer();
-         if (rBody)
+         // For UDP-style I/O, we'll read all header data and body data at once from a single packet
+         if (_recvBuffer._buffer() == NULL)
          {
-            if ((_recvBodyBuffer._offset < rBody->GetNumBytes())&&(ReadData(_recvBodyBuffer, readBytes, maxBytes) != B_NO_ERROR)) break;
-            if (_recvBodyBuffer._offset == rBody->GetNumBytes())
+            (void) _scratchRecvBuffer.SetNumBytes(sizeof(_scratchRecvBufferBytes), false);   // return our scratch buffer to its "full size" in case it was sized smaller earlier
+            _recvBuffer._offset = 0;
+            _recvBuffer._buffer = (mtuSize<=_scratchRecvBuffer.GetNumBytes()) ? ByteBufferRef(&_scratchRecvBuffer,false) : GetByteBufferFromPool(mtuSize);
+            if (_recvBuffer._buffer() == NULL) {SetHosed(); break;}  // out of memory?
+         }
+
+         int32 numRead = GetDataIO()()->Read(_recvBuffer._buffer()->GetBuffer(), mtuSize);
+              if (numRead < 0) {SetHosed(); break;}
+         else if (numRead > 0)
+         {
+            readBytes += numRead;
+            maxBytes   = (maxBytes>(uint32)numRead)?(maxBytes-numRead):0;
+            (void) _recvBuffer._buffer()->SetNumBytes(numRead, true);  // trim off any unused bytes
+
+            // Finished receiving message bytes... now reconstruct that bad boy!
+            MessageRef msg = UnflattenHeaderAndMessage(_recvBuffer._buffer);
+            _recvBuffer.Reset();  // reset our state for the next one!
+            if (msg())  // for UDP, unexpected data shouldn't be fatal
+            {
+               if (_unflattenedCallback) _unflattenedCallback(msg, _unflattenedCallbackData);
+               receiver.CallMessageReceivedFromGateway(msg);
+            }
+         }
+         else break;
+      }
+      else
+      {
+         // For TCP-style I/O, we need to read the header first, and then the body, in as many steps as it takes
+         if (_recvBuffer._buffer() == NULL)
+         {
+            (void) _scratchRecvBuffer.SetNumBytes(sizeof(_scratchRecvBufferBytes), false);   // return our scratch buffer to its "full size" in case it was sized smaller earlier
+            _recvBuffer._offset = 0;
+            _recvBuffer._buffer = (hs<=_scratchRecvBuffer.GetNumBytes()) ? ByteBufferRef(&_scratchRecvBuffer,false) : GetByteBufferFromPool(hs);
+            if (_recvBuffer._buffer() == NULL) {SetHosed(); break;}  // out of memory?
+         }
+
+         ByteBuffer * bb = _recvBuffer._buffer();  // guaranteed not to be NULL, if we got here!
+         if (_recvBuffer._offset < hs)
+         { 
+            // We don't have the entire header yet, so try and read some more of it
+            if (ReceiveMoreData(readBytes, maxBytes, hs) != B_NO_ERROR) break;
+            if (_recvBuffer._offset >= hs)  // how about now?
+            {
+               // Now that we have the full header, parse it and allocate space for the message-body-bytes per its instructions
+               int32 bodySize = GetBodySize(bb->GetBuffer());
+               if ((bodySize >= 0)&&(((uint32)bodySize) <= _maxIncomingMessageSize))
+               {
+                  int32 availableBodyBytes = bb->GetNumBytes()-hs;
+                  if (bodySize <= availableBodyBytes) (void) bb->SetNumBytes(hs+bodySize, true);  // trim off any extra space we don't need
+                  else
+                  {
+                     // Oops, the Message body is greater than our buffer has bytes to store!  We're going to need a bigger buffer!
+                     ByteBufferRef bigBuf = GetByteBufferFromPool(hs+bodySize);
+                     if (bigBuf() == NULL) {SetHosed(); break;}
+                     memcpy(bigBuf()->GetBuffer(), bb->GetBuffer(), hs);  // copy over the received header bytes to the big buffer now
+                     _recvBuffer._buffer = bigBuf;
+                     bb = bigBuf();
+                  }
+               }
+               else 
+               {
+                  LogTime(MUSCLE_LOG_DEBUG, "MessageIOGateway %p:  bodySize " INT32_FORMAT_SPEC " is out of range, limit is " UINT32_FORMAT_SPEC "\n", this, bodySize, _maxIncomingMessageSize);
+                  SetHosed(); 
+                  break;
+               }
+            }
+         }
+
+         if (_recvBuffer._offset >= hs)  // if we got here, we're ready to read the body of the incoming Message
+         {
+            if ((_recvBuffer._offset < bb->GetNumBytes())&&(ReceiveMoreData(readBytes, maxBytes, bb->GetNumBytes()) != B_NO_ERROR)) break;
+            if (_recvBuffer._offset == bb->GetNumBytes())
             {
                // Finished receiving message bytes... now reconstruct that bad boy!
-               MessageRef msg = UnflattenMessage(_recvBodyBuffer._buffer, _recvHeaderBuffer._buffer()->GetBuffer());
-               _recvHeaderBuffer.Reset();  // reset our state for the next one!
-               _recvBodyBuffer.Reset();
+               MessageRef msg = UnflattenHeaderAndMessage(_recvBuffer._buffer);
+               _recvBuffer.Reset();  // reset our state for the next one!
                if (msg() == NULL) {SetHosed(); break;}
                if (_unflattenedCallback) _unflattenedCallback(msg, _unflattenedCallbackData);
                receiver.CallMessageReceivedFromGateway(msg);
             }
          }
-         else
-         {
-            // Now that we have the header, allocate space for the body bytes based on the info contained in the header
-            int32 bodySize = GetBodySize(_recvHeaderBuffer._buffer()->GetBuffer());
-            if ((bodySize >= 0)&&(((uint32)bodySize) <= _maxIncomingMessageSize))
-            {
-               _recvBodyBuffer._offset = 0;
-               _recvBodyBuffer._buffer = GetByteBufferFromPool(bodySize);
-               if (_recvBodyBuffer._buffer() == NULL) {SetHosed(); break;}
-            }
-            else {SetHosed(); break;}
-         }
       }
    }
    return IsHosed() ? -1 : readBytes;
 }
-      
-// For this method, B_NO_ERROR means "keep sending", and B_ERROR means "stop sending for now", and isn't fatal to the stream
-// If there is a fatal error in the stream it will call SetHosed() to indicate that.
+
+// For this method, B_NO_ERROR means "We got all the data we had room for", and B_ERROR
+// means "short read".  A real network error will also cause SetHosed() to be called.
 status_t 
-MessageIOGateway :: ReadData(TransferBuffer & buf, int32 & readBytes, uint32 & maxBytes)
+MessageIOGateway :: ReceiveMoreData(int32 & readBytes, uint32 & maxBytes, uint32 maxArraySize)
 {
    TCHECKPOINT;
 
-   ByteBuffer * bb = buf._buffer();
-   if (bb)
+   int32 attemptSize = muscleMin(maxBytes, (uint32)((maxArraySize>_recvBuffer._offset)?(maxArraySize-_recvBuffer._offset):0));
+   int32 numRead     = GetDataIO()()->Read(_recvBuffer._buffer()->GetBuffer()+_recvBuffer._offset, attemptSize);
+   if (numRead >= 0)
    {
-      uint8 * bytes = bb->GetBuffer();
-      if (bytes)
-      {
-         int32 attemptSize = muscleMin(maxBytes, bb->GetNumBytes()-buf._offset);
-         int32 numRead     = GetDataIO()()->Read(&bytes[buf._offset], attemptSize);
-
-         if (numRead >= 0)
-         {
-            maxBytes    -= numRead;
-            readBytes   += numRead;
-            buf._offset += numRead;
-         }
-         else SetHosed();
-
-         if (numRead < attemptSize) return B_ERROR;  // assume this means buffers are empty; we'll read the rest later
-      }
+      maxBytes            -= numRead;
+      readBytes           += numRead;
+      _recvBuffer._offset += numRead;
    }
-   return B_NO_ERROR;  // no buffer:  try to get the next one from the Queue.
+   else SetHosed();
+
+   return (numRead < attemptSize) ? B_ERROR : B_NO_ERROR;
 }
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
@@ -226,17 +279,18 @@ GetCodec(int32 newEncoding, ZLibCodec * & setCodec) const
 
 ByteBufferRef 
 MessageIOGateway ::
-FlattenMessage(const MessageRef & msgRef, uint8 * headerBuf) const
+FlattenHeaderAndMessage(const MessageRef & msgRef) const
 {
    TCHECKPOINT;
 
    ByteBufferRef ret;
    if (msgRef())
    {
-      ret = GetByteBufferFromPool(msgRef()->FlattenedSize());
+      uint32 hs = GetHeaderSize();
+      ret = GetByteBufferFromPool(hs+msgRef()->FlattenedSize());
       if (ret())
       {
-         msgRef()->Flatten(ret()->GetBuffer());
+         msgRef()->Flatten(ret()->GetBuffer()+hs);
 
          int32 encoding = MUSCLE_MESSAGE_ENCODING_DEFAULT;
 
@@ -246,7 +300,7 @@ FlattenMessage(const MessageRef & msgRef, uint8 * headerBuf) const
             ZLibCodec * enc = GetCodec(_outgoingEncoding, _sendCodec);
             if (enc)
             {
-               ByteBufferRef compressedRef = enc->Deflate(*ret(), AreOutgoingMessagesIndependent());
+               ByteBufferRef compressedRef = enc->Deflate(ret()->GetBuffer()+hs, ret()->GetNumBytes()-hs, AreOutgoingMessagesIndependent(), hs);
                if (compressedRef())
                {
                   encoding = MUSCLE_MESSAGE_ENCODING_ZLIB_1+enc->GetCompressionLevel()-1;
@@ -259,8 +313,8 @@ FlattenMessage(const MessageRef & msgRef, uint8 * headerBuf) const
 
          if (ret())
          {
-            uint32 * lhb = (uint32 *) headerBuf;
-            lhb[0] = B_HOST_TO_LENDIAN_INT32(ret()->GetNumBytes());
+            uint32 * lhb = (uint32 *) ret()->GetBuffer();
+            lhb[0] = B_HOST_TO_LENDIAN_INT32(ret()->GetNumBytes()-hs);
             lhb[1] = B_HOST_TO_LENDIAN_INT32(encoding);
          }
       }
@@ -270,7 +324,7 @@ FlattenMessage(const MessageRef & msgRef, uint8 * headerBuf) const
 
 MessageRef 
 MessageIOGateway ::
-UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * headerBuf) const
+UnflattenHeaderAndMessage(const ByteBufferRef & bufRef) const
 {
    TCHECKPOINT;
 
@@ -280,8 +334,14 @@ UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * headerBuf) const
       ret = GetMessageFromPool();
       if (ret())
       {
-         const uint32 * lhb = (const uint32 *) headerBuf;
-         if ((uint32) B_LENDIAN_TO_HOST_INT32(lhb[0]) != bufRef()->GetNumBytes()) return MessageRef();
+         uint32 offset = GetHeaderSize();
+
+         const uint32 * lhb = (const uint32 *) bufRef()->GetBuffer();
+         if ((offset+((uint32) B_LENDIAN_TO_HOST_INT32(lhb[0]))) != bufRef()->GetNumBytes())
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "MessageIOGateway %p:  Unexpected lhb size " UINT32_FORMAT_SPEC ", expected " INT32_FORMAT_SPEC "\n", this, (uint32) B_LENDIAN_TO_HOST_INT32(lhb[0]), bufRef()->GetNumBytes()-offset);
+            return MessageRef();
+         }
 
          int32 encoding = B_LENDIAN_TO_HOST_INT32(lhb[1]);
 
@@ -292,14 +352,23 @@ UnflattenMessage(const ByteBufferRef & bufRef, const uint8 * headerBuf) const
          ZLibCodec * enc = GetCodec(encoding, _recvCodec);
          if (enc) 
          {
-            expRef = enc->Inflate(*bb);
-            if (expRef()) bb = expRef();
+            expRef = enc->Inflate(bb->GetBuffer()+offset, bb->GetNumBytes()-offset);
+            if (expRef()) 
+            {
+               bb = expRef();
+               offset = 0;
+            }
+            else
+            {
+               LogTime(MUSCLE_LOG_DEBUG, "MessageIOGateway %p:  Error inflating compressed byte buffer!\n", this);
+               bb = NULL;
+            }
          }
 #else
          if (encoding != MUSCLE_MESSAGE_ENCODING_DEFAULT) bb = NULL;
 #endif
 
-         if ((bb == NULL)||(ret()->Unflatten(bb->GetBuffer(), bb->GetNumBytes()) != B_NO_ERROR)) ret.Reset();
+         if ((bb == NULL)||(ret()->Unflatten(bb->GetBuffer()+offset, bb->GetNumBytes()-offset) != B_NO_ERROR)) ret.Reset();
       }
    }
    return ret;
@@ -326,7 +395,7 @@ bool
 MessageIOGateway ::
 HasBytesToOutput() const
 {
-   return ((IsHosed() == false)&&((_sendBodyBuffer._buffer())||(GetOutgoingMessageQueue().HasItems())));
+   return ((IsHosed() == false)&&((_sendBuffer._buffer())||(GetOutgoingMessageQueue().HasItems())));
 }
 
 void
@@ -342,10 +411,8 @@ Reset()
    delete _recvCodec; _recvCodec = NULL;
 #endif
 
-   _sendHeaderBuffer.Reset();
-   _sendBodyBuffer.Reset();
-   _recvHeaderBuffer.Reset();
-   _recvBodyBuffer.Reset();
+   _sendBuffer.Reset();
+   _recvBuffer.Reset();
 }
 
 MessageRef MessageIOGateway :: CreateSynchronousPingMessage(uint32 syncPingCounter) const

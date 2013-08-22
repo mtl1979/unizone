@@ -1,10 +1,10 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "system/SystemInfo.h"
 
 #if defined(__APPLE__)
+# include <mach/mach_host.h>
 # include <CoreFoundation/CoreFoundation.h>
-# include <CoreServices/CoreServices.h>
 #endif
 #ifdef WIN32
 # include "Shlwapi.h"
@@ -246,8 +246,13 @@ status_t GetNumberOfProcessors(uint32 & retNumProcessors)
       return B_NO_ERROR;  
    }
 #elif defined(__APPLE__)
-   retNumProcessors = ::MPProcessors();
-   return B_NO_ERROR;
+   host_basic_info_data_t hostInfo;
+   mach_msg_type_number_t infoCount = HOST_BASIC_INFO_COUNT;
+   if (host_info(mach_host_self(), HOST_BASIC_INFO, (host_info_t)&hostInfo, &infoCount) == KERN_SUCCESS)
+   {
+      retNumProcessors = (uint32) hostInfo.max_cpus;
+      return B_NO_ERROR;
+   }
 #elif defined(WIN32)
    SYSTEM_INFO info;
    GetSystemInfo(&info);

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef NEW_H_NOT_AVAILABLE
 # include <new>
@@ -80,7 +80,7 @@ status_t MemoryParanoiaCheckBuffer(void * userPtr, bool crashIfInvalid)
          {
             foundCorruption = true;
             TCHECKPOINT;
-            printf("MEMORY GUARD CORRUPTION (%i words before front): buffer (%p,"UINT32_FORMAT_SPEC") (userptr=%p,"UINT32_FORMAT_SPEC") expected %p, got %p!\n", (MUSCLE_ENABLE_MEMORY_PARANOIA-i), internalPtr, (uint32)(*internalPtr), userPtr, (uint32)userBufLen, expectedFrontVal, frontRead[i]);
+            printf("MEMORY GUARD CORRUPTION (%i words before front): buffer (%p," UINT32_FORMAT_SPEC ") (userptr=%p," UINT32_FORMAT_SPEC ") expected %p, got %p!\n", (MUSCLE_ENABLE_MEMORY_PARANOIA-i), internalPtr, (uint32)(*internalPtr), userPtr, (uint32)userBufLen, expectedFrontVal, frontRead[i]);
          }
          if (rearRead[i] != expectedRearVal)
          {
@@ -171,7 +171,7 @@ void * muscleAlloc(size_t userSize, bool retryOnFailure)
    if ((ma)&&(userPtr == NULL)) 
    {
       // I call printf() instead of LogTime() to avoid any chance of an infinite recursion
-      printf("muscleAlloc:  allocation failure (tried to allocate "UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC" user bytes)\n", (uint32)internalSize, (uint32)userSize);
+      printf("muscleAlloc:  allocation failure (tried to allocate " UINT32_FORMAT_SPEC " internal bytes / " UINT32_FORMAT_SPEC " user bytes)\n", (uint32)internalSize, (uint32)userSize);
       fflush(stdout);  // make sure this message gets out!
 
       ma->AllocationFailed(_currentlyAllocatedBytes, internalSize);  // see if ma can free spare buffers up for us
@@ -251,7 +251,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
       if ((ma)&&(newUserPtr == NULL)) 
       {
          // I call printf() instead of LogTime() to avoid any chance of an infinite recursion
-         printf("muscleRealloc:  reallocation failure (tried to grow "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
+         printf("muscleRealloc:  reallocation failure (tried to grow " UINT32_FORMAT_SPEC "->" UINT32_FORMAT_SPEC " internal bytes / " UINT32_FORMAT_SPEC "->" UINT32_FORMAT_SPEC " user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
          fflush(stdout);  // make sure this message gets out!
 
          ma->AllocationFailed(_currentlyAllocatedBytes, growBy);  // see if ma can free spare buffers up for us
@@ -284,7 +284,7 @@ void * muscleRealloc(void * oldUserPtr, size_t newUserSize, bool retryOnFailure)
       else 
       {
          newUserPtr = oldUserPtr;  // I guess the best thing to do is just send back the old pointer?  Not sure what to do here.
-         printf("muscleRealloc:  reallocation failure (tried to shrink "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" internal bytes / "UINT32_FORMAT_SPEC"->"UINT32_FORMAT_SPEC" user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
+         printf("muscleRealloc:  reallocation failure (tried to shrink " UINT32_FORMAT_SPEC "->" UINT32_FORMAT_SPEC " internal bytes / " UINT32_FORMAT_SPEC "->" UINT32_FORMAT_SPEC " user bytes))\n", (uint32)oldInternalSize, (uint32)newInternalSize, (uint32)oldUserSize, (uint32)newUserSize);
          fflush(stdout);  // make sure this message gets out!
       }
    }

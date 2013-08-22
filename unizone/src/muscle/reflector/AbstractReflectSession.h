@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleAbstractReflectSession_h
 #define MuscleAbstractReflectSession_h
@@ -310,7 +310,7 @@ public:
    /** May be overridden to return the host name string we should be assigned
     *  if no host name could be automatically determined by the ReflectServer
     *  (i.e. if we had no associated socket at the time).
-    *  Default implementation returns "<unknown>".
+    *  Default implementation returns "_unknown_".
     */
    virtual String GetDefaultHostName() const;
 
@@ -424,7 +424,7 @@ public:
    void BroadcastToAllSessions(const MessageRef & msgRef, void * userData = NULL, bool includeSelf = true);
 
    /**
-    * Convenience method:  Calls MessageReceivedFromFactory() on all session
+    * Convenience method:  Calls MessageReceivedFromSession() on all session
     * objects of the specified type.  Saves you from having to do your own iteration every time you
     * want to broadcast something.
     * @param msgRef a reference to the Message you wish to broadcast

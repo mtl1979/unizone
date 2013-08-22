@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #if defined(MUSCLE_USE_POLL) || defined(MUSCLE_USE_EPOLL)
 # include <limits.h>  // for INT_MAX
@@ -157,9 +157,9 @@ int SocketMultiplexer :: FDState :: WaitForEvents(uint64 optTimeoutAtTime)
 #elif defined(MUSCLE_USE_POLL)
       int timeoutMillis = (waitTimeMicros == MUSCLE_TIME_NEVER) ? -1 : ((int) muscleMin(MicrosToMillis(waitTimeMicros), (int64)(INT_MAX)));
 # ifdef WIN32
-      int ret = WSAPoll(_pollFDArray.GetItemPointer(0), _pollFDArray.GetNumItems(), timeoutMillis);
+      int ret = WSAPoll(_pollFDArray.GetItemAt(0), _pollFDArray.GetNumItems(), timeoutMillis);
 # else
-      int ret = poll(   _pollFDArray.GetItemPointer(0), _pollFDArray.GetNumItems(), timeoutMillis);
+      int ret = poll(   _pollFDArray.GetItemAt(0), _pollFDArray.GetNumItems(), timeoutMillis);
 # endif
 #else
       struct timeval waitTime;

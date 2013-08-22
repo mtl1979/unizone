@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/FilterSessionFactory.h"
 #include "reflector/StorageReflectConstants.h"
@@ -21,7 +21,7 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
 
    if (GetSessions().GetNumItems() >= _totalMaxSessions)
    {
-      LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (all "UINT32_FORMAT_SPEC" sessions slots are in use).\n", clientHostIP(), _totalMaxSessions);
+      LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (all " UINT32_FORMAT_SPEC " sessions slots are in use).\n", clientHostIP(), _totalMaxSessions);
       return AbstractReflectSessionRef();
    }
       
@@ -32,7 +32,7 @@ AbstractReflectSessionRef FilterSessionFactory :: CreateSession(const String & c
       {
          if ((iter.GetValue()())&&(strcmp(iter.GetValue()()->GetHostName()(), clientHostIP()) == 0)&&(++count >= _maxSessionsPerHost))
          {
-            LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (host already has "UINT32_FORMAT_SPEC" sessions open).\n", clientHostIP(), _maxSessionsPerHost);
+            LogTime(MUSCLE_LOG_DEBUG, "Connection from [%s] refused (host already has " UINT32_FORMAT_SPEC " sessions open).\n", clientHostIP(), _maxSessionsPerHost);
             return AbstractReflectSessionRef();
          }
       }

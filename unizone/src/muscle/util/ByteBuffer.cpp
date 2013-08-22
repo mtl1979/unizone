@@ -19,7 +19,7 @@ status_t ByteBuffer :: SetBuffer(uint32 numBytes, const uint8 * buffer)
       uint32 numReadableBytes = (uint32)((_buffer+_numValidBytes)-buffer);
       if (numBytes > numReadableBytes)
       {
-         LogTime(MUSCLE_LOG_CRITICALERROR, "ByteBuffer::SetBuffer();  Attempted to read "UINT32_FORMAT_SPEC" bytes off the end of our internal buffer!\n", numBytes-numReadableBytes);
+         LogTime(MUSCLE_LOG_CRITICALERROR, "ByteBuffer::SetBuffer();  Attempted to read " UINT32_FORMAT_SPEC " bytes off the end of our internal buffer!\n", numBytes-numReadableBytes);
          return B_ERROR;
       }
       else
@@ -346,8 +346,8 @@ uint32 ByteBuffer :: ReadRects(Rect * vals, uint32 numValsToRead, uint32 & readB
          const uint8 * rBase = &readAt[i*bytesPerRect];
 #if B_HOST_IS_BENDIAN
          vals[i].Set(B_LENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[0*sizeof(int32)])), 
-                     B_LENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[1*sizeof(int32)]))
-                     B_LENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[2*sizeof(int32)]))
+                     B_LENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[1*sizeof(int32)])),
+                     B_LENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[2*sizeof(int32)])),
                      B_LENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[3*sizeof(int32)])));
 #else
          vals[i].Set(B_BENDIAN_TO_HOST_IFLOAT(muscleCopyIn<int32>(&rBase[0*sizeof(int32)])), 

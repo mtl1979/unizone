@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include <stdio.h>
 #include "util/ByteBuffer.h"
@@ -266,7 +266,7 @@ protected:
       {
          DoIndents(indent,s); 
          char buf[128]; 
-         sprintf(buf, "    "UINT32_FORMAT_SPEC". %p\n", i, _data.GetItemAt(i)->GetItemPointer()); 
+         sprintf(buf, "    " UINT32_FORMAT_SPEC ". %p\n", i, _data.GetItemAt(i)->GetItemPointer()); 
          s += buf;
       }
    }
@@ -303,7 +303,11 @@ public:
    virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       this->_data.Clear();
-      if (numBytes % FlatItemSize) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
+      if (numBytes % FlatItemSize) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "FixedSizeDataArray %p:  Unexpected numBytes " UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC "\n", this, numBytes, FlatItemSize);
+         return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
+      }
 
       DataType temp;
       uint32 numItems = numBytes / FlatItemSize;
@@ -311,7 +315,11 @@ public:
       {
          for (uint32 i=0; i<numItems; i++)
          {
-            if ((temp.Unflatten(buffer, FlatItemSize) != B_NO_ERROR)||(this->_data.AddTail(temp) != B_NO_ERROR)) return B_ERROR;
+            if ((temp.Unflatten(buffer, FlatItemSize) != B_NO_ERROR)||(this->_data.AddTail(temp) != B_NO_ERROR)) 
+            {
+               LogTime(MUSCLE_LOG_DEBUG, "FixedSizeDataArray %p:  Error unflattened item " UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC "\n", this, i, numItems);
+               return B_ERROR;
+            }
             buffer += FlatItemSize;
          }
          return B_NO_ERROR;
@@ -329,7 +337,7 @@ protected:
       {
          DoIndents(indent,s); 
          char buf[64]; 
-         sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i);  
+         sprintf(buf, "    " UINT32_FORMAT_SPEC ". ", i);  
          s += buf;
          AddItemToString(s, this->_data[i]);
       }
@@ -375,7 +383,11 @@ public:
    virtual status_t Unflatten(const uint8 * buffer, uint32 numBytes)
    {
       this->_data.Clear();
-      if (numBytes % sizeof(DataType)) return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
+      if (numBytes % sizeof(DataType)) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "PrimitiveTypeDataArray %p:  Unexpected numBytes " UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC "\n", this, numBytes, (uint32) sizeof(DataType));
+         return B_ERROR;  // length must be an even multiple of item size, or something's wrong!
+      }
 
       uint32 numItems = numBytes / sizeof(DataType);
       if (this->_data.EnsureSize(numItems, true) == B_NO_ERROR)
@@ -406,7 +418,7 @@ protected:
       {
          DoIndents(indent,s); 
          char temp1[100]; sprintf(temp1, GetFormatString(), this->ItemAt(i));
-         char temp2[150]; sprintf(temp2, "    "UINT32_FORMAT_SPEC". [%s]\n", i, temp1);  s += temp2;
+         char temp2[150]; sprintf(temp2, "    " UINT32_FORMAT_SPEC ". [%s]\n", i, temp1);  s += temp2;
       }
    }
 };
@@ -427,7 +439,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*_data[i].CalculateChecksum());
       return ret;
    }
 };
@@ -449,7 +461,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*_data[i].CalculateChecksum());
       return ret;
    }
 };
@@ -470,7 +482,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (uint32)_data[i];
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*((uint32)_data[i]));
       return ret;
    }
 
@@ -525,7 +537,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i] ? 1 : 0;
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*(_data[i] ? 1 : 0));
       return ret;
    }
 
@@ -557,7 +569,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (uint32)_data[i];
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*((uint32)_data[i]));
       return ret;
    }
 
@@ -597,7 +609,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += (uint32)_data[i];
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*((uint32)_data[i]));
       return ret;
    }
 
@@ -637,7 +649,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += CalculateChecksumForUint64(_data[i]);
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*CalculateChecksumForUint64(_data[i]));
       return ret;
    }
 
@@ -677,7 +689,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += CalculateChecksumForFloat(_data[i]);
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*CalculateChecksumForFloat(_data[i]));
       return ret;
    }
 
@@ -717,7 +729,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += CalculateChecksumForDouble(_data[i]);
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*CalculateChecksumForDouble(_data[i]));
       return ret;
    }
 
@@ -851,15 +863,28 @@ public:
       uint32 readOffset = 0;
 
       uint32 numItems;
-      if (ReadData(buffer, numBytes, &readOffset, &numItems, sizeof(numItems)) != B_NO_ERROR) return B_ERROR;
+      if (ReadData(buffer, numBytes, &readOffset, &numItems, sizeof(numItems)) != B_NO_ERROR) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "ByteBufferDataArray %p:  Error reading numItems (numBytes=" UINT32_FORMAT_SPEC ")\n", this, numBytes);
+         return B_ERROR;
+      }
       numItems = B_LENDIAN_TO_HOST_INT32(numItems);
    
       for (uint32 i=0; i<numItems; i++)
       {
          uint32 readFs;
-         if (ReadData(buffer, numBytes, &readOffset, &readFs, sizeof(readFs)) != B_NO_ERROR) return B_ERROR;
+         if (ReadData(buffer, numBytes, &readOffset, &readFs, sizeof(readFs)) != B_NO_ERROR) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "ByteBufferDataArray %p:  Error reading item size (i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ", readOffset=" UINT32_FORMAT_SPEC ", numBytes=" UINT32_FORMAT_SPEC ")\n", this, i, numItems, readOffset, numBytes);
+            return B_ERROR;
+         }
+
          readFs = B_LENDIAN_TO_HOST_INT32(readFs);
-         if (readOffset + readFs > numBytes) return B_ERROR;  // message size too large for our buffer... corruption?
+         if (readOffset + readFs > numBytes) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "ByteBufferDataArray %p:  Item size too large (i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ", readOffset=" UINT32_FORMAT_SPEC ", numBytes=" UINT32_FORMAT_SPEC ", readFs=" UINT32_FORMAT_SPEC ")\n", this, i, numItems, readOffset, numBytes, readFs);
+            return B_ERROR;  // message size too large for our buffer... corruption?
+         }
          FlatCountableRef fcRef(GetByteBufferFromPool(readFs, &buffer[readOffset]).GetRefCountableRef(), true);
          if ((fcRef())&&(AddDataItem(&fcRef, sizeof(fcRef)) == B_NO_ERROR)) readOffset += readFs;
                                                                        else return B_ERROR;
@@ -875,7 +900,7 @@ public:
          DoIndents(indent,s);
 
          char buf[100]; 
-         sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i);
+         sprintf(buf, "    " UINT32_FORMAT_SPEC ". ", i);
          s += buf;
 
          FlatCountable * fc = ItemAt(i)();
@@ -893,7 +918,7 @@ public:
 
          if (bb)
          {
-            sprintf(buf, "[flattenedSize="UINT32_FORMAT_SPEC"] ", bb->GetNumBytes()); 
+            sprintf(buf, "[flattenedSize=" UINT32_FORMAT_SPEC "] ", bb->GetNumBytes()); 
             s += buf;
             uint32 printBytes = muscleMin(bb->GetNumBytes(), (uint32)10);
             if (printBytes > 0)
@@ -922,7 +947,7 @@ public:
       for (int32 i=GetNumItems()-1; i>=0; i--)
       {
          const ByteBuffer * buf = dynamic_cast<ByteBuffer *>(_data[i]());  // TODO: possibly make this a static cast?
-         if (buf) ret += buf->CalculateChecksum();
+         if (buf) ret += ((i+1)*buf->CalculateChecksum());
       }
       return ret;
    }
@@ -965,13 +990,26 @@ public:
       while(readOffset < numBytes)
       {
          uint32 readFs;
-         if (ReadData(buffer, numBytes, &readOffset, &readFs, sizeof(readFs)) != B_NO_ERROR) return B_ERROR;
+         if (ReadData(buffer, numBytes, &readOffset, &readFs, sizeof(readFs)) != B_NO_ERROR) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "MessageDataArray %p:  Read of sub-message size failed (readOffset=" UINT32_FORMAT_SPEC ", numBytes=" UINT32_FORMAT_SPEC ")\n", this, readOffset, numBytes);
+            return B_ERROR;
+         }
+
          readFs = B_LENDIAN_TO_HOST_INT32(readFs);
-         if (readOffset + readFs > numBytes) return B_ERROR;  // message size too large for our buffer... corruption?
+         if (readOffset + readFs > numBytes) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "MessageDataArray %p:  Sub-message size too large (readOffset=" UINT32_FORMAT_SPEC ", numBytes=" UINT32_FORMAT_SPEC ", readFs=" UINT32_FORMAT_SPEC ")\n", this, readOffset, numBytes, readFs);
+            return B_ERROR;  // message size too large for our buffer... corruption?
+         }
          MessageRef nextMsg = GetMessageFromPool();
          if (nextMsg())
          {
-            if (nextMsg()->Unflatten(&buffer[readOffset], readFs) != B_NO_ERROR) return B_ERROR;
+            if (nextMsg()->Unflatten(&buffer[readOffset], readFs) != B_NO_ERROR) 
+            {
+               LogTime(MUSCLE_LOG_DEBUG, "MessageDataArray %p:  Sub-message unflatten failed (readOffset=" UINT32_FORMAT_SPEC ", numBytes=" UINT32_FORMAT_SPEC ", readFs=" UINT32_FORMAT_SPEC ")\n", this, readOffset, numBytes, readFs);
+               return B_ERROR;
+            }
             if (AddDataItem(&nextMsg, sizeof(nextMsg)) != B_NO_ERROR) return B_ERROR;
             readOffset += readFs;
          }
@@ -988,7 +1026,7 @@ public:
          DoIndents(indent,s);  
 
          char buf[100]; 
-         sprintf(buf, "    "UINT32_FORMAT_SPEC". ", i); 
+         sprintf(buf, "    " UINT32_FORMAT_SPEC ". ", i); 
          s += buf;
 
          const void * vp;
@@ -1000,7 +1038,7 @@ public:
             if (msg)
             {
                char tcbuf[5]; MakePrettyTypeCodeString(msg->what, tcbuf);
-               sprintf(buf, "[what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), flattenedSize="UINT32_FORMAT_SPEC", numFields="UINT32_FORMAT_SPEC"]\n", tcbuf, msg->what, msg->what, itemSize, msg->GetNumNames());
+               sprintf(buf, "[what='%s' (" INT32_FORMAT_SPEC "/0x" XINT32_FORMAT_SPEC "), flattenedSize=" UINT32_FORMAT_SPEC ", numFields=" UINT32_FORMAT_SPEC "]\n", tcbuf, msg->what, msg->what, itemSize, msg->GetNumNames());
                s += buf;
 
                if (maxRecurseLevel > 0) msg->AddToString(s, maxRecurseLevel-1, indent+3);
@@ -1019,7 +1057,7 @@ public:
       for (int32 i=GetNumItems()-1; i>=0; i--)
       {
          const MessageRef & msg = _data[i];
-         if (msg()) ret += msg()->CalculateChecksum(countNonFlattenableFields);
+         if (msg()) ret += ((i+1)*(msg()->CalculateChecksum(countNonFlattenableFields)));
       }
       return ret;
    }
@@ -1093,17 +1131,34 @@ public:
       uint32 networkByteOrder;
       uint32 readOffset = 0;
 
-      if (this->ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+      if (this->ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "VariableSizeFlatObjectArray %p:  Read of numElements failed (inputBufferBytes=" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes);
+         return B_ERROR;
+      }
+
       uint32 numElements = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
       if (this->_data.EnsureSize(numElements) != B_NO_ERROR) return B_ERROR;
       for (uint32 i=0; i<numElements; i++)
       {
-         if (this->ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+         if (this->ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "VariableSizeFlatObjectArray %p:  Read of element size failed (inputBufferBytes=" UINT32_FORMAT_SPEC ", i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, i, numElements);
+            return B_ERROR;
+         }
          uint32 elementSize = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
-         if (elementSize == 0) return B_ERROR;  // it should always have at least the trailing NUL byte!
+         if (elementSize == 0) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "VariableSizeFlatObjectArray %p:  Element size was zero! (inputBufferBytes=" UINT32_FORMAT_SPEC ", i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, i, numElements);
+            return B_ERROR;  // it should always have at least the trailing NUL byte!
+         }
 
          // read element data
-         if ((readOffset + elementSize > inputBufferBytes)||(this->_data.AddTail() != B_NO_ERROR)||(this->_data.TailPointer()->Unflatten(&buffer[readOffset], elementSize) != B_NO_ERROR)) return B_ERROR;
+         if ((readOffset + elementSize > inputBufferBytes)||(this->_data.AddTail() != B_NO_ERROR)||(this->_data.TailPointer()->Unflatten(&buffer[readOffset], elementSize) != B_NO_ERROR)) 
+         {
+            LogTime(MUSCLE_LOG_DEBUG, "VariableSizeFlatObjectArray %p:  Element size was too large! (inputBufferBytes=" UINT32_FORMAT_SPEC ", i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ", readOffset=" UINT32_FORMAT_SPEC ", elementSize=" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, i, numElements, readOffset, elementSize);
+            return B_ERROR;
+         }
          readOffset += elementSize;
       }
       return B_NO_ERROR;
@@ -1127,7 +1182,7 @@ public:
       {
          DoIndents(indent,s); 
          char buf[50]; 
-         sprintf(buf,"    "UINT32_FORMAT_SPEC". [", i); 
+         sprintf(buf,"    " UINT32_FORMAT_SPEC ". [", i); 
          s += buf;
          s += ItemAt(i);
          s += "]\n";
@@ -1137,7 +1192,7 @@ public:
    virtual uint32 CalculateChecksum(bool /*countNonFlattenableFields*/) const
    {
       uint32 ret = TypeCode() + GetNumItems();
-      for (int32 i=GetNumItems()-1; i>=0; i--) ret += _data[i].CalculateChecksum();
+      for (int32 i=GetNumItems()-1; i>=0; i--) ret += ((i+1)*(_data[i].CalculateChecksum()));
       return ret;
    }
 };
@@ -1210,7 +1265,7 @@ void Message :: AddToString(String & s, uint32 maxRecurseLevel, int indent) cons
 
    char buf[128];
    DoIndents(indent,s); 
-   sprintf(buf, "Message:  what='%s' ("INT32_FORMAT_SPEC"/0x"XINT32_FORMAT_SPEC"), entryCount="INT32_FORMAT_SPEC", flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", prettyTypeCodeBuf, what, what, GetNumNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
+   sprintf(buf, "Message:  what='%s' (" INT32_FORMAT_SPEC "/0x" XINT32_FORMAT_SPEC "), entryCount=" INT32_FORMAT_SPEC ", flatSize=" UINT32_FORMAT_SPEC " checksum=" UINT32_FORMAT_SPEC "\n", prettyTypeCodeBuf, what, what, GetNumNames(B_ANY_TYPE), FlattenedSize(), CalculateChecksum());
    s += buf;
 
    for (HashtableIterator<String, RefCountableRef> iter(_entries, HTIT_FLAG_NOREGISTER); iter.HasData(); iter++)
@@ -1221,7 +1276,7 @@ void Message :: AddToString(String & s, uint32 maxRecurseLevel, int indent) cons
       DoIndents(indent,s); 
       s += "  Entry: Name=[";
       s += iter.GetKey();
-      sprintf(buf, "], GetNumItems()="INT32_FORMAT_SPEC", TypeCode()='%s' ("INT32_FORMAT_SPEC") flatSize="UINT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC"\n", nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false));
+      sprintf(buf, "], GetNumItems()=" INT32_FORMAT_SPEC ", TypeCode()='%s' (" INT32_FORMAT_SPEC ") flatSize=" UINT32_FORMAT_SPEC " checksum=" UINT32_FORMAT_SPEC "\n", nextValue->GetNumItems(), prettyTypeCodeBuf, tc, nextValue->FlattenedSize(), nextValue->CalculateChecksum(false));
       s += buf;
       nextValue->AddToString(s, maxRecurseLevel, indent);
    }
@@ -1336,8 +1391,15 @@ uint32 Message :: CalculateChecksum(bool countNonFlattenableFields) const
    // Calculate the number of flattenable entries (may be less than the total number of entries!)
    for (HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER); it.HasData(); it++)
    {
+      // Note that I'm deliberately NOT considering the ordering of the fields when computing the checksum!
       const AbstractDataArray * a = static_cast<const AbstractDataArray *>(it.GetValue()());
-      if ((countNonFlattenableFields)||(a->IsFlattenable())) ret += a->CalculateChecksum(countNonFlattenableFields);
+      if ((countNonFlattenableFields)||(a->IsFlattenable())) 
+      {
+         uint32 fnChk = it.GetKey().CalculateChecksum();
+         ret += fnChk;
+         if (fnChk == 0) ret++;  // almost-paranoia 
+         ret += (fnChk*a->CalculateChecksum(countNonFlattenableFields));  // multiplying by fnChck helps catch when two fields were swapped
+      }
    }
    return ret;
 }
@@ -1365,20 +1427,19 @@ void Message :: Flatten(uint8 * buffer) const
    networkByteOrder = B_HOST_TO_LENDIAN_INT32(what);
    WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
 
-   // Calculate the number of flattenable entries (may be less than the total number of entries!)
-   uint32 numFlattenableEntries = 0;
-   for (HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER); it.HasData(); it++) if (static_cast<const AbstractDataArray *>(it.GetValue()())->IsFlattenable()) numFlattenableEntries++;
-
-   // Write number of entries
-   networkByteOrder = B_HOST_TO_LENDIAN_INT32(numFlattenableEntries);
-   WriteData(buffer, &writeOffset, &networkByteOrder, sizeof(networkByteOrder));
+   // Remember where to write the number-of-entries value (we'll actually write it at the end of this method)
+   uint8 * entryCountPtr = &buffer[writeOffset];
+   writeOffset += sizeof(uint32);
 
    // Write entries
+   uint32 numFlattenedEntries = 0;
    for (HashtableIterator<String, RefCountableRef> it(_entries, HTIT_FLAG_NOREGISTER); it.HasData(); it++)
    {
       const AbstractDataArray * nextValue = static_cast<const AbstractDataArray *>(it.GetValue()());
       if (nextValue->IsFlattenable())
       {
+         numFlattenedEntries++;
+
          // Write entry name length
          uint32 keyNameSize = it.GetKey().FlattenedSize();
          networkByteOrder = B_HOST_TO_LENDIAN_INT32(keyNameSize);
@@ -1402,6 +1463,10 @@ void Message :: Flatten(uint8 * buffer) const
          writeOffset += dataSize;
       }
    }
+
+   // Write number-of-entries field (now that we know its final value)
+   networkByteOrder = B_HOST_TO_LENDIAN_INT32(numFlattenedEntries);
+   memcpy(entryCountPtr, &networkByteOrder, sizeof(uint32));
 }
 
 status_t Message :: Unflatten(const uint8 * buffer, uint32 inputBufferBytes) 
@@ -1414,47 +1479,91 @@ status_t Message :: Unflatten(const uint8 * buffer, uint32 inputBufferBytes)
    
    // Read and check protocol version number
    uint32 networkByteOrder;
-   if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+   if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+   {
+      LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Couldn't read message protocol version! (inputBufferBytes=" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes);
+      return B_ERROR;
+   }
 
    uint32 messageProtocolVersion = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
-   if ((messageProtocolVersion < OLDEST_SUPPORTED_PROTOCOL_VERSION) ||
-       (messageProtocolVersion > CURRENT_PROTOCOL_VERSION)) return B_ERROR;
+   if ((messageProtocolVersion < OLDEST_SUPPORTED_PROTOCOL_VERSION)||(messageProtocolVersion > CURRENT_PROTOCOL_VERSION)) 
+   {
+      LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Unexpected message protocol version " UINT32_FORMAT_SPEC " (inputBufferBytes=" UINT32_FORMAT_SPEC ")\n", this, messageProtocolVersion, inputBufferBytes);
+      return B_ERROR;
+   }
    
    // Read 'what' code
-   if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+   if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR)
+   {
+      LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Couldn't read what-code! (inputBufferBytes=" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes);
+      return B_ERROR;
+   }
    what = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
 
    // Read number of entries
-   if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+   if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+   {
+      LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Couldn't read number-of-entries! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, what);
+      return B_ERROR;
+   }
    uint32 numEntries = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
 
    // Read entries
    for (uint32 i=0; i<numEntries; i++)
    {
       // Read entry name length
-      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Error reading entry name length! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, what, i, numEntries);
+         return B_ERROR;
+      }
       uint32 nameLength = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
-      if (nameLength > inputBufferBytes-readOffset) return B_ERROR;
+      if (nameLength > inputBufferBytes-readOffset) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Entry name length too long! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " nameLength=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, what, i, numEntries, nameLength, (uint32)(inputBufferBytes-readOffset));
+         return B_ERROR;
+      }
 
       // Read entry name
       String entryName;
-      if (entryName.Unflatten(&buffer[readOffset], nameLength) != B_NO_ERROR) return B_ERROR;
+      if (entryName.Unflatten(&buffer[readOffset], nameLength) != B_NO_ERROR) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Unable to unflatten entry name! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " nameLength=" UINT32_FORMAT_SPEC ")\n", this, inputBufferBytes, what, i, numEntries, nameLength);
+         return B_ERROR;
+      }
       readOffset += nameLength;
 
       // Read entry type code
-      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Unable to read entry type code! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " entryName=[%s])\n", this, inputBufferBytes, what, i, numEntries, entryName());
+         return B_ERROR;
+      }
       uint32 tc = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
 
       // Read entry data length
-      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) return B_ERROR;
+      if (ReadData(buffer, inputBufferBytes, &readOffset, &networkByteOrder, sizeof(networkByteOrder)) != B_NO_ERROR) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Unable to read data length! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " tc=" UINT32_FORMAT_SPEC " entryName=[%s])\n", this, inputBufferBytes, what, i, numEntries, tc, entryName());
+         return B_ERROR;
+      }
       uint32 eLength = B_LENDIAN_TO_HOST_INT32(networkByteOrder);
-      if (eLength > inputBufferBytes-readOffset) return B_ERROR;
+      if (eLength > inputBufferBytes-readOffset) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Data length is too long! (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " tc=" UINT32_FORMAT_SPEC " eLength=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " entryName=[%s])\n", this, inputBufferBytes, what, i, numEntries, tc, eLength, (uint32)(inputBufferBytes-readOffset), entryName());
+         return B_ERROR;
+      }
    
       AbstractDataArray * nextEntry = GetOrCreateArray(entryName, tc);
-      if (nextEntry == NULL) return B_ERROR;
+      if (nextEntry == NULL) 
+      {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Unable to create data array object!  (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " tc=" UINT32_FORMAT_SPEC " entryName=[%s])\n", this, inputBufferBytes, what, i, numEntries, tc, entryName());
+         return B_ERROR;
+      }
 
       if (nextEntry->Unflatten(&buffer[readOffset], eLength) != B_NO_ERROR) 
       {
+         LogTime(MUSCLE_LOG_DEBUG, "Message %p:  Unable to unflatten data array object!  (inputBufferBytes=" UINT32_FORMAT_SPEC ", what=" UINT32_FORMAT_SPEC " i=" UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC " tc=" UINT32_FORMAT_SPEC " entryName=[%s])\n", this, inputBufferBytes, what, i, numEntries, tc, entryName());
          Clear();  // fix for occasional crash bug; we were deleting nextEntry here, *and* in the destructor!
          return B_ERROR;
       }

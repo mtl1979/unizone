@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQSignalHandler_h
 #define MuscleQSignalHandler_h
 
 #include <qobject.h>
+#include <qsocketnotifier.h>
 #include "system/SignalMultiplexer.h"
 #include "util/NetworkUtilityFunctions.h"
 

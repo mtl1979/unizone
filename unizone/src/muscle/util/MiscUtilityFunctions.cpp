@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <fcntl.h>
 
@@ -564,6 +564,19 @@ void HandleStandardDaemonArgs(const Message & args)
       else LogTime(MUSCLE_LOG_ERROR, "Error parsing localhost IP address [%s]!\n", value);
    }
 
+   if (args.FindString("dnscache", &value) == B_NO_ERROR)
+   {
+      uint64 micros = ParseHumanReadableTimeIntervalString(value);
+      if (micros > 0)
+      {
+         uint32 maxCacheSize = 1024;
+         if (args.FindString("dnscachesize", &value) == B_NO_ERROR) maxCacheSize = atol(value);
+         LogTime(MUSCLE_LOG_INFO, "Setting DNS cache parameters to " UINT32_FORMAT_SPEC " entries, expiration period is %s\n", maxCacheSize, GetHumanReadableTimeIntervalString(micros)());
+         SetHostNameCacheSettings(maxCacheSize, micros);
+      }
+      else LogTime(MUSCLE_LOG_ERROR, "Unable to parse time interval string [%s] for dnscache argument!\n", value);
+   }
+
    if ((args.HasName("debugcrashes"))||(args.HasName("debugcrash")))
    {
 #if defined(__linux__) || defined(__APPLE__)
@@ -596,7 +609,7 @@ void HandleStandardDaemonArgs(const Message & args)
       {
          errno = 0;  // the only reliable way to check for an error here :^P
          int ret = nice(effectiveLevel);  // I'm only looking at the return value to shut gcc 4.4.3 up
-         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Could not change process execution priority to "INT32_FORMAT_SPEC" (ret=%i).\n", effectiveLevel, ret);
+         if (errno != 0) LogTime(MUSCLE_LOG_WARNING, "Could not change process execution priority to " INT32_FORMAT_SPEC " (ret=%i).\n", effectiveLevel, ret);
                     else LogTime(MUSCLE_LOG_INFO, "Process is now %s (niceLevel=%i)\n", (effectiveLevel<0)?"mean":"nice", effectiveLevel);
       }
    }

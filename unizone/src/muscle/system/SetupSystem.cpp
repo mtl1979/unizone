@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include "system/SetupSystem.h"
 #include "support/Flattenable.h"
@@ -40,15 +40,7 @@
 #endif
 
 #if defined(__APPLE__)
-# include <CoreServices/CoreServices.h>
-#endif
-
-#if !defined(MUSCLE_SINGLE_THREAD_ONLY) && defined(MUSCLE_QT_HAS_THREADS)
-# if QT_VERSION >= 0x040000
-#  include <QThread>
-# else
-#  include <qthread.h>
-# endif
+# include <mach/mach_time.h>
 #endif
 
 #ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
@@ -80,7 +72,7 @@ static Mutex * _atomicMutexes = NULL;
 
 static uint32 _threadSetupCount = 0;
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
-static unsigned long _mainThreadID;
+static muscle_thread_id _mainThreadID;
 #endif
 
 #ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
@@ -288,7 +280,7 @@ public:
    // Note:  You MUST call Initialize() after creating a MutexEventLog object!
    MutexEventLog() {/* empty */}
 
-   void Initialize() {_headBlock = _tailBlock = NULL;}
+   void Initialize(const muscle_thread_id & id) {_threadID = id; _headBlock = _tailBlock = NULL;}
 
    void AddEvent(bool isLock, const void * mutexPtr, const char * fileName, int fileLine)
    {
@@ -311,12 +303,12 @@ public:
       if (_tailBlock) _tailBlock->AddEvent(isLock, mutexPtr, fileName, fileLine);
    }
 
-   void PrintToStream(unsigned long tid) const
+   void PrintToStream() const
    {
       MutexEventBlock * meb = _headBlock;
       while(meb)
       {
-         meb->PrintToStream(tid);
+         meb->PrintToStream(_threadID);
          meb = meb->_nextBlock;
       }
    }
@@ -330,7 +322,7 @@ private:
       void Initialize() {_validCount = 0; _nextBlock = NULL;}
       bool IsFull() const {return (_validCount == ARRAYITEMS(_events));}
       void AddEvent(bool isLock, const void * mutexPtr, const char * fileName, int fileLine) {_events[_validCount++] = MutexEvent(isLock, mutexPtr, fileName, fileLine);}
-      void PrintToStream(unsigned long tid) const {for (uint32 i=0; i<_validCount; i++) _events[i].PrintToStream(tid);}
+      void PrintToStream(const muscle_thread_id & tid) const {for (uint32 i=0; i<_validCount; i++) _events[i].PrintToStream(tid);}
 
    private:
       friend class MutexEventLog;
@@ -349,9 +341,10 @@ private:
             _fileName[sizeof(_fileName)-1] = '\0';
          }
 
-         void PrintToStream(unsigned long threadID) const
+         void PrintToStream(const muscle_thread_id & threadID) const
          {
-            printf("%s: tid=%lu m=%p loc=%s:"UINT32_FORMAT_SPEC"\n", (_fileLine&(1L<<31))?"mx_lock":"mx_unlk", threadID, _mutexPtr, _fileName, (uint32)(_fileLine&~(1L<<31)));
+            char buf[20];
+            printf("%s: tid=%s m=%p loc=%s:" UINT32_FORMAT_SPEC "\n", (_fileLine&(1L<<31))?"mx_lock":"mx_unlk", threadID.ToString(buf), _mutexPtr, _fileName, (uint32)(_fileLine&~(1L<<31)));
          }
 
       private: 
@@ -365,13 +358,14 @@ private:
       MutexEvent _events[4096];
    };
 
+   muscle_thread_id _threadID;
    MutexEventBlock * _headBlock;
    MutexEventBlock * _tailBlock;
 };
 
-static ThreadLocalStorage<MutexEventLog> _mutexEventLogs;
+static ThreadLocalStorage<MutexEventLog> _mutexEventLogs(false);  // false argument is necessary otherwise we can't read the threads' logs after they've gone away!
 static Mutex _logsTableMutex;
-static Hashtable<unsigned long, MutexEventLog *> _logsTable;  // read at process-shutdown time
+static Queue<MutexEventLog *> _logsTable;  // read at process-shutdown time (I use a Queue rather than a Hashtable because muscle_thread_id isn't usable as a Hashtable key)
 
 void DeadlockFinder_LogEvent(bool isLock, const void * mutexPtr, const char * fileName, int fileLine)
 {
@@ -381,12 +375,11 @@ void DeadlockFinder_LogEvent(bool isLock, const void * mutexPtr, const char * fi
       mel = (MutexEventLog *) malloc(sizeof(MutexEventLog));  // MUST CALL malloc() here to avoid inappropriate re-entrancy!
       if (mel)
       {
-         mel->Initialize();
-         _mutexEventLogs.SetFreeHeldObjectsOnExit(false);  // so we won't crash on exit when it tries to delete data that was allocated with malloc()
+         mel->Initialize(muscle_thread_id::GetCurrentThreadID());
          _mutexEventLogs.SetThreadLocalObject(mel);
          if (_logsTableMutex.Lock() == B_NO_ERROR)
          {
-            _logsTable.Put(GetCurrentThreadID(), mel);
+            _logsTable.AddTail(mel);
             _logsTableMutex.Unlock();
          }
       }
@@ -397,31 +390,10 @@ void DeadlockFinder_LogEvent(bool isLock, const void * mutexPtr, const char * fi
 
 static void DeadlockFinder_ProcessEnding()
 {
-   for (HashtableIterator<unsigned long, MutexEventLog *> iter(_logsTable); iter.HasData(); iter++) iter.GetValue()->PrintToStream(iter.GetKey());
+   for (uint32 i=0; i<_logsTable.GetNumItems(); i++) _logsTable[i]->PrintToStream();
    _logsTableMutex.Unlock();
 }
 
-#endif
-
-#ifndef MUSCLE_SINGLE_THREAD_ONLY
-unsigned long GetCurrentThreadID()
-{
-# if defined(MUSCLE_USE_PTHREADS)
-   return (unsigned long) pthread_self();
-# elif defined(WIN32)
-   return (unsigned long) GetCurrentThreadId();
-# elif defined(MUSCLE_QT_HAS_THREADS)
-#  if QT_VERSION >= 0x040000
-   return (unsigned long) QThread::currentThreadId();
-#  else
-   return (unsigned long) QThread::currentThread();
-#  endif
-# elif defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__)
-   return (unsigned long) find_thread(NULL);
-# else
-#  error "GetCurrentThreadID():  No implementation found for this OS!"
-# endif
-}
 #endif
 
 ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
@@ -431,7 +403,7 @@ ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
       (void) muscleSingleThreadOnly;  // shut the compiler up
 #else
-      _mainThreadID = GetCurrentThreadID();
+      _mainThreadID = muscle_thread_id::GetCurrentThreadID();
       _muscleSingleThreadOnly = muscleSingleThreadOnly;
       if (_muscleSingleThreadOnly) _lock.Neuter();  // if we're single-thread, then this Mutex can be a no-op!
 #endif
@@ -572,8 +544,10 @@ uint64 GetRunTime64()
    }
    return ret;
 # elif defined(__APPLE__)
-   UnsignedWide uw = AbsoluteToNanoseconds(UpTime());
-   return ((((uint64)uw.hi)<<32)|(uw.lo))/1000;
+   static bool _init = true;
+   static mach_timebase_info_data_t _timebase;
+   if (_init) {_init = false; (void) mach_timebase_info(&_timebase);}
+   return (uint64)((mach_absolute_time() * _timebase.numer) / (1000 * _timebase.denom));
 # else
 #  if defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) && defined(MUSCLE_POWERPC_TIMEBASE_HZ)
    TCHECKPOINT;
@@ -1015,7 +989,7 @@ void PrintHexBytes(const void * vbuf, uint32 numBytes, const char * optDesc, uin
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
-      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      sprintf(headBuf, "--- %s (" UINT32_FORMAT_SPEC " bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
       fprintf(optFile, "%s", headBuf);
 
       const int hexBufSize = (numColumns*8)+1;
@@ -1079,7 +1053,7 @@ void PrintHexBytes(const Queue<uint8> & buf, const char * optDesc, uint32 numCol
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
-      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      sprintf(headBuf, "--- %s (" UINT32_FORMAT_SPEC " bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
       fprintf(optFile, "%s", headBuf);
 
       const int hexBufSize = (numColumns*8)+1;
@@ -1129,7 +1103,7 @@ void LogHexBytes(int logLevel, const void * vbuf, uint32 numBytes, const char * 
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
-      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      sprintf(headBuf, "--- %s (" UINT32_FORMAT_SPEC " bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
       LogTime(logLevel, "%s", headBuf);
 
       const int hexBufSize = (numColumns*8)+1;
@@ -1181,7 +1155,7 @@ void LogHexBytes(int logLevel, const Queue<uint8> & buf, const char * optDesc, u
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
-      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      sprintf(headBuf, "--- %s (" UINT32_FORMAT_SPEC " bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
       Log(logLevel, "%s", headBuf);
 
       const int hexBufSize = (numColumns*8)+1;
@@ -1242,7 +1216,7 @@ String HexBytesToAnnotatedString(const void * vbuf, uint32 numBytes, const char 
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
-      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      sprintf(headBuf, "--- %s (" UINT32_FORMAT_SPEC " bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
       ret += headBuf;
 
       const int hexBufSize = (numColumns*8)+1;
@@ -1297,7 +1271,7 @@ String HexBytesToAnnotatedString(const Queue<uint8> & buf, const char * optDesc,
    {
       // A more useful columnar format with ASCII sidebar
       char headBuf[256]; 
-      sprintf(headBuf, "--- %s ("UINT32_FORMAT_SPEC" bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
+      sprintf(headBuf, "--- %s (" UINT32_FORMAT_SPEC " bytes): ", ((optDesc)&&(strlen(optDesc)<200))?optDesc:"", numBytes);
       ret += headBuf;
 
       const int hexBufSize = (numColumns*8)+1;
@@ -1364,14 +1338,14 @@ DebugTimer :: ~DebugTimer()
          {
             if (_debugLevel >= 0)
             {
-               if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), iter.GetKey(), nextTime/1000);
-                                else LogTime(_debugLevel, "%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), iter.GetKey(), nextTime);
+               if (nextTime >= 1000) LogTime(_debugLevel, "%s: mode " UINT32_FORMAT_SPEC ": " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), iter.GetKey(), nextTime/1000);
+                                else LogTime(_debugLevel, "%s: mode " UINT32_FORMAT_SPEC ": " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), iter.GetKey(), nextTime);
             }
             else 
             {
                // For cases where we don't want to call LogTime()
-               if (nextTime >= 1000) printf("%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), iter.GetKey(), nextTime/1000);
-                                else printf("%s: mode "UINT32_FORMAT_SPEC": " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), iter.GetKey(), nextTime);
+               if (nextTime >= 1000) printf("%s: mode " UINT32_FORMAT_SPEC ": " UINT64_FORMAT_SPEC " milliseconds elapsed\n", _title(), iter.GetKey(), nextTime/1000);
+                                else printf("%s: mode " UINT32_FORMAT_SPEC ": " UINT64_FORMAT_SPEC " microseconds elapsed\n", _title(), iter.GetKey(), nextTime);
             }
          }
       }
@@ -1437,7 +1411,7 @@ bool IsCurrentThreadMainThread() {return true;}
 #else
 bool IsCurrentThreadMainThread() 
 {
-   if (_threadSetupCount > 0) return (GetCurrentThreadID() == _mainThreadID);
+   if (_threadSetupCount > 0) return (_mainThreadID == muscle_thread_id::GetCurrentThreadID());
    else 
    {
       MCRASH("IsCurrentThreadMainThread() cannot be called unless there is a CompleteSetupSystem object on the stack!");
@@ -1711,8 +1685,8 @@ void PrintCountedObjectInfo()
    if (GetCountedObjectInfo(table) == B_NO_ERROR)
    {
       table.SortByKey();  // so they'll be printed in alphabetical order
-      printf("Counted Object Info report follows: ("UINT32_FORMAT_SPEC" types counted)\n", table.GetNumItems());
-      for (HashtableIterator<const char *, uint32> iter(table); iter.HasData(); iter++) printf("   %6"UINT32_FORMAT_SPEC_NOPERCENT" %s\n", iter.GetValue(), iter.GetKey());
+      printf("Counted Object Info report follows: (" UINT32_FORMAT_SPEC " types counted)\n", table.GetNumItems());
+      for (HashtableIterator<const char *, uint32> iter(table); iter.HasData(); iter++) printf("   %6" UINT32_FORMAT_SPEC_NOPERCENT " %s\n", iter.GetValue(), iter.GetKey());
    }
    else printf("PrintCountedObjectInfo:  GetCountedObjectInfo() failed!\n");
 #endif

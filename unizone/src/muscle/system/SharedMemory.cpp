@@ -43,7 +43,23 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
 {
    UnsetArea();  // make sure everything is deallocated to start with
 
-#ifdef WIN32
+#if defined(MUSCLE_FAKE_SHARED_MEMORY)
+   if (createSize > 0)
+   {
+      _area = muscleAlloc(createSize);
+      if (_area) 
+      {
+         memset(_area, 0, createSize);
+         _areaName         = keyString;
+         _areaSize         = createSize; 
+         _isCreatedLocally = true;
+         _isLocked         = returnLocked;
+         _isLockedReadOnly = false;
+         return B_NO_ERROR;
+      }
+      else WARN_OUT_OF_MEMORY;   
+   }
+#elif defined(WIN32)
    char buf[64];
    if (keyString == NULL)
    {
@@ -128,15 +144,15 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
          semopts.buf = &semInfo;
          if (semctl(_semID, 0, IPC_STAT, semopts) == 0) 
          {
-#ifdef __linux__
+# ifdef __linux__
             _key = semInfo.sem_perm.__key;
 
 // Mac os-x leopard uses '_key' by default. Both Tiger and Leopard may use _key if the following condition is true, otherwise they use 'key'.
-#elif (defined(__APPLE__) && (defined(__POSIX_C_SOURCE) || defined(__LP64__))) || __DARWIN_UNIX03
+# elif (defined(__APPLE__) && (defined(__POSIX_C_SOURCE) || defined(__LP64__))) || __DARWIN_UNIX03
             _key = semInfo.sem_perm._key;
-#else
+# else
             _key = semInfo.sem_perm.key;
-#endif
+# endif
          }
          _areaName = "private";  // sorry, it's the best I can do short of figuring out how to invert the hash function!
       }
@@ -174,20 +190,24 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
 
 status_t SharedMemory :: DeleteArea()
 {
-#ifdef WIN32
+#if defined(MUSCLE_FAKE_SHARED_MEMORY)
+   (void) UnsetArea();
+   return B_NO_ERROR;
+#else 
+# if defined(WIN32)
    if (_mutex != NULL)
-#else
+# else
    if (_semID >= 0)
-#endif
+# endif
    {
       if ((_isLocked)&&(_isLockedReadOnly)) UnlockArea();
       if ((_isLocked)||(LockAreaReadWrite() == B_NO_ERROR))
       {
-#ifdef WIN32
+# ifdef WIN32
          String fileName = _fileName;  // hold as temp since UnsetArea() will clear it
          UnsetArea();
          return DeleteFileA(fileName()) ? B_NO_ERROR : B_ERROR;  // now that everything is detached, try to delete the file
-#else
+# else
          if (_areaID >= 0) (void) shmctl(_areaID, IPC_RMID, NULL);  // bye bye shared memory!
          _areaID = -1;
 
@@ -196,17 +216,24 @@ status_t SharedMemory :: DeleteArea()
          _semID = -1;
          UnsetArea();
          return B_NO_ERROR;
-#endif
+# endif
       }
    }
    return B_ERROR;
+#endif
 }
 
 void SharedMemory :: UnsetArea()
 {
    UnlockArea();
 
-#ifdef WIN32
+#if defined(MUSCLE_FAKE_SHARED_MEMORY)
+   if (_area) 
+   {
+      muscleFree(_area);
+      _area = NULL;
+   }
+#elif defined(WIN32)
    if (_area)
    {
       UnmapViewOfFile(_area);
@@ -246,28 +273,36 @@ void SharedMemory :: UnsetArea()
 
 status_t SharedMemory :: LockArea(bool readOnly)
 {
+#if defined(MUSCLE_FAKE_SHARED_MEMORY)
+   _isLocked = true;
+   _isLockedReadOnly = readOnly;
+   return B_NO_ERROR;
+#else
    if (_isLocked == false)
    {
       _isLocked = true;  // Set these first just so they are correct while we're waiting
       _isLockedReadOnly = readOnly;
-#ifdef WIN32
+# ifdef WIN32
       if (WaitForSingleObject(_mutex, INFINITE) == WAIT_OBJECT_0) return B_NO_ERROR;
-#else
+# else
       if (AdjustSemaphore(_isLockedReadOnly ? -1: -LARGEST_SEMAPHORE_DELTA) == B_NO_ERROR) return B_NO_ERROR;
-#endif
+# endif
       _isLocked = _isLockedReadOnly = false;  // oops, roll back!
    }
    return B_ERROR;
+#endif
 }
 
 void SharedMemory :: UnlockArea()
 {
    if (_isLocked)
    {
-#ifdef WIN32
+#if !defined(MUSCLE_FAKE_SHARED_MEMORY)
+# ifdef WIN32
       (void) ReleaseMutex(_mutex);
-#else
+# else
       (void) AdjustSemaphore(_isLockedReadOnly ? 1 : LARGEST_SEMAPHORE_DELTA);
+# endif
 #endif
       _isLocked = _isLockedReadOnly = false;
    }

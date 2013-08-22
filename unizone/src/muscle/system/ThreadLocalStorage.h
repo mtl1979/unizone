@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #ifndef MuscleThreadLocalStorage_h
 #define MuscleThreadLocalStorage_h
@@ -31,8 +31,12 @@ namespace muscle {
 template <class ObjType> class ThreadLocalStorage
 {
 public:
-   /** Constructor. */
-   ThreadLocalStorage() : _freeHeldObjects(true)
+   /** Constructor.
+     * @param freeHeldObjectsOnExit If left as true (the default value) then any thread-local objects we allocate
+     *                              will be automatically deleted when their thread exits.  If set to false, they will
+     *                              be left in-place.
+     */
+   ThreadLocalStorage(bool freeHeldObjectsOnExit = true) : _freeHeldObjects(freeHeldObjectsOnExit)
    {
 #ifdef MUSCLE_ENABLE_DEADLOCK_FINDER
       // Avoid re-entrancy problems when the deadlock callbacks are using ThreadLocalStorage to initialize themselves!
@@ -40,7 +44,7 @@ public:
 #endif
 
 #if defined(MUSCLE_USE_PTHREADS)
-      _isKeyValid = (pthread_key_create(&_key, (PthreadDestructorFunction)DeleteObjFunc) == 0);
+      _isKeyValid = (pthread_key_create(&_key, _freeHeldObjects?((PthreadDestructorFunction)DeleteObjFunc):NULL) == 0);
 #elif defined(MUSCLE_PREFER_WIN32_OVER_QT)
       _tlsIndex = TlsAlloc();
 #endif
@@ -125,11 +129,6 @@ public:
       return ret;
 #endif
    }
-
-   /** If set false, this object will not free its held thread-local-storage data when its destructor is called.  Default state is true.
-     * Note that this method has no effect if the Qt implementation of ThreadLocalStorage is in use.
-     */
-   void SetFreeHeldObjectsOnExit(bool fho) {_freeHeldObjects = fho;}
 
 private:
 #if defined(MUSCLE_USE_QT_THREADLOCALSTORAGE)

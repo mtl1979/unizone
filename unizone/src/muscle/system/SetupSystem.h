@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSetupSystem_h
 #define MuscleSetupSystem_h
@@ -7,6 +7,14 @@
 #include "system/Mutex.h"
 #include "util/GenericCallback.h"
 #include "util/Queue.h"
+
+#if !defined(MUSCLE_SINGLE_THREAD_ONLY) && defined(MUSCLE_QT_HAS_THREADS)
+# if QT_VERSION >= 0x040000
+#  include <QThread>
+# else
+#  include <qthread.h>
+# endif
+#endif
 
 namespace muscle {
 
@@ -200,8 +208,99 @@ Mutex * GetGlobalMuscleLock();
   */
 bool IsCurrentThreadMainThread();
 
-/** Returns a numeric identifier associated with the thread that called this function. */
-unsigned long GetCurrentThreadID();
+#ifndef MUSCLE_SINGLE_THREAD_ONLY
+
+/** This class represents a unique ID for a thread.  It provides an 
+  * implementation-neutral and more user-friendly wrapper around pthread_self()
+  * and its equivalents.
+  */
+class muscle_thread_id
+{
+public:
+   /** Default constructor.  Returns an muscle_thread_id object that doesn't represent any thread. */
+   muscle_thread_id() 
+# ifndef MUSCLE_USE_PTHREADS
+      : _id(0)
+# endif
+   {
+# ifdef MUSCLE_USE_PTHREADS
+      memset(&_id, 0, sizeof(_id));
+# endif  
+   }
+
+   /** Returns true iff the two objects represent the same thread ID. */
+   bool operator == (const muscle_thread_id & rhs) const
+   {
+# if defined(MUSCLE_USE_PTHREADS)
+      return pthread_equal(_id, rhs._id);
+# else
+      return (_id == rhs._id);
+# endif
+   }
+
+   /** Returns true iff the two thread objects do not represent that same thread ID. */
+   bool operator != (const muscle_thread_id & rhs) const {return !(*this == rhs);}
+
+   /** Returns a muscle_thread_id object representing the calling thread. */
+   static muscle_thread_id GetCurrentThreadID()
+   {
+      muscle_thread_id ret(false);
+# if defined(MUSCLE_USE_PTHREADS)
+      ret._id = pthread_self();
+# elif defined(WIN32)
+      ret._id = GetCurrentThreadId();
+# elif defined(MUSCLE_QT_HAS_THREADS)
+      ret._id = QThread::currentThreadId();
+# elif defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__)
+      ret._id = find_thread(NULL);
+# else
+#  error "GetCurrentThreadID():  No implementation found for this OS!"
+# endif
+      return ret;
+   }
+
+   /** Returns a human-readable string representation of this thread ID.
+     * Note that the returned buffer has the same lifetime as this object.
+     * @param buf Must point to a buffer of at least 20 characters that we can write to
+     * @returns buf
+     */
+   const char * ToString(char * buf) const
+   {
+# if defined(MUSCLE_USE_PTHREADS)
+      // pthread_t might be a struct, so generate a good-enough ID from its bytes
+      unsigned long count = 0;
+      unsigned long base  = 1; 
+      unsigned char * s = (unsigned char*)(void*)(&_id);
+      for (size_t i=0; i<sizeof(_id); i++)
+      {
+         unsigned long c = (unsigned long) (s[i]);
+         count += (c*base);
+         base *= 10;
+      }
+      sprintf(buf, "%lu", count);
+# else
+      sprintf(buf, "%lu", (unsigned long) _id);
+# endif
+      return buf;
+   }
+
+private:
+   muscle_thread_id(bool /*junk*/) {/* empty */}
+
+# if defined(MUSCLE_USE_PTHREADS)
+   pthread_t _id;
+# elif defined(WIN32)
+   DWORD _id;
+# elif defined(MUSCLE_QT_HAS_THREADS)
+   Qt::HANDLE _id;
+# elif defined(__BEOS__) || defined(__HAIKU__) || defined(__ATHEOS__)
+   thread_id _id;
+# else
+#  error "muscle_thread_id():  No implementation found for this OS!"
+# endif
+};
+
+#endif
 
 }; // end namespace muscle
 

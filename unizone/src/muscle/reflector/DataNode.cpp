@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/DataNode.h"
 #include "reflector/StorageReflectSession.h"
@@ -92,7 +92,7 @@ status_t DataNode :: InsertOrderedChild(const MessageRef & data, const String * 
       while(true)
       {
          char buf[50];
-         sprintf(buf, "I"UINT32_FORMAT_SPEC, _orderedCounter++);
+         sprintf(buf, "I" UINT32_FORMAT_SPEC, _orderedCounter++);
          if (HasChild(buf) == false) {temp = buf; break;}
       }
       optNodeName = &temp;
@@ -405,7 +405,7 @@ void DataNode :: PrintToStream(FILE * optFile, uint32 maxRecursionDepth, int ind
 
    PrintIndent(optFile, indentLevel);
    String np; (void) GetNodePath(np);
-   fprintf(optFile, "DataNode [%s] numChildren="UINT32_FORMAT_SPEC" orderedIndex="INT32_FORMAT_SPEC" checksum="UINT32_FORMAT_SPEC" msgChecksum="UINT32_FORMAT_SPEC"\n", np(), _children?_children->GetNumItems():0, _orderedIndex?(int32)_orderedIndex->GetNumItems():(int32)-1, CalculateChecksum(maxRecursionDepth), _data()?_data()->CalculateChecksum():0);
+   fprintf(optFile, "DataNode [%s] numChildren=" UINT32_FORMAT_SPEC " orderedIndex=" INT32_FORMAT_SPEC " checksum=" UINT32_FORMAT_SPEC " msgChecksum=" UINT32_FORMAT_SPEC "\n", np(), _children?_children->GetNumItems():0, _orderedIndex?(int32)_orderedIndex->GetNumItems():(int32)-1, CalculateChecksum(maxRecursionDepth), _data()?_data()->CalculateChecksum():0);
    if (_data()) _data()->PrintToStream(optFile, true, indentLevel+1);
    if (maxRecursionDepth > 0)
    {
@@ -464,6 +464,17 @@ DataNode * DataNode :: FindFirstMatchingNode(const char * path, uint32 maxDepth)
       }
       return NULL;
    }
+}
+
+DataNodeRef DataNode :: GetDescendantAux(const char * subPath) const
+{
+   const char * slash = strchr(subPath, '/');
+   if (slash)
+   {
+      DataNodeRef child = GetChild(String(subPath, slash-subPath));
+      return child() ? child()->GetDescendantAux(slash+1) : DataNodeRef();
+   }
+   else return GetChild(subPath);
 }
 
 }; // end namespace muscle

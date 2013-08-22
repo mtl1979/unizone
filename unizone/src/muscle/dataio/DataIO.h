@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataIO_h
 #define MuscleDataIO_h
@@ -146,6 +146,17 @@ public:
     *            implementation is a no-op.
     */
    virtual void WriteBufferedOutput() {/* empty */}
+
+   /**
+    * Optional:  If this DataIO represents a device doing packet-style communication (e.g UDP)
+    *            where a short read results in the "extra" bytes being irretrievably lost, 
+    *            then this method should be overridden to return the maximum
+    *            number of bytes that can fit into a single packet (e.g. the MTU size).
+    *            For the more common "stream" style of I/O (where a short read leaves the
+    *            remaining bytes in a buffer to be read later), this method should return 0.
+    *            The default implementation of this method always returns 0.
+    */
+   virtual uint32 GetPacketMaximumSize() const {return 0;}
 
    /** Convenience method:  Calls Write() in a loop until the entire buffer is written, or
      * until an error occurs.  This method should only be used in conjunction with 

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleNetworkUtilityFunctions_h
 #define MuscleNetworkUtilityFunctions_h
@@ -320,17 +320,30 @@ private:
    uint16 _port;
 };
 
-/** Given a hostname or IP address (e.g. "mycomputer.be.com" or "192.168.0.1"),
-  * performs a hostname lookup and returns the 4-byte IP address that corresponds
-  * with that name.
+/** Given a hostname or IP address string (e.g. "www.google.com" or "192.168.0.1" or "fe80::1"),
+  * returns the numeric ip_address value that corresponds to that name.
   * @param name ASCII IP address or hostname to look up.
   * @param expandLocalhost If true, then if (name) corresponds to 127.0.0.1, this function
   *                        will attempt to determine the host machine's actual primary IP
   *                        address and return that instead.  Otherwise, 127.0.0.1 will be
   *                        returned in this case.  Defaults to false.
-  * @return The 4-byte IP address (local endianness), or 0 on failure.
+  * @return The associated IP address (local endianness), or 0 on failure.
+  * @note This function may invoke a synchronous DNS lookup, which means that it may take
+  *       a long time to return (e.g. if the DNS server is not responding)
   */
 ip_address GetHostByName(const char * name, bool expandLocalhost = false);
+
+/** Sets the parameters for GetHostByName()'s internal DNS-results LRU cache.
+  * Note that this cache is disabled by default, so by default every call to GetHostByName()
+  * incurs a call to gethostbyname() or getaddrinfo().  Calling this function with non-zero
+  * arguments enables the DNS-results cache, which can be useful if DNS lookups are slow.
+  * @param maxCacheSize The maximum number of lookup-result entries that may be stored in
+  *                     GetHostByName()'s internal LRU cache at one time.
+  * @param expirationTimeMicros How many microseconds a cached lookup-result is valid for.
+  *                     Set this to MUSCLE_TIME_NEVER if you want lookup-results to remain
+  *                     valid indefinitely.
+  */
+void SetHostNameCacheSettings(uint32 maxCacheSize, uint64 expirationTimeMicros);
 
 /** Convenience function for connecting with TCP to a given hostName/port.
  * @param hostName The ASCII host name or ASCII IP address of the computer to connect to.

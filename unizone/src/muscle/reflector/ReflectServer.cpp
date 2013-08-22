@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/ReflectServer.h"
 # include "reflector/StorageReflectConstants.h"
@@ -109,7 +109,7 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
          session->SetConnectingAsync((usingFakeBrokenConnection == false)&&(session->_isConnected == false));
 
          char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
-         session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
+         session->_hostName = (destIP != invalidIP) ? ipbuf : "_unknown_";
 
          status_t ret = AddNewSession(ref, sock);
          if (ret == B_NO_ERROR)
@@ -145,7 +145,7 @@ AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_addr
       session->_asyncConnectDest = IPAddressAndPort(destIP, port);
       session->_reconnectViaTCP  = true;
       char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
-      session->_hostName = (destIP != invalidIP) ? ipbuf : "<unknown>";
+      session->_hostName = (destIP != invalidIP) ? ipbuf : "_unknown_";
       status_t ret = AddNewSession(ref, ConstSocketRef());
       if (ret == B_NO_ERROR)
       {
@@ -173,14 +173,14 @@ AttachNewSession(const AbstractReflectSessionRef & ref)
       if (newSession->AttachedToServer() == B_NO_ERROR)
       {
          newSession->SetFullyAttachedToServer(true);
-         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "New %s ("UINT32_FORMAT_SPEC" total)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems());
+         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "New %s (" UINT32_FORMAT_SPEC " total)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems());
          return B_NO_ERROR;
       }
       else 
       {
          newSession->AboutToDetachFromServer();  // well, it *was* attached, if only for a moment
          newSession->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
-         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup ("UINT32_FORMAT_SPEC" left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
+         if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "%s aborted startup (" UINT32_FORMAT_SPEC " left)\n", newSession->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
       }
       newSession->SetOwner(NULL);
       (void) _sessions.Remove(&newSession->GetSessionIDString());
@@ -281,7 +281,7 @@ void ReflectServer :: CheckForOutOfMemory(const AbstractReflectSessionRef & optS
       }
 
       uint32 dumpCount = DumpBoggedSessions();       // see what other cleanup we can do
-      if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory condition detected in session [%s].  Dumped "UINT32_FORMAT_SPEC" bogged sessions!\n", optSessionRef()?optSessionRef()->GetSessionDescriptionString()():NULL, dumpCount);
+      if (_doLogging) LogTime(MUSCLE_LOG_CRITICALERROR, "Low Memory condition detected in session [%s].  Dumped " UINT32_FORMAT_SPEC " bogged sessions!\n", optSessionRef()?optSessionRef()->GetSessionDescriptionString()():NULL, dumpCount);
    }
 #else
    (void) optSessionRef;
@@ -305,7 +305,7 @@ ServerProcessLoop()
       const char * ipState = "enabled";
 #endif
       LogTime(MUSCLE_LOG_DEBUG, "The server was compiled with MUSCLE version %s.  IPv6 support is %s.\n", MUSCLE_VERSION_STRING, ipState);
-      LogTime(MUSCLE_LOG_DEBUG, "This server's session ID is "UINT64_FORMAT_SPEC".\n", GetServerSessionID());
+      LogTime(MUSCLE_LOG_DEBUG, "This server's session ID is " UINT64_FORMAT_SPEC ".\n", GetServerSessionID());
    }
 
 #ifndef MUSCLE_AVOID_SIGNAL_HANDLING
@@ -598,7 +598,7 @@ ServerProcessLoop()
                           if ((wroteBytes > 0)||(session->_maxOutputChunk == 0)) session->_lastByteOutputAt = now;  // reset the moribundness-timer
                      else if (now-session->_lastByteOutputAt > session->_outputStallLimit)
                      {
-                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall, no data movement for "UINT64_FORMAT_SPEC" seconds).\n", session->GetSessionDescriptionString()(), MicrosToSeconds(session->_outputStallLimit));
+                        if (_doLogging) LogTime(MUSCLE_LOG_WARNING, "Connection for %s timed out (output stall, no data movement for " UINT64_FORMAT_SPEC " seconds).\n", session->GetSessionDescriptionString()(), MicrosToSeconds(session->_outputStallLimit));
                         (void) DisconnectSession(session);
                      }
                   }
@@ -694,7 +694,7 @@ status_t ReflectServer :: ClearLameDucks()
             duck->SetFullyAttachedToServer(false);
             duck->AboutToDetachFromServer();
             duck->DoOutput(MUSCLE_NO_LIMIT);  // one last chance for him to send any leftover data!
-            if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s ("UINT32_FORMAT_SPEC" left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
+            if (_doLogging) LogTime(MUSCLE_LOG_DEBUG, "Closed %s (" UINT32_FORMAT_SPEC " left)\n", duck->GetSessionDescriptionString()(), _sessions.GetNumItems()-1);
             duck->SetOwner(NULL);
             (void) _sessions.Remove(&id);
          }

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 /******************************************************************************
 /
@@ -1361,6 +1361,14 @@ public:
     */
    void SwapContents(Message & swapWith);
 
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Constructor */
+   Message(Message && rhs) : what(0) {SwapContents(rhs);}
+
+   /** C++11 Move Assignment Operator */
+   Message & operator =(Message && rhs) {SwapContents(rhs); return *this;}
+#endif
+
    /** Sorts the iteration-order of this Message's field names into case-sensitive alphabetical order. */
    void SortFieldNames() {_entries.SortByKey();}
 
@@ -1575,6 +1583,32 @@ template<class T> inline MessageRef GetArchiveMessageFromPool(const T & objectTo
    MessageRef m = GetMessageFromPool();
    if ((m())&&(objectToArchive.SaveToArchive(*m()) != B_NO_ERROR)) m.Reset();
    return m;
+}
+
+/** Convenience method:  Given a Message that was previously created via GetArchiveMessageFromPool<T>(),
+  * creates and returns an object of type T, and calls SetFromArchive() on the object so that it 
+  * represents the state that was saved into the Message.
+  * @param msg The Message to extract the returned object's state-data from
+  * @returns a reference to the new object on success, or a NULL reference on failure.
+  */
+template<class T> inline Ref<T> CreateObjectFromArchiveMessage(const Message & msg)
+{
+   Ref<T> newObjRef(newnothrow T);
+   if (newObjRef())
+   {
+      if (newObjRef()->SetFromArchive(msg) != B_NO_ERROR) newObjRef.Reset();
+   }
+   else WARN_OUT_OF_MEMORY;
+   return newObjRef;
+}
+
+/** As above, except this version takes a MessageRef instead of a Message.
+  * @param msgRef MessageRef to extract the returned object's state-data from.
+  * @returns a reference to the new object on success, or a NULL reference on failure (or if msgRef was a NULL reference).
+  */
+template<class T> inline Ref<T> CreateObjectFromArchiveMessage(const MessageRef & msgRef)
+{
+   return msgRef() ? CreateObjectFromArchiveMessage<T>(*msgRef()) : Ref<T>();
 }
 
 inline MessageFieldNameIterator :: MessageFieldNameIterator(const Message & msg, uint32 type, uint32 flags) : _typeCode(type), _iter(msg._entries.GetIterator(flags)) {if (_typeCode != B_ANY_TYPE) SkipNonMatchingFieldNames();}

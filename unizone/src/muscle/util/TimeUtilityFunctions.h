@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleTimeUtilityFunctions_h
 #define MuscleTimeUtilityFunctions_h
@@ -201,6 +201,30 @@ inline uint64 GetRunTime64() {return rt_timer_tsc2ns(rt_timer_tsc())/1000;}
 #else
 uint64 GetRunTime64();
 #endif
+
+/** Given a run-time value, returns the equivalent current-time value.
+  * @param runTime64 A run-time value, e.g. as returned by GetRunTime64().
+  * @param timeType if left as MUSCLE_TIMEZONE_UTC (the default), the value returned will be the equivalent UTC time.  
+  *                 If set to MUSCLE_TIMEZONE_LOCAL, on the other hand, the returned value will include the proper 
+  *                 offset to make the time be the equivalent time as expressed in this machine's local time zone.
+  *                 For any other value, the behaviour of this function is undefined.
+  * @returns a current-time value, as might have been returned by GetCurrentTime64(timeType) at the specified run-time.
+  * @note The values returned by this function are only approximate, and may differ slightly from one call to the next.
+  *       Of course they will differ significantly if the system's real-time clock value is changed by the user.
+  */
+inline uint64 GetCurrentTime64ForRunTime64(uint64 runTime64, uint32 timeType=MUSCLE_TIMEZONE_UTC) {return GetCurrentTime64(timeType)+(runTime64-GetRunTime64());}
+
+/** Given a current-time value, returns the equivalent run-time value.
+  * @param currentTime64 A current-time value, e.g. as returned by GetCurrentTime64(timeType).
+  * @param timeType if left as MUSCLE_TIMEZONE_UTC (the default), the (currentTime64) argument will be interpreted as a UTC time.  
+  *                 If set to MUSCLE_TIMEZONE_LOCAL, on the other hand, the (currentTime64) argument will be interpreted as
+  *                 a current-time in this machine's local time zone.
+  *                 For any other value, the behaviour of this function is undefined.
+  * @returns a run-time value, as might have been returned by GetRunTime64() at the specified current-time.
+  * @note The values returned by this function are only approximate, and may differ slightly from one call to the next.
+  *       Of course they will differ significantly if the system's real-time clock value is changed by the user.
+  */
+inline uint64 GetRunTime64ForCurrentTime64(uint64 currentTime64, uint32 timeType=MUSCLE_TIMEZONE_UTC) {return GetRunTime64()+(currentTime64-GetCurrentTime64(timeType));}
 
 /** Convenience function:  Won't return for a given number of microsends.
  *  @param micros The number of microseconds to wait for.

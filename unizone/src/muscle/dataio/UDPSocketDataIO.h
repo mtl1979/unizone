@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleUDPSocketDataIO_h
 #define MuscleUDPSocketDataIO_h
@@ -23,7 +23,7 @@ public:
     *  If you will be using this object with a AbstractMessageIOGateway,
     *  and/or select(), then it's usually better to set blocking to false.
     */
-   UDPSocketDataIO(const ConstSocketRef & sock, bool blocking) : _sock(sock)
+   UDPSocketDataIO(const ConstSocketRef & sock, bool blocking) : _sock(sock), _maxPacketSize(MUSCLE_MAX_PAYLOAD_BYTES_PER_UDP_ETHERNET_PACKET)
    {
       (void) SetBlockingIOEnabled(blocking);
       _sendTo.AddTail();  // so that by default, Write() will just call send() on our socket
@@ -71,6 +71,18 @@ public:
    /** Implemented as a no-op:  UDP sockets are always flushed immediately anyway */
    virtual void FlushOutput() {/* empty */}
    
+   /** Overridden to return the maximum packet size of a UDP packet.
+     * Defaults to MUSCLE_MAX_PAYLOAD_BYTES_PER_UDP_ETHERNET_PACKET (aka 1388 bytes),
+     * but the returned value can be changed via SetPacketMaximumSize().
+     */
+   virtual uint32 GetPacketMaximumSize() const {return _maxPacketSize;}
+
+   /** This can be called to change the maximum packet size value returned
+     * by GetPacketMaximumSize().  You might call this e.g. if you are on a network
+     * that supports Jumbo UDP packets and want to take advantage of that.
+     */
+   void SetPacketMaximumSize(uint32 maxPacketSize) {_maxPacketSize = maxPacketSize;}
+
    /**
     * Closes our socket connection
     */
@@ -126,6 +138,7 @@ private:
 
    IPAddressAndPort _recvFrom;
    Queue<IPAddressAndPort> _sendTo;
+   uint32 _maxPacketSize;
 };
 
 }; // end namespace muscle

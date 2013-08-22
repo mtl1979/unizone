@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleDataNode_h
 #define MuscleDataNode_h
@@ -76,6 +76,13 @@ public:
     *  @return On success, a reference to the specified child node is returned.  On failure, a NULL DataNodeRef is returned.
     */
    DataNodeRef GetChild(const String & key) const {return _children ? _children->GetWithDefault(&key) : DataNodeRef();}
+
+   /** Finds and returns a descendant node (i.e child, grandchild, etc) by following the provided
+    *  slash-separated relative node path.
+    *  @param subPath A list of child-names to descend down, with the child node-name separated from each other via slashes.
+    *  @returns A valid DataNodeRef on success, or a NULL DataNodeRef if no child could be found at that sub-path.
+    */
+   DataNodeRef GetDescendant(const String & subPath) const {return GetDescendantAux(subPath());}
 
    /** Removes the child with the given name.
     *  @param key The name of the child we wish to remove.
@@ -271,6 +278,7 @@ public:
 private:
    friend class StorageReflectSession;
    friend class ObjectPool<DataNode>;
+   DataNodeRef GetDescendantAux(const char * subPath) const;
 
    /** Assignment operator.  Note that this operator is only here to assist with ObjectPool recycling operations, and doesn't actually
      * make this DataNode into a copy of (rhs)... that's why we have it marked private, so that it won't be accidentally used in the traditional manner.

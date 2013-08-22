@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleObjectPool_h
 #define MuscleObjectPool_h
@@ -415,7 +415,7 @@ private:
          for (uint32 i=0; i<NUM_OBJECTS_PER_SLAB; i++)
          {
             const ObjectNode * n = &_nodes[i];
-            if (n->GetNextIndex() == INVALID_NODE_INDEX) printf("      "UINT32_FORMAT_SPEC"/"UINT32_FORMAT_SPEC":   %s %p is possibly still in use?\n", i, (uint32)NUM_OBJECTS_PER_SLAB, GetObjectClassName(), n);
+            if (n->GetNextIndex() == INVALID_NODE_INDEX) printf("      " UINT32_FORMAT_SPEC "/" UINT32_FORMAT_SPEC ":   %s %p is possibly still in use?\n", i, (uint32)NUM_OBJECTS_PER_SLAB, GetObjectClassName(), n);
          }
       }
 

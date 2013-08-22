@@ -1,14 +1,9 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */ 
 
 #ifndef MuscleAtomicCounter_h 
 #define MuscleAtomicCounter_h 
 
 #include "support/MuscleSupport.h"
-
-#if defined(QT_CORE_LIB)
-# include <QtCore>      // for the QT_VERSION number
-# include <QAtomicInt>  // Qt4 Atomic counter API, available in Qt 4.4.0 and higher
-#endif
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
 # if defined(__ATHEOS__)
@@ -21,9 +16,7 @@
 #  include <libkern/OSAtomic.h>
 # elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
    // empty
-# elif defined(QT_VERSION) && (QT_VERSION >= 0x40400)
-#  define MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS
-# elif defined(MUSCLE_USE_PTHREADS) || defined(QT_THREAD_SUPPORT)
+# elif defined(MUSCLE_USE_PTHREADS)
 #  define MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 1
 namespace muscle {
    extern int32 DoMutexAtomicIncrement(volatile int32 * count, int32 delta);
@@ -54,27 +47,20 @@ public:
       // empty
    }
 
-   /** Atomically increments our counter by one. */
-   inline void AtomicIncrement() 
+   /** Atomically increments our counter by one.
+     * Returns true iff the count's new value is 1; returns false
+     *              if the count's new value is any other value.
+     */
+   inline bool AtomicIncrement() 
    {
 #if defined(MUSCLE_SINGLE_THREAD_ONLY) 
-      ++_count;
+      return (++_count == 1);
 #elif defined(WIN32) 
-# if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-      volatile int * p = &_count;
-      __asm {
-              mov eax, p;
-              lock inc DWORD PTR [eax];
-      };
-# else
-      (void) InterlockedIncrement(&_count);
-# endif
+      return (InterlockedIncrement(&_count) == 1);
 #elif defined(__APPLE__) 
-      (void) OSAtomicIncrement32Barrier(&_count);
-#elif defined(__ATHEOS__) 
-      (void) atomic_add(&_count,1);
-#elif defined(__BEOS__) || defined(__HAIKU__)
-      (void) atomic_add(&_count,1);
+      return (OSAtomicIncrement32Barrier(&_count) == 1);
+#elif defined(__ATHEOS__) || defined(__BEOS__) || defined(__HAIKU__)
+      return (atomic_add(&_count,1) == 0);  // atomic_add() returns the previous value
 #elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY)
       volatile int * p = &_count;
       int tmp;  // tmp will be set to the value after the increment
@@ -86,42 +72,32 @@ public:
          : "=&r" (tmp) 
          : "r" (p) 
          : "cc", "memory");
+      return (tmp == 1);
 #elif defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-      volatile int * p = &_count;
+      int value = 1;  // the increment-by value
       asm volatile(
-         "lock; incl (%0)"
-         : // No outputs
-         : "q" (p)
-         : "cc", "memory");
-#elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
-      (void) _count.ref();
+         "lock; xaddl %%eax, %2;"
+         :"=a" (value)                 // Output
+         : "a" (value), "m" (_count)  // Input
+         :"memory");
+      return (value==0);  // at this point value contains the counter's pre-increment value
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      (void) DoMutexAtomicIncrement(&_count, 1);
+      return (DoMutexAtomicIncrement(&_count, 1) == 1);
 #else
 # error "No atomic increment supplied for this OS!  Add it here in AtomicCount.h, or put -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile if you will not be using multithreading." 
 #endif 
    }
 
    /** Atomically decrements our counter by one.
-     * @returns true iff the new value of our count is zero, or false if it is any other value
+     * @returns true iff the new value of our count is 0;
+     *               returns false if it is any other value
      */
    inline bool AtomicDecrement() 
    {
 #if defined(MUSCLE_SINGLE_THREAD_ONLY) 
       return (--_count == 0);
 #elif defined(WIN32) 
-# if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-      bool isZero;
-      volatile int * p = &_count;
-      __asm {
-         mov eax, p;
-         lock dec DWORD PTR [eax];
-         sete isZero;
-      };
-      return isZero;
-# else
       return (InterlockedDecrement(&_count) == 0);
-# endif
 #elif defined(__APPLE__)
       return (OSAtomicDecrement32Barrier(&_count) == 0);
 #elif defined(__ATHEOS__) 
@@ -151,8 +127,6 @@ public:
          : "cc", "memory"
          );
       return isZero;
-#elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
-      return (_count.deref() == false);
 #elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
       return (DoMutexAtomicIncrement(&_count, -1) == 0);
 #else
@@ -180,11 +154,7 @@ private:
 #elif defined(__ATHEOS__)
    atomic_t _count;
 #elif defined(WIN32)
-# if defined(_MSC_VER) && defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
-   volatile int _count;
-# else
    long _count;
-# endif
 #elif defined(__APPLE__)
    volatile int32_t _count;
 #elif defined(__BEOS__) || defined(__HAIKU__)
@@ -195,8 +165,6 @@ private:
 # endif
 #elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
    volatile int _count;
-#elif defined(MUSCLE_USE_QT_FOR_ATOMIC_OPERATIONS)
-   QAtomicInt _count;
 #else
    volatile int32 _count;
 #endif

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef ZLibCodec_h
 #define ZLibCodec_h
@@ -35,9 +35,19 @@ public:
      *                    if the previously Deflate()'d buffers have been reinflated
      *                    before it.  Setting this value to true will reduce the
      *                    compression efficiency, but allows for more flexibility.
+     * @param addHeaderBytes If set to non-zero, the returned ByteBuffer will contain
+     *                    this many additional bytes at the beginning of the byte array,
+     *                    before the first compressed-data byte.  The values in these bytes
+     *                    are undefined; the caller can write header data to them if desired.
+     *                    Leave this set to zero if you're not sure of what you are doing.
+     * @param addFooterBytes If set to non-zero, the returned ByteBuffer will contain
+     *                    this many additional bytes at the end of the byte array,
+     *                    after the last compressed-data byte.  The values in these bytes
+     *                    are undefined; the caller can write footer data to them if desired.
+     *                    Leave this set to zero if you're not sure of what you are doing.
      * @returna Reference to a buffer of compressed data on success, or a NULL reference on failure.
      */
-   ByteBufferRef Deflate(const uint8 * rawData, uint32 numBytes, bool independent);
+   ByteBufferRef Deflate(const uint8 * rawData, uint32 numBytes, bool independent, uint32 addHeaderBytes=0, uint32 addFooterBytes=0);
 
    /** Given a buffer of compressed data, returns a reference to a Buffer containing
      * the matching raw data, or NULL on failure.
@@ -64,7 +74,7 @@ public:
    int GetCompressionLevel() const {return _compressionLevel;}
 
    // Convenience methods -- they work the same as their counterparts above, but take a ByteBuffer argument rather than a pointer and byte count.
-   ByteBufferRef Deflate(const ByteBuffer & rawData, bool independent) {return Deflate(rawData.GetBuffer(), rawData.GetNumBytes(), independent);}
+   ByteBufferRef Deflate(const ByteBuffer & rawData, bool independent, uint32 addHeaderBytes=0, uint32 addFooterBytes=0) {return Deflate(rawData.GetBuffer(), rawData.GetNumBytes(), independent, addHeaderBytes, addFooterBytes);}
    ByteBufferRef Inflate(const ByteBuffer & compressedData) {return Inflate(compressedData.GetBuffer(), compressedData.GetNumBytes());}
    int32 GetInflatedSize(const ByteBuffer & compressedData, bool * optRetIsIndependent = NULL) const {return GetInflatedSize(compressedData.GetBuffer(), compressedData.GetNumBytes(), optRetIsIndependent);}
 

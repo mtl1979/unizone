@@ -1,8 +1,9 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include <stdio.h>
 #include "regex/StringMatcher.h"
 #include "util/String.h"
+#include "util/StringTokenizer.h"
 
 namespace muscle {
 
@@ -18,7 +19,7 @@ StringMatcherRef GetStringMatcherFromPool(const String & matchString, bool isSim
    return ret;
 }
 
-StringMatcher::StringMatcher() : _bits(0), _rangeMin(MUSCLE_NO_LIMIT), _rangeMax(MUSCLE_NO_LIMIT)
+StringMatcher::StringMatcher() : _bits(0)
 {
    // empty
 } 
@@ -42,7 +43,7 @@ void StringMatcher :: Reset()
 {
    if (IsBitSet(STRINGMATCHER_BIT_REGEXVALID)) regfree(&_regExp);
    _bits = 0;
-   _rangeMin = _rangeMax = MUSCLE_NO_LIMIT;
+   _ranges.Clear();
    _pattern.Clear();
 }
 
@@ -63,7 +64,7 @@ status_t StringMatcher :: SetPattern(const String & s, bool isSimple)
    SetBit(STRINGMATCHER_BIT_HASREGEXTOKENS, HasRegexTokens(str));
 
    String regexPattern;
-   _rangeMin = _rangeMax = MUSCLE_NO_LIMIT;  // default to regular matching mode
+   _ranges.Clear();
    if (isSimple)
    {
       // Special case:  if the first char is a tilde, ignore it, but set the negate-bit.
@@ -79,19 +80,34 @@ status_t StringMatcher :: SetPattern(const String & s, bool isSimple)
       // hack, but also quite useful since regex won't do that in general.
       if (str[0] == '<')
       {
-         const char * dash = strchr(str+1, '-');
-         if (dash)
+         const char * rBracket = strchr(str+1, '>');
+         if ((rBracket)&&(*(rBracket+1)=='\0'))   // the right-bracket must be the last char in the string!
          {
-            const char * nulByte = strchr(dash+1, '\0');
-            if (*(nulByte-1) == '>')
+            StringTokenizer clauses(&str[1], ",");
+            const char * clause;
+            while((clause=clauses()) != NULL)
             {
-               _rangeMin = (str[1]  == '-') ? 0 : (uint32)atoi(str+1);
-               _rangeMax = (dash[1] == '>') ? MUSCLE_NO_LIMIT : ((dash[1] == '-') ? 0 : (uint32)atoi(dash+1));
+               uint32 min = 0, max = MUSCLE_NO_LIMIT;  // defaults to be used in case one side of the dash is missing (e.g. "-36" means <=36, or "36-" means >=36)
+
+               const char * dash = strchr(clause, '-');
+               if (dash)
+               {
+                  String beforeDash;
+                  if (dash>clause) {beforeDash.SetCstr(clause, dash-clause); beforeDash = beforeDash.Trim();}
+
+                  String afterDash(dash+1); afterDash = afterDash.Trim();
+
+                  if (beforeDash.HasChars()) min = atoi(beforeDash());
+                  if (afterDash.HasChars())  max = atoi(afterDash());
+               }
+               else if (clause[0] != '>') min = max = atoi(String(clause).Trim()());
+               
+               _ranges.AddTail(IDRange(min,max));
             }
          }
       }
 
-      if (_rangeMin == MUSCLE_NO_LIMIT)
+      if (_ranges.IsEmpty())
       {
          if ((str[0] == '\\')&&(str[1] == '<')) str++;  // special case escape of initial < for "\<15-23>"
 
@@ -130,7 +146,7 @@ status_t StringMatcher :: SetPattern(const String & s, bool isSimple)
    }
 
    // And compile the new one
-   if (_rangeMin == MUSCLE_NO_LIMIT)
+   if (_ranges.IsEmpty())
    {
       bool isValid = (regcomp(&_regExp, regexPattern.HasChars() ? regexPattern() : str, REG_EXTENDED) == 0);
       SetBit(STRINGMATCHER_BIT_REGEXVALID, isValid);
@@ -145,13 +161,18 @@ bool StringMatcher :: Match(const char * const str) const
 
    bool ret = false;  // pessimistic default
 
-   if (_rangeMin == MUSCLE_NO_LIMIT)
+   if (_ranges.IsEmpty())
    {
       if (IsBitSet(STRINGMATCHER_BIT_REGEXVALID)) ret = (regexec(&_regExp, str, 0, NULL, 0) != REG_NOMATCH);
    }
    else if (muscleInRange(str[0], '0', '9'))
    {
-      ret = muscleInRange((uint32) atoi(str), _rangeMin, _rangeMax);
+      uint32 id = (uint32) atoi(str);
+      for (uint32 i=0; i<_ranges.GetNumItems(); i++) 
+      {
+         const IDRange & r = _ranges[i];
+         if (muscleInRange(id, r.GetMin(), r.GetMax())) {ret = true; break;}
+      }
    }
 
    return IsBitSet(STRINGMATCHER_BIT_NEGATE) ? (!ret) : ret;
@@ -162,11 +183,23 @@ String StringMatcher :: ToString() const
    String s;
    if (IsBitSet(STRINGMATCHER_BIT_NEGATE)) s = "~";
 
-   if (_rangeMin == MUSCLE_NO_LIMIT) return s+_pattern;
+   if (_ranges.IsEmpty()) return s+_pattern;
    else
    {
-      char buf[128]; sprintf(buf, "<"UINT32_FORMAT_SPEC"-"UINT32_FORMAT_SPEC">", _rangeMin, _rangeMax);
-      return s + buf;
+      s += '<';
+      for (uint32 i=0; i<_ranges.GetNumItems(); i++) 
+      {
+         if (i > 0) s += ',';
+         const IDRange & r = _ranges[i];
+         uint32 min = r.GetMin();
+         uint32 max = r.GetMax();
+         char buf[128];
+         if (max > min) sprintf(buf, UINT32_FORMAT_SPEC "-" UINT32_FORMAT_SPEC, min, max);
+                   else sprintf(buf, UINT32_FORMAT_SPEC, min);
+         s += buf;
+      }
+      s += '>';
+      return s;
    }
 }
 

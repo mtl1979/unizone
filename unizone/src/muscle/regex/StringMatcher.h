@@ -1,9 +1,10 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleStringMatcher_h
 #define MuscleStringMatcher_h
 
 #include <sys/types.h>
+#include "util/Queue.h"
 #include "util/RefCount.h"
 #include "util/String.h"
 
@@ -57,6 +58,9 @@ public:
     * Also, "<-19>" will match integers less than or equal to 19, and "<21->" will match all integers greater
     * than or equal to 21.  "<->" will match everything, same as "*".
     *
+    * Note:  In v5.84 and above, this syntax has been extended further to allow multiple ranges.  For example,
+    * "<19-21,25,30-50>" would match the IDs 19 through 21, 25, and 30-50, all inclusive.
+    *
     * Also, simple patterns that begin with a tilde (~) will be logically negated, e.g. ~A* will match all
     * strings that do NOT begin with the character A.
     *
@@ -72,8 +76,10 @@ public:
 
    /** Returns true iff this StringMatcher's pattern specifies exactly one possible string.
     *  (i.e. the pattern is just plain old text, with no wildcards or other pattern matching logic specified)
+    *  @note StringMatchers using numeric ranges are never considered unique, because e.g. looking up the
+    *        string "<5>" in a Hashtable would not return a child node whose node-name is "5".
     */
-   bool IsPatternUnique() const {return (IsBitSet(STRINGMATCHER_BIT_HASREGEXTOKENS|STRINGMATCHER_BIT_NEGATE) == false)&&(_rangeMin == MUSCLE_NO_LIMIT);}
+   bool IsPatternUnique() const {return ((_ranges.IsEmpty())&&(IsBitSet(STRINGMATCHER_BIT_HASREGEXTOKENS|STRINGMATCHER_BIT_NEGATE) == false));}
 
    /** Returns true iff (string) is matched by the current expression.
     * @param matchString a string to match against using our current expression.
@@ -119,11 +125,24 @@ private:
       STRINGMATCHER_BIT_SIMPLE         = (1<<3),
    };
 
+   class IDRange
+   {
+   public:
+      IDRange() : _min(0), _max(0) {/* empty */}
+      IDRange(uint32 min, uint32 max) : _min(muscleMin(min,max)), _max(muscleMax(min,max)) {/* empty */}
+
+      uint32 GetMin() const {return _min;}
+      uint32 GetMax() const {return _max;}
+
+   private:
+      uint32 _min; 
+      uint32 _max; 
+   };
+
    uint8 _bits;
    String _pattern;
    regex_t _regExp;
-   uint32 _rangeMin;
-   uint32 _rangeMax;   
+   Queue<IDRange> _ranges;
 }; 
 DECLARE_REFTYPES(StringMatcher);
 

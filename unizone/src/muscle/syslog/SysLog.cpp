@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -1709,7 +1709,7 @@ status_t SetOldLogFilesPattern(const String & pattern)
    if (LockLog() == B_NO_ERROR)
    {
       uint32 numAdded = _dfl.AddPreExistingLogFiles(pattern);
-      LogTime(MUSCLE_LOG_DEBUG, "Old Log Files pattern set to: [%s] ("UINT32_FORMAT_SPEC" files matched)\n", pattern(), numAdded);
+      LogTime(MUSCLE_LOG_DEBUG, "Old Log Files pattern set to: [%s] (" UINT32_FORMAT_SPEC " files matched)\n", pattern(), numAdded);
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -1722,7 +1722,7 @@ status_t SetFileLogMaximumSize(uint32 maxSizeBytes)
    {
       _dfl.SetMaxLogFileSize(maxSizeBytes);
       if (maxSizeBytes == MUSCLE_NO_LIMIT) LogTime(MUSCLE_LOG_DEBUG, "File log maximum size set to: (unlimited).\n");
-                                      else LogTime(MUSCLE_LOG_DEBUG, "File log maximum size set to: "UINT32_FORMAT_SPEC" bytes.\n", maxSizeBytes);
+                                      else LogTime(MUSCLE_LOG_DEBUG, "File log maximum size set to: " UINT32_FORMAT_SPEC " bytes.\n", maxSizeBytes);
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -1735,7 +1735,7 @@ status_t SetMaxNumLogFiles(uint32 maxNumLogFiles)
    {
       _dfl.SetMaxNumLogFiles(maxNumLogFiles);
       if (maxNumLogFiles == MUSCLE_NO_LIMIT) LogTime(MUSCLE_LOG_DEBUG, "Maximum number of log files set to: (unlimited).\n");
-                                        else LogTime(MUSCLE_LOG_DEBUG, "Maximum number of log files to: "UINT32_FORMAT_SPEC"\n", maxNumLogFiles);
+                                        else LogTime(MUSCLE_LOG_DEBUG, "Maximum number of log files to: " UINT32_FORMAT_SPEC "\n", maxNumLogFiles);
       (void) UnlockLog();
       return B_NO_ERROR;
    }
@@ -2327,7 +2327,7 @@ String GetHumanReadableTimeIntervalString(uint64 intervalUS, uint32 maxClauses, 
    if ((whichUnit >= NUM_TIME_UNITS)||((whichUnit > 0)&&(_timeUnits[whichUnit] > intervalUS))) whichUnit--;
 
    uint64 numUnits = intervalUS/_timeUnits[whichUnit];
-   char buf[256]; sprintf(buf, UINT64_FORMAT_SPEC" %s%s", numUnits, _timeUnitNames[whichUnit], (numUnits==1)?"":"s");
+   char buf[256]; sprintf(buf, UINT64_FORMAT_SPEC " %s%s", numUnits, _timeUnitNames[whichUnit], (numUnits==1)?"":"s");
    String ret = buf;
   
    uint64 leftover = intervalUS%_timeUnits[whichUnit];
@@ -2350,7 +2350,7 @@ void WarnOutOfMemory(const char * file, int line)
    // Yes, this technique is open to race conditions and other lossage.
    // But it will work in the one-error-only case, which is good enough
    // for now.
-   LogTime(MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  ("INT32_FORMAT_SPEC" bytes at %s:%i)\n", GetAndClearFailedMemoryRequestSize(), file, line);
+   LogTime(MUSCLE_LOG_CRITICALERROR, "ERROR--OUT OF MEMORY!  (" INT32_FORMAT_SPEC " bytes at %s:%i)\n", GetAndClearFailedMemoryRequestSize(), file, line);
 }
 
 #endif

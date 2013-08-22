@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleQueue_h
 #define MuscleQueue_h
@@ -30,6 +30,14 @@ public:
 
    /** Assigment operator. */
    Queue & operator=(const Queue & from);
+
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Constructor */
+   Queue(Queue && rhs) : _queue(NULL), _queueSize(0), _itemCount(0) {if (rhs._queue == rhs._smallQueue) *this = rhs; else SwapContents(rhs);}
+
+   /** C++11 Move Assignment Operator */
+   Queue & operator =(Queue && rhs) {if (rhs._queue == rhs._smallQueue) *this = rhs; else SwapContents(rhs); return *this;}
+#endif
 
    /** Equality operator.  Queues are equal if they are the same length, and
      * every nth item in this queue is == to the corresponding item in (rhs). */

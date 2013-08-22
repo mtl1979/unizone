@@ -2,6 +2,9 @@
 #include "system/SystemInfo.h"  // for GetFilePathSeparator()
 
 #ifndef WIN32
+# if defined(__APPLE__) && defined(MUSCLE_64_BIT_PLATFORM) && !defined(_DARWIN_FEATURE_64_BIT_INODE)
+#  define _DARWIN_FEATURE_64_BIT_INODE   // enable 64-bit stat(), if it isn't already enabled
+# endif
 # include <sys/stat.h>
 #endif
 
@@ -56,7 +59,7 @@ void FilePathInfo :: SetFilePath(const char * optFilePath)
          CloseHandle(hFile);
       }
 #else
-# ifdef MUSCLE_64_BIT_PLATFORM
+# if defined(MUSCLE_64_BIT_PLATFORM) && !defined(__APPLE__)
       struct stat64 statInfo;
       if (stat64(optFilePath, &statInfo) == 0)
 # else
@@ -71,7 +74,11 @@ void FilePathInfo :: SetFilePath(const char * optFilePath)
          _size = statInfo.st_size;
 # if defined(MUSCLE_64_BIT_PLATFORM) && !defined(_POSIX_SOURCE)
          _atime = InternalizeTimeSpec(statInfo.st_atimespec);
+#  if !defined(__APPLE__) || (__DARWIN_64_BIT_INO_T == 1)
          _ctime = InternalizeTimeSpec(statInfo.st_birthtimespec);
+#else
+         _ctime = InternalizeTimeT(statInfo.st_ctime);  // fallback for older Apple APIs that didn't have this
+#endif
          _mtime = InternalizeTimeSpec(statInfo.st_mtimespec);
 # else
          _atime = InternalizeTimeT(statInfo.st_atime);

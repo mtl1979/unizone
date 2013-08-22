@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "reflector/AbstractReflectSession.h"
 #include "reflector/AbstractSessionIOPolicy.h"
@@ -285,7 +285,7 @@ String
 AbstractReflectSession ::
 GetDefaultHostName() const
 {
-   return "<unknown>";
+   return "_unknown_";  // This used to be "<unknown>" but that interfered with MUSCLE's pattern matching that looks for a number range between angle brackets!  --jaf
 }
 
 String

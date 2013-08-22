@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include <limits.h>
 #include "reflector/ReflectServer.h"
@@ -368,7 +368,7 @@ NodeIndexChanged(DataNode & modifiedNode, char op, uint32 index, const String & 
       {
          _sharedData->_subsDirty = true;
          char temp[100];
-         sprintf(temp, "%c"UINT32_FORMAT_SPEC":%s", op, index, key());
+         sprintf(temp, "%c" UINT32_FORMAT_SPEC ":%s", op, index, key());
          _nextIndexSubscriptionMessage()->AddString(np, temp);
       }
       else WARN_OUT_OF_MEMORY;
@@ -1255,7 +1255,7 @@ GetDataCallback(DataNode & node, void * userData)
             (void) indexUpdateMsg()->AddString(np, clearStr);
             for (uint32 i=0; i<indexLen; i++) 
             {
-               char temp[100]; sprintf(temp, "%c"UINT32_FORMAT_SPEC":", INDEX_OP_ENTRYINSERTED, i);
+               char temp[100]; sprintf(temp, "%c" UINT32_FORMAT_SPEC ":", INDEX_OP_ENTRYINSERTED, i);
                (void) indexUpdateMsg()->AddString(np, (*index)[i]()->GetNodeName().Prepend(temp));
             }
             if (indexUpdateMsg()->GetNumNames() >= _maxSubscriptionMessageItems) SendGetDataResults(messageArray[1]);
@@ -1823,18 +1823,18 @@ void StorageReflectSession :: TallyNodeBytes(const DataNode & n, uint32 & retNum
 
 void StorageReflectSession :: PrintFactoriesInfo() const
 {
-   printf("There are "UINT32_FORMAT_SPEC" factories attached:\n", GetFactories().GetNumItems());
+   printf("There are " UINT32_FORMAT_SPEC " factories attached:\n", GetFactories().GetNumItems());
    for (HashtableIterator<IPAddressAndPort, ReflectSessionFactoryRef> iter(GetFactories()); iter.HasData(); iter++)
    {
       const ReflectSessionFactory & f = *iter.GetValue()();
-      printf("   Factory [%p] is listening at [%s] (%sid="UINT32_FORMAT_SPEC").\n", &f, iter.GetKey().ToString()(), f.IsReadyToAcceptSessions()?"ReadyToAcceptSessions, ":"", f.GetFactoryID());
+      printf("   Factory [%p] is listening at [%s] (%sid=" UINT32_FORMAT_SPEC ").\n", &f, iter.GetKey().ToString()(), f.IsReadyToAcceptSessions()?"ReadyToAcceptSessions, ":"", f.GetFactoryID());
    }
 }
 
 void StorageReflectSession :: PrintSessionsInfo() const
 {
    const Hashtable<const String *, AbstractReflectSessionRef> & t = GetSessions();
-   printf("There are "UINT32_FORMAT_SPEC" sessions attached:\n", t.GetNumItems());
+   printf("There are " UINT32_FORMAT_SPEC " sessions attached:\n", t.GetNumItems());
    uint32 totalNumOutMessages = 0, totalNumOutBytes = 0, totalNumNodes = 0, totalNumNodeBytes = 0;
    for (HashtableIterator<const String *, AbstractReflectSessionRef> iter(t); iter.HasData(); iter++)
    {
@@ -1860,14 +1860,14 @@ void StorageReflectSession :: PrintSessionsInfo() const
       if (ars->HasBytesToOutput()) stateStr = stateStr.AppendWord("HasBytesToOutput", ", ");
       if (ars->WasConnected()) stateStr = stateStr.AppendWord("WasConnected", ", ");
       if (stateStr.HasChars()) stateStr = stateStr.Prepend(", ");
-      printf("  Session [%s] (rfd=%i,wfd=%i) is [%s]:  ("UINT32_FORMAT_SPEC" outgoing Messages, "UINT32_FORMAT_SPEC" Message-bytes, "UINT32_FORMAT_SPEC" nodes, "UINT32_FORMAT_SPEC" node-bytes%s)\n", iter.GetKey()->Cstr(), ars->GetSessionReadSelectSocket().GetFileDescriptor(), ars->GetSessionWriteSelectSocket().GetFileDescriptor(), ars->GetSessionDescriptionString()(), numOutMessages, numOutBytes, numNodes, numNodeBytes, stateStr());
+      printf("  Session [%s] (rfd=%i,wfd=%i) is [%s]:  (" UINT32_FORMAT_SPEC " outgoing Messages, " UINT32_FORMAT_SPEC " Message-bytes, " UINT32_FORMAT_SPEC " nodes, " UINT32_FORMAT_SPEC " node-bytes%s)\n", iter.GetKey()->Cstr(), ars->GetSessionReadSelectSocket().GetFileDescriptor(), ars->GetSessionWriteSelectSocket().GetFileDescriptor(), ars->GetSessionDescriptionString()(), numOutMessages, numOutBytes, numNodes, numNodeBytes, stateStr());
       totalNumOutMessages += numOutMessages;
       totalNumOutBytes    += numOutBytes;
       totalNumNodes       += numNodes;
       totalNumNodeBytes   += numNodeBytes;
    }
    printf("------------------------------------------------------------\n");
-   printf("Totals: "UINT32_FORMAT_SPEC" messages, "UINT32_FORMAT_SPEC" message-bytes, "UINT32_FORMAT_SPEC" nodes, "UINT32_FORMAT_SPEC" node-bytes.\n", totalNumOutMessages, totalNumOutBytes, totalNumNodes, totalNumNodeBytes);
+   printf("Totals: " UINT32_FORMAT_SPEC " messages, " UINT32_FORMAT_SPEC " message-bytes, " UINT32_FORMAT_SPEC " nodes, " UINT32_FORMAT_SPEC " node-bytes.\n", totalNumOutMessages, totalNumOutBytes, totalNumNodes, totalNumNodeBytes);
 }
 
 }; // end namespace muscle

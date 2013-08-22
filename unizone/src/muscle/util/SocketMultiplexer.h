@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleSocketMultiplexer_h
 #define MuscleSocketMultiplexer_h
@@ -222,7 +222,11 @@ private:
          {
             case FDSTATE_SET_READ:   return POLLIN |(isRegister?0:POLLHUP);
             case FDSTATE_SET_WRITE:  return POLLOUT|(isRegister?0:POLLHUP);
+#ifdef WIN32
+            case FDSTATE_SET_EXCEPT: return (isRegister?0:POLLERR);  // WSAPoll() won't accept POLLERR as an events flag... see discussion at http://daniel.haxx.se/blog/2012/10/10/wsapoll-is-broken/
+#else
             case FDSTATE_SET_EXCEPT: return POLLERR;
+#endif
             default:                 return 0;
          }
       }

@@ -65,6 +65,11 @@ void MultiDataIO :: WriteBufferedOutput()
    for (int32 i=_childIOs.GetNumItems()-1; i>=0; i--) _childIOs[i]()->WriteBufferedOutput();
 }
 
+uint32 MultiDataIO :: GetPacketMaximumSize() const
+{
+   return (HasChildren()) ? GetFirstChild()->GetPacketMaximumSize() : 0;
+}
+
 bool MultiDataIO :: HasBufferedOutput() const 
 {
    for (int32 i=_childIOs.GetNumItems()-1; i>=0; i--) if (_childIOs[i]()->HasBufferedOutput()) return true;

@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */  
 
 #include "util/String.h"
 #include "support/Point.h"
@@ -748,7 +748,7 @@ String String :: ArgAux(const char * buf) const
    if (lowestArg >= 0)
    {
       char token[64];
-      sprintf(token, "%%"INT32_FORMAT_SPEC, lowestArg);
+      sprintf(token, "%%" INT32_FORMAT_SPEC, lowestArg);
       String ret(*this);
       (void) ret.Replace(token, buf);
       return ret;

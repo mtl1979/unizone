@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifdef MUSCLE_ENABLE_ZLIB_ENCODING
 
@@ -63,7 +63,7 @@ static const uint32 ZLIB_CODEC_HEADER_DEPENDENT   = 2053925218;               //
 static const uint32 ZLIB_CODEC_HEADER_INDEPENDENT = 2053925219;               // 'zlic'
 static const uint32 ZLIB_CODEC_HEADER_SIZE  = sizeof(uint32)+sizeof(uint32);  // 4 bytes of magic, 4 bytes of raw-size
 
-ByteBufferRef ZLibCodec :: Deflate(const uint8 * rawBytes, uint32 numRaw, bool independent)
+ByteBufferRef ZLibCodec :: Deflate(const uint8 * rawBytes, uint32 numRaw, bool independent, uint32 addHeaderBytes, uint32 addFooterBytes)
 {
    TCHECKPOINT;
 
@@ -76,29 +76,30 @@ ByteBufferRef ZLibCodec :: Deflate(const uint8 * rawBytes, uint32 numRaw, bool i
          return ByteBufferRef();
       }
 
-      ret = GetByteBufferFromPool(ZLIB_CODEC_HEADER_SIZE+((numRaw*101)/100)+13);
+      uint32 compAvailSize = ZLIB_CODEC_HEADER_SIZE+deflateBound(&_deflater, numRaw)+13;
+      ret = GetByteBufferFromPool(addHeaderBytes+compAvailSize+addFooterBytes);
       if (ret())
       {
          _deflater.next_in   = (Bytef *)rawBytes;
          _deflater.total_in  = 0;
          _deflater.avail_in  = numRaw;
 
-         _deflater.next_out  = ret()->GetBuffer()+ZLIB_CODEC_HEADER_SIZE;
+         _deflater.next_out  = ret()->GetBuffer()+ZLIB_CODEC_HEADER_SIZE+addHeaderBytes;
          _deflater.total_out = 0;
-         _deflater.avail_out = ret()->GetNumBytes();
+         _deflater.avail_out = compAvailSize;  // doesn't include the users add-header or add-footer bytes!
          
-         if ((deflate(&_deflater, Z_SYNC_FLUSH) == Z_OK)&&(ret()->SetNumBytes(_deflater.total_out+ZLIB_CODEC_HEADER_SIZE, true) == B_NO_ERROR))
+         if ((deflate(&_deflater, Z_SYNC_FLUSH) == Z_OK)&&(ret()->SetNumBytes(addHeaderBytes+ZLIB_CODEC_HEADER_SIZE+_deflater.total_out+addFooterBytes, true) == B_NO_ERROR))
          {
             (void) ret()->FreeExtraBytes();  // no sense keeping all that extra space around, is there?
 
-            uint8 * compBytes = ret()->GetBuffer();  // important -- it might have changed!
+            uint8 * compBytes = ret()->GetBuffer()+addHeaderBytes;  // important -- it might have changed!
 
             const uint32 magic = B_HOST_TO_LENDIAN_INT32(independent ? ZLIB_CODEC_HEADER_INDEPENDENT : ZLIB_CODEC_HEADER_DEPENDENT);
             muscleCopyOut(compBytes, magic);
 
             const uint32 rawLen = B_HOST_TO_LENDIAN_INT32(numRaw);
             muscleCopyOut(&compBytes[sizeof(magic)], rawLen); 
-//printf("Deflated "UINT32_FORMAT_SPEC" bytes to "UINT32_FORMAT_SPEC" bytes\n", numRaw, ret()->GetNumBytes());
+//printf("Deflated " UINT32_FORMAT_SPEC" bytes to " UINT32_FORMAT_SPEC" bytes\n", numRaw, ret()->GetNumBytes());
          }
          else ret.Reset();  // oops, something went wrong!
       }
@@ -152,7 +153,7 @@ ByteBufferRef ZLibCodec :: Inflate(const uint8 * compBytes, uint32 numComp)
 
          int zRet = inflate(&_inflater, Z_SYNC_FLUSH);
          if (((zRet != Z_OK)&&(zRet != Z_STREAM_END))||((int32)_inflater.total_out != rawLen)) ret.Reset();  // oopsie!
-//printf("Inflated "UINT32_FORMAT_SPEC" bytes to "UINT32_FORMAT_SPEC" bytes\n", compBytes, rawLen);
+//printf("Inflated " UINT32_FORMAT_SPEC" bytes to " UINT32_FORMAT_SPEC" bytes\n", numComp, rawLen);
       }
    }
    return ret;

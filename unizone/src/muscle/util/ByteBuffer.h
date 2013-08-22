@@ -1,4 +1,4 @@
-/* This file is Copyright 2000-2011 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
+/* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
 #ifndef MuscleByteBuffer_h
 #define MuscleByteBuffer_h
@@ -179,6 +179,14 @@ public:
       muscleSwap(_numAllocatedBytes, swapWith._numAllocatedBytes);
       muscleSwap(_allocStrategy,     swapWith._allocStrategy);
    }
+
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Constructor */
+   ByteBuffer(ByteBuffer && rhs) : _buffer(NULL), _numValidBytes(0), _numAllocatedBytes(0) {SwapContents(rhs);}
+
+   /** C++11 Move Assignment Operator */
+   ByteBuffer & operator =(ByteBuffer && rhs) {SwapContents(rhs); return *this;}
+#endif
 
    // Flattenable interface
    virtual bool IsFixedSize() const {return false;}
