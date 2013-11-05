@@ -112,17 +112,17 @@ main( int argc, char** argv )
 	// Set alternative settings file if requested
 
 	int a = 1;
-	while (a < argc)
+	while (a < app.arguments().count())
 	{
-		if (strcmp(argv[a], "--settings") == 0)
+		if (app.arguments().at(a) == "--settings")
 		{
 			a++;
-			SetSettingsFile(argv[a]);
+			SetSettingsFile(app.arguments().at(a));
 		}
-		else if (strcmp(argv[a], "--font") == 0)
+		else if (app.arguments().at(a) == "--font")
 		{
 			a++;
-			int fs = atoi(argv[a]);
+			int fs = app.arguments().at(a).toInt();
 			QFont font = app.font();
 			font.setPointSize(fs);
 			app.setFont(font);

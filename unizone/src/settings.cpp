@@ -20,7 +20,7 @@ QString SettingsFile; // name of settings file, default depends on host os
 extern QString gDataDir; // main.cpp
 #endif
 
-const char *
+const QString &
 GetSettingsFile()
 {
 	if (SettingsFile.isEmpty())
@@ -55,9 +55,9 @@ GetStringItem(const MessageRef &msg, const char * key)
 }
 
 void
-SetSettingsFile(const char * sf)
+SetSettingsFile(const QString & sf)
 {
-	SettingsFile = QString::fromLocal8Bit(sf);
+	SettingsFile = sf;
 }
 
 WSettings::WSettings()
