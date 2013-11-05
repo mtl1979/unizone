@@ -188,8 +188,8 @@ main( int argc, char** argv )
 
 	window->show();
 
-	if (argc > 0)
-		window->Load(QString::fromLocal8Bit(argv[1]));
+	if (app.arguments().count() > 1)
+		window->Load(app.arguments().at(1));
 
 	return app.exec();
 }
