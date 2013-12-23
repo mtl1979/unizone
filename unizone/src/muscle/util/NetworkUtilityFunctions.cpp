@@ -668,7 +668,7 @@ void SetHostNameCacheSettings(uint32 maxEntries, uint64 expirationTime)
    MutexGuard mg(_hostCacheMutex);
    _maxHostCacheSize = expirationTime ? maxEntries : 0;  // no sense storing entries that expire instantly
    _hostCacheEntryLifespan = expirationTime;
-   while(_hostCache.GetNumItems() > _maxHostCacheSize) (void) _hostCache.Remove(*_hostCache.GetLastKey());
+   while(_hostCache.GetNumItems() > _maxHostCacheSize) (void) _hostCache.RemoveLast();
 }
 
 static String GetHostByNameKey(const char * name, bool expandLocalhost)
@@ -750,7 +750,7 @@ ip_address GetHostByName(const char * name, bool expandLocalhost)
       if (r)
       {
          _hostCache.MoveToFront(s);  // LRU logic
-         while(_hostCache.GetNumItems() > _maxHostCacheSize) (void) _hostCache.Remove(*_hostCache.GetLastKey());
+         while(_hostCache.GetNumItems() > _maxHostCacheSize) (void) _hostCache.RemoveLast();
       }
    }
 
@@ -1389,9 +1389,9 @@ ip_address Inet_AtoN(const char * buf)
 #endif
 }
 
-static ip_address ResolveIP(const char * s, bool allowDNSLookups)
+static ip_address ResolveIP(const String & s, bool allowDNSLookups)
 {
-   return allowDNSLookups ? GetHostByName(s) : Inet_AtoN(s);
+   return allowDNSLookups ? GetHostByName(s()) : Inet_AtoN(s());
 }
 
 void IPAddressAndPort :: SetFromString(const String & s, uint16 defaultPort, bool allowDNSLookups)
@@ -1401,7 +1401,7 @@ void IPAddressAndPort :: SetFromString(const String & s, uint16 defaultPort, boo
    if (rBracket >= 0)
    {
       // If there are brackets, they are assumed to surround the address part, e.g. "[::1]:9999"
-      _ip = ResolveIP(s.Substring(1,rBracket)(), allowDNSLookups);
+      _ip = ResolveIP(s.Substring(1,rBracket), allowDNSLookups);
 
       int32 colIdx = s.IndexOf(':', rBracket+1);
       _port = ((colIdx >= 0)&&(muscleInRange(s()[colIdx+1], '0', '9'))) ? atoi(s()+colIdx+1) : defaultPort;
@@ -1409,7 +1409,7 @@ void IPAddressAndPort :: SetFromString(const String & s, uint16 defaultPort, boo
    }
    else if (s.GetNumInstancesOf(':') != 1)  // I assume IPv6-style address strings never have exactly one colon in them
    {
-      _ip   = ResolveIP(s(), allowDNSLookups);
+      _ip   = ResolveIP(s, allowDNSLookups);
       _port = defaultPort;
       return;
    }
@@ -1419,12 +1419,12 @@ void IPAddressAndPort :: SetFromString(const String & s, uint16 defaultPort, boo
    int colIdx = s.IndexOf(':');
    if ((colIdx >= 0)&&(muscleInRange(s()[colIdx+1], '0', '9')))
    {
-      _ip   = ResolveIP(s.Substring(0, colIdx)(), allowDNSLookups);
+      _ip   = ResolveIP(s.Substring(0, colIdx), allowDNSLookups);
       _port = atoi(s()+colIdx+1);
    }
    else
    {
-      _ip   = ResolveIP(s(), allowDNSLookups);
+      _ip   = ResolveIP(s, allowDNSLookups);
       _port = defaultPort;
    }
 }

@@ -4,6 +4,7 @@
 #define MuscleReflectServer_h
 
 #include "reflector/AbstractReflectSession.h"
+#include "util/NestCount.h"
 #include "util/SocketMultiplexer.h"
 
 namespace muscle {
@@ -219,6 +220,33 @@ public:
      */
    virtual void EventLoopCycleEnds() {/* empty */}
 
+#ifdef MUSCLE_ENABLE_SSL
+   /** Sets the SSL private key data that should be used to authenticate and encrypt
+     * accepted incoming TCP connections.  Default state is a NULL reference (i.e. no SSL
+     * encryption will be used for incoming connecitons).
+     * @param privateKey Reference to the contents of a .pem file containing both
+     *        a PRIVATE KEY section and a CERTIFICATE section, or a NULL reference
+     *        if you want to make SSL disabled again.
+     * @note this method is only available if MUSCLE_ENABLE_OPENSSL is defined.
+     */
+   void SetSSLPrivateKey(const ConstByteBufferRef & privateKey) {_privateKey = privateKey;}
+
+   /** Returns the current SSL private key data, or a NULL ref if there isn't any. */
+   const ConstByteBufferRef & GetSSLPrivateKey() const {return _privateKey;}
+
+   /** Sets the SSL public key data that should be used to authenticate and encrypt
+     * outgoing TCP connections.  Default state is a NULL reference (i.e. no SSL
+     * encryption will be used for outgoing connections).
+     * @param publicKey Reference to the contents of a .pem file containing a CERTIFICATE 
+     *        section, or a NULL reference if you want to make SSL disabled again.
+     * @note this method is only available if MUSCLE_ENABLE_OPENSSL is defined.
+     */
+   void SetSSLPublicKeyCertificate(const ConstByteBufferRef & publicKey) {_publicKey = publicKey;}
+
+   /** Returns the current SSL public key data, or a NULL ref if there isn't any. */
+   const ConstByteBufferRef & GetSSLPublicKeyCertificate() const {return _publicKey;}
+#endif
+
 protected:
    /**
     * This version of AddNewSession (which is called by the previous 
@@ -285,6 +313,13 @@ private:
 
    Hashtable<ip_address, String> _remapIPs;  // for v2.20; custom strings for "special" IP addresses
    SocketMultiplexer _multiplexer;
+
+#ifdef MUSCLE_ENABLE_SSL
+   ConstByteBufferRef _publicKey;  // used for making outgoing TCP connections
+   ConstByteBufferRef _privateKey; // used for receiving incoming TCP connections
+#endif
+   NestCount _inDoAccept;
+   NestCount _inDoConnect;
 };
 DECLARE_REFTYPES(ReflectServer);
 

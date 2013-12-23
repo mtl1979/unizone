@@ -50,6 +50,10 @@ status_t MessageTransceiverThread :: EnsureServerAllocated()
                if (server()->AddNewSession(AbstractReflectSessionRef(controlSession.GetRefCountableRef(), true), sock) == B_NO_ERROR)
                {
                   _server = server;
+#ifdef MUSCLE_ENABLE_SSL
+                  if (_privateKey()) server()->SetSSLPrivateKey(_privateKey);
+                  if (_publicKey())  server()->SetSSLPublicKeyCertificate(_publicKey);
+#endif
                   return B_NO_ERROR;
                }
             }
@@ -178,6 +182,34 @@ status_t MessageTransceiverThread :: RemoveAcceptFactory(uint16 port, const ip_a
    }
    else return B_NO_ERROR;  // if there's no server, there's no port
 }
+
+#ifdef MUSCLE_ENABLE_SSL
+
+status_t MessageTransceiverThread :: SetSSLPrivateKey(const ConstByteBufferRef & privateKey)
+{
+   _privateKey = privateKey;
+
+   if (IsInternalThreadRunning())
+   {
+      MessageRef msgRef(GetMessageFromPool(MTT_COMMAND_SET_SSL_PRIVATE_KEY));
+      if ((msgRef() == NULL)||((_privateKey())&&(msgRef()->AddFlat(MTT_NAME_DATA, CastAwayConstFromRef(privateKey)) != B_NO_ERROR))||(SendMessageToInternalThread(msgRef) != B_NO_ERROR)) return B_ERROR;
+   }
+   return B_NO_ERROR;
+}
+
+status_t MessageTransceiverThread :: SetSSLPublicKeyCertificate(const ConstByteBufferRef & publicKey)
+{
+   _publicKey = publicKey;
+
+   if (IsInternalThreadRunning())
+   {
+      MessageRef msgRef(GetMessageFromPool(MTT_COMMAND_SET_SSL_PUBLIC_KEY));
+      if ((msgRef() == NULL)||((_publicKey())&&(msgRef()->AddFlat(MTT_NAME_DATA, CastAwayConstFromRef(_publicKey)) != B_NO_ERROR))||(SendMessageToInternalThread(msgRef) != B_NO_ERROR)) return B_ERROR;
+   }
+   return B_NO_ERROR;
+}
+
+#endif
 
 status_t MessageTransceiverThread :: SetDefaultDistributionPath(const String & path)
 {
@@ -723,6 +755,16 @@ status_t ThreadSupervisorSession :: MessageReceivedFromOwner(const MessageRef & 
                }
             }
             break;
+
+#ifdef MUSCLE_ENABLE_SSL
+            case MTT_COMMAND_SET_SSL_PRIVATE_KEY:
+               _mtt->_server()->SetSSLPrivateKey(msg->GetFlat(MTT_NAME_DATA));
+            break;
+
+            case MTT_COMMAND_SET_SSL_PUBLIC_KEY:
+               _mtt->_server()->SetSSLPublicKeyCertificate(msg->GetFlat(MTT_NAME_DATA));
+            break;
+#endif
 
             default:
                SendMessageToWorkers(msgRef);

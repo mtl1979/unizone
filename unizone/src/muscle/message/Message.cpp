@@ -188,8 +188,7 @@ public:
    {
       if (index < _data.GetNumItems())
       {
-         *setDataLoc = _data.GetItemAt(index);
-          
+         *setDataLoc = &_data[index];
          return (*setDataLoc) ? B_NO_ERROR : B_ERROR;
       }
       return B_ERROR;
@@ -204,7 +203,7 @@ public:
 
    virtual bool IsFlattenable() const {return true;}
 
-   const DataType & ItemAt(int i) const {return *_data.GetItemAt(i);}
+   const DataType & ItemAt(int i) const {return _data[i];}
 
    FixedSizeDataArray<DataType> & operator=(const FixedSizeDataArray<DataType> & rhs) 
    {
@@ -266,7 +265,7 @@ protected:
       {
          DoIndents(indent,s); 
          char buf[128]; 
-         sprintf(buf, "    " UINT32_FORMAT_SPEC ". %p\n", i, _data.GetItemAt(i)->GetItemPointer()); 
+         sprintf(buf, "    " UINT32_FORMAT_SPEC ". %p\n", i, _data[i]());
          s += buf;
       }
    }
@@ -292,7 +291,7 @@ public:
       uint32 numItems = this->_data.GetNumItems(); 
       for (uint32 i=0; i<numItems; i++) 
       {
-         this->_data.GetItemAt(i)->Flatten(buffer);
+         this->_data[i].Flatten(buffer);
          buffer += FlatItemSize;
       }
    }

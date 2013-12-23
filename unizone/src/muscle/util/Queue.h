@@ -5,10 +5,28 @@
 
 #include "support/MuscleSupport.h"
 
+#ifdef MUSCLE_USE_CPLUSPLUS11
+# include<initializer_list>
+#endif
+
 namespace muscle {
 
 #ifndef SMALL_QUEUE_SIZE
 # define SMALL_QUEUE_SIZE 3
+#endif
+
+#ifdef MUSCLE_USE_CPLUSPLUS11
+// Enable move semantics (when possible) for C++11
+# define QQ_UniversalSinkItemRef template<typename ItemParam>
+# define QQ_SinkItemParam  ItemParam &&
+# define QQ_PlunderItem(item) std::move(item)
+# define QQ_ForwardItem(item) std::forward<ItemParam>(item)
+#else
+// For earlier versions of C++, use the traditional copy/ref semantics
+# define QQ_UniversalSinkItemRef
+# define QQ_SinkItemParam const ItemType &
+# define QQ_PlunderItem(item) (item)
+# define QQ_ForwardItem(item) (item)
 #endif
 
 /** This class implements a templated double-ended-queue data structure.
@@ -32,6 +50,9 @@ public:
    Queue & operator=(const Queue & from);
 
 #ifdef MUSCLE_USE_CPLUSPLUS11
+   /** Initialize list Constructor */
+   Queue(const std::initializer_list<ItemType> & list) : _queue(NULL), _queueSize(0), _itemCount(0) {(void) AddTailMulti(list);}
+
    /** C++11 Move Constructor */
    Queue(Queue && rhs) : _queue(NULL), _queueSize(0), _itemCount(0) {if (rhs._queue == rhs._smallQueue) *this = rhs; else SwapContents(rhs);}
 
@@ -56,7 +77,7 @@ public:
     *  @param item The item to append. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const ItemType & item) {return (AddTailAndGet(item) != NULL) ? B_NO_ERROR : B_ERROR;}
+   QQ_UniversalSinkItemRef status_t AddTail(QQ_SinkItemParam item) {return (AddTailAndGet(QQ_ForwardItem(item)) != NULL) ? B_NO_ERROR : B_ERROR;}
 
    /** As above, except that a default item is appended.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
@@ -74,7 +95,7 @@ public:
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = MUSCLE_NO_LIMIT);
+   status_t AddTailMulti(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = MUSCLE_NO_LIMIT);
 
    /** Adds the given array of items to the tail of the Queue.  Equivalent
     *  to adding them to the tail of the Queue one at a time, but somewhat
@@ -83,13 +104,27 @@ public:
     *  @param numItems Number of items in the array
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory)
     */
-   status_t AddTail(const ItemType * items, uint32 numItems);
+   status_t AddTailMulti(const ItemType * items, uint32 numItems);
+
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** Available in C++11 only:  Appends the items specified in the initializer
+    *  list to this Queue.
+    *  @param list The C++11 initializer list of items (e.g. {1,2,3,4,5} to add.
+    *  @returns B_NO_ERROR on success, or B_ERROR on failure (out of memory?)
+    */
+   status_t AddTailMulti(const std::initializer_list<ItemType> & list)
+   {
+      if (EnsureCanAdd(list.size()) != B_NO_ERROR) return B_ERROR;
+      for (auto i : list) (void) AddTail(i);
+      return B_NO_ERROR;
+   }
+#endif
 
    /** Appends (item) to the end of the queue.  Queue size grows by one.
     *  @param item The item to append. 
     *  @return A pointer to the appended item on success, or a NULL pointer on failure.
     */
-   ItemType * AddTailAndGet(const ItemType & item);
+   QQ_UniversalSinkItemRef ItemType * AddTailAndGet(QQ_SinkItemParam item);
 
    /** As above, except that a default item is appended.
     *  @return A pointer to the appended item on success, or a NULL pointer on failure.
@@ -100,7 +135,7 @@ public:
     *  @param item The item to prepend. 
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const ItemType & item) {return (AddHeadAndGet(item) != NULL) ? B_NO_ERROR : B_ERROR;}
+   QQ_UniversalSinkItemRef status_t AddHead(QQ_SinkItemParam item) {return (AddHeadAndGet(QQ_ForwardItem(item)) != NULL) ? B_NO_ERROR : B_ERROR;}
 
    /** As above, except a default item is prepended.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
@@ -118,21 +153,21 @@ public:
     *  @param numItems Number of items to add.  If this number is too large, it will be capped appropriately.  Default is to add all items.
     *  @return B_NO_ERROR on success, B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = MUSCLE_NO_LIMIT);
+   status_t AddHeadMulti(const Queue<ItemType> & queue, uint32 startIndex = 0, uint32 numItems = MUSCLE_NO_LIMIT);
 
    /** Concatenates the given array of items to the head of the Queue.
-    *  The semantics are the same as for AddHead(const Queue<ItemType> &).
+    *  The semantics are the same as for AddHeadMulti(const Queue<ItemType> &).
     *  @param items Pointer to an array of items to add to the Queue.
     *  @param numItems Number of items in the array
     *  @return B_NO_ERROR on success, or B_ERROR on failure (out of memory)
     */
-   status_t AddHead(const ItemType * items, uint32 numItems);
+   status_t AddHeadMulti(const ItemType * items, uint32 numItems);
 
    /** Prepends (item) to the beginning of the queue.  Queue size grows by one.
     *  @param item The item to prepend. 
     *  @return A pointer to the prepend item on success, or a NULL pointer on failure.
     */
-   ItemType * AddHeadAndGet(const ItemType & item);
+   QQ_UniversalSinkItemRef ItemType * AddHeadAndGet(QQ_SinkItemParam item);
 
    /** As above, except that a default item is prepended.
     *  @return A pointer to the prepend item on success, or a NULL pointer on failure.
@@ -239,7 +274,7 @@ public:
     *  @param newItem The item to place into the queue at the (index)'th position.
     *  @return B_NO_ERROR on success, B_ERROR on failure (e.g. bad index)
     */
-   status_t ReplaceItemAt(uint32 index, const ItemType & newItem);
+   QQ_UniversalSinkItemRef status_t ReplaceItemAt(uint32 index, QQ_SinkItemParam newItem);
  
    /** As above, except the specified item is replaced with a default item.
     *  @param index Which item to replace--can range from zero 
@@ -255,7 +290,7 @@ public:
     *  @param newItem The item to insert into the queue.
     *  @return B_NO_ERROR on success, B_ERROR on failure (i.e. bad index).
     */
-   status_t InsertItemAt(uint32 index, const ItemType & newItem);
+   QQ_UniversalSinkItemRef status_t InsertItemAt(uint32 index, QQ_SinkItemParam newItem);
    
    /** As above, except that a default item is inserted.
     *  @param index The position at which to insert the new item.
@@ -386,6 +421,14 @@ public:
     */
    status_t EnsureSize(uint32 numSlots, bool setNumItems = false, uint32 extraReallocItems = 0) {return EnsureSizeAux(numSlots, setNumItems, extraReallocItems, NULL);}
 
+   /** Convenience wrapper around EnsureSize():  This method ensures that this Queue has enough 
+     * extra space allocated to fit another (numExtras) items without having to do a reallocation.
+     * If it doesn't, it will do a reallocation so that it does have at least that much extra space.
+     * @param numExtras How many extra items we want to ensure room for.  Defaults to 1.
+     * @returns B_NO_ERROR if the extra space now exists, or B_ERROR on failure (out of memory?)
+     */
+   status_t EnsureCanAdd(uint32 numExtras = 1) {return EnsureSize(GetNumItems()+numExtras);}
+
    /** Convenience method -- works the same as IndexOf() but returns a boolean instead of an int32 index.
     *  @param item The item to look for.
     *  @param startAt The first index in the list to look at.  Defaults to zero.
@@ -463,7 +506,7 @@ public:
     * @param optCookie optional value to pass to the comparison functor.  Defaults to NULL.
     * @returns The index at which the item was inserted on success, or -1 on failure (out of memory)?
     */
-   int32 InsertItemAtSortedPosition(const ItemType & item, void * optCookie = NULL) {return InsertItemAtSortedPosition(CompareFunctor<ItemType>(), item, optCookie);}
+   QQ_UniversalSinkItemRef int32 InsertItemAtSortedPosition(QQ_SinkItemParam item, void * optCookie = NULL) {return InsertItemAtSortedPosition(CompareFunctor<ItemType>(), item, optCookie);}
 
    /** 
     * Inserts the specified item at the position necessary to keep the Queue in sorted order.
@@ -473,7 +516,7 @@ public:
     * @param optCookie optional value to pass to the comparison functor.  Defaults to NULL.
     * @returns The index at which the item was inserted on success, or -1 on failure (out of memory)?
     */
-   int32 InsertItemAtSortedPosition(const CompareFunctor<ItemType> & compareFunctor, const ItemType & item, void * optCookie = NULL);
+   QQ_UniversalSinkItemRef int32 InsertItemAtSortedPosition(const CompareFunctor<ItemType> & compareFunctor, QQ_SinkItemParam item, void * optCookie = NULL);
 
    /**
     *  Swaps our contents with the contents of (that), in an efficient manner.
@@ -672,9 +715,10 @@ Queue<ItemType>::~Queue()
 }
 
 template <class ItemType>
+QQ_UniversalSinkItemRef 
 ItemType * 
 Queue<ItemType>::
-AddTailAndGet(const ItemType & item)
+AddTailAndGet(QQ_SinkItemParam item)
 {
    ItemType * oldArray;
    if (EnsureSizeAux(_itemCount+1, false, _itemCount+1, &oldArray) != B_NO_ERROR) return NULL;
@@ -703,7 +747,7 @@ AddTailAndGet()
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-AddTail(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
+AddTailMulti(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
 {
    uint32 hisSize = queue.GetNumItems();
    numNewItems = muscleMin(numNewItems, (startIndex < hisSize) ? (hisSize-startIndex) : 0);
@@ -719,7 +763,7 @@ AddTail(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-AddTail(const ItemType * items, uint32 numItems)
+AddTailMulti(const ItemType * items, uint32 numItems)
 {
    uint32 mySize = GetNumItems();
    uint32 newSize = mySize+numItems;
@@ -733,9 +777,10 @@ AddTail(const ItemType * items, uint32 numItems)
 }
 
 template <class ItemType>
+QQ_UniversalSinkItemRef
 ItemType *
 Queue<ItemType>::
-AddHeadAndGet(const ItemType & item)
+AddHeadAndGet(QQ_SinkItemParam item)
 {
    ItemType * oldArray;
    if (EnsureSizeAux(_itemCount+1, false, _itemCount+1, &oldArray) != B_NO_ERROR) return NULL;
@@ -743,7 +788,7 @@ AddHeadAndGet(const ItemType & item)
                    else _headIndex = PrevIndex(_headIndex);
    _itemCount++;
    ItemType * ret = &_queue[_headIndex];
-   *ret = item;
+   *ret = QQ_ForwardItem(item);
    delete [] oldArray;  // must be done after all references to (item)!
    return ret;
 }
@@ -763,7 +808,7 @@ AddHeadAndGet()
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-AddHead(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
+AddHeadMulti(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
 {
    uint32 hisSize = queue.GetNumItems();
    numNewItems = muscleMin(numNewItems, (startIndex < hisSize) ? (hisSize-startIndex) : 0);
@@ -776,7 +821,7 @@ AddHead(const Queue<ItemType> & queue, uint32 startIndex, uint32 numNewItems)
 template <class ItemType>
 status_t 
 Queue<ItemType>::
-AddHead(const ItemType * items, uint32 numItems)
+AddHeadMulti(const ItemType * items, uint32 numItems)
 {
    ItemType * oldArray;
    if (EnsureSizeAux(_itemCount+numItems, &oldArray) != B_NO_ERROR) return B_ERROR;
@@ -938,45 +983,47 @@ RemoveItemAtWithDefault(uint32 index)
 }
 
 template <class ItemType>
+QQ_UniversalSinkItemRef
 status_t 
 Queue<ItemType>::
-ReplaceItemAt(uint32 index, const ItemType & newItem)
+ReplaceItemAt(uint32 index, QQ_SinkItemParam newItem)
 {
    if (index >= _itemCount) return B_ERROR;
-   _queue[InternalizeIndex(index)] = newItem;
+   _queue[InternalizeIndex(index)] = QQ_ForwardItem(newItem);
    return B_NO_ERROR;
 }
 
 template <class ItemType>
+QQ_UniversalSinkItemRef
 status_t 
 Queue<ItemType>::
-InsertItemAt(uint32 index, const ItemType & newItem)
+InsertItemAt(uint32 index, QQ_SinkItemParam newItem)
 {
    if ((GetNumUnusedItemSlots() < 1)&&(IsItemLocatedInThisContainer(newItem)))
    {
-      ItemType temp = newItem; // avoid dangling pointer issue by copying the item to a temporary location
+      ItemType temp = QQ_ForwardItem(newItem); // avoid dangling pointer issue by copying the item to a temporary location
       return InsertItemAt(index, temp);
    }
 
    // Simple cases
    if (index >  _itemCount) return B_ERROR;
-   if (index == _itemCount) return AddTail(newItem);
-   if (index == 0)          return AddHead(newItem);
+   if (index == _itemCount) return AddTail(QQ_ForwardItem(newItem));
+   if (index == 0)          return AddHead(QQ_ForwardItem(newItem));
 
    // Harder case:  inserting into the middle of the array
    if (index < _itemCount/2)
    {
       // Add a space at the front, and shift things back
       if (AddHead() != B_NO_ERROR) return B_ERROR;  // allocate an extra slot
-      for (uint32 i=0; i<index; i++) ReplaceItemAt(i, *GetItemAtUnchecked(i+1));
+      for (uint32 i=0; i<index; i++) ReplaceItemAt(i, QQ_ForwardItem(*GetItemAtUnchecked(i+1)));
    }
    else
    {
       // Add a space at the rear, and shift things forward
       if (AddTail() != B_NO_ERROR) return B_ERROR;  // allocate an extra slot
-      for (int32 i=((int32)_itemCount)-1; i>((int32)index); i--) ReplaceItemAt(i, *GetItemAtUnchecked(i-1));
+      for (int32 i=((int32)_itemCount)-1; i>((int32)index); i--) ReplaceItemAt(i, QQ_ForwardItem(*GetItemAtUnchecked(i-1)));
    }
-   return ReplaceItemAt(index, newItem);
+   return ReplaceItemAt(index, QQ_ForwardItem(newItem));
 }
 
 template <class ItemType>
@@ -1070,15 +1117,14 @@ EnsureSizeAux(uint32 size, bool setNumItems, uint32 extraPreallocs, ItemType ** 
       if (newQueue == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
       if (newQueue == _smallQueue) newQLen = sqLen;
       
-      for (uint32 i=0; i<_itemCount; i++) newQueue[i] = *GetItemAtUnchecked(i);  // we know that (_itemCount < size)
+      // The (_queueSize > 0) check below isn't strictly necessary, but it makes clang++ feel better
+      if (_queueSize > 0) for (uint32 i=0; i<_itemCount; i++) newQueue[i] = QQ_PlunderItem(*GetItemAtUnchecked(i));  // we know that (_itemCount < size)
+
       if (setNumItems) _itemCount = size;
       _headIndex = 0;
       _tailIndex = _itemCount-1;
 
-      if (_queue == _smallQueue) 
-      {
-         for (uint32 i=0; i<sqLen; i++) _smallQueue[i] = GetDefaultItem();
-      }
+           if (_queue == _smallQueue) for (uint32 i=0; i<sqLen; i++) _smallQueue[i] = GetDefaultItem();
       else if (retOldArray) *retOldArray = _queue;
       else delete [] _queue;
 
@@ -1134,16 +1180,17 @@ Swap(uint32 fromIndex, uint32 toIndex)
 }
 
 template <class ItemType>
+QQ_UniversalSinkItemRef
 int32 
 Queue<ItemType>::
-InsertItemAtSortedPosition(const CompareFunctor<ItemType> & compareFunctor, const ItemType & item, void * optCookie)
+InsertItemAtSortedPosition(const CompareFunctor<ItemType> & compareFunctor, QQ_SinkItemParam item, void * optCookie)
 {
    int32 insertAfter = GetNumItems();
    if ((insertAfter > 0)&&(compareFunctor.Compare(item, Head(), optCookie) >= 0)) 
       while(--insertAfter >= 0) 
          if (compareFunctor.Compare(item, (*this)[insertAfter], optCookie) >= 0) 
-            return (InsertItemAt(insertAfter+1, item) == B_NO_ERROR) ? (insertAfter+1) : -1;
-   return (AddHead(item) == B_NO_ERROR) ? 0 : -1;
+            return (InsertItemAt(insertAfter+1, QQ_ForwardItem(item)) == B_NO_ERROR) ? (insertAfter+1) : -1;
+   return (AddHead(QQ_ForwardItem(item)) == B_NO_ERROR) ? 0 : -1;
 }
 
 template <class ItemType>
@@ -1151,7 +1198,7 @@ template <class CompareFunctorType>
 void 
 Queue<ItemType>::
 Sort(const CompareFunctorType & compareFunctor, uint32 from, uint32 to, void * optCookie) 
-{ 
+{
    uint32 size = GetNumItems();
    if (to > size) to = size;
    if (to > from)
@@ -1320,18 +1367,18 @@ Merge(const CompareFunctorType & compareFunctor, uint32 from, uint32 pivot, uint
 
             while(n--) 
             {
-               const ItemType val = *GetItemAtUnchecked(first_cut+n); 
+               ItemType val = QQ_PlunderItem(*GetItemAtUnchecked(first_cut+n)); 
                uint32 shift = pivot - first_cut; 
                uint32 p1 = first_cut+n;
                uint32 p2 = p1+shift; 
                while (p2 != first_cut + n) 
                { 
-                  ReplaceItemAt(p1, *GetItemAtUnchecked(p2));
+                  ReplaceItemAt(p1, QQ_PlunderItem(*GetItemAtUnchecked(p2)));
                   p1 = p2; 
                   if (second_cut - p2 > shift) p2 += shift; 
                                           else p2  = first_cut + (shift - (second_cut - p2)); 
                } 
-               ReplaceItemAt(p1, val);
+               ReplaceItemAt(p1, QQ_PlunderItem(val));
             }
          }
 
@@ -1432,7 +1479,7 @@ Queue<ItemType>::SwapContents(Queue<ItemType> & that)
       int32 sizeDiff    = ((int32)GetNumItems())-((int32)that.GetNumItems());
       Queue<ItemType> & copyTo   = (sizeDiff > 0) ? that : *this;
       Queue<ItemType> & copyFrom = (sizeDiff > 0) ? *this : that;
-      (void) copyTo.AddTail(copyFrom, commonSize);   // guaranteed not to fail
+      (void) copyTo.AddTailMulti(copyFrom, commonSize);   // guaranteed not to fail
       (void) copyFrom.EnsureSize(commonSize, true);  // remove the copied items from (copyFrom)
 
       // Then just swap the elements that are present in both arrays
@@ -1457,7 +1504,7 @@ Queue<ItemType>::SwapContentsAux(Queue<ItemType> & largeThat)
 {
    // First, copy over our (small) contents to his small-buffer
    uint32 ni = GetNumItems();
-   for (uint32 i=0; i<ni; i++) largeThat._smallQueue[i] = (*this)[i];
+   for (uint32 i=0; i<ni; i++) largeThat._smallQueue[i] = QQ_PlunderItem((*this)[i]);
 
    // Now adopt his dynamic buffer
    _queue     = largeThat._queue;

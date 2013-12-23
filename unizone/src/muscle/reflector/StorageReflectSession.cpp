@@ -436,8 +436,7 @@ bool
 StorageReflectSession ::
 HasPrivilege(int priv) const
 {
-   uint32 privBits;
-   return (_parameters.FindInt32(PR_NAME_PRIVILEGE_BITS, privBits) == B_NO_ERROR) ? ((privBits & (1L<<priv)) != 0L) : false;
+   return ((_parameters.GetInt32(PR_NAME_PRIVILEGE_BITS) & (1<<priv)) != 0);
 }
 
 void
@@ -845,7 +844,7 @@ AbstractReflectSessionRef StorageReflectSession :: FindMatchingSession(const Str
 {
    AbstractReflectSessionRef ret;
    Hashtable<const String *, AbstractReflectSessionRef> results;
-   if ((FindMatchingSessions(nodePath, filter, results, matchSelf, 1) == B_NO_ERROR)&&(results.HasItems())) ret = *results.GetFirstValue();
+   if ((FindMatchingSessions(nodePath, filter, results, matchSelf, 1) == B_NO_ERROR)&&(results.HasItems())) ret = results.GetFirstValueWithDefault();
    return ret;
 }
 

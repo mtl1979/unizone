@@ -13,6 +13,12 @@
 # include "system/GlobalMemoryAllocator.h"
 #endif
 
+#ifdef MUSCLE_ENABLE_SSL
+# include "dataio/SSLSocketDataIO.h"
+# include "dataio/TCPSocketDataIO.h"
+# include "iogateway/SSLSocketAdapterGateway.h"
+#endif
+
 namespace muscle {
 
 extern bool _mainReflectServerCatchSignals;  // from SetupSystem.cpp
@@ -45,8 +51,56 @@ AddNewSession(const AbstractReflectSessionRef & ref, const ConstSocketRef & ss)
             DataIORef io = newSession->CreateDataIO(s);
             if (io()) 
             {
+#ifdef MUSCLE_ENABLE_SSL
+               if (_inDoAccept.IsInBatch())
+               {
+                  if (_privateKey()) 
+                  {
+                     if (dynamic_cast<TCPSocketDataIO *>(io()) != NULL)  // We only support SSL over TCP, for now
+                     {
+                        SSLSocketDataIO * sslIO = newnothrow SSLSocketDataIO(s, false, true);
+                        DataIORef sslIORef(sslIO);
+                        if (sslIO)
+                        {
+                           if ((sslIO->SetPublicKeyCertificate(_privateKey) == B_NO_ERROR)&&(sslIO->SetPrivateKey(_privateKey()->GetBuffer(), _privateKey()->GetNumBytes()) == B_NO_ERROR))
+                           {
+                              io = sslIORef; 
+                              gatewayRef.SetRef(newnothrow SSLSocketAdapterGateway(gatewayRef));
+                              if (gatewayRef() == NULL) {WARN_OUT_OF_MEMORY; newSession->SetOwner(NULL); return B_ERROR;}
+                           }
+                           else {LogTime(MUSCLE_LOG_ERROR, "AcceptSession:  Unable to use private key file, incoming connection refused!  (Bad .pem file format?)\n"); newSession->SetOwner(NULL); return B_ERROR;}
+                        }
+                        else {WARN_OUT_OF_MEMORY; newSession->SetOwner(NULL); return B_ERROR;}
+                     }
+                  }
+               }
+               else if (_inDoConnect.IsInBatch())
+               {
+                  if (_publicKey()) 
+                  {
+                     if (dynamic_cast<TCPSocketDataIO *>(io()) != NULL)  // We only support SSL over TCP, for now
+                     {
+                        SSLSocketDataIO * sslIO = newnothrow SSLSocketDataIO(s, false, false);
+                        DataIORef sslIORef(sslIO);
+                        if (sslIO)
+                        {
+                           if (sslIO->SetPublicKeyCertificate(_publicKey) == B_NO_ERROR)
+                           {
+                              io = sslIORef; 
+                              gatewayRef.SetRef(newnothrow SSLSocketAdapterGateway(gatewayRef));
+                              if (gatewayRef() == NULL) {WARN_OUT_OF_MEMORY; newSession->SetOwner(NULL); return B_ERROR;}
+                           }
+                           else {LogTime(MUSCLE_LOG_ERROR, "ConnectSession:  Unable to use public key file, outgoing connection aborted!  (Bad .pem file format?)\n"); newSession->SetOwner(NULL); return B_ERROR;}
+                        }
+                        else {WARN_OUT_OF_MEMORY; newSession->SetOwner(NULL); return B_ERROR;}
+                     }
+                  }
+               }
+#endif
+
                gatewayRef()->SetDataIO(io);
                newSession->SetGateway(gatewayRef);
+
             }
             else {newSession->SetOwner(NULL); return B_ERROR;}
          }
@@ -103,6 +157,7 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
 
       if (sock())
       {
+         NestCountGuard ncg(_inDoConnect);
          session->_asyncConnectDest = IPAddressAndPort(destIP, port);
          session->_reconnectViaTCP  = true;
          session->SetMaxAsyncConnectPeriod(maxAsyncConnectPeriod);  // must be done BEFORE SetConnectingAsync()!
@@ -111,8 +166,7 @@ AddNewConnectSession(const AbstractReflectSessionRef & ref, const ip_address & d
          char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
          session->_hostName = (destIP != invalidIP) ? ipbuf : "_unknown_";
 
-         status_t ret = AddNewSession(ref, sock);
-         if (ret == B_NO_ERROR)
+         if (AddNewSession(ref, sock) == B_NO_ERROR)
          {
             if (autoReconnectDelay != MUSCLE_TIME_NEVER) session->SetAutoReconnectDelay(autoReconnectDelay);
             if (session->_isConnected) 
@@ -142,6 +196,7 @@ AddNewDormantConnectSession(const AbstractReflectSessionRef & ref, const ip_addr
    AbstractReflectSession * session = ref();
    if (session)
    {
+      NestCountGuard ncg(_inDoConnect);
       session->_asyncConnectDest = IPAddressAndPort(destIP, port);
       session->_reconnectViaTCP  = true;
       char ipbuf[64]; Inet_NtoA(destIP, ipbuf);
@@ -720,6 +775,7 @@ status_t ReflectServer :: DoAccept(const IPAddressAndPort & iap, const ConstSock
    ConstSocketRef newSocket = Accept(acceptSocket, &acceptedFromIP);
    if (newSocket())
    {
+      NestCountGuard ncg(_inDoAccept);
       IPAddressAndPort nip(acceptedFromIP, iap.GetPort());
       ip_address remoteIP = GetPeerIPAddress(newSocket, true);
       if (remoteIP == invalidIP) LogAcceptFailed(MUSCLE_LOG_DEBUG, "GetPeerIPAddress() failed", NULL, nip);

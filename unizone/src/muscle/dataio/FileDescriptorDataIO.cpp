@@ -8,9 +8,11 @@
 # endif
 # include <sys/types.h>
 # include <unistd.h>
-# if !__GLIBC_PREREQ(2,2)
-#  define MUSCLE_USE_LLSEEK
-  _syscall5(int, _llseek, uint, fd, ulong, hi, ulong, lo, loff_t *, res, uint, wh);  // scary --jaf
+# if !defined(ANDROID)
+#  if !__GLIBC_PREREQ(2,2)
+#   define MUSCLE_USE_LLSEEK
+    _syscall5(int, _llseek, uint, fd, ulong, hi, ulong, lo, loff_t *, res, uint, wh);  // scary --jaf
+#  endif
 # endif
 #endif
 

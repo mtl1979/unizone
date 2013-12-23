@@ -223,7 +223,7 @@ static status_t ParseFileAux(StringTokenizer * optTok, FILE * fpIn, Message * op
       String checkForSection(lineOfText);
       checkForSection = optAddToMsg ? checkForSection.Trim() : "";  // sections are only supported for Messages, not Queue<String>'s
       if (cs == false) checkForSection = checkForSection.ToLowerCase();
-      if ((checkForSection == "begin")||(checkForSection.StartsWith("begin ")))
+      if (((checkForSection == "begin")||(checkForSection.StartsWith("begin ")))&&(optAddToMsg))  // the check for (optAddToMsg) isn't really necessary, but it makes clang++ happy
       {
          checkForSection = checkForSection.Substring(6).Trim();
          int32 hashIdx = checkForSection.IndexOf('#');

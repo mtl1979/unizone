@@ -209,7 +209,7 @@ public:
    /** Installs (ref) as the DataIO object we will use for our I/O.
      * Typically called by the ReflectServer object.
      */
-   void SetDataIO(const DataIORef & ref) {_ioRef = ref;}
+   virtual void SetDataIO(const DataIORef & ref) {_ioRef = ref;}
 
    /** As above, but returns a reference instead of the raw pointer. */
    const DataIORef & GetDataIO() const {return _ioRef;}

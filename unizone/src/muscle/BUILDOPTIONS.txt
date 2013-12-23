@@ -3,6 +3,10 @@ but if you feel like hacking around, here is a list of some
 compile-time constants that you can define in the CXXFLAGS variable
 of your Makefile to alter muscle's behaviour:
 
+-DMUSCLE_ENABLE_SSL
+   Set this to enable built-in support for SSL connections via OpenSSL.
+   (e.g. ReflectServer::SetSSLPrivateKey())
+
 -DMUSCLE_USE_CPLUSPLUS11
    Set this to enable C++11-specific features such as move-constructors.
 
@@ -128,6 +132,9 @@ of your Makefile to alter muscle's behaviour:
 -DMUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 
    Use Mutexes to simulate atomic inc/dec operations; useful if no other method is available
 
+-DMUSCLE_MUTEX_POOL_SIZE=N
+   If -DMUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS is defined, then this can be defined to set the size of the Mutex pool to use.  Defaults to 256.
+
 -DMUSCLE_POWERPC_TIMEBASE_HZ=N 
    Use mftb/mftbu for GetRunTime64() calls.  N is the frequency at which the register is incremented
 
@@ -244,4 +251,10 @@ of your Makefile to alter muscle's behaviour:
    If defined, the SharedMemory class will allocate a non-shared memory
    buffer (using muscleAlloc()) rather than actual shared memory.  Handy
    for debugging if you suspect that shared-memory is causing a problem.
+
+-DMUSCLE_COUNT_STRING_COPY_OPERATIONS
+   If this flag is defined, the String class will tally the number
+   of times that String objects are moved and the number of times
+   they are copied.  This is handy for verifying that the C++11
+   move semantics are being used as expected.
 

@@ -13,9 +13,32 @@
 
 #include <ctype.h> 
 #include "support/Flattenable.h"
+#include "syslog/SysLog.h"
 #include "system/GlobalMemoryAllocator.h"  // for muscleFree()
 
+
 namespace muscle {
+
+#ifdef MUSCLE_COUNT_STRING_COPY_OPERATIONS
+enum {
+   STRING_OP_DEFAULT_CTOR = 0,
+   STRING_OP_CSTR_CTOR,
+   STRING_OP_COPY_CTOR,
+   STRING_OP_PARTIAL_COPY_CTOR,
+   STRING_OP_SET_FROM_CSTR,
+   STRING_OP_SET_FROM_STRING,
+   STRING_OP_MOVE_CTOR,
+   STRING_OP_MOVE_FROM_STRING,
+   STRING_OP_DTOR,
+   NUM_STRING_OPS
+};
+extern uint32 _stringOpCounts[NUM_STRING_OPS];
+extern void PrintAndClearStringCopyCounts(const char * optDesc = NULL);
+# define MUSCLE_INCREMENT_STRING_OP_COUNT(which) _stringOpCounts[which]++
+#else
+# define MUSCLE_INCREMENT_STRING_OP_COUNT(which)
+static inline void PrintAndClearStringCopyCounts(const char * optDesc = NULL) {(void) optDesc;}
+#endif
 
 class Point;
 class Rect;
@@ -65,12 +88,21 @@ public:
     *                this String (not including the NUL terminator byte).
     *                Default is unlimited (i.e. scan the entire string no matter how long it is)
     */
-   String(const char * str = NULL, uint32 maxLen = MUSCLE_NO_LIMIT) : _bufferLen(sizeof(_strData._smallBuffer)), _length(0) {ClearSmallBuffer(); if (str) (void) SetCstr(str, maxLen);}
+   String(const char * str = NULL, uint32 maxLen = MUSCLE_NO_LIMIT) : _bufferLen(sizeof(_strData._smallBuffer)), _length(0) 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(str?STRING_OP_CSTR_CTOR:STRING_OP_DEFAULT_CTOR);
+      ClearSmallBuffer(); 
+      if (str) (void) SetCstr(str, maxLen);
+   }
 
    /** Copy Constructor. 
      * @param str String to become a copy of.
      */
-   String(const String & str) : _bufferLen(sizeof(_strData._smallBuffer)), _length(0) {ClearSmallBuffer(); (void) SetFromString(str);}
+   String(const String & str) : _bufferLen(sizeof(_strData._smallBuffer)), _length(0) 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_COPY_CTOR);
+      ClearSmallBuffer(); (void) SetFromString(str);
+   }
 
    /** This constructor sets this String to be a substring of the specified String.
      * @param str String to become a copy of.
@@ -78,20 +110,36 @@ public:
      * @param endIndex Index after the last character in (str) to include.  
      *                 Defaults to a very large number, so that by default the entire remainder of the string is included.
      */
-   String(const String & str, uint32 beginIndex, uint32 endIndex=MUSCLE_NO_LIMIT) : _bufferLen(sizeof(_strData._smallBuffer)), _length(0) {ClearSmallBuffer(); (void) SetFromString(str, beginIndex, endIndex);}
+   String(const String & str, uint32 beginIndex, uint32 endIndex=MUSCLE_NO_LIMIT) : _bufferLen(sizeof(_strData._smallBuffer)), _length(0) 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_PARTIAL_COPY_CTOR);
+      ClearSmallBuffer(); (void) SetFromString(str, beginIndex, endIndex);
+   }
 
    /** Destructor. */
-   ~String() {if (IsArrayDynamicallyAllocated()) muscleFree(_strData._bigBuffer);}
+   ~String() 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_DTOR);
+      if (IsArrayDynamicallyAllocated()) muscleFree(_strData._bigBuffer);
+   }
 
    /** Assignment Operator. 
      * @param val Pointer to the C-style string to copy from.  If NULL, this string will become "".
      */
-   String & operator = (const char * val) {(void) SetCstr(val); return *this;}
+   String & operator = (const char * val) 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_SET_FROM_CSTR);
+      (void) SetCstr(val); return *this;
+   }
 
    /** Assignment Operator. 
      * @param rhs String to become a copy of.
      */
-   String & operator = (const String & rhs) {(void) SetFromString(rhs); return *this;}
+   String & operator = (const String & rhs) 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_SET_FROM_STRING);
+      (void) SetFromString(rhs); return *this;
+   }
 
    /** Append Operator. 
     *  @param rhs A string to append to this string.
@@ -608,14 +656,29 @@ public:
    String Trim() const;  
 
    /** Swaps the state of this string with (swapWithMe).  Very efficient since little or no data copying is required. */
-   void SwapContents(String & swapWithMe);
+   inline void SwapContents(String & swapWithMe)
+   {
+      muscleSwap(_strData,   swapWithMe._strData);
+      muscleSwap(_bufferLen, swapWithMe._bufferLen);
+      muscleSwap(_length,    swapWithMe._length);   // always do this
+   }
 
 #ifdef MUSCLE_USE_CPLUSPLUS11
    /** C++11 Move Constructor */
-   String(String && rhs) : _bufferLen(0), _length(0) {if (rhs.IsArrayDynamicallyAllocated()) SwapContents(rhs); else *this = rhs;}
+   String(String && rhs) : _bufferLen(0), _length(0)
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_MOVE_CTOR);
+      ClearSmallBuffer(); 
+      SwapContents(rhs);
+   }
 
    /** C++11 Move Assignment Operator */
-   String & operator =(String && rhs) {if (rhs.IsArrayDynamicallyAllocated()) SwapContents(rhs); else *this = rhs; return *this;}
+   String & operator =(String && rhs) 
+   {
+      MUSCLE_INCREMENT_STRING_OP_COUNT(STRING_OP_MOVE_FROM_STRING);
+      SwapContents(rhs); 
+      return *this;
+   }
 #endif
 
    /** Like CompareTo(), but case insensitive. */

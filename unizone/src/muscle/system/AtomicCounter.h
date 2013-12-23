@@ -6,7 +6,9 @@
 #include "support/MuscleSupport.h"
 
 #ifndef MUSCLE_SINGLE_THREAD_ONLY
-# if defined(__ATHEOS__)
+# if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
+  // empty
+# elif defined(__ATHEOS__)
 #  include <atheos/atomic.h>
 # elif defined(__BEOS__) || defined(__HAIKU__)
 #  include <kernel/OS.h>
@@ -16,15 +18,38 @@
 #  include <libkern/OSAtomic.h>
 # elif defined(MUSCLE_USE_POWERPC_INLINE_ASSEMBLY) || defined(MUSCLE_USE_X86_INLINE_ASSEMBLY)
    // empty
-# elif defined(MUSCLE_USE_PTHREADS)
-#  define MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS 1
-namespace muscle {
-   extern int32 DoMutexAtomicIncrement(volatile int32 * count, int32 delta);
-}; // end namespace muscle
+# elif defined(MUSCLE_USE_PTHREADS) || defined(ANDROID) 
+#  define MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS
+# endif
+#endif
+
+#if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
+# include "system/Mutex.h"
+# ifndef MUSCLE_MUTEX_POOL_SIZE
+#  define MUSCLE_MUTEX_POOL_SIZE 256
 # endif
 #endif
 
 namespace muscle {
+
+#if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
+extern Mutex * _muscleAtomicMutexes;
+static inline int32 DoMutexAtomicIncrement(volatile int32 * count, int32 delta)
+{
+   int32 ret;
+   if (_muscleAtomicMutexes)
+   {
+      MutexGuard mg(_muscleAtomicMutexes[(((uint32)((uintptr)count))/sizeof(int32))%MUSCLE_MUTEX_POOL_SIZE]);  // double-cast for AMD64
+      ret = *count = (*count + delta);
+   }
+   else
+   {
+      // if _muscleAtomicMutexes isn't allocated, then we're in process-setup or process-shutdown, so there are no multiple threads at the moment, so we can just do this
+      ret = *count = (*count + delta);
+   }
+   return ret;
+}
+#endif
 
 /** This is a teensy little class that works as a cross-platform atomic counter variable. 
   * It's been ifdef'd all to hell, so that it tries to always use the most efficient API
@@ -55,6 +80,8 @@ public:
    {
 #if defined(MUSCLE_SINGLE_THREAD_ONLY) 
       return (++_count == 1);
+#elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
+      return (DoMutexAtomicIncrement(&_count, 1) == 1);
 #elif defined(WIN32) 
       return (InterlockedIncrement(&_count) == 1);
 #elif defined(__APPLE__) 
@@ -81,8 +108,6 @@ public:
          : "a" (value), "m" (_count)  // Input
          :"memory");
       return (value==0);  // at this point value contains the counter's pre-increment value
-#elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      return (DoMutexAtomicIncrement(&_count, 1) == 1);
 #else
 # error "No atomic increment supplied for this OS!  Add it here in AtomicCount.h, or put -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile if you will not be using multithreading." 
 #endif 
@@ -96,6 +121,8 @@ public:
    {
 #if defined(MUSCLE_SINGLE_THREAD_ONLY) 
       return (--_count == 0);
+#elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
+      return (DoMutexAtomicIncrement(&_count, -1) == 0);
 #elif defined(WIN32) 
       return (InterlockedDecrement(&_count) == 0);
 #elif defined(__APPLE__)
@@ -127,8 +154,6 @@ public:
          : "cc", "memory"
          );
       return isZero;
-#elif defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      return (DoMutexAtomicIncrement(&_count, -1) == 0);
 #else
 # error "No atomic decrement supplied for this OS!  Add your own here in AtomicCounter.h, or put -DMUSCLE_SINGLE_THREAD_ONLY in your Makefile if you will not be using multithreading." 
 #endif 

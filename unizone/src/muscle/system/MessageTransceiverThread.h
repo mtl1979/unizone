@@ -44,11 +44,14 @@ enum {
    MTT_COMMAND_SET_OUTPUT_POLICY,              // set a new output IO Policy for worker sessions
    MTT_COMMAND_REMOVE_SESSIONS,                // remove the matching worker sessions
    MTT_COMMAND_SET_OUTGOING_ENCODING,          // set the MUSCLE_MESSAGE_ENCODING_* setting on worker sessions
+   MTT_COMMAND_SET_SSL_PRIVATE_KEY,            // set the private key used to authenticate accepted incoming TCP connections
+   MTT_COMMAND_SET_SSL_PUBLIC_KEY,             // set the public key used to certify outgoing TCP connections
    MTT_LAST_COMMAND
 };
 
 /** These are field names used in the MessageTransceiverThread's internal protocol */
 #define MTT_NAME_PATH        "path"  // field containing a session path (e.g. "/*/*")
+#define MTT_NAME_DATA        "data"  // field containing a raw bytes
 #define MTT_NAME_MESSAGE     "mssg"  // field containing a message object
 #define MTT_NAME_SOCKET      "sock"  // field containing a Socket reference
 #define MTT_NAME_IP_ADDRESS  "addr"  // field containing an int32 IP address
@@ -470,6 +473,8 @@ public:
 
    /** Stops the internal thread if it is running, destroys internal the internal ReflectServer object, and more or
      * less make this MessageTransceiverThread look like it had just been constructed anew.
+     * @note This call will not reset the default distribution path, nor any SSL private 
+     *       or public key data that was installed via SetSSLPrivateKey() or SetSSLPublicKeyCertificate().
      */
    virtual void Reset();
 
@@ -603,6 +608,27 @@ public:
      */
    void SetForwardAllIncomingMessagesToSupervisor(bool forward) {_forwardAllIncomingMessagesToSupervisor = forward;}
 
+#ifdef MUSCLE_ENABLE_SSL
+   /** Sets the SSL private key data that should be used to authenticate and encrypt
+     * accepted incoming TCP connections.  Default state is a NULL reference (i.e. no SSL
+     * encryption will be used for incoming connecitons).
+     * @param privateKey Reference to the contents of a .pem file containing both
+     *        a PRIVATE KEY section and a CERTIFICATE section, or a NULL reference
+     *        if you want to make SSL disabled again.
+     * @note this method is only available if MUSCLE_ENABLE_OPENSSL is defined.
+     */
+   status_t SetSSLPrivateKey(const ConstByteBufferRef & privateKey);
+
+   /** Sets the SSL public key data that should be used to authenticate and encrypt
+     * outgoing TCP connections.  Default state is a NULL reference (i.e. no SSL
+     * encryption will be used for outgoing connections).
+     * @param publicKey Reference to the contents of a .pem file containing a CERTIFICATE
+     *        section, or a NULL reference if you want to make SSL disabled again.
+     * @note this method is only available if MUSCLE_ENABLE_OPENSSL is defined.
+     */
+   status_t SetSSLPublicKeyCertificate(const ConstByteBufferRef & publicKey);
+#endif
+
 protected:
    /** Overridden to begin execution of the ReflectServer's event loop. */
    virtual void InternalThreadEntry();
@@ -639,6 +665,10 @@ private:
 
    ReflectServerRef _server;
    String _defaultDistributionPath;
+#ifdef MUSCLE_ENABLE_SSL
+   ConstByteBufferRef _privateKey;
+   ConstByteBufferRef _publicKey;
+#endif
    bool _forwardAllIncomingMessagesToSupervisor;
 };
 

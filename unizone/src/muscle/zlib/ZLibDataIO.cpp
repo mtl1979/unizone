@@ -166,13 +166,18 @@ int32 ZLibDataIO :: WriteAux(const void * buffer, uint32 size, bool flushAtEnd)
       if (_sendToSlave == _deflatedBuf)
       {
          if (_writeDeflater.avail_in == 0) _writeDeflater.next_in = _toDeflateBuf;
-         uint32 bytesToCopy = muscleMin((uint32)((_toDeflateBuf+sizeof(_toDeflateBuf))-_writeDeflater.next_in), size);
-         memcpy(_writeDeflater.next_in, buffer, bytesToCopy);
-         bytesCompressed += bytesToCopy;
-         uint8 * buf8 = (uint8 *) buffer;
-         buffer = buf8+bytesToCopy;
-         size -= bytesToCopy;
-         _writeDeflater.avail_in += bytesToCopy;
+         if (buffer)
+         {
+            uint32 bytesToCopy = muscleMin((uint32)((_toDeflateBuf+sizeof(_toDeflateBuf))-_writeDeflater.next_in), size);
+            memcpy(_writeDeflater.next_in, buffer, bytesToCopy);
+            bytesCompressed += bytesToCopy;
+#ifdef REMOVED_TO_SUPPRESS_CLANG_STATIC_ANALYZER_WARNING_BUT_REENABLE_THIS_IF_THERES_ANOTHER_STEP_ADDED_IN_THE_FUTURE
+            uint8 * buf8 = (uint8 *) buffer;
+            buffer = buf8+bytesToCopy;
+            size -= bytesToCopy;
+#endif
+            _writeDeflater.avail_in += bytesToCopy;
+         }
 
          int zRet = deflate(&_writeDeflater, ((flushAtEnd)&&(_writeDeflater.avail_in == 0)) ? Z_SYNC_FLUSH : Z_NO_FLUSH);
          if ((zRet != Z_OK)&&(zRet != Z_BUF_ERROR)) return -1;

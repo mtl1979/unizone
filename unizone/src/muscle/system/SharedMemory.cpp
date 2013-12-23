@@ -140,7 +140,7 @@ status_t SharedMemory :: SetArea(const char * keyString, uint32 createSize, bool
       // If we requested a private key, we still need to know the actual key value
       if (_key == IPC_PRIVATE)
       {
-         struct semid_ds semInfo;
+         struct semid_ds semInfo = {};  // the braces zero-initialize the struct for us, to keep clang++SA happy
          semopts.buf = &semInfo;
          if (semctl(_semID, 0, IPC_STAT, semopts) == 0) 
          {

@@ -7,7 +7,16 @@
 #include "util/MiscUtilityFunctions.h"  // for ExitWithoutCleanup()
 #include "util/DebugTimer.h"
 #include "util/CountedObject.h"
+#include "util/String.h"
 #include "system/GlobalMemoryAllocator.h"
+
+#ifdef MUSCLE_ENABLE_SSL
+# include <openssl/err.h>
+# include <openssl/ssl.h>
+# ifndef WIN32
+#  include <pthread.h>
+# endif
+#endif
 
 #ifdef WIN32
 # include <signal.h>
@@ -28,6 +37,7 @@
 #  include <limits.h>
 # elif defined(ANDROID)
 #  include <signal.h>
+#  include <sys/times.h>
 # else
 #  include <sys/signal.h>  // changed signal.h to sys/signal.h to work with OS/X
 #  include <sys/times.h>
@@ -50,6 +60,10 @@
 
 namespace muscle {
 
+#ifdef MUSCLE_COUNT_STRING_COPY_OPERATIONS
+uint32 _stringOpCounts[NUM_STRING_OPS] = {0};
+#endif
+
 #ifdef MUSCLE_SINGLE_THREAD_ONLY
 bool _muscleSingleThreadOnly = true;
 #else
@@ -66,8 +80,7 @@ static Mutex * _muscleLock = NULL;
 Mutex * GetGlobalMuscleLock() {return _muscleLock;}
 
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-const uint32 MUTEX_POOL_SIZE = 256;
-static Mutex * _atomicMutexes = NULL;
+Mutex * _muscleAtomicMutexes = NULL;  // used by DoMutexAtomicIncrement()
 #endif
 
 static uint32 _threadSetupCount = 0;
@@ -255,8 +268,37 @@ SanitySetupSystem :: SanitySetupSystem()
 
 SanitySetupSystem :: ~SanitySetupSystem()
 {
-   // empty
+#ifdef MUSCLE_COUNT_STRING_COPY_OPERATIONS
+   PrintAndClearStringCopyCounts("At end of main()");
+#endif
 }
+
+#ifdef MUSCLE_COUNT_STRING_COPY_OPERATIONS
+void PrintAndClearStringCopyCounts(const char * optDesc)
+{
+   const uint32 * s = _stringOpCounts;  // just to save chars
+   uint32 totalCopies = s[STRING_OP_COPY_CTOR] + s[STRING_OP_PARTIAL_COPY_CTOR] + s[STRING_OP_SET_FROM_STRING];
+   uint32 totalMoves  = s[STRING_OP_MOVE_CTOR] + s[STRING_OP_MOVE_FROM_STRING];
+
+   printf("String Op Counts [%s]\n", optDesc?optDesc:"Untitled");
+   printf("# Default Ctors = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_DEFAULT_CTOR]);
+   printf("# Cstr Ctors    = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_CSTR_CTOR]);
+   printf("# Copy Ctors    = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_COPY_CTOR]);
+   printf("# PtCopy Ctors  = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_PARTIAL_COPY_CTOR]);
+   printf("# Set from Cstr = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_SET_FROM_CSTR]);
+   printf("# Set from Str  = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_SET_FROM_STRING]);
+   printf("# Move Ctor     = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_MOVE_CTOR]);
+   printf("# Move from Str = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_MOVE_FROM_STRING]);
+   printf("# Dtors         = " UINT32_FORMAT_SPEC "\n", s[STRING_OP_DTOR]);
+   printf("-----------------------------\n");
+   printf("# Total Copies  = " UINT32_FORMAT_SPEC "\n", totalCopies);
+   printf("# Total Moves   = " UINT32_FORMAT_SPEC "\n", totalMoves);
+   printf("# Total Either  = " UINT32_FORMAT_SPEC "\n", totalCopies+totalMoves);
+   printf("\n");
+
+   for (uint32 i=0; i<NUM_STRING_OPS; i++) _stringOpCounts[i] = 0;  // reset counts for next time
+}
+#endif
 
 MathSetupSystem :: MathSetupSystem()
 {
@@ -410,8 +452,8 @@ ThreadSetupSystem :: ThreadSetupSystem(bool muscleSingleThreadOnly)
       _muscleLock = &_lock;
 
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      _atomicMutexes = newnothrow_array(Mutex, MUTEX_POOL_SIZE);
-      MASSERT(_atomicMutexes, "Could not allocate atomic mutexes!");
+      _muscleAtomicMutexes = newnothrow_array(Mutex, MUSCLE_MUTEX_POOL_SIZE);
+      MASSERT(_muscleAtomicMutexes, "Could not allocate atomic mutexes!");
 #endif
    }
 }
@@ -421,7 +463,7 @@ ThreadSetupSystem :: ~ThreadSetupSystem()
    if (--_threadSetupCount == 0)
    {
 #if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-      delete [] _atomicMutexes; _atomicMutexes = NULL;
+      delete [] _muscleAtomicMutexes; _muscleAtomicMutexes = NULL;
 #endif
       _muscleLock = NULL;
 
@@ -431,19 +473,61 @@ ThreadSetupSystem :: ~ThreadSetupSystem()
    }
 }
 
-#if defined(MUSCLE_USE_MUTEXES_FOR_ATOMIC_OPERATIONS)
-int32 DoMutexAtomicIncrement(volatile int32 * count, int32 delta)
-{
-   MASSERT(_atomicMutexes, "Please declare a SetupSystem object before doing any atomic incrementing!");
-   Mutex & mutex = _atomicMutexes[(((uint32)((uintptr)count))/sizeof(int))%MUTEX_POOL_SIZE];  // double-cast for AMD64
-   (void) mutex.Lock();
-   int32 ret = *count = (*count + delta);
-   (void) mutex.Unlock();
-   return ret;
-}
-#endif
-
 static uint32 _networkSetupCount = 0;
+
+#if defined(MUSCLE_ENABLE_SSL) && !defined(MUSCLE_SINGLE_THREAD_ONLY)
+
+// OpenSSL thread-safety-callback setup code provided by Tosha at
+// http://stackoverflow.com/questions/3417706/openssl-and-multi-threads/12810000#12810000
+# if defined(WIN32)
+#  define OPENSSL_MUTEX_TYPE       HANDLE
+#  define OPENSSL_MUTEX_SETUP(x)   (x) = CreateMutex(NULL, FALSE, NULL)
+#  define OPENSSL_MUTEX_CLEANUP(x) CloseHandle(x)
+#  define OPENSSL_MUTEX_LOCK(x)    WaitForSingleObject((x), INFINITE)
+#  define OPENSSL_MUTEX_UNLOCK(x)  ReleaseMutex(x)
+#  define OPENSSL_THREAD_ID        GetCurrentThreadId()
+# else
+#  define OPENSSL_MUTEX_TYPE       pthread_mutex_t
+#  define OPENSSL_MUTEX_SETUP(x)   pthread_mutex_init(&(x), NULL)
+#  define OPENSSL_MUTEX_CLEANUP(x) pthread_mutex_destroy(&(x))
+#  define OPENSSL_MUTEX_LOCK(x)    pthread_mutex_lock(&(x))
+#  define OPENSSL_MUTEX_UNLOCK(x)  pthread_mutex_unlock(&(x))
+#  define OPENSSL_THREAD_ID        pthread_self()
+# endif
+
+/* This array will store all of the mutexes available to OpenSSL. */
+static OPENSSL_MUTEX_TYPE *mutex_buf=NULL;
+
+static void openssl_locking_function(int mode, int n, const char * file, int line)
+{
+    if (mode & CRYPTO_LOCK) OPENSSL_MUTEX_LOCK(mutex_buf[n]);
+                       else OPENSSL_MUTEX_UNLOCK(mutex_buf[n]);
+}
+
+static unsigned long openssl_id_function(void) {return ((unsigned long)OPENSSL_THREAD_ID);}
+
+static int openssl_thread_setup(void)
+{
+    mutex_buf = (OPENSSL_MUTEX_TYPE *) malloc(CRYPTO_num_locks() * sizeof(OPENSSL_MUTEX_TYPE));
+    if (!mutex_buf) return -1;
+    for (int i=0;  i<CRYPTO_num_locks();  i++) OPENSSL_MUTEX_SETUP(mutex_buf[i]);
+    CRYPTO_set_id_callback(openssl_id_function);
+    CRYPTO_set_locking_callback(openssl_locking_function);
+    return 0;
+}
+
+static int openssl_thread_cleanup(void)
+{
+    if (!mutex_buf) return -1;
+    CRYPTO_set_id_callback(NULL);
+    CRYPTO_set_locking_callback(NULL);
+    for (int i=0;  i < CRYPTO_num_locks();  i++) OPENSSL_MUTEX_CLEANUP(mutex_buf[i]);
+    free(mutex_buf);
+    mutex_buf = NULL;
+    return 0;
+}
+
+#endif
 
 NetworkSetupSystem :: NetworkSetupSystem()
 {
@@ -458,6 +542,16 @@ NetworkSetupSystem :: NetworkSetupSystem()
 #else
       signal(SIGPIPE, SIG_IGN);  // avoid evil SIGPIPE signals from sending on a closed socket
 #endif
+
+#ifdef MUSCLE_ENABLE_SSL
+      SSL_load_error_strings();
+      SSLeay_add_ssl_algorithms();
+      ERR_load_BIO_strings();
+      SSL_library_init();
+# ifndef MUSCLE_SINGLE_THREAD_ONLY
+      if (openssl_thread_setup() != 0) MCRASH("Error setting up thread-safety callbacks for OpenSSL!");
+# endif
+#endif
    }
 }
 
@@ -465,6 +559,9 @@ NetworkSetupSystem :: ~NetworkSetupSystem()
 {
    if (--_networkSetupCount == 0)
    {
+#if defined(MUSCLE_ENABLE_SSL) && !defined(MUSCLE_SINGLE_THREAD_ONLY)
+      (void) openssl_thread_cleanup();
+#endif
 #ifdef WIN32
       WSACleanup();
 #endif

@@ -144,7 +144,7 @@ status_t ChildProcessDataIO :: LaunchChildProcessAux(int argc, const void * args
                      if ((_wakeupSignal != INVALID_HANDLE_VALUE)&&(CreateConnectedSocketPair(_masterNotifySocket, _slaveNotifySocket, false) == B_NO_ERROR))
                      {
                         // work-around for FogBugz #5787 -- otherwise a second ChildProcessDataIO's child process might hold 
-                        // open these sockets of the first ChilddProcessDataIO, making it impossible for the main thread to detect
+                        // open these sockets of the first ChildProcessDataIO, making it impossible for the main thread to detect
                         // when the first ChildProcessDataIO's I/O thread has exited.
                         SetWindowsSocketInheritable(_masterNotifySocket, false);
                         SetWindowsSocketInheritable(_slaveNotifySocket,  false);

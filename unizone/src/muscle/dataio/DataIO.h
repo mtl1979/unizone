@@ -135,7 +135,7 @@ public:
     * Optional:  If your DataIO subclass is holding buffered data that it wants
     *            to output as soon as possible but hasn't been able to yet,
     *            then override this method to return true, and that will cause
-    *            FlushBufferedOutput() to be called ASAP.  Default implementation
+    *            WriteBufferedOutput() to be called ASAP.  Default implementation
     *            always returns false.
     */
    virtual bool HasBufferedOutput() const {return false;}

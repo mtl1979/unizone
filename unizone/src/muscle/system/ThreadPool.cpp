@@ -152,9 +152,9 @@ void ThreadPool :: DispatchPendingMessagesUnsafe()
    while(_pendingMessages.HasItems())
    {
       IThreadPoolClient * client = *_pendingMessages.GetFirstKey();
-      Queue<MessageRef> & mq     = *_pendingMessages.GetFirstValue();
+      Queue<MessageRef> * mq     = _pendingMessages.GetFirstValue();
       bool * isBeingHandled      = _registeredClients.Get(client);
-      if ((isBeingHandled)&&(mq.HasItems()))
+      if ((isBeingHandled)&&(mq)&&(mq->HasItems()))  // we actually know mq will be non-NULL, but testing it makes clang++ happy
       {
          MASSERT(*isBeingHandled == false, "DispatchPendingMessagesUnsafe:  Client that is being handled is in the _pendingMessages table!");
 
@@ -173,7 +173,7 @@ void ThreadPool :: DispatchPendingMessagesUnsafe()
             ThreadPoolThreadRef tRef = *_availableThreads.GetLastValue();  // use the last thread because it's "hottest" in cache
             if (_availableThreads.MoveToTable(tRef()->GetThreadID(), _activeThreads) == B_NO_ERROR)
             {
-               if (tRef()->SendMessagesToInternalThread(client, mq) == B_NO_ERROR)
+               if (tRef()->SendMessagesToInternalThread(client, *mq) == B_NO_ERROR)
                {
                   *isBeingHandled = true;  // this is to note that this client now has a Thread that is processing its data
                   (void) _pendingMessages.RemoveFirst();

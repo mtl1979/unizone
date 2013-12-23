@@ -247,13 +247,6 @@ int32 String::Replace(const String & replaceMe, const String & withMe, uint32 ma
    return ret;  // just to shut the compiler up; we never actually get here
 }
 
-void String::SwapContents(String & s)
-{
-   muscleSwap(_strData,   s._strData);
-   muscleSwap(_bufferLen, s._bufferLen);
-   muscleSwap(_length,    s._length);   // always do this
-}
-
 int String::LastIndexOf(const String &s2, uint32 fromIndex) const
 {
    TCHECKPOINT;

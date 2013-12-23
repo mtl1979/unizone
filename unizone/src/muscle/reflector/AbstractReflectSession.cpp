@@ -8,6 +8,11 @@
 #include "system/Mutex.h"
 #include "system/SetupSystem.h"
 
+#ifdef MUSCLE_ENABLE_SSL
+# include "dataio/SSLSocketDataIO.h"
+# include "iogateway/SSLSocketAdapterGateway.h"
+#endif
+
 namespace muscle {
 
 static uint32 _sessionIDCounter = 0L;
@@ -118,9 +123,17 @@ Reconnect()
 {
    TCHECKPOINT;
 
+#ifdef MUSCLE_ENABLE_SSL
+   ConstByteBufferRef publicKey;  // If it's an SSL connection we'll grab its key into here so we can reuse it
+#endif
+
    MASSERT(IsAttachedToServer(), "Can not call Reconnect() while not attached to the server");
    if (_gateway())
    {
+#ifdef MUSCLE_ENABLE_SSL
+      SSLSocketDataIO * sdio = dynamic_cast<SSLSocketDataIO *>(_gateway()->GetDataIO()());
+      if (sdio) publicKey = sdio->GetPublicKeyCertificate();
+#endif
       _gateway()->SetDataIO(DataIORef());  // get rid of any existing socket first
       _gateway()->Reset();                 // set gateway back to its virgin state
    }
@@ -151,6 +164,24 @@ Reconnect()
             _gateway = CreateGateway();
             if (_gateway() == NULL) return B_ERROR;
          }
+
+#ifdef MUSCLE_ENABLE_SSL
+         // auto-wrap the user's gateway and socket in the necessary SSL adapters!
+         if ((publicKey())&&(dynamic_cast<TCPSocketDataIO *>(io()) != NULL))
+         {
+            SSLSocketDataIO * ssio = newnothrow SSLSocketDataIO(sock, false, false);
+            if (ssio == NULL) {WARN_OUT_OF_MEMORY; return B_ERROR;}
+            io.SetRef(ssio);
+            if (ssio->SetPublicKeyCertificate(publicKey) != B_NO_ERROR) return B_ERROR;
+
+            if (dynamic_cast<SSLSocketAdapterGateway *>(_gateway()) == NULL) 
+            {
+               _gateway.SetRef(newnothrow SSLSocketAdapterGateway(_gateway));
+               if (_gateway() == NULL) return B_ERROR;
+            }
+         }
+#endif
+
          _gateway()->SetDataIO(io);
          if (isReady) 
          {

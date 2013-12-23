@@ -1,6 +1,6 @@
 /* This file is Copyright 2000-2013 Meyer Sound Laboratories Inc.  See the included LICENSE.txt file for details. */
 
-#include <qapplication.h>
+#include <QCoreApplication>
 #include "qtsupport/QAcceptSocketsThread.h"
 
 namespace muscle {
@@ -31,7 +31,7 @@ void QAcceptSocketsThread :: SignalOwner()
 #else
    QCustomEvent * evt = newnothrow QCustomEvent(QMTT_SIGNAL_EVENT);
 #endif
-   if (evt) QApplication::postEvent(this, evt);
+   if (evt) QCoreApplication::postEvent(this, evt);
        else WARN_OUT_OF_MEMORY;
 }
 

@@ -221,7 +221,7 @@ status_t Directory :: DeleteDirectory(const char * dirPath, bool forceDeleteSubI
    if (forceDeleteSubItemsIfNecessary)
    {
       Directory d;
-      if (d.SetDir(dirPath) != B_NO_ERROR) return B_ERROR;
+      if ((dirPath==NULL)||(d.SetDir(dirPath) != B_NO_ERROR)) return B_ERROR;
 
       const char * sep = GetFilePathSeparator();
       int sepLen       = (int) strlen(sep);

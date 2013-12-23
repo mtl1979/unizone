@@ -340,8 +340,10 @@ bool RawDataQueryFilter :: Matches(ConstMessageRef & msg, const DataNode *) cons
 
    const uint8 * hisBytes = (const uint8 *) hb;
    uint32 myNumBytes     = _value() ? _value()->GetNumBytes() : 0;
-   const uint8 * myBytes = _value() ? _value()->GetBuffer()   : 0;
+   const uint8 * myBytes = _value() ? _value()->GetBuffer()   : NULL;
    uint32 clen           = muscleMin(myNumBytes, hisNumBytes);
+   if (myBytes == NULL) return false;
+
    switch(_op)
    {
       case OP_EQUAL_TO:     return ((hisNumBytes == myNumBytes)&&(memcmp(myBytes, hisBytes, clen) == 0));

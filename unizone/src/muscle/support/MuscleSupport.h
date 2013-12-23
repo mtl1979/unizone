@@ -11,8 +11,8 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "5.90"
-#define MUSCLE_VERSION        59000  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
+#define MUSCLE_VERSION_STRING "6.00"
+#define MUSCLE_VERSION        60000  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
 
 /*! \mainpage MUSCLE Documentation Page
  *
@@ -36,6 +36,7 @@
  * subdirectory.
  */
 
+#include <assert.h>  /* for assert() */
 #include <string.h>  /* for memcpy() */
 #include <stdio.h>
 #include <stdlib.h>
@@ -71,7 +72,12 @@
 # define MUSCLE_USE_MSVC_STACKWALKER 1
 #endif
 
-#ifndef __cplusplus
+
+#ifdef __cplusplus
+# ifdef MUSCLE_USE_CPLUSPLUS11
+#  include <utility>  // for std::move()
+# endif
+#else
 # define NEW_H_NOT_AVAILABLE
 #endif
 
@@ -125,15 +131,6 @@ using std::set_new_handler;
 # endif
 #endif
 
-#if defined(__BEOS__) || defined(__HAIKU__)
-# include <kernel/debugger.h>
-# define MCRASH_IMPL debugger("muscle assertion failure")
-#elif defined(__GNUC__)
-# define MCRASH_IMPL __builtin_trap()
-#else
-# define MCRASH_IMPL *((uint32*)NULL) = 0x666
-#endif
-
 // These macros are implementation details, please ignore them
 #define ___MUSCLE_UNIQUE_NAME_AUX1(name, line) name##line
 #define ___MUSCLE_UNIQUE_NAME_AUX2(name, line) ___MUSCLE_UNIQUE_NAME_AUX1(name, line)
@@ -157,7 +154,7 @@ using std::set_new_handler;
 # define MASSERT(x,msg) {if(!(x)) MCRASH(msg)}
 #endif
 
-#define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); MCRASH_IMPL;}
+#define MCRASH(msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); assert(false);}
 #define MEXIT(retVal,msg) {muscle::LogTime(muscle::MUSCLE_LOG_CRITICALERROR, "ASSERTION FAILED: (%s:%i) %s\n", __FILE__,__LINE__,msg); muscle::LogStackTrace(MUSCLE_LOG_CRITICALERROR); ExitWithoutCleanup(retVal);}
 #define WARN_OUT_OF_MEMORY muscle::WarnOutOfMemory(__FILE__, __LINE__)
 #define MCHECKPOINT muscle::LogTime(muscle::MUSCLE_LOG_WARNING, "Reached checkpoint at %s:%i\n", __FILE__, __LINE__)
@@ -406,8 +403,62 @@ template<typename T> inline const T & muscleMax(const T & p1, const T & p2, cons
 /** Returns the largest of the five arguments */
 template<typename T> inline const T & muscleMax(const T & p1, const T & p2, const T & p3, const T & p4, const T & p5) {return muscleMax(p3, p4, p5, muscleMax(p1, p2));}
 
-/** Swaps the two arguments */
-template<typename T> inline void muscleSwap(T & p1, T & p2) {T t = p1; p1 = p2; p2 = t;}
+namespace ugly_swapcontents_method_sfinae_implementation
+{
+   // This code was from the example code at http://www.martinecker.com/wiki/index.php?title=Detecting_the_Existence_of_Member_Functions_at_Compile-Time
+   // It is used by the muscleSwap() function (below) to automatically call SwapContents() if such a method
+   // is available, otherwise muscleSwap() will use a naive copy-to-temporary-object technique.
+
+   typedef char yes;
+   typedef char (&no)[2];
+   template <typename T, void (T::*f)(T&)> struct test_swapcontents_wrapper {};
+
+   // via SFINAE only one of these overloads will be considered
+   template <typename T> yes swapcontents_tester(test_swapcontents_wrapper<T, &T::SwapContents>*);
+   template <typename T> no  swapcontents_tester(...);
+
+   template <typename T> struct test_swapcontents_impl {static const bool value = sizeof(swapcontents_tester<T>(0)) == sizeof(yes);};
+
+   template <class T> struct has_swapcontents_method : test_swapcontents_impl<T> {};
+   template <bool Condition, typename TrueResult, typename FalseResult> struct if_;
+   template <typename TrueResult, typename FalseResult> struct if_<true,  TrueResult, FalseResult> {typedef TrueResult  result;};
+   template <typename TrueResult, typename FalseResult> struct if_<false, TrueResult, FalseResult> {typedef FalseResult result;};
+
+   template<typename T> class PODSwapper
+   {
+   public:
+      PODSwapper(T & t1, T & t2)
+      {
+#ifdef MUSCLE_USE_CPLUSPLUS11
+         T tmp(std::move(t1));
+         t1 = std::move(t2); 
+         t2 = std::move(tmp);
+#else
+         T tmp = t1;
+         t1 = t2;
+         t2 = tmp;
+#endif
+      }
+   };
+
+   template<typename T> class SwapContentsSwapper
+   {
+   public:
+      SwapContentsSwapper(T & t1, T & t2) {t1.SwapContents(t2);}
+   };
+
+   template<typename ItemType> class AutoChooseSwapperHelper
+   {
+   public:
+      typedef typename if_<test_swapcontents_impl<ItemType>::value, SwapContentsSwapper<ItemType>, PODSwapper<ItemType> >::result Type;
+   };
+}
+
+/** Swaps the two arguments.
+  * @param t1 First item to swap.  After this method returns, it will be equal to the old value of t2.
+  * @param t2 Second item to swap.  After this method returns, it will be equal to the old value of t1.
+  */
+template<typename T> inline void muscleSwap(T & t1, T & t2) {typename ugly_swapcontents_method_sfinae_implementation::AutoChooseSwapperHelper<T>::Type swapper(t1,t2);}
 
 /** Returns the value nearest to (v) that is still in the range [lo, hi]. */
 template<typename T> inline const T & muscleClamp(const T & v, const T & lo, const T & hi) {return (v < lo) ? lo : ((v > hi) ? hi : v);}
@@ -1038,7 +1089,7 @@ public:
 /** This macro can be used whenever you want to explicitly specify the default AutoChooseHashFunctorHelper functor for your type.  It's easier than remembering the tortured C++ syntax */
 #define DEFAULT_HASH_FUNCTOR(type) AutoChooseHashFunctorHelper<type>::Type
 
-namespace ugly_implementation_details
+namespace ugly_hashcode_method_sfinae_implementation
 {
    // This code was from the example code at http://www.martinecker.com/wiki/index.php?title=Detecting_the_Existence_of_Member_Functions_at_Compile-Time
    // It is used by the AutoChooseHashFunctorHelper (below) to automatically choose the appropriate HashFunctor
@@ -1063,12 +1114,12 @@ namespace ugly_implementation_details
 template<typename ItemType> class AutoChooseHashFunctorHelper
 {
 public:
-   typedef typename ugly_implementation_details::if_<ugly_implementation_details::test_hashcode_impl<ItemType>::value, MethodHashFunctor<ItemType>, PODHashFunctor<ItemType> >::result Type;
+   typedef typename ugly_hashcode_method_sfinae_implementation::if_<ugly_hashcode_method_sfinae_implementation::test_hashcode_impl<ItemType>::value, MethodHashFunctor<ItemType>, PODHashFunctor<ItemType> >::result Type;
 };
 template <typename ItemType> class AutoChooseHashFunctorHelper<ItemType *>
 {
 public:
-   typedef typename ugly_implementation_details::if_<ugly_implementation_details::test_hashcode_impl<ItemType>::value, MethodHashFunctor<ItemType *>, PODHashFunctor<ItemType *> >::result Type;
+   typedef typename ugly_hashcode_method_sfinae_implementation::if_<ugly_hashcode_method_sfinae_implementation::test_hashcode_impl<ItemType>::value, MethodHashFunctor<ItemType *>, PODHashFunctor<ItemType *> >::result Type;
 };
 
 /** This HashFunctor lets us use (const char *)'s as keys in a Hashtable.  They will be
