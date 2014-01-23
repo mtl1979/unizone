@@ -9,8 +9,8 @@
 namespace muscle {
 
 // Uncomment this #define to disable object pools (i.e. turn them into
-// fancy new/delete operators).  This is helpful if you are trying
-// to track down memory leaks.
+// simple passthroughs to the new/delete operators).  
+// This is helpful if you are trying to track down memory leaks.
 //#define DISABLE_OBJECT_POOLING 1
 
 #ifndef DEFAULT_MUSCLE_POOL_SLAB_SIZE
@@ -86,7 +86,7 @@ class AbstractObjectManager : public AbstractObjectGenerator, public AbstractObj
  *  dynamic allocations and deallocations in your app.  Instead of calling 'new Object', 
  *  you call myObjectPool.ObtainObject(), and instead of calling 'delete Object', you call
  *  myObjectPool.ReleaseObject().  The advantage is that the ObjectPool will
- *  keep (up to) a certain number of "spare" Objects around, and recycle them back
+ *  keep (up to a certain number of) "spare" Objects around, and recycle them back
  *  to you as needed. 
  */
 template <class Object, int MUSCLE_POOL_SLAB_SIZE=DEFAULT_MUSCLE_POOL_SLAB_SIZE> class ObjectPool : public AbstractObjectManager

@@ -13,6 +13,11 @@
 
 namespace muscle {
 
+#if defined(FORWARD_DECLARE_SIGNAL_INTERFACES_CHANGED) && (defined(__APPLE__) || defined(WIN32))
+class DetectNetworkConfigChangesSession;
+static void SignalInterfacesChanged(DetectNetworkConfigChangesSession * s, const Hashtable<String, Void> & optInterfaceNames);
+#endif
+
 /** This class watches the set of available network interfaces and calls its 
   * NetworkInterfacesChanged() virtual method when a network-configuration change 
   * has been detected.  The default implementation of NetworkInterfacesChanged() is a no-op,
@@ -63,6 +68,21 @@ public:
    /** Returns true iff the calling of NetworkInterfaceChanged() is enabled.  Default value is true. */
    bool IsEnabled() const {return _enabled;}
 
+   /** Specified the amount of time the session should delay after receiving an indication of
+     * a network-config change from the OS, before calling NetworkInterfacesChanged().
+     * By default this class will wait an OS-specific number of seconds (5 seconds under Windows,
+     * 3 seconds under Mac) before making the call, to make it more likely that the network
+     * interfaces are in a usable state at the moment NetworkInterfacesChanged() is called.
+     * However, you can specify a different delay-period here if you want to.
+     * @param micros Number of microseconds of delay between when a config change is detected
+     *               and when NetworkInterfacesChanged() should be called.  Set to MUSCLE_TIME_NEVER
+     *               if you want to return to the default (OS-specific) behavior.
+     */
+   void SetExplicitDelayMicros(uint64 micros) {_explicitDelayMicros = micros;}
+
+   /** Returns the current delay time, or MUSCLE_TIME_NEVER if we are using the default behavior. */
+   uint64 GetExplicitDelayMicros() const {return _explicitDelayMicros;}
+
 protected:
 #ifndef __linux__
    /** Overridden to do the signalling the Carbon way */
@@ -74,26 +94,40 @@ protected:
      * to update the process's interface list.  Subclass can augment
      * that behavior to include update various other objects that
      * need to be notified of the change.
+     * @param optInterfaceNames optional table containing the names of the interfaces that
+     *                          have changed (e.g. "en0", "en1", etc).  If this table is empty,
+     *                          that indicates that any or all of the network interfaces may have
+     *                          changed.  Note that changed-interface enumeration is currently only
+     *                          implemented under MacOS/X, so under other operating systems this
+     *                          argument will currently always be an empty table.
      */
-   virtual void NetworkInterfacesChanged();
+   virtual void NetworkInterfacesChanged(const Hashtable<String, Void> & optInterfaceNames);
 
 private:
    void ScheduleSendReport();
 
 #ifndef __linux__
-   friend void SignalInterfacesChanged(DetectNetworkConfigChangesSession * s);
    virtual void InternalThreadEntry();
 
    volatile bool _threadKeepGoing;
 # ifdef __APPLE__
+   friend void SignalInterfacesChanged(DetectNetworkConfigChangesSession * s, const Hashtable<String, Void> & optInterfaceNames);
+   friend Hashtable<String, String> & GetKeyToInterfaceNameTable(DetectNetworkConfigChangesSession * s);
    CFRunLoopRef _threadRunLoop;
+   Hashtable<String, String> _scKeyToInterfaceName;
 # elif _WIN32
+   friend void SignalInterfacesChanged(DetectNetworkConfigChangesSession * s, const Hashtable<String, Void> & optInterfaceNames);
    ::HANDLE _wakeupSignal;
+   Mutex _sendMessageToOwnerMutex;
 # endif
 #endif // __linux__
 
+   uint64 _explicitDelayMicros;
    uint64 _callbackTime;
    bool _enabled;
+
+   Hashtable<String, Void> _pendingChangedInterfaceNames;  // currently used under MacOS/X only
+   bool _changeAllPending;
 };
 
 };  // end namespace muscle

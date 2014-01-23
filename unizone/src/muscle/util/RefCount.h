@@ -176,8 +176,8 @@ public:
    inline ConstRef &operator=(const ConstRef & rhs) {SetRef(rhs.GetItemPointer(), rhs.IsRefCounting()); return *this;}
 
    /** Similar to the == operator, except that this version will also call the comparison operator
-     * on the objects themselves if necessary, to determine exact equality.  (Compare with the ==
-     * operator which only compares the pointers, not the objects themselves) 
+     * on the objects themselves if necessary, to determine exact equality.  (This is different than
+     * the behavior of the == operator, which only compares the pointers, not the objects themselves) 
      */
    bool IsDeeplyEqualTo(const ConstRef & rhs) const
    {
@@ -214,7 +214,8 @@ public:
    void Reset() {UnrefItem();}
 
    /** Equivalent to Reset(), except that this method will not delete or recycle 
-     * the held object under any circumstances.  Use with caution.
+     * the held object under any circumstances.  Use with caution, as use of this 
+     * method can result in memory leaks.
      */
    void Neutralize() 
    {
@@ -226,10 +227,7 @@ public:
    /** Swaps this ConstRef's contents with those of the specified ConstRef.
      * @param swapWith ConstRef to swap state with.
      */
-   void SwapContents(ConstRef & swapWith)
-   {
-      muscleSwap(_item, swapWith._item); 
-   }
+   void SwapContents(ConstRef & swapWith) {muscleSwap(_item, swapWith._item);}
 
    /** Returns true iff we are refcounting our held object, or false
      * if we are merely pointing to it (see constructor documentation for details)

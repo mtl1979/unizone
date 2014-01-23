@@ -1018,24 +1018,24 @@ static int32 GetSocketBufferSizeAux(const ConstSocketRef & sock, int optionName)
 int32 GetSocketSendBufferSize(   const ConstSocketRef & sock) {return GetSocketBufferSizeAux(sock, SO_SNDBUF);}
 int32 GetSocketReceiveBufferSize(const ConstSocketRef & sock) {return GetSocketBufferSizeAux(sock, SO_RCVBUF);}
 
-NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(invalidIP), _netmask(invalidIP), _broadcastIP(invalidIP), _enabled(false)
+NetworkInterfaceInfo :: NetworkInterfaceInfo() : _ip(invalidIP), _netmask(invalidIP), _broadcastIP(invalidIP), _enabled(false), _copper(false)
 {
    // empty
 }
 
-NetworkInterfaceInfo :: NetworkInterfaceInfo(const String &name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP, bool enabled) : _name(name), _desc(desc), _ip(ip), _netmask(netmask), _broadcastIP(broadcastIP), _enabled(enabled)
+NetworkInterfaceInfo :: NetworkInterfaceInfo(const String &name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP, bool enabled, bool copper) : _name(name), _desc(desc), _ip(ip), _netmask(netmask), _broadcastIP(broadcastIP), _enabled(enabled), _copper(copper)
 {
    // empty
 }
 
 String NetworkInterfaceInfo :: ToString() const
 {
-   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5] Enabled=%6").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP)).Arg(_enabled);
+   return String("Name=[%1] Description=[%2] IP=[%3] Netmask=[%4] Broadcast=[%5] Enabled=%6 Copper=%7").Arg(_name).Arg(_desc).Arg(Inet_NtoA(_ip)).Arg(Inet_NtoA(_netmask)).Arg(Inet_NtoA(_broadcastIP)).Arg(_enabled).Arg(_copper);
 }
 
 uint32 NetworkInterfaceInfo :: HashCode() const
 {
-   return _name.HashCode() + _desc.HashCode() + GetHashCodeForIPAddress(_ip) + GetHashCodeForIPAddress(_netmask) + GetHashCodeForIPAddress(_broadcastIP) + _enabled;
+   return _name.HashCode() + _desc.HashCode() + GetHashCodeForIPAddress(_ip) + GetHashCodeForIPAddress(_netmask) + GetHashCodeForIPAddress(_broadcastIP) + _enabled + _copper;
 }
 
 #if defined(USE_GETIFADDRS) || defined(WIN32)
@@ -1159,13 +1159,14 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
             ip_address unicastIP   = SockAddrToIPAddr(p->ifa_addr);
             ip_address netmask     = SockAddrToIPAddr(p->ifa_netmask);
             ip_address broadcastIP = SockAddrToIPAddr(p->ifa_broadaddr);
-            bool isEnabled         = ((p->ifa_flags & IFF_UP) != 0);
+            bool isEnabled         = ((p->ifa_flags & IFF_UP)      != 0);
+            bool hasCopper         = ((p->ifa_flags & IFF_RUNNING) != 0);
             if ((unicastIP != invalidIP)&&(IsGNIIBitMatch(unicastIP, isEnabled, includeBits)))
             {
 #ifndef MUSCLE_AVOID_IPV6
                unicastIP.SetInterfaceIndex(if_nametoindex(p->ifa_name));  // so the user can find out; it will be ignore by the TCP stack
 #endif
-               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", unicastIP, netmask, broadcastIP, isEnabled)) == B_NO_ERROR)
+               if (results.AddTail(NetworkInterfaceInfo(p->ifa_name, "", unicastIP, netmask, broadcastIP, isEnabled, hasCopper)) == B_NO_ERROR)
                {
                   if (_cachedLocalhostAddress == invalidIP) _cachedLocalhostAddress = unicastIP;
                }
@@ -1249,7 +1250,7 @@ status_t GetNetworkInterfaceInfos(Queue<NetworkInterfaceInfo> & results, uint32 
                      char outBuf[512];
                      if (WideCharToMultiByte(CP_UTF8, 0, pCurrAddresses->Description, -1, outBuf, sizeof(outBuf), NULL, NULL) <= 0) outBuf[0] = '\0';
 
-                     if (results.AddTail(NetworkInterfaceInfo(pCurrAddresses->AdapterName, outBuf, unicastIP, netmask, broadcastIP, isEnabled)) == B_NO_ERROR)
+                     if (results.AddTail(NetworkInterfaceInfo(pCurrAddresses->AdapterName, outBuf, unicastIP, netmask, broadcastIP, isEnabled, false)) == B_NO_ERROR)
                      {
                         if (_cachedLocalhostAddress == invalidIP) _cachedLocalhostAddress = unicastIP;
                      }

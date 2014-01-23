@@ -843,8 +843,9 @@ public:
      * @param netmask The netmask being used by this interface.
      * @param broadcastIP The broadcast IP address associated with this interface.
      * @param enabled True iff the interface is currently enabled; false if it is not.
+     * @param copper True iff the interface currently has an ethernet cable plugged into it.
      */
-   NetworkInterfaceInfo(const String & name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP, bool enabled);
+   NetworkInterfaceInfo(const String & name, const String & desc, const ip_address & ip, const ip_address & netmask, const ip_address & broadcastIP, bool enabled, bool copper);
 
    /** Returns the name of this interface, or "" if the name is not known. */
    const String & GetName() const {return _name;}
@@ -867,6 +868,13 @@ public:
    /** Returns true iff this interface is currently enabled ("up"). */
    bool IsEnabled() const {return _enabled;}
 
+   /** Returns true iff this network interface is currently plugged in to anything 
+     * (i.e. iff the Ethernet cable is connected to the jack).
+     * Note that copper detection is not currently supported under Windows, so
+     * under Windows this will always return false.
+     */
+   bool IsCopperDetected() const {return _copper;}
+
    /** For debugging.  Returns a human-readable string describing this interface. */
    String ToString() const;
 
@@ -880,6 +888,7 @@ private:
    ip_address _netmask;
    ip_address _broadcastIP;
    bool _enabled;
+   bool _copper;
 };
 
 /** Bits that can be passed to GetNetworkInterfaceInfos() or GetNetworkInterfaceAddresses(). */

@@ -182,6 +182,13 @@ uint32 String::Replace(char findChar, char replaceChar, uint32 maxReplaceCount)
    return ret;
 }
    
+String String :: WithReplacements(char replaceMe, char withMe, uint32 maxReplaceCount) const
+{
+   String ret = *this;
+   ret.Replace(replaceMe, withMe, maxReplaceCount);
+   return ret;
+}
+
 int32 String::Replace(const String & replaceMe, const String & withMe, uint32 maxReplaceCount)
 {
    TCHECKPOINT;
@@ -245,6 +252,13 @@ int32 String::Replace(const String & replaceMe, const String & withMe, uint32 ma
       }
    }
    return ret;  // just to shut the compiler up; we never actually get here
+}
+
+String String :: WithReplacements(const String & replaceMe, const String & withMe, uint32 maxReplaceCount) const
+{
+   String ret = *this;
+   ret.Replace(replaceMe, withMe, maxReplaceCount);
+   return ret;
 }
 
 int String::LastIndexOf(const String &s2, uint32 fromIndex) const
