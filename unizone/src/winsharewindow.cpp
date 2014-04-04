@@ -44,6 +44,7 @@
 #include <QKeyEvent>
 #include <QCustomEvent>
 #include <Q3PopupMenu>
+#include <Q3DockArea>
 
 #include "util/StringTokenizer.h"
 #include "iogateway/PlainTextMessageIOGateway.h"
@@ -111,9 +112,6 @@
 enum
 {
 	UID_INVALID = -1,
-#ifndef __APPLE__
-	UID_MENUBAR,
-#endif
 	UID_SERVERBAR,
 	UID_NICKBAR,
 	UID_STATUSBAR
@@ -849,12 +847,6 @@ WinShareWindow::NameChanged(const QString & newName)
 }
 
 void
-WinShareWindow::resizeEvent(QResizeEvent * event)
-{
-	Q3MainWindow::resizeEvent(event);
-}
-
-void
 WinShareWindow::InitGUI()
 {
 	// divide our splitter(s)
@@ -863,21 +855,8 @@ WinShareWindow::InitGUI()
 	splitList.append(1);
 	//
 
-#ifndef __APPLE__
-	fTBMenu = new Q3ToolBar( this, tr( "Menubar" ) );
-	Q_CHECK_PTR(fTBMenu);
-
-	fMenus = new MenuBar(this, fTBMenu);
-#else
-	fMenus = new MenuBar(this, this);
-#endif
+	fMenus = new MenuBar(this);
 	Q_CHECK_PTR(fMenus);
-
-#ifndef __APPLE__
-	fTBMenu->setStretchableWidget( fMenus );
-	setDockEnabled( fTBMenu, Qt::DockLeft, FALSE );
-	setDockEnabled( fTBMenu, Qt::DockRight, FALSE );
-#endif
 
 	/*
 	 * Setup combo/labels
@@ -892,7 +871,6 @@ WinShareWindow::InitGUI()
 
 	fTBServer = new Q3ToolBar( this, tr( "Server bar" ) );
 	Q_CHECK_PTR(fTBServer);
-	fTBServer->setNewLine(true);
 
 	fServerLabel = new QLabel(tr("Server:"), fTBServer);
 	Q_CHECK_PTR(fServerLabel);
@@ -1562,6 +1540,10 @@ WinShareWindow::InitToolbars()
 	bool _nl[NUM_TOOLBARS];
 	int32 _extra[NUM_TOOLBARS];
 
+	topDock()->moveDockWindow(fTBServer, 0);
+	topDock()->moveDockWindow(fTBNick, 1);
+	topDock()->moveDockWindow(fTBStatus, 2);
+
 	for (i = 0; i < NUM_TOOLBARS; i++)
 		if (!fSettings->GetToolBarLayout(i, _dock[i], _index[i], _nl[i], _extra[i]))
 			return;
@@ -1580,14 +1562,18 @@ WinShareWindow::InitToolbars()
 					Q3ToolBar * tb = NULL;
 					switch (i1)
 					{
-#ifndef __APPLE__
-					case UID_MENUBAR: tb = fTBMenu;
-#endif
-					case UID_SERVERBAR:	tb = fTBServer;
-					case UID_NICKBAR: tb = fTBNick;
-					case UID_STATUSBAR:	tb = fTBStatus;
+						case UID_SERVERBAR:
+							tb = fTBServer;
+							break;
+						case UID_NICKBAR:
+							tb = fTBNick;
+							break;
+						case UID_STATUSBAR:
+							tb = fTBStatus;
+							break;
 					}
-					moveToolBar(tb, (Qt::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
+					if (tb)
+						moveToolBar(tb, (Qt::ToolBarDock) _dock[i1], _nl[i1], 3, _extra[i1]);
 				}
 			}
 		}
@@ -1742,10 +1728,6 @@ WinShareWindow::SaveSettings()
 	int _index, _extra;
 	bool _nl;
 
-#ifndef __APPLE__
-	getLocation(fTBMenu, _dock, _index, _nl, _extra);
-	fSettings->SetToolBarLayout(UID_MENUBAR, _dock, _index, _nl, _extra);
-#endif
 	getLocation(fTBServer, _dock, _index, _nl, _extra);
 	fSettings->SetToolBarLayout(UID_SERVERBAR, _dock, _index, _nl, _extra);
 

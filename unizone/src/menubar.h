@@ -8,7 +8,7 @@ class MenuBar : public QMenuBar
 {
 	Q_OBJECT
 public:
-	MenuBar(QWidget * handler, QWidget * parent = NULL);
+	MenuBar(QWidget * parent = NULL);
 	~MenuBar();
 
 	Q3PopupMenu * File() const { return fFile; }

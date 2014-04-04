@@ -258,7 +258,6 @@ public slots:
 
 protected:
 	virtual void customEvent(QEvent *);
-	virtual void resizeEvent(QResizeEvent *);
 	virtual void keyPressEvent(QKeyEvent *);
 	virtual void timerEvent(QTimerEvent *);
 
