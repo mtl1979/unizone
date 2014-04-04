@@ -103,11 +103,7 @@
 #include <utmpx.h>
 #endif
 
-#ifdef __APPLE__
 #define NUM_TOOLBARS 3
-#else
-#define NUM_TOOLBARS 4
-#endif
 
 enum
 {
