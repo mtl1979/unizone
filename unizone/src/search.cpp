@@ -442,7 +442,7 @@ WSearch::GoSearch()
 
 	if (fNetClient->IsConnected() == false)
 	{
-		fStatus->message(tr("Not connected."));
+		SetSearchStatus(tr("Not connected."));
 		return;
 	}
 
