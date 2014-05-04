@@ -685,6 +685,59 @@ String String :: WithoutPrefix(const String & str, uint32 maxToRemove) const
    return ret;
 }
 
+String String :: WithoutSuffixIgnoreCase(char c, uint32 maxToRemove) const
+{
+   String ret = *this;
+   while(ret.EndsWithIgnoreCase(c)) 
+   {
+      ret--;
+      if (--maxToRemove == 0) break;
+   }
+   return ret;
+}
+
+String String :: WithoutSuffixIgnoreCase(const String & str, uint32 maxToRemove) const
+{
+   String ret = *this;
+   while(ret.EndsWithIgnoreCase(str)) 
+   {
+      ret.TruncateChars(str.Length());
+      if (--maxToRemove == 0) break;
+   }
+   return ret;  
+}
+
+String String :: WithoutPrefixIgnoreCase(char c, uint32 maxToRemove) const
+{
+   char cU = toupper(c);
+   char cL = tolower(c);
+
+   String ret = *this;
+   uint32 numInitialChars = 0;
+   for (uint32 i=0; i<ret.Length(); i++)
+   {
+      char n = (*this)[i];
+      if ((n==cU)||(n==cL))
+      {
+         numInitialChars++;
+         if (--maxToRemove == 0) break;
+      }
+      else break;
+   }
+   return Substring(numInitialChars);
+}
+
+String String :: WithoutPrefixIgnoreCase(const String & str, uint32 maxToRemove) const 
+{
+   String ret = *this;
+   while(ret.StartsWithIgnoreCase(str)) 
+   {
+      ret = ret.Substring(str.Length());
+      if (--maxToRemove == 0) break;
+   }
+   return ret;
+}
+
 #define ARG_IMPLEMENTATION   \
    char buf[256];            \
    sprintf(buf, fmt, value); \

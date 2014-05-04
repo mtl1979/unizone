@@ -79,7 +79,7 @@ public:
     *  @note StringMatchers using numeric ranges are never considered unique, because e.g. looking up the
     *        string "<5>" in a Hashtable would not return a child node whose node-name is "5".
     */
-   bool IsPatternUnique() const {return ((_ranges.IsEmpty())&&(IsBitSet(STRINGMATCHER_BIT_HASREGEXTOKENS|STRINGMATCHER_BIT_NEGATE) == false));}
+   bool IsPatternUnique() const {return ((_ranges.IsEmpty())&&(IsBitSet(STRINGMATCHER_BIT_CANMATCHMULTIPLEVALUES|STRINGMATCHER_BIT_NEGATE) == false));}
 
    /** Returns true iff (string) is matched by the current expression.
     * @param matchString a string to match against using our current expression.
@@ -119,10 +119,10 @@ private:
    bool IsBitSet(uint8 bit) const {return (_bits & bit) != 0;}
 
    enum {
-      STRINGMATCHER_BIT_REGEXVALID     = (1<<0),
-      STRINGMATCHER_BIT_NEGATE         = (1<<1),
-      STRINGMATCHER_BIT_HASREGEXTOKENS = (1<<2),
-      STRINGMATCHER_BIT_SIMPLE         = (1<<3),
+      STRINGMATCHER_BIT_REGEXVALID             = (1<<0),
+      STRINGMATCHER_BIT_NEGATE                 = (1<<1),
+      STRINGMATCHER_BIT_CANMATCHMULTIPLEVALUES = (1<<2),
+      STRINGMATCHER_BIT_SIMPLE                 = (1<<3),
    };
 
    class IDRange
@@ -188,14 +188,14 @@ bool HasRegexTokens(const char * str);
 /** As above, but takes a String object instead of a (const char *) */
 inline bool HasRegexTokens(const String & str) {return HasRegexTokens(str());}
 
-/** Returns true iff the specified regex string can match more than one possible value.
- *  @param str The string to check
- *  @return True iff the string might match more than one value; false if not.
+/** Returns true iff the specified wild card pattern string can match more than one possible value-string.
+ *  @param str The pattern string to check
+ *  @return True iff the string might match more than one value-string; false if not.
  */
-bool CanRegexStringMatchMultipleValues(const char * str);
+bool CanWildcardStringMatchMultipleValues(const char * str);
 
 /** As above, but takes a String object instead of a (const char *) */
-inline bool CanRegexStringMatchMultipleValues(const String & str) {return CanRegexStringMatchMultipleValues(str());}
+inline bool CanWildcardStringMatchMultipleValues(const String & str) {return CanWildcardStringMatchMultipleValues(str());}
 
 /** Returns true iff (c) is a regular expression "special" char as far as StringMatchers are concerned.
  *  @param c an ASCII char

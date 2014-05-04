@@ -45,7 +45,7 @@ public:
      *                    after the last compressed-data byte.  The values in these bytes
      *                    are undefined; the caller can write footer data to them if desired.
      *                    Leave this set to zero if you're not sure of what you are doing.
-     * @returna Reference to a buffer of compressed data on success, or a NULL reference on failure.
+     * @returns Reference to a buffer of compressed data on success, or a NULL reference on failure.
      */
    ByteBufferRef Deflate(const uint8 * rawData, uint32 numBytes, bool independent, uint32 addHeaderBytes=0, uint32 addFooterBytes=0);
 

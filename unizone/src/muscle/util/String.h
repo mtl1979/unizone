@@ -965,6 +965,34 @@ public:
      */
    String WithoutPrefix(const String & str, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
 
+   /** Returns a String like this one, but with any characters (c) removed from the end.
+     * @param c The char we want to be sure is not at the end of the returned String (case-insensitive).
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all trailing (c) chars.
+     */
+   String WithoutSuffixIgnoreCase(char c, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
+   /** Returns a String like this one, but with any instances of (str) removed from the end.
+     * @param str The substring we want to be sure is not at the end of the returned String (case-insensitive).
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all trailing (str) substrings.
+     */
+   String WithoutSuffixIgnoreCase(const String & str, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
+   /** Returns a String like this one, but with any characters (c) removed from the beginning.
+     * @param c The char we want to be sure is not at the beginning of the returned String (case-insensitive).
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all starting (c) chars.
+     */
+   String WithoutPrefixIgnoreCase(char c, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
+   /** Returns a String like this one, but with any instances of (str) removed from the beginning.
+     * @param str The substring we want to be sure is not at the beginning of the returned String (case-insensitive).
+     * @param maxToRemove Maximum number of instances of (c) to remove from the returned String.
+     *                    Defaults to MUSCLE_NO_LIMIT, i.e. remove all starting (str) substrings.
+     */
+   String WithoutPrefixIgnoreCase(const String & str, uint32 maxToRemove = MUSCLE_NO_LIMIT) const;
+
    /** Returns a 32-bit checksum corresponding to this String's contents.
      * Note that this method method is O(N).
      */

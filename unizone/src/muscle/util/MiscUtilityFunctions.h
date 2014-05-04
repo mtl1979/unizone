@@ -313,6 +313,17 @@ String CleanupDNSPath(const String & s);
   */
 status_t NybbleizeData(const ByteBuffer & buf, String & retString);
 
+/** Convenience function.  Given a buffer of arbitrary data, returns a nybble-ized String
+  * that represents that same data using only the ASCII characters 'A' through 'P.  The
+  * returned String will be twice the length of the passed-in buffer, and the original
+  * data can be recovered from the String by calling DenybbleizeData().
+  * @param inBytes Pointer to the bytes to nybbleize.
+  * @param numInBytes Number of bytes pointed to by (inBytes).
+  * @param retString On success, the nybbleized String is written here.
+  * @returns B_NO_ERROR on success, or B_ERROR on failure.
+  */
+status_t NybbleizeData(const uint8 * inBytes, uint32 numInBytes, String & retString);
+
 /** Convenience function.  Given a String that was produced by NybblizedData(),
   * returns the eqivalent ByteBuffer.
   * @param nybbleizedText The String to de-nybbleize
@@ -507,6 +518,24 @@ ByteBufferRef ParseHexBytes(const char * buf);
   * @returns a String with human-readable contents:  e.g. "5F A3 A2"...
   */
 String HexBytesToString(const uint8 * buf, uint32 numBytes);
+
+/** Given a reference to a byte buffer, returns an ASCII representation of it.
+  * @param bbRef Reference to a buffer of bytes.
+  * @returns a String with human-readable contents:  e.g. "5F A3 A2"...
+  */
+String HexBytesToString(const ConstByteBufferRef & bbRef);
+
+/** Given a byte buffer, returns an ASCII representation of it.
+  * @param bb a buffer of bytes.
+  * @returns a String with human-readable contents:  e.g. "5F A3 A2"...
+  */
+String HexBytesToString(const ByteBuffer & bb);
+
+/** Given a Queue of uint8s, returns an ASCII representation of it.
+  * @param bytes a Queue of uint8s.
+  * @returns a String with human-readable contents:  e.g. "5F A3 A2"...
+  */
+String HexBytesToString(const Queue<uint8> & bytes);
 
 /** A convenience method, useful to optimally create a single PR_COMMAND_BATCH
   * Message out of a set of zero or more other Messages.  Here's how it works:

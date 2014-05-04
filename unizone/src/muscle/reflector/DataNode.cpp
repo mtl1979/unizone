@@ -31,9 +31,14 @@ void DataNode :: Reset()
 {
    TCHECKPOINT;
 
-   if (_children)     _children->Clear();
-   if (_orderedIndex) _orderedIndex->Clear();
-   if (_subscribers)  _subscribers->Clear();
+   // Note that I'm now deleting these auxiliary objects instead of
+   // just clearing them.  That will save memory, and also makes a 
+   // newly-reset DataNode behavior more like a just-created one
+   // (See FogBugz #9845 for details)
+   delete _children;     _children     = NULL;
+   delete _orderedIndex; _orderedIndex = NULL;
+   delete _subscribers;  _subscribers  = NULL;
+
    _parent             = NULL;
    _depth              = 0;
    _maxChildIDHint     = 0;
@@ -440,7 +445,7 @@ DataNode * DataNode :: FindFirstMatchingNode(const char * path, uint32 maxDepth)
          String childKey(path, (nextSlash)?(nextSlash-path):MUSCLE_NO_LIMIT);
          const char * recurseArg = nextSlash?(nextSlash+1):"";
 
-         if (HasRegexTokens(childKey()))
+         if (CanWildcardStringMatchMultipleValues(childKey))
          {
             StringMatcher sm(childKey);
             for (DataNodeRefIterator iter = GetChildIterator(); iter.HasData(); iter++)

@@ -500,31 +500,33 @@ static OPENSSL_MUTEX_TYPE *mutex_buf=NULL;
 
 static void openssl_locking_function(int mode, int n, const char * file, int line)
 {
-    if (mode & CRYPTO_LOCK) OPENSSL_MUTEX_LOCK(mutex_buf[n]);
-                       else OPENSSL_MUTEX_UNLOCK(mutex_buf[n]);
+   (void) file;
+   (void) line;
+   if (mode & CRYPTO_LOCK) OPENSSL_MUTEX_LOCK(mutex_buf[n]);
+                      else OPENSSL_MUTEX_UNLOCK(mutex_buf[n]);
 }
 
 static unsigned long openssl_id_function(void) {return ((unsigned long)OPENSSL_THREAD_ID);}
 
 static int openssl_thread_setup(void)
 {
-    mutex_buf = (OPENSSL_MUTEX_TYPE *) malloc(CRYPTO_num_locks() * sizeof(OPENSSL_MUTEX_TYPE));
-    if (!mutex_buf) return -1;
-    for (int i=0;  i<CRYPTO_num_locks();  i++) OPENSSL_MUTEX_SETUP(mutex_buf[i]);
-    CRYPTO_set_id_callback(openssl_id_function);
-    CRYPTO_set_locking_callback(openssl_locking_function);
-    return 0;
+   mutex_buf = (OPENSSL_MUTEX_TYPE *) malloc(CRYPTO_num_locks() * sizeof(OPENSSL_MUTEX_TYPE));
+   if (!mutex_buf) return -1;
+   for (int i=0;  i<CRYPTO_num_locks();  i++) OPENSSL_MUTEX_SETUP(mutex_buf[i]);
+   CRYPTO_set_id_callback(openssl_id_function);
+   CRYPTO_set_locking_callback(openssl_locking_function);
+   return 0;
 }
 
 static int openssl_thread_cleanup(void)
 {
-    if (!mutex_buf) return -1;
-    CRYPTO_set_id_callback(NULL);
-    CRYPTO_set_locking_callback(NULL);
-    for (int i=0;  i < CRYPTO_num_locks();  i++) OPENSSL_MUTEX_CLEANUP(mutex_buf[i]);
-    free(mutex_buf);
-    mutex_buf = NULL;
-    return 0;
+   if (!mutex_buf) return -1;
+   CRYPTO_set_id_callback(NULL);
+   CRYPTO_set_locking_callback(NULL);
+   for (int i=0;  i < CRYPTO_num_locks();  i++) OPENSSL_MUTEX_CLEANUP(mutex_buf[i]);
+   free(mutex_buf);
+   mutex_buf = NULL;
+   return 0;
 }
 
 #endif

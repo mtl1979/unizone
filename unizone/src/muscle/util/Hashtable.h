@@ -287,6 +287,13 @@ public:
      */
    bool IsEqualTo(const HashtableBase<KeyType, ValueType, HashFunctorType> & rhs, bool considerOrdering = false) const;
 
+   /** Returns true iff the keys in this Hashtable are the same as the keys in (rhs).
+     * Note that the ordering of the keys is not considered, only their values.  Values in either table are not considered, either.
+     * @param rhs The Hashtable whose keys we should compare against our keys.
+     * @returns true iff both Hashtables have the same set of Key objects.
+     */
+   template<class HisValueType, class HisHashFunctorType> bool AreKeySetsEqual(const HashtableBase<KeyType, HisValueType, HisHashFunctorType> & rhs) const;
+
    /** Returns the given key's position in the hashtable's linked list, or -1 if the key wasn't found.  O(n) count time (if the key exists, O(1) if it doesn't) */
    int32 IndexOfKey(const KeyType & key) const;
 
@@ -1985,6 +1992,16 @@ HashtableBase<KeyType,ValueType,HashFunctorType>::GetEntryAt(uint32 idx) const
       }
    }
    return e;
+}
+
+template <class KeyType, class ValueType, class HashFunctorType>
+template <class HisValueType, class HisHashFunctorType> 
+bool 
+HashtableBase<KeyType,ValueType,HashFunctorType>::AreKeySetsEqual(const HashtableBase<KeyType, HisValueType, HisHashFunctorType> & rhs) const
+{
+   if (GetNumItems() != rhs.GetNumItems()) return false;
+   for (HashtableIterator<KeyType, ValueType, HashFunctorType> iter(*this); iter.HasData(); iter++) if (rhs.ContainsKey(iter.GetKey()) == false) return false;
+   return true;
 }
 
 // Linked-list MergeSort adapted from Simon Tatham's C code at http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.c

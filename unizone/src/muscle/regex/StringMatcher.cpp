@@ -60,9 +60,9 @@ status_t StringMatcher :: SetPattern(const String & s, bool isSimple)
    _pattern = s;
    SetBit(STRINGMATCHER_BIT_SIMPLE, isSimple);
 
-   const char * str = _pattern();
-   SetBit(STRINGMATCHER_BIT_HASREGEXTOKENS, HasRegexTokens(str));
+   SetBit(STRINGMATCHER_BIT_CANMATCHMULTIPLEVALUES, isSimple?CanWildcardStringMatchMultipleValues(_pattern):HasRegexTokens(_pattern));
 
+   const char * str = _pattern();
    String regexPattern;
    _ranges.Clear();
    if (isSimple)
@@ -268,14 +268,14 @@ bool HasRegexTokens(const char * str)
    return false;
 }
 
-bool CanRegexStringMatchMultipleValues(const char * str)
+bool CanWildcardStringMatchMultipleValues(const char * str)
 {
    bool prevCharWasEscape = false;
    const char * s = str;
    while(*s)
    {
       bool isEscape = ((*s == '\\')&&(prevCharWasEscape == false));
-      if ((isEscape == false)&&(prevCharWasEscape == false)&&(IsRegexToken(*s, (s==str)))) return true;
+      if ((isEscape == false)&&(*s != '-')&&(prevCharWasEscape == false)&&(IsRegexToken(*s, (s==str)))) return true;
       prevCharWasEscape = isEscape;
       s++;
    }

@@ -1,3 +1,4 @@
+#include "dataio/DataIO.h"
 #include "util/ByteBuffer.h"
 #include "util/MiscUtilityFunctions.h"
 #include "system/GlobalMemoryAllocator.h"
@@ -180,6 +181,30 @@ ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, uint32 numByt
    ByteBufferRef ref(pool.ObtainObject());
    if ((ref())&&(ref()->SetBuffer(numBytes, optBuffer) != B_NO_ERROR)) ref.Reset();  // return NULL ref on out-of-memory
    return ref;
+}
+
+ByteBufferRef GetByteBufferFromPool(DataIO & dio) {return GetByteBufferFromPool(_bufferPool, dio);}
+
+ByteBufferRef GetByteBufferFromPool(ObjectPool<ByteBuffer> & pool, DataIO & dio)
+{
+   int64 dioLen = dio.GetLength();
+   if (dioLen < 0) return ByteBufferRef();  // we don't support reading in unknown lengths of data (for now)
+
+   int64 pos = dio.GetPosition();
+   if (pos < 0) pos = 0;
+
+   int64 numBytesToRead = dioLen-pos;
+   if (numBytesToRead < 0) return ByteBufferRef();  // wtf?
+
+   int64 maxBBSize = (int64) ((uint32)-1);  // no point trying to read more data than a ByteBuffer will support anyway
+   if (numBytesToRead > maxBBSize) return ByteBufferRef();
+
+   ByteBufferRef ret = GetByteBufferFromPool(pool, (uint32)numBytesToRead);
+   if (ret() == NULL) return ByteBufferRef();
+
+   // This will truncate the ByteBuffer if we end up reading fewer bytes than we expected to
+   ret()->SetNumBytes(dio.ReadFully(ret()->GetBuffer(), ret()->GetNumBytes()), true);
+   return ret;
 }
 
 // These Flattenable methods are implemented here so that if you don't use them, you

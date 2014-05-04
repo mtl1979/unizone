@@ -82,20 +82,20 @@ bool IsMessageDeflated(const MessageRef & msgRef)
    return ((msgRef())&&(msgRef()->HasName(MUSCLE_ZLIB_FIELD_NAME_STRING)));
 }
 
-ByteBufferRef DeflateByteBuffer(const uint8 * buf, uint32 numBytes, int compressionLevel)
+ByteBufferRef DeflateByteBuffer(const uint8 * buf, uint32 numBytes, int compressionLevel, uint32 addHeaderBytes, uint32 addFooterBytes)
 {
    ByteBufferRef ret;
 #ifdef MUSCLE_AVOID_THREAD_LOCAL_STORAGE
    if (_zlibLock.Lock() == B_NO_ERROR)  // serialize so that it's thread safe!
    {
       ZLibCodec * codec = GetZLibCodec(compressionLevel);
-      if (codec) ret = codec->Deflate(buf, numBytes, true);
+      if (codec) ret = codec->Deflate(buf, numBytes, true, addHeaderBytes, addFooterBytes);
       (void) _zlibLock.Unlock();
       if (codec) EnsureCleanupCallbackInstalled();  // do this outside of the ZLib lock!
    }
 #else
    ZLibCodec * codec = GetZLibCodec(compressionLevel);
-   if (codec) ret = codec->Deflate(buf, numBytes, true);
+   if (codec) ret = codec->Deflate(buf, numBytes, true, addHeaderBytes, addFooterBytes);
 #endif
    return ret;
 }

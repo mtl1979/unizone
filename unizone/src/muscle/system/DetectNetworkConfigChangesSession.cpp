@@ -19,7 +19,7 @@
 # define MY_INVALID_HANDLE_VALUE ((::HANDLE)(-1))  // bloody hell...
 #endif
 
-#ifdef __linux
+#ifdef __linux__
 # include <asm/types.h>
 # include <sys/socket.h>
 # include <linux/netlink.h>

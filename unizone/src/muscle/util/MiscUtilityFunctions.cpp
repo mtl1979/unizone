@@ -809,14 +809,11 @@ String CleanupDNSPath(const String & orig)
    return ret;  
 }
 
-status_t NybbleizeData(const ByteBuffer & buf, String & retString)
+status_t NybbleizeData(const uint8 * b, uint32 numBytes, String & retString)
 {
-   uint32 numBytes = buf.GetNumBytes();
-
    if (retString.Prealloc(numBytes*2) != B_NO_ERROR) return B_ERROR;
 
    retString.Clear();
-   const uint8 * b = buf.GetBuffer();
    for (uint32 i=0; i<numBytes; i++)
    {
       uint8 c = b[i];
@@ -824,6 +821,11 @@ status_t NybbleizeData(const ByteBuffer & buf, String & retString)
       retString += ((c>>4)&0x0F)+'A';
    }
    return B_NO_ERROR;
+}
+
+status_t NybbleizeData(const ByteBuffer & buf, String & retString)
+{
+   return NybbleizeData(buf.GetBuffer(), buf.GetNumBytes(), retString);
 }
 
 status_t DenybbleizeData(const String & nybbleizedText, ByteBuffer & retBuf)
@@ -876,16 +878,11 @@ const uint8 * MemMem(const uint8 * lookIn, uint32 numLookInBytes, const uint8 * 
    else if (numLookForBytes == numLookInBytes) return (memcmp(lookIn, lookFor, numLookInBytes) == 0) ? lookIn : NULL;
    else if (numLookForBytes < numLookInBytes)
    {
-      const uint8 * startedAt = lookIn;
-      uint32 matchCount = 0;
-      for (uint32 i=0; i<numLookInBytes; i++)
+      uint32 scanLength = (1+numLookInBytes-numLookForBytes);
+      for (uint32 i=0; i<scanLength; i++)
       {
-         if (lookIn[i] == lookFor[matchCount])
-         {
-            if (matchCount == 0) startedAt = &lookIn[i];
-            if (++matchCount == numLookForBytes) return startedAt;
-         }
-         else matchCount = 0;
+         const uint8 * li = &lookIn[i];
+         if ((*li == *lookFor)&&(memcmp(li, lookFor, numLookForBytes) == 0)) return li;  // FogBugz #9877
       }
    }
    return NULL;
@@ -900,6 +897,33 @@ String HexBytesToString(const uint8 * buf, uint32 numBytes)
       {
          if (i > 0) ret += ' ';
          char b[32]; sprintf(b, "%02x", buf[i]);
+         ret += b;
+      }
+   }
+   return ret;
+}
+
+String HexBytesToString(const ConstByteBufferRef & bbRef)
+{
+   return bbRef() ? HexBytesToString(*bbRef()) : String("(null)");
+}
+
+String HexBytesToString(const ByteBuffer & bb)
+{
+   return HexBytesToString(bb.GetBuffer(), bb.GetNumBytes());
+}
+
+String HexBytesToString(const Queue<uint8> & bytes)
+{
+   uint32 numBytes = bytes.GetNumItems();
+
+   String ret;
+   if (ret.Prealloc(numBytes*3) == B_NO_ERROR)
+   {
+      for (uint32 i=0; i<numBytes; i++)
+      {
+         if (i > 0) ret += ' ';
+         char b[32]; sprintf(b, "%02x", bytes[i]);
          ret += b;
       }
    }

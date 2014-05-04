@@ -19,7 +19,7 @@ status_t ExpandFilePathWildCardsAux(const String & curDir, const String & path, 
    Directory dir(curDir());
    if (dir.IsValid())
    {
-      if (HasRegexTokens(firstClause()))
+      if (CanWildcardStringMatchMultipleValues(firstClause))
       {
          while(1)
          {

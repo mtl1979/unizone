@@ -22,27 +22,57 @@ namespace muscle {
   * @param compressionLevel The level of ZLib compression to use when creating the
   *                         compressed Message.  Should be between 0 (no compression)
   *                         and 9 (maximum compression).  Default value is 6.
+  * @param addHeaderBytes If set to non-zero, the returned ByteBuffer will contain
+  *                    this many additional bytes at the beginning of the byte array,
+  *                    before the first compressed-data byte.  The values in these bytes
+  *                    are undefined; the caller can write header data to them if desired.
+  *                    Leave this set to zero if you're not sure of what you are doing.
+  * @param addFooterBytes If set to non-zero, the returned ByteBuffer will contain
+  *                    this many additional bytes at the end of the byte array,
+  *                    after the last compressed-data byte.  The values in these bytes
+  *                    are undefined; the caller can write footer data to them if desired.
+  *                    Leave this set to zero if you're not sure of what you are doing.
   * @returns a reference to a compressed ByteBuffer on success, or a NULL reference on failure.
   */
-ByteBufferRef DeflateByteBuffer(const uint8 * bytes, uint32 numBytes, int compressionLevel = 6);
+ByteBufferRef DeflateByteBuffer(const uint8 * bytes, uint32 numBytes, int compressionLevel = 6, uint32 addHeaderBytes = 0, uint32 addFooterBytes = 0);
 
 /** Given a ByteBuffer, returns a compressed version of the data.
   * @param buf a ByteBuffer to compress that you want to get a compressed version of.
   * @param compressionLevel The level of ZLib compression to use when creating the
   *                         compressed Message.  Should be between 0 (no compression)
   *                         and 9 (maximum compression).  Default value is 6.
+  * @param addHeaderBytes If set to non-zero, the returned ByteBuffer will contain
+  *                    this many additional bytes at the beginning of the byte array,
+  *                    before the first compressed-data byte.  The values in these bytes
+  *                    are undefined; the caller can write header data to them if desired.
+  *                    Leave this set to zero if you're not sure of what you are doing.
+  * @param addFooterBytes If set to non-zero, the returned ByteBuffer will contain
+  *                    this many additional bytes at the end of the byte array,
+  *                    after the last compressed-data byte.  The values in these bytes
+  *                    are undefined; the caller can write footer data to them if desired.
+  *                    Leave this set to zero if you're not sure of what you are doing.
   * @returns a reference to a compressed ByteBuffer (not (buf)!) on success, or a NULL reference on failure.
   */
-static inline ByteBufferRef DeflateByteBuffer(const ByteBuffer & buf, int compressionLevel = 6) {return DeflateByteBuffer(buf.GetBuffer(), buf.GetNumBytes(), compressionLevel);}
+static inline ByteBufferRef DeflateByteBuffer(const ByteBuffer & buf, int compressionLevel = 6, uint32 addHeaderBytes = 0, uint32 addFooterBytes = 0) {return DeflateByteBuffer(buf.GetBuffer(), buf.GetNumBytes(), compressionLevel, addHeaderBytes, addFooterBytes);}
 
 /** Given a ByteBufferRef, returns a compressed version of the data.
   * @param buf reference to a ByteBuffer to compress that you want to get a compressed version of.
   * @param compressionLevel The level of ZLib compression to use when creating the
   *                         compressed Message.  Should be between 0 (no compression)
   *                         and 9 (maximum compression).  Default value is 6.
+  * @param addHeaderBytes If set to non-zero, the returned ByteBuffer will contain
+  *                    this many additional bytes at the beginning of the byte array,
+  *                    before the first compressed-data byte.  The values in these bytes
+  *                    are undefined; the caller can write header data to them if desired.
+  *                    Leave this set to zero if you're not sure of what you are doing.
+  * @param addFooterBytes If set to non-zero, the returned ByteBuffer will contain
+  *                    this many additional bytes at the end of the byte array,
+  *                    after the last compressed-data byte.  The values in these bytes
+  *                    are undefined; the caller can write footer data to them if desired.
+  *                    Leave this set to zero if you're not sure of what you are doing.
   * @returns a reference to a compressed ByteBuffer (not (buf())!) on success, or a NULL reference on failure.
   */
-static inline ByteBufferRef DeflateByteBuffer(const ByteBufferRef & buf, int compressionLevel = 6) {return buf() ? DeflateByteBuffer(*buf(), compressionLevel) : ByteBufferRef();}
+static inline ByteBufferRef DeflateByteBuffer(const ByteBufferRef & buf, int compressionLevel = 6, uint32 addHeaderBytes = 0, uint32 addFooterBytes = 0) {return buf() ? DeflateByteBuffer(*buf(), compressionLevel, addHeaderBytes, addFooterBytes) : ByteBufferRef();}
 
 /** Given come compressed data, returns a ByteBuffer containing the original/uncompressed data.
   * @param bytes Pointer to the data to uncompress

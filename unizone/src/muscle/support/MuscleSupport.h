@@ -11,8 +11,8 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "6.01"
-#define MUSCLE_VERSION        60100  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
+#define MUSCLE_VERSION_STRING "6.02"
+#define MUSCLE_VERSION        60200  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
 
 /*! \mainpage MUSCLE Documentation Page
  *
@@ -523,7 +523,7 @@ template<typename T> inline int muscleSgn(const T & arg) {return (arg<0)?-1:((ar
   #if (BSD >= 199103)
     #include <machine/endian.h>
   #else
-    #ifdef linux
+    #if defined(linux) || defined(__linux__)
       #include <endian.h>
     #elif defined( __APPLE__ )
       #include <machine/endian.h>
