@@ -275,6 +275,9 @@ public:
      */
    void SetFileLogLevel(int logLevel) {_fileLogLevel = logLevel;}
 
+   /** Forces the closing of any log file that we currently have open. */
+   void CloseLogFile();
+
 protected:
    /** May be overridden by a subclass to generate a line of text that will be placed at the top of
      * each generated log file.  Default implementation always returns an empty string.
@@ -284,7 +287,6 @@ protected:
 
 private:
    status_t EnsureLogFileCreated(const LogCallbackArgs & a);
-   void CloseLogFile();
 
    int _fileLogLevel;
    String _prototypeLogFileName;

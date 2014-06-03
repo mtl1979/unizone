@@ -963,7 +963,7 @@ public:
    status_t FindDataPointer(const String & fieldName, uint32 type, void **data, uint32 *numBytes) const {return FindDataPointer(fieldName, type, 0, data, numBytes);}
 
    /** Replace a string value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param newString The new string value to put overwrite the old string with.
@@ -975,7 +975,7 @@ public:
    status_t ReplaceString(bool okayToAdd, const String & fieldName, const String & newString) {return ReplaceString(okayToAdd, fieldName, 0, newString);}
 
    /** Replace an int8 value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new int8 value to put overwrite the old int8 with.
@@ -987,7 +987,7 @@ public:
    status_t ReplaceInt8(bool okayToAdd, const String & fieldName, int8 val) {return ReplaceInt8(okayToAdd, fieldName, 0, val);}
 
    /** Replace an int16 value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new int16 value to put overwrite the old int16 with.
@@ -999,7 +999,7 @@ public:
    status_t ReplaceInt16(bool okayToAdd, const String & fieldName, int16 val) {return ReplaceInt16(okayToAdd, fieldName, 0, val);}
 
    /** Replace an int32 value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new int32 value to put overwrite the old int32 with.
@@ -1011,7 +1011,7 @@ public:
    status_t ReplaceInt32(bool okayToAdd, const String & fieldName, int32 val) {return ReplaceInt32(okayToAdd, fieldName, 0, val);}
 
    /** Replace an int64 value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new int64 value to put overwrite the old int8 with.
@@ -1023,7 +1023,7 @@ public:
    status_t ReplaceInt64(bool okayToAdd, const String & fieldName, int64 val) {return ReplaceInt64(okayToAdd, fieldName, 0, val);}
 
    /** Replace a boolean value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new boolean value to put overwrite the old boolean with.
@@ -1035,7 +1035,7 @@ public:
    status_t ReplaceBool(bool okayToAdd, const String & fieldName, bool val) {return ReplaceBool(okayToAdd, fieldName, 0, val);}
 
    /** Replace a float value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new float value to put overwrite the old float with.
@@ -1047,7 +1047,7 @@ public:
    status_t ReplaceFloat(bool okayToAdd, const String & fieldName, float val) {return ReplaceFloat(okayToAdd, fieldName, 0, val);}
 
    /** Replace a double value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param val The new double value to put overwrite the old double with.
@@ -1059,7 +1059,7 @@ public:
    status_t ReplaceDouble(bool okayToAdd, const String & fieldName, double val) {return ReplaceDouble(okayToAdd, fieldName, 0, val);}
 
    /** Replace a pointer value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param ptr The new pointer value to put overwrite the old pointer with.
@@ -1071,7 +1071,7 @@ public:
    status_t ReplacePointer(bool okayToAdd, const String & fieldName, const void * ptr) {return ReplacePointer(okayToAdd, fieldName, 0, ptr);}
 
    /** Replace a point value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param point The new point value to put overwrite the old point with.
@@ -1083,7 +1083,7 @@ public:
    status_t ReplacePoint(bool okayToAdd, const String & fieldName, const Point & point) {return ReplacePoint(okayToAdd, fieldName, 0, point);}
 
    /** Replace a rectangle value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param rect The new rectangle value to put overwrite the old rectangle with.
@@ -1095,7 +1095,7 @@ public:
    status_t ReplaceRect(bool okayToAdd, const String & fieldName, const Rect & rect) {return ReplaceRect(okayToAdd, fieldName, 0, rect);}
 
    /** Replace a Message value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param msg The new Message value to put overwrite the old Message with.
@@ -1107,7 +1107,7 @@ public:
    status_t ReplaceMessage(bool okayToAdd, const String & fieldName, const Message & msg) {return ReplaceMessage(okayToAdd, fieldName, 0, msg);}
 
    /** Replace a Message value in an existing Message field with a new value.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param msgRef The new Message value to put overwrite the old Message with.
@@ -1120,7 +1120,7 @@ public:
 
    /** Replace a Message value in an existing Message field with a new value 
     *  that was generated by calling SaveToArchive() on the passed in object.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param obj The object to call SaveToArchive() on.
@@ -1135,7 +1135,7 @@ public:
    template<class T> inline status_t ReplaceArchiveMessage(bool okayToAdd, const String & fieldName, const T & obj) {return ReplaceArchiveMessage(okayToAdd, fieldName, 0, obj);}
 
    /** Flattens a Flattenable object and adds the resulting bytes into this Message.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName Name of the field to add (or add to)
     *  @param index The index of the entry within the field name to modify
     *  @param obj The Flattenable object (or at least an object with TypeCode(), Flatten(), 
@@ -1149,7 +1149,7 @@ public:
    template <class T> status_t ReplaceFlat(bool okayToAdd, const String & fieldName, const T & obj) {return ReplaceFlat(okayToAdd, fieldName, 0, obj);}
 
    /** Replace a FlatCountable reference in an existing Message field with a new reference.
-    *  @param okayToAdd If set true, attempting to replace an reference that doesn't exist will cause the new reference to be added to the end of the field array, instead.  If false, attempting to replace a non-existant reference will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an reference that doesn't exist will cause the new reference to be added to the end of the field array, instead.  If false, attempting to replace a non-existent reference will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param ref The new FlatCountableRef put overwrite the old reference with.
@@ -1171,7 +1171,7 @@ public:
    status_t ReplaceFlat(bool okayToAdd, const String & fieldName, ByteBufferRef & ref) {return ReplaceFlat(okayToAdd, fieldName, 0, ref);}
 
    /** Replace a tag object in an existing Message field with a new tag object.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name of an existing field to modify
     *  @param index The index of the entry within the field name to modify
     *  @param tag The new tag reference to overwrite the old tag reference with.
@@ -1183,7 +1183,7 @@ public:
    status_t ReplaceTag(bool okayToAdd, const String & fieldName, const RefCountableRef & tag) {return ReplaceTag(okayToAdd, fieldName, 0, tag);}
 
    /** Replace one entry in a field of any type.
-    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existant item will cause B_ERROR to be returned with no side effects.
+    *  @param okayToAdd If set true, attempting to replace an item that doesn't exist will cause the new item to be added to the end of the field array, instead.  If false, attempting to replace a non-existent item will cause B_ERROR to be returned with no side effects.
     *  @param fieldName The field name to replace an entry in.
     *  @param type The uint32 of the field you are interested, or B_ANY_TYPE if any type is acceptable.
     *  @param index Index in the field to replace the data at.

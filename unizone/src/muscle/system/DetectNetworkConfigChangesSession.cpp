@@ -253,12 +253,20 @@ static void StoreRecordFunc(const void * key, const void * value, void * context
    const CFDictionaryRef propList = (const CFDictionaryRef) value;
    if ((keyStr)&&(propList))
    {
-      const CFStringRef interfaceNameRef = (const CFStringRef) CFDictionaryGetValue((CFDictionaryRef) propList, CFSTR("InterfaceName"));
-      if (interfaceNameRef)
+      String k = CFStringGetCStringPtr(keyStr, kCFStringEncodingMacRoman);
+      if (k.StartsWith("State:/Network/Interface/")) 
       {
-         String k = CFStringGetCStringPtr(keyStr, kCFStringEncodingMacRoman);
-         String v = CFStringGetCStringPtr(interfaceNameRef, kCFStringEncodingMacRoman);
-         (void) ((Hashtable<String, String> *)(context))->Put(k, v);
+         String interfaceName = k.Substring(25).Substring(0, "/");
+         (void) ((Hashtable<String, String> *)(context))->Put(k, interfaceName);
+      }
+      else
+      {
+         const CFStringRef interfaceNameRef = (const CFStringRef) CFDictionaryGetValue((CFDictionaryRef) propList, CFSTR("InterfaceName"));
+         if (interfaceNameRef)
+         {
+            String v = CFStringGetCStringPtr(interfaceNameRef, kCFStringEncodingMacRoman);
+            (void) ((Hashtable<String, String> *)(context))->Put(k, v);
+         }
       }
    }
 }
@@ -271,7 +279,7 @@ static OSStatus CreateIPAddressListChangeCallbackSCF(SCDynamicStoreCallBack call
    OSStatus                err;
    SCDynamicStoreContext   context = {0, NULL, NULL, NULL, NULL};
    SCDynamicStoreRef       ref = NULL;
-   CFStringRef             patterns[2] = {NULL, NULL};
+   CFStringRef             patterns[3] = {NULL, NULL, NULL};
    CFArrayRef              patternList = NULL;
    CFRunLoopSourceRef      rls = NULL;
 
@@ -296,13 +304,19 @@ static OSStatus CreateIPAddressListChangeCallbackSCF(SCDynamicStoreCallBack call
          // This pattern is "State:/Network/Service/[^/]+/IPv6".
          patterns[1] = SCDynamicStoreKeyCreateNetworkServiceEntity(NULL, kSCDynamicStoreDomainState, kSCCompAnyRegex, kSCEntNetIPv6);  // FogBugz #6075
          err = MoreSCError(patterns[1]);
+         if (err == noErr)
+         {
+            // This pattern is "State:/Network/Interface/[^/]+/Link"
+            patterns[2] = SCDynamicStoreKeyCreateNetworkInterfaceEntity(NULL, kSCDynamicStoreDomainState, kSCCompAnyRegex, kSCEntNetLink);  // FogBugz #10048
+            err = MoreSCError(patterns[2]);
+         }
       }
    }
 
    // Tell SCF that we want to watch changes in keys that match that pattern list, then create our run loop source.
    if (err == noErr) 
    {
-       patternList = CFArrayCreate(NULL, (const void **) patterns, 2, &kCFTypeArrayCallBacks);
+       patternList = CFArrayCreate(NULL, (const void **) patterns, 3, &kCFTypeArrayCallBacks);
        err = CFQError(patternList);
    }
 
@@ -327,6 +341,7 @@ static OSStatus CreateIPAddressListChangeCallbackSCF(SCDynamicStoreCallBack call
    // Clean up.
    CFQRelease(patterns[0]);
    CFQRelease(patterns[1]);
+   CFQRelease(patterns[2]);
    CFQRelease(patternList);
    if (err != noErr) 
    {
@@ -356,12 +371,16 @@ static void IPConfigChangedCallback(SCDynamicStoreRef store, CFArrayRef changedK
          String keyStr = CFStringGetCStringPtr( p, kCFStringEncodingMacRoman);
 
          String interfaceName;
-         CFPropertyListRef propList = SCDynamicStoreCopyValue(store, p);
-         if (propList)
+         if (keyStr.StartsWith("State:/Network/Interface/")) interfaceName = keyStr.Substring(25).Substring(0, "/");
+         else
          {
-            CFStringRef inStr = (CFStringRef) CFDictionaryGetValue((CFDictionaryRef) propList, CFSTR("InterfaceName"));
-            if (inStr) interfaceName = CFStringGetCStringPtr(inStr, kCFStringEncodingMacRoman);
-            CFRelease(propList);
+            CFPropertyListRef propList = SCDynamicStoreCopyValue(store, p);
+            if (propList)
+            {
+               CFStringRef inStr = (CFStringRef) CFDictionaryGetValue((CFDictionaryRef) propList, CFSTR("InterfaceName"));
+               if (inStr) interfaceName = CFStringGetCStringPtr(inStr, kCFStringEncodingMacRoman);
+               CFRelease(propList);
+            }
          }
 
          Hashtable<String, String> & scKeyToInterfaceName = GetKeyToInterfaceNameTable(s);

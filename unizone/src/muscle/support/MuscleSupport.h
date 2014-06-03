@@ -11,8 +11,8 @@
 #ifndef MuscleSupport_h
 #define MuscleSupport_h
 
-#define MUSCLE_VERSION_STRING "6.02"
-#define MUSCLE_VERSION        60200  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
+#define MUSCLE_VERSION_STRING "6.03"
+#define MUSCLE_VERSION        60300  // Format is decimal Mmmbb, where (M) is the number before the decimal point, (mm) is the number after the decimal point, and (bb) is reserved
 
 /*! \mainpage MUSCLE Documentation Page
  *
@@ -460,13 +460,34 @@ namespace ugly_swapcontents_method_sfinae_implementation
   */
 template<typename T> inline void muscleSwap(T & t1, T & t2) {typename ugly_swapcontents_method_sfinae_implementation::AutoChooseSwapperHelper<T>::Type swapper(t1,t2);}
 
-/** Returns the value nearest to (v) that is still in the range [lo, hi]. */
+/** Returns true iff (i) is a valid index into array (a)
+  * @param i An index value
+  * @param array an array of any type
+  * @returns True iff i is non-negative AND less than ARRAYITEMS(array))
+  */
+template<typename T, int size> inline bool muscleArrayIndexIsValid(int i, T(&)[size] /*array*/) {return (((unsigned int)i) < size);}
+
+/** Returns the value nearest to (v) that is still in the range [lo, hi].
+  * @param v A value
+  * @param lo a minimum value
+  * @param hi a maximum value
+  * @returns The value in the range [lo, hi] that is closest to (v).
+  */
 template<typename T> inline const T & muscleClamp(const T & v, const T & lo, const T & hi) {return (v < lo) ? lo : ((v > hi) ? hi : v);}
 
-/** Returns true iff (v) is in the range [lo,hi]. */
+/** Returns true iff (v) is in the range [lo,hi].
+  * @param v A value
+  * @param lo A minimum value
+  * @param hi A maximum value
+  * @returns true iff (v >= lo) and (v <= hi)
+  */
 template<typename T> inline bool muscleInRange(const T & v, const T & lo, const T & hi) {return ((v >= lo)&&(v <= hi));}
 
-/** Returns -1 if arg1 is larger, or 1 if arg2 is larger, or 0 if they are equal. */
+/** Returns -1 if arg1 is larger, or 1 if arg2 is larger, or 0 if they are equal.
+  * @param arg1 First item to compare
+  * @param arg2 Second item to compare
+  * @returns -1 if (arg1<arg2), or 1 if (arg2<arg1), or 0 otherwise.
+  */
 template<typename T> inline int muscleCompare(const T & arg1, const T & arg2) {return (arg2<arg1) ? 1 : ((arg1<arg2) ? -1 : 0);}
 
 /** Returns the absolute value of (arg) */

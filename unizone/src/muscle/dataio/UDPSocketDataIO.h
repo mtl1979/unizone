@@ -102,6 +102,9 @@ public:
      */
    const IPAddressAndPort & GetSendDestination() const {return _sendTo.HasItems() ? _sendTo.Head() : _sendTo.GetDefaultItem();}
 
+   /** Call this to make our Write() method use sendto() with the specified destination addresss and ports. */
+   void SetSendDestinations(const Queue<IPAddressAndPort> & dests) {_sendTo = dests;}
+
    /** Returns read/write access to our list of send-destinations. */
    Queue<IPAddressAndPort> & GetSendDestinations() {return _sendTo;}
 

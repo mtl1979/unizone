@@ -85,6 +85,24 @@ public:
 #endif
    }
 
+   /** Returns this PointerAndBool to its default state (NULL, false) */
+   void Reset()
+   {
+      _pointer = NULL;
+#ifdef MUSCLE_AVOID_BITSTUFFING
+      _bool = false;
+#endif
+   }
+
+   /** Swaps this object's state with the state of (rhs) */
+   void SwapContents(PointerAndBool & rhs)
+   {
+      muscleSwap(_pointer, rhs._pointer);  
+#ifdef MUSCLE_AVOID_BITSTUFFING
+      muscleSwap(_bool, rhs._bool);
+#endif
+   }
+
 private:
 #ifndef MUSCLE_AVOID_BITSTUFFING
          T * WithLowBitSet(          T * ptr) const {return (T*)(((uintptr)ptr)| ((uintptr)0x1));}

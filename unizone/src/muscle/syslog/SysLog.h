@@ -98,7 +98,7 @@ static inline const char * GetLogLevelKeyword(int /*logLevel*/) {return "<omitte
 inline int ParseLogLevelKeyword(const char *)         {return MUSCLE_LOG_NONE;}
 inline int GetFileLogLevel()                          {return MUSCLE_LOG_NONE;}
 // Note:  GetFileLogName() is not defined here for the inline-logging case, because it causes chicken-and-egg header problems
-//inline String GetFileLogName()                        {return "";}
+//inline String GetFileLogName()                      {return "";}
 inline uint32 GetFileLogMaximumSize()                 {return MUSCLE_NO_LIMIT;}
 inline uint32 GetMaxNumLogFiles()                     {return MUSCLE_NO_LIMIT;}
 inline bool GetFileLogCompressionEnabled()            {return false;}
@@ -111,6 +111,7 @@ inline status_t SetOldLogFilesPattern(const String &) {return B_NO_ERROR;}
 inline status_t SetMaxNumLogFiles(uint32)             {return B_NO_ERROR;}
 inline status_t SetFileLogCompressionEnabled(bool)    {return B_NO_ERROR;}
 inline status_t SetConsoleLogLevel(int)               {return B_NO_ERROR;}
+inline void CloseCurrentLogFile()                     {/* empty */}
 #else
 
 /** Returns the MUSCLE_LOG_* equivalent of the given keyword string 
@@ -166,6 +167,9 @@ int GetMaxLogLevel();
  *  @returns B_NO_ERROR on success, or B_ERROR if the log lock couldn't be locked for some reason.
  */
 status_t SetFileLogLevel(int loglevel);
+
+/** Forces the file logger to close any log file that it currently has open. */
+void CloseCurrentLogFile();
 
 /** Sets a user-specified name/path for the log file.  This name will
  *  be used whenever a log file is to be opened, instead of the default log file name.

@@ -1020,8 +1020,20 @@ ConstSocketRef GetConstSocketRefFromPool(int fd, bool okayToClose, bool returnNU
       Socket * s = _socketPool.ObtainObject();
       ConstSocketRef ret(s);
 
-      if (s) s->SetFileDescriptor(fd, okayToClose);
-        else if (okayToClose) CloseSocket(fd);
+      if (s) 
+      {
+         s->SetFileDescriptor(fd, okayToClose);
+#ifdef WIN32
+         // FogBugz #9911:  Make the socket un-inheritable, since that
+         // is the behavior you want 99% of the time.  (Anyone who wants
+         // to inherit the socket will have to either avoid calling this 
+         // for those sockets, or call SetHandleInformation() again 
+         // afterwards to reinstate the inherit-handle flag)
+         (void) SetHandleInformation((HANDLE)fd, HANDLE_FLAG_INHERIT, 0);
+#endif
+      }
+      else if (okayToClose) CloseSocket(fd);
+
       return ret;
    }
 }

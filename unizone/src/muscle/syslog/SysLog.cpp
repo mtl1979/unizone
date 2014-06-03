@@ -1763,6 +1763,15 @@ status_t SetFileLogCompressionEnabled(bool enable)
 #endif
 }
 
+void CloseCurrentLogFile()
+{
+   if (LockLog() == B_NO_ERROR)
+   {
+      _dfl.CloseLogFile();
+      (void) UnlockLog();
+   }
+}
+
 status_t SetFileLogLevel(int loglevel)
 {
    if (LockLog() == B_NO_ERROR)

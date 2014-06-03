@@ -112,6 +112,11 @@ public:
       *this = copyMe;
    }
 
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Constructor */
+   ConstRef(ConstRef && rhs) {this->SwapContents(rhs);}
+#endif
+
    /** Attempts to set this reference by downcasting the reference in the provided ConstRefCountableRef.
      * If the downcast cannot be done (via dynamic_cast) then we become a NULL reference.
      * @param ref The read-only RefCountable reference to set ourselves from.
@@ -173,7 +178,12 @@ public:
    /** Assigment operator.
     *  Unreferences the previous held data item, and adds a reference to the data item of (rhs).
     */
-   inline ConstRef &operator=(const ConstRef & rhs) {SetRef(rhs.GetItemPointer(), rhs.IsRefCounting()); return *this;}
+   inline ConstRef &operator=(const ConstRef & rhs) {this->SetRef(rhs.GetItemPointer(), rhs.IsRefCounting()); return *this;}
+
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Assignment operator */
+   inline ConstRef &operator=(ConstRef && rhs) {this->SwapContents(rhs); return *this;}
+#endif
 
    /** Similar to the == operator, except that this version will also call the comparison operator
      * on the objects themselves if necessary, to determine exact equality.  (This is different than
@@ -227,7 +237,7 @@ public:
    /** Swaps this ConstRef's contents with those of the specified ConstRef.
      * @param swapWith ConstRef to swap state with.
      */
-   void SwapContents(ConstRef & swapWith) {muscleSwap(_item, swapWith._item);}
+   void SwapContents(ConstRef & swapWith) {this->_item.SwapContents(swapWith._item);}
 
    /** Returns true iff we are refcounting our held object, or false
      * if we are merely pointing to it (see constructor documentation for details)
@@ -399,6 +409,11 @@ public:
     */
    Ref(const Ref & copyMe) : ConstRef<Item>(copyMe) {/* empty */}
 
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Constructor */
+   Ref(Ref && rhs) {this->SwapContents(rhs);}
+#endif
+
    /** Attempts to set this reference by downcasting the reference in the provided RefCountableRef.
      * If the downcast cannot be done (via dynamic_cast) then we become a NULL reference.
      * @param ref The RefCountable reference to set ourselves from.
@@ -419,6 +434,16 @@ public:
 
    /** Redeclared here so that the AutoChooseHashFunctor code will see it */
    uint32 HashCode() const {return this->ConstRef<Item>::HashCode();}
+
+   /** Assigment operator.
+    *  Unreferences the previous held data item, and adds a reference to the data item of (rhs).
+    */
+   inline Ref &operator=(const Ref & rhs) {this->SetRef(rhs.GetItemPointer(), rhs.IsRefCounting()); return *this;}
+
+#ifdef MUSCLE_USE_CPLUSPLUS11
+   /** C++11 Move Assignment operator */
+   inline Ref &operator=(Ref && rhs) {this->SwapContents(rhs); return *this;}
+#endif
 };
 
 /** This function works similarly to ConstRefCount::GetItemPointer(), except that this function 

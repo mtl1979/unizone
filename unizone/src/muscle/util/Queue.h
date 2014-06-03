@@ -184,6 +184,12 @@ public:
      */
    ItemType RemoveHeadWithDefault();
 
+   /** Removes up to (numItems) items from the head of the queue.
+     * @param numItems The desired number of items to remove
+     * @returns the actual number of items removed (may be less than (numItems) if the Queue was too short) 
+     */
+   uint32 RemoveHeadMulti(uint32 numItems);
+
    /** Removes the item at the head of the queue and places it into (returnItem).
     *  @param returnItem On success, the removed item is copied into this object.
     *  @return B_NO_ERROR on success, B_ERROR if the queue was empty
@@ -205,6 +211,12 @@ public:
      * If the Queue was empty, a default item is returned.
      */
    ItemType RemoveTailWithDefault();
+
+   /** Removes up to (numItems) items from the tail of the queue.
+     * @param numItems The desired number of items to remove
+     * @returns the actual number of items removed (may be less than (numItems) if the Queue was too short) 
+     */
+   uint32 RemoveTailMulti(uint32 numItems);
 
    /** Removes the item at the (index)'th position in the queue.
     *  @param index Which item to remove--can range from zero 
@@ -572,7 +584,7 @@ public:
     *  array-style access to groups of items in this Queue.  In the current implementation 
     *  there may be as many as two such sub-arrays present, depending on the internal state of the Queue.
     *  @param whichArray Index of the internal array to return a pointer to.  Typically zero or one.
-    *  @param retLength On success, the number of items in the returned sub-array will be written here.
+    *  @param retLength The number of items in the returned sub-array will be written here.
     *  @return Pointer to the first item in the sub-array on success, or NULL on failure.
     *          Note that this array is only guaranteed valid as long as no items are
     *          added or removed from the Queue.
@@ -838,6 +850,26 @@ RemoveHead(ItemType & returnItem)
    if (_itemCount == 0) return B_ERROR;
    returnItem = _queue[_headIndex];
    return RemoveHead();
+}
+
+template <class ItemType>
+uint32 
+Queue<ItemType>::RemoveHeadMulti(uint32 numItems)
+{
+   numItems = muscleMin(numItems, _itemCount);
+   if (numItems == _itemCount) Clear();
+                          else for (uint32 i=0; i<numItems; i++) (void) RemoveHead();
+   return numItems;
+}
+
+template <class ItemType>
+uint32 
+Queue<ItemType>::RemoveTailMulti(uint32 numItems)
+{
+   numItems = muscleMin(numItems, _itemCount);
+   if (numItems == _itemCount) Clear();
+                          else for (uint32 i=0; i<numItems; i++) (void) RemoveTail();
+   return numItems;
 }
 
 template <class ItemType>
@@ -1135,13 +1167,13 @@ EnsureSizeAux(uint32 size, bool setNumItems, uint32 extraPreallocs, ItemType ** 
    if (setNumItems) 
    {
       // Force ourselves to contain exactly the required number of items
-      if (_itemCount < size)
+      if (size > _itemCount)
       {
          // We can do this quickly because the "new" items are already initialized properly
-         _tailIndex = (_tailIndex + (size-_itemCount)) % _queueSize;
+         _tailIndex = PrevIndex((_headIndex+size)%_queueSize);
          _itemCount = size;
       }
-      else while(_itemCount > size) (void) RemoveTail();  // Gotta overwrite the "removed" items, so this is a bit slower
+      else (void) RemoveTailMulti(_itemCount-size);
    }
 
    return B_NO_ERROR;
@@ -1460,6 +1492,8 @@ Queue<ItemType> :: GetArrayPointerAux(uint32 whichArray, uint32 & retLength) con
          break;
       }
    }
+
+   retLength = 0;
    return NULL;
 }
 

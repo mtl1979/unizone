@@ -44,24 +44,30 @@ public:
      * @param argc The argc variable to be passed to the child process
      * @param argv The argv variable to be passed to the child process
      * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(int argc, const char * argv[], uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS) {return LaunchChildProcessAux(muscleMax(0,argc), argv, launchBits);}
+   status_t LaunchChildProcess(int argc, const char * argv[], uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS, const char * optDirectory = NULL) {return LaunchChildProcessAux(muscleMax(0,argc), argv, launchBits, optDirectory);}
 
    /** As above, but the program name and all arguments are specified as a single string.
      * @param cmd String to launch the child process with
      * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(const char * cmd, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS) {return LaunchChildProcessAux(-1, cmd, launchBits);}
+   status_t LaunchChildProcess(const char * cmd, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS, const char * optDirectory = NULL) {return LaunchChildProcessAux(-1, cmd, launchBits, optDirectory);}
 
    /** Convenience method.  Launches a child process using an (argc,argv) that is constructed from the passed in argument list.
      * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
      *             should be the first argument to the executable, and so on.
      * @param launchBits A bit-chord of CHILD_PROCESS_LAUNCH_BIT_* bit values.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   status_t LaunchChildProcess(const Queue<String> & argv, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS);
+   status_t LaunchChildProcess(const Queue<String> & argv, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS, const char * optDirectory = NULL);
 
    /** Read data from the child process's stdout stream. 
      * @param buffer The read bytes will be placed here
@@ -193,10 +199,12 @@ public:
      *                          that we should wait for the child process to exit before continuing.
      *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
      *                          for the child to exit, if necessary.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @returns B_NO_ERROR if the child process was launched, or B_ERROR
      *          if the child process could not be launched.
      */
-   static status_t System(int argc, const char * argv[], uint32 launchBits=true, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
+   static status_t System(int argc, const char * argv[], uint32 launchBits=true, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER, const char * optDirectory = NULL);
 
    /** Convenience method:  acts similar to the POSIX system() call, but
      * implemented internally via a ChildProcessDataIO object.  In particular,
@@ -209,9 +217,11 @@ public:
      *                          that we should wait for the child process to exit before continuing.
      *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
      *                          for the child to exit, if necessary.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   static status_t System(const Queue<String> & argv, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
+   static status_t System(const Queue<String> & argv, uint32 launchBits = MUSCLE_DEFAULT_CHILD_PROCESS_LAUNCH_BITS, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER, const char * optDirectory = NULL);
 
    /** Convenience method:  acts similar to the POSIX system() call, but
      * implemented internally via a ChildProcessDataIO object.  In particular,
@@ -225,38 +235,46 @@ public:
      *                          that we should wait for the child process to exit before continuing.
      *                          Defaults to MUSCLE_TIME_NEVER, meaning that we will wait indefinitely
      *                          for the child to exit, if necessary.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      */
-   static status_t System(const char * cmdLine, uint32 launchBits=true, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER);
+   static status_t System(const char * cmdLine, uint32 launchBits=true, uint64 maxWaitTimeMicros = MUSCLE_TIME_NEVER, const char * optDirectory = NULL);
 
    /** Convenience method:  launches a child process that will be completely independent of the current process.
      * @param argc Number of items in the (argv) array
      * @param argv A standard argv array for the child process to use
      * @param inheritFileDescriptors If true, the child process will inherit all file descriptors from this process.
      *                               If false (the default), the child process will not inherit any file descriptors from this process.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @returns B_NO_ERROR if the child process was launched, or B_ERROR if the child process could not be launched.
      */
-   static status_t LaunchIndependentChildProcess(int argc, const char * argv[], bool inheritFileDescriptors=false);
+   static status_t LaunchIndependentChildProcess(int argc, const char * argv[], bool inheritFileDescriptors=false, const char * optDirectory = NULL);
 
    /** Convenience method:  launches a child process that will be completely independent of the current process.
      * @param argv A list of strings to construct the (argc,argv) from.  The first string should be the executable name, the second string
      *             should be the first argument to the executable, and so on.
      * @param inheritFileDescriptors If true, the child process will inherit all file descriptors from this process.
      *                               If false (the default), the child process will not inherit any file descriptors from this process.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @return B_NO_ERROR on success, or B_ERROR if the launch failed.
      */
-   static status_t LaunchIndependentChildProcess(const Queue<String> & argv, bool inheritFileDescriptors=false);
+   static status_t LaunchIndependentChildProcess(const Queue<String> & argv, bool inheritFileDescriptors=false, const char * optDirectory = NULL);
 
    /** Convenience method:  launches a child process that will be completely independent of the current process.
      * @param cmdLine The command string to launch (as if typed into a shell)
      * @param inheritFileDescriptors If true, the child process will inherit all file descriptors from this process.
      *                               If false (the default), the child process will not inherit any file descriptors from this process.
+     * @param optDirectory Optional directory path to set the child process's current directory to.  
+     *                     Defaults to NULL, which will cause the child process to inherit this process's current directory.
      * @returns B_NO_ERROR if the child process was launched, or B_ERROR if the child process could not be launched.
      */
-   static status_t LaunchIndependentChildProcess(const char * cmdLine, bool inheritFileDescriptors=false);
+   static status_t LaunchIndependentChildProcess(const char * cmdLine, bool inheritFileDescriptors=false, const char * optDirectory = NULL);
 
 private:
    void Close();
-   status_t LaunchChildProcessAux(int argc, const void * argv, uint32 launchBits);
+   status_t LaunchChildProcessAux(int argc, const void * argv, uint32 launchBits, const char * optDirectory);
    void DoGracefulChildShutdown();
    const ConstSocketRef & GetChildSelectSocket() const;
 
