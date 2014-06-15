@@ -176,7 +176,7 @@ CONFIG(debug, debug|release) {
 win32 {
     DEFINES += WIN32_LEAN_AND_MEAN UNICODE REGEX_USEDLL
     LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib version.lib regex.lib
-    !contains(CONFIG, zlib):LIBS += zdll.lib
+    !contains(CONFIG, zlib):LIBS += zlib1.lib
     SOURCES +=   scanprogressimpl.cpp \
                  windows/_filwbuf.c \
                  windows/_getbuf.c \
@@ -217,7 +217,7 @@ isEmpty(QMAKE_LRELEASE) {
 updateqm.input = TRANSLATIONS
 updateqm.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
 updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.CONFIG += no_link
+updateqm.CONFIG += no_link recursive
 
 QMAKE_EXTRA_COMPILERS += updateqm
 

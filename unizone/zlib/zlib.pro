@@ -1,17 +1,12 @@
-# -------------------------------------------------
-# Project created by QtCreator 2009-03-15T19:26:47
-# -------------------------------------------------
-QT -=	core \
-		gui
 TARGET = zlib1
 TEMPLATE = lib
+CONFIG -= qt debug
 CONFIG += dll
 
 win32 {
 	DEFINES += _CRT_SECURE_NO_WARNINGS WINAPI_FAMILY
 	RC_FILE = win32\\zlib1.rc
 	DEF_FILE = win32\\zlib.def
-	QMAKE_LFLAGS_DLL += /implib:$(DESTDIR)zdll.lib
 }
 
 SOURCES +=	adler32.c \
@@ -40,3 +35,6 @@ HEADERS +=	crc32.h \
 			zconf.h \
 			zlib.h \
 			zutil.h
+
+target.path = ../..
+INSTALLS += target

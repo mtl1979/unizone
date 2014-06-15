@@ -1,10 +1,9 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-03-15T19:26:47
 # -------------------------------------------------
-QT -= core \
-    gui
 TARGET = regex
 TEMPLATE = lib
+CONFIG -= qt
 CONFIG += dll
 
 DEFINES += REGEX_DLL
