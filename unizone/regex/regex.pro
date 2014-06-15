@@ -1,9 +1,6 @@
-# -------------------------------------------------
-# Project created by QtCreator 2009-03-15T19:26:47
-# -------------------------------------------------
 TARGET = regex
 TEMPLATE = lib
-CONFIG -= qt
+CONFIG -= qt debug
 CONFIG += dll
 
 DEFINES += REGEX_DLL
@@ -16,3 +13,6 @@ SOURCES +=  regcomp.c \
 HEADERS +=  regex.h \
             regex2.h \
             utils.h
+
+target.path = ../..
+INSTALLS += target
