@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 				break;
 			default: return -2;
 		}
-		QString out = cc->toUnicode(argv[1], strlen(argv[1]));
+		QString out = cc->toUnicode(argv[1], (int) strlen(argv[1]));
 		QString in = argv[1];
 		QByteArray test = cc->fromUnicode(out);
 		if (test != argv[1])

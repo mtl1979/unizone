@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		QTextCodec *uc = QTextCodec::codecForName("UTF-8");
-		QString out = uc->toUnicode(argv[1], strlen(argv[1]));
+		QString out = uc->toUnicode(argv[1], (int) strlen(argv[1]));
 		QString in = QString::fromLocal8Bit(argv[1]);
 		QByteArray test = uc->fromUnicode(out);
 		if (test != argv[1])

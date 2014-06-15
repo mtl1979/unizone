@@ -17,11 +17,11 @@ main(int argc, char *argv[])
 		wchar_t *out;
 		char *test;
 		int wlen, tlen;
-		wlen = MultiByteToWideChar(51949, 0, argv[1], strlen(argv[1]), NULL, 0);
+		wlen = MultiByteToWideChar(51949, 0, argv[1], (int) strlen(argv[1]), NULL, 0);
 		out = new wchar_t[wlen + 1];
 		if (out)
 		{
-			(void) MultiByteToWideChar(51949, 0, argv[1], strlen(argv[1]), out, wlen);
+			(void) MultiByteToWideChar(51949, 0, argv[1], (int) strlen(argv[1]), out, wlen);
 		}
 		else
 		{
@@ -67,16 +67,17 @@ main(int argc, char *argv[])
 		if (!same)
 		{
 			FILE *fin, *fout;
+			errno_t err;
 			__int64 sz = 0;
 			char buf[1024];
-			fin = fopen(argv[1], "rb");
-			if (!fin)
+			err = fopen_s(&fin, argv[1], "rb");
+			if (err != 0)
 			{
 				printf("Error opening input file!\n");
 				return -3;
 			}
-			fout = _wfopen(out, L"wb");
-			if (!fout)
+			err = _wfopen_s(&fout, out, L"wb");
+			if (err != 0)
 			{
 				fclose(fin);
 				printf("Error opening output file!\n");
@@ -90,7 +91,7 @@ main(int argc, char *argv[])
 			stat64(argv[1], &s);
 #endif
 			sz = s.st_size;
-			int r;
+			size_t r;
 			__int64 numbytes = 0;
 			while ((r = fread(buf, 1, 1024, fin)) > 0)
 			{

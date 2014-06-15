@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	else
 	{
 		QTextCodec *ec = QTextCodec::codecForName("EUC-KR");
-		QString out = ec->toUnicode(argv[1], strlen(argv[1]));
+		QString out = ec->toUnicode(argv[1], (int) strlen(argv[1]));
 		QString in = argv[1];
 		uint sz = 0;
 		char buf[1024];

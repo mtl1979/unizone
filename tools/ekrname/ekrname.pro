@@ -1,3 +1,6 @@
 CONFIG += console
-CONFIG -= gui core
+CONFIG -= qt debug
 SOURCES = main.cpp 
+
+target.path = ../..
+INSTALLS += target
