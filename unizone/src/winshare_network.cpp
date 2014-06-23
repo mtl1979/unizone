@@ -2466,6 +2466,9 @@ WinShareWindow::Connect()
 
 	if (fNetClient)
 	{
+#ifdef MUSCLE_ENABLE_SSL
+		fNetClient->SetSSLPublicKey(publicKey);
+#endif
 		WaitOnFileThread(false);	// make sure our scan thread is dead
 		Disconnect();
 		QString sname = GetServerName(fServer);

@@ -163,6 +163,10 @@ public:
 
 	bool IsScanning() { return fScanning; }
 
+#ifdef MUSCLE_ENABLE_SSL
+	void SetSSLPublicKey(const ByteBufferRef &buf) { publicKey = buf; }
+#endif
+
 	WSettings * fSettings;	// for use by prefs
 	WDownload * fDLWindow;
 	WUpload * fULWindow;
@@ -501,6 +505,10 @@ private:
 	// Titanic Transfer Protocol
 
 	Queue<TTPInfo *> _ttpFiles;
+
+#ifdef MUSCLE_ENABLE_SSL
+	ByteBufferRef publicKey;
+#endif
 
 signals:
 	void UpdatePrivateUserLists();

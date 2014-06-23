@@ -1,5 +1,7 @@
 TARGET = Unizone
 
+# uncomment and set following define to base directory of openssl to enable SSL support
+#SSLDIR = c:\\build\\openssl-1.0.1h
 CONFIG += precompile_header
 CONFIG -= debug
 
@@ -159,6 +161,15 @@ PRECOMPILED_HEADER = unizone_pch.h
 CODEC =		UTF-8
 
 DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS
+!isEmpty(SSL_DIR) {
+	DEFINES += MUSCLE_ENABLE_SSL
+	SOURCES +=	muscle/dataio/SSLSocketDataIO.cpp \
+			muscle/iogateway/SSLSocketAdapterGateway.cpp
+	win32 {
+		LIBS += -L$$SSLDIR\\out32dll libeay32.lib ssleay32.lib
+		SOURCES += $$SSLDIR\\inc32\\openssl\\applink.c
+	} else: LIBS += -L$$SSLDIR/lib -llibeay32 -lssleay32
+}
 
 CONFIG(debug, debug|release) {
 	DEFINES += _DEBUG

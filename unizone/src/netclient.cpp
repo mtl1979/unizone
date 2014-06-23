@@ -115,6 +115,11 @@ NetClient::Connect(const QString & server, uint16 port)
 	connect(qmtt, SIGNAL(OutputQueuesDrained(const MessageRef &)),
 			this, SLOT(OutputQueuesDrained(const MessageRef &)));
 
+	// Setup SSL
+#ifdef MUSCLE_ENABLE_SSL
+	qmtt->SetSSLPublicKeyCertificate(publicKey);
+#endif
+
 	PRINT("Starting thread\n");
 	if (qmtt->StartInternalThread() != B_NO_ERROR)
 	{

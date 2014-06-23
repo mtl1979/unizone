@@ -181,6 +181,10 @@ public:
 		const char * optDistPath = NULL);
 	status_t WaitForInternalThreadToExit();
 
+#ifdef MUSCLE_ENABLE_SSL
+	void SetSSLPublicKey(const ByteBufferRef &buf) { publicKey = buf; }
+#endif
+
 signals:
 	void UserDisconnected(const WUserRef &);
 	void UserConnected(const WUserRef &);
@@ -238,6 +242,10 @@ private:
 	mutable Mutex fLowPacketLock;
 	bool hasmessages, fLoggedIn;
 	uint64 fLoginTime;
+
+#ifdef MUSCLE_ENABLE_SSL
+	ByteBufferRef publicKey;
+#endif
 
 private slots:
 

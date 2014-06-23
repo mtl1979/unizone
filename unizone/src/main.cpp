@@ -24,6 +24,11 @@
 #include "util.h"
 #include "uenv.h"
 
+#ifdef MUSCLE_ENABLE_SSL
+#include "wchar.h"
+#include "dataio/FileDataIO.h"
+#endif
+
 #include "util/TimeUtilityFunctions.h"
 #include "system/SetupSystem.h"
 
@@ -92,6 +97,10 @@ int
 main( int argc, char** argv )
 {
 #ifdef _WIN32
+# ifdef MUSCLE_ENABLE_SSL
+    wchar_t publicKeyFilePath[255];
+# endif
+
 	QString datadir = EnvironmentVariable("APPDATA");
 	QDir(datadir).mkdir("Unizone");
 	datadir = MakePath(datadir, "Unizone");
@@ -99,6 +108,10 @@ main( int argc, char** argv )
 	gAppDir = GetAppDirectory();
 	// Set our working directory
 	QDir::setCurrent(gDataDir);
+#else
+# ifdef MUSCLE_ENABLE_SSL
+    char publicKeyFilePath[255];
+# endif
 #endif
 	RedirectDebugOutput();
 	muscle::CompleteSetupSystem fMuscle;
@@ -127,6 +140,17 @@ main( int argc, char** argv )
 			font.setPointSize(fs);
 			app.setFont(font);
 		}
+#ifdef MUSCLE_ENABLE_SSL
+		else if (app.arguments().at(a) == "--publickey")
+		{
+			a++;
+#ifdef _WIN32
+			wcscpy(publicKeyFilePath, app.arguments().at(a).utf16());
+#else
+			strcpy(publicKeyFilePath, app.arguments().at(a).utf8());
+#endif
+		}
+#endif
 
 		a++;
 	}
@@ -245,6 +269,39 @@ main( int argc, char** argv )
 	Q_CHECK_PTR(window);
 
 	app.setMainWidget(window);
+
+	// Setup SSL	
+#ifdef MUSCLE_ENABLE_SSL
+   ByteBufferRef optCryptoBuf;
+#ifdef _WIN32
+   FileDataIO fdio(_wfopen(publicKeyFilePath, L"rb"));
+#else
+   FileDataIO fdio(fopen(publicKeyFilePath, "rb"));
+#endif
+   ByteBufferRef fileData = GetByteBufferFromPool((uint32)fdio.GetLength());
+   if ((fdio.GetFile())&&(fileData())&&(fdio.ReadFully(fileData()->GetBuffer(), fileData()->GetNumBytes()) == fileData()->GetNumBytes()))
+   { 
+#ifdef _DEBUG
+# ifdef _WIN32
+      PRINT("Using public key file [%S] to authenticate with servers\n", publicKeyFilePath);
+# else
+      PRINT("Using public key file [%s] to authenticate with servers\n", publicKeyFilePath);
+# endif
+#endif
+      window->SetSSLPublicKey(fileData);
+   }
+   else
+      {
+#ifdef _DEBUG
+# ifdef _WIN32
+         PRINT("Couldn't load public key file [%S] (file not found?)\n", publicKeyFilePath);
+# else
+         PRINT("Couldn't load public key file [%s] (file not found?)\n", publicKeyFilePath);
+# endif
+#endif
+      }
+#endif
+
 
 	window->show();
 
