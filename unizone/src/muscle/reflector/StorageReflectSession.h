@@ -116,6 +116,9 @@ public:
      */
    void PrintFactoriesInfo() const;
 
+   /** Returns a read-only reference to our parameters message */
+   const Message & GetParametersConst() const {return _parameters;}
+
 protected:
    /**
     * Create or Set the value of a data node.

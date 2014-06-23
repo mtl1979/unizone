@@ -706,7 +706,7 @@ MessageReceivedFromGateway(const MessageRef & msgRef, void * userData)
                StringMatcher matcher;
                if (matcher.SetPattern(*nextName) == B_NO_ERROR)
                {
-                  if (matcher.IsPatternUnique()) (void) RemoveParameter(*nextName, updateDefaultMessageRoute);
+                  if (matcher.IsPatternUnique()) (void) RemoveParameter(RemoveEscapeChars(*nextName), updateDefaultMessageRoute);  // FogBugz #10055
                   else
                   {
                      for (MessageFieldNameIterator it = _parameters.GetFieldNameIterator(); it.HasData(); it++) if (matcher.Match(it.GetFieldName()())) (void) RemoveParameter(it.GetFieldName(), updateDefaultMessageRoute);
@@ -1428,7 +1428,7 @@ DoTraversalAux(TraversalContext & data, DataNode & node)
          {
             const String & key = nextQueue->GetItemAt(depth-data.GetRootDepth())->GetItemPointer()->GetPattern();
             DataNodeRef nextChildRef;
-            if ((node.GetChild(key, nextChildRef) == B_NO_ERROR)&&(alreadyDid.IndexOf(nextChildRef()) == -1))
+            if ((node.GetChild(RemoveEscapeChars(key), nextChildRef) == B_NO_ERROR)&&(alreadyDid.IndexOf(nextChildRef()) == -1))
             {
                if (CheckChildForTraversal(data, nextChildRef(), depth)) return depth;
                (void) alreadyDid.AddTail(nextChildRef());
