@@ -1,7 +1,14 @@
 TARGET = Unizone
-
+DEBUG_SOURCES =
 # uncomment and set following define to base directory of openssl to enable SSL support
 #SSLDIR = c:\\build\\openssl-1.0.1h
+
+#We can't rely on having "debug" in CONFIG if we set "release" as default target
+CONFIG(debug, debug|release) {
+	DEFINES		 += _DEBUG
+	DEBUG_SOURCES = debugimpl.cpp
+}
+
 CONFIG += precompile_header
 CONFIG -= debug
 
@@ -108,6 +115,8 @@ SOURCES =	aboutdlgimpl.cpp \
 			muscle/zlib/ZLibCodec.cpp \
 			muscle/zlib/ZLibUtilityFunctions.cpp
 
+SOURCES +=	$$DEBUG_SOURCES
+
 FORMS = 	aboutdlg.ui \
 			channel.ui \
 			picviewer.ui \
@@ -171,11 +180,6 @@ DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS
 	} else: LIBS += -L$$SSLDIR/lib -llibeay32 -lssleay32
 }
 
-CONFIG(debug, debug|release) {
-	DEFINES += _DEBUG
-	SOURCES += debugimpl.cpp
-}
-
 win32 {
 	DEFINES += WIN32_LEAN_AND_MEAN UNICODE REGEX_USEDLL
 	LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib version.lib regex.lib
@@ -192,7 +196,7 @@ win32 {
 			   windows/wlaunchthread_win.cpp \
 			   windows/wutil_msvc.cpp
 	RC_FILE =  icon.rc
-	CONFIG(debug, debug|release) {
+	!isEmpty(DEBUG_SOURCES) {
 		LIBS += -L..\\regex\\debug 
 		!contains(CONFIG, zlib):LIBS += -L..\\zlib\\debug
 		qtlibs.files = $$[QT_INSTALL_LIBS]\\Qt3Supportd4.dll \
