@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <QByteArray>
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qfile.h>
 #include <qtextcodec.h>
 #include <qcoreapplication.h>
@@ -12,21 +13,21 @@
 int main(int argc, char* argv[])
 {
 	QCoreApplication app(argc, argv);
-	if (argc != 3)
+	if (app.arguments().count() != 3)
 	{
-		printf("Usage: %s input output\n", argv[0]);
+		printf("Usage: %S input output\n", app.arguments().at(0).utf16());
 		return -1;
 	}
 
-	QFile fIn(argv[1]), fOut(argv[2]);
+	QFile fIn(app.arguments().at(1)), fOut(app.arguments().at(2));
 	if (fIn.open(QIODevice::ReadOnly) == false)
 	{
-		printf("Error opening input file %s!",argv[1]);
+		printf("Error opening input file %S!",app.arguments().at(1).utf16());
 		return -1;
 	}
 	if (fOut.open(QIODevice::WriteOnly) == false)
 	{
-		printf("Error opening output file %s!",argv[2]);
+		printf("Error opening output file %S!",app.arguments().at(2).utf16());
 		fIn.close();
 		return -1;
 	}
@@ -44,7 +45,6 @@ int main(int argc, char* argv[])
 		qTemp2 = ic->toUnicode(qTemp1);
 		qTemp3 = oc->fromUnicode(qTemp2);
 		fOut.write(qTemp3, qTemp3.length());
-		fOut.write("\r\n", 2);
 	} while (1);
 	fOut.close();
 	fIn.close();

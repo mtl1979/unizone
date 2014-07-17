@@ -1,5 +1,6 @@
 CONFIG += console
-CONFIG -= gui debug
+CONFIG -= debug
+QT -= gui
 SOURCES = ekr2utf.cpp 
 
 target.path = ../..
