@@ -19,7 +19,7 @@ FilePathInfo :: FilePathInfo(bool exists, bool isRegularFile, bool isDir, bool i
 
 void FilePathInfo :: SetFilePath(const char * optFilePath)
 {
-   int sLen = optFilePath ? strlen(optFilePath) : 0;
+   size_t sLen = optFilePath ? strlen(optFilePath) : 0;
    if ((sLen > 0)&&(optFilePath[sLen-1] == *GetFilePathSeparator()))
    {
       // Special case for paths that end in a slash:  we want to ignore the slash (otherwise we can't see files at this location, only folders)
