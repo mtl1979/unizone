@@ -127,6 +127,7 @@
 #include "util/ByteBuffer.h"
 #include "util/Hashtable.h"
 #include "util/NetworkUtilityFunctions.h"
+#include "util/ObjectPool.h"
 #include "util/Queue.h"
 #include "util/RefCount.h"
 #include "util/String.h"
