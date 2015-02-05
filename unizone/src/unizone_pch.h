@@ -105,33 +105,4 @@
 #include <qwindowsvistastyle.h>
 #include <qwindowsxpstyle.h>
 
-// MUSCLE headers
-
-#include "iogateway/MessageIOGateway.h"
-#include "iogateway/PlainTextMessageIOGateway.h"
-#include "message/Message.h"
-#include "qtsupport/QAcceptSocketsThread.h"
-#include "qtsupport/QMessageTransceiverThread.h"
-#include "qtsupport/QMuscleSupport.h"
-#include "reflector/AbstractReflectSession.h"
-#include "reflector/RateLimitSessionIOPolicy.h"
-#include "reflector/StorageReflectConstants.h"
-#include "regex/PathMatcher.h"
-#include "support/MuscleSupport.h"
-#include "system/GlobalMemoryAllocator.h"
-#include "system/MessageTransceiverThread.h"
-#include "system/Mutex.h"
-#include "system/SetupSystem.h"
-#include "system/SystemInfo.h"
-#include "system/Thread.h"
-#include "util/ByteBuffer.h"
-#include "util/Hashtable.h"
-#include "util/NetworkUtilityFunctions.h"
-#include "util/ObjectPool.h"
-#include "util/Queue.h"
-#include "util/RefCount.h"
-#include "util/String.h"
-#include "util/StringTokenizer.h"
-#include "util/TimeUtilityFunctions.h"
-#include "zlib/ZLibUtilityFunctions.h"
 #endif
