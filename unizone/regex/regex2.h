@@ -1,6 +1,10 @@
 /*
  * First, the stuff that ends up in the outside-world include file
+ = #ifdef _M_AMD64
+ = typedef __int64 regoff_t;
+ = #else
  = typedef off_t regoff_t;
+ = #endif
  = typedef struct {
  = 	int re_magic;
  = 	size_t re_nsub;		// number of parenthesized subexpressions
@@ -36,8 +40,13 @@
  * In state representations, an operator's bit is on to signify a state
  * immediately *preceding* "execution" of that operator.
  */
+#ifdef _M_AMD64
+typedef __int64 sop;		/* strip operator */
+typedef __int64 sopno;
+#else
 typedef long sop;		/* strip operator */
 typedef long sopno;
+#endif
 #define	OPRMASK	0x7c000000
 #define	OPDMASK	0x03ffffff
 #define	OPSHIFT	(26)
@@ -121,7 +130,11 @@ struct re_guts {
 	int ncategories;	/* how many character categories */
 	cat_t *categories;	/* ->catspace[-CHAR_MIN] */
 	char *must;		/* match must contain this string */
+#ifdef _M_AMD64
+	__int64 mlen;		/* length of must */
+#else
 	int mlen;		/* length of must */
+#endif
 	size_t nsub;		/* copy of re_nsub */
 	int backrefs;		/* does it use back references? */
 	sopno nplus;		/* how deep does it nest +s? */
