@@ -12,6 +12,7 @@ class WFile;
 
 #include "util/String.h"
 #include "util/ByteBuffer.h"
+#include "util/NetworkUtilityFunctions.h"
 
 using namespace muscle;
 

@@ -9,6 +9,7 @@
 
 #include "user.h"
 
+#include "util/NetworkUtilityFunctions.h"
 #include "util/Queue.h"
 
 using namespace muscle;

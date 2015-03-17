@@ -1,6 +1,7 @@
 #ifndef RESOLVER_H
 #define RESOLVER_H
 
+#include "util/NetworkUtilityFunctions.h"
 #include "util/String.h"
 
 using muscle::String;
