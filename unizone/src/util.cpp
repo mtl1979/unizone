@@ -656,7 +656,7 @@ restart2:
 					ret += retlist.at(0);
                 if (pos2 > 0)
 				{
-					ret += ConvertToRegexInternal(l.at(0).right(pos2), true, false);
+					ret += ConvertToRegexInternal(l.at(0).right(pos2), simple, false);
 				}
 				ret += "$";
 				s = ret;
