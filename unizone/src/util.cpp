@@ -607,6 +607,7 @@ step3:
 			if (pos > 0 || pos2 > 0)
 			{
 				QStringList retlist;
+restart1:
 				if (pos > 0)
 				{
 					ret += ConvertToRegexInternal(l.at(0).left(pos), true, true);
@@ -614,8 +615,28 @@ step3:
 				ret += "(";
 				for (int i = 0; i < l.size(); i++)
 				{
-					QString temp = l.at(i).mid(pos, l.at(i).length() - pos - pos2);
-					retlist.append(ConvertToRegexInternal(temp, true, false));
+					QString temp;
+restart2:
+					temp = l.at(i).mid(pos, l.at(i).length() - pos - pos2);
+					if (temp.length() > 0)
+						retlist.append(ConvertToRegexInternal(temp, true, false));
+					else
+					{
+						// We try to expand the middle section by one character and then restart
+						retlist.clear();
+						if (pos2 > 0)
+						{ 
+							i = 0;
+							pos2--;
+							goto restart2;
+						}
+						else if (pos > 0)
+						{
+							pos--;
+							ret = "^"; // Re-initialize
+							goto restart1;
+						}
+					}	
 				}
 				ret += retlist.join("|");
 				ret += ")";
