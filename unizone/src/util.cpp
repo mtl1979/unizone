@@ -531,14 +531,10 @@ void ConvertToRegex(String & s)
 	s = ret;
 }
 
-void ConvertToRegex(QString & s, bool simple)
+QString ConvertToRegexInternal(const QString & s, bool simple, bool isFirst)
 {
 	int x = 0;
 	QString ret;
-	if (!simple)
-		ret = "^";
-
-	bool isFirst = true;
 	while(x < s.length())
 	{
 		if (s[x] == '\\')			// skip \c
@@ -574,6 +570,68 @@ void ConvertToRegex(QString & s, bool simple)
 		if (isFirst)
 			isFirst = false;
 	}
+	return ret;
+}
+
+void ConvertToRegex(QString & s, bool simple)
+{
+	QString ret;
+	if (!simple)
+	{
+		ret = "^";
+		if (s.count(",") > 0)
+		{
+			int pos = 0;
+			int pos2 = 0;
+			QStringList l = s.split(",");
+			while (pos < l.at(0).length()) // Check start of strings
+			{
+				for (int i = 1; i < l.size(); i++)
+				{
+					if (pos == min(l.at(i).length(), l.at(0).length()) || l.at(i)[pos] != l.at(0)[pos])
+						goto step2;
+				}
+				pos++;
+			}
+step2:
+			while (pos2 < l.at(0).length()) // Check end of strings
+			{
+				for (int i = 1; i < l.size(); i++)
+				{
+					if (pos2 == min(l.at(i).length(), l.at(0).length()) || l.at(i)[l.at(i).length() - pos2 - 1] != l.at(0)[l.at(0).length() - pos2 - 1])
+						goto step3;
+				}
+				pos2++;
+			}
+step3:
+			if (pos > 0 || pos2 > 0)
+			{
+				QStringList retlist;
+				if (pos > 0)
+				{
+					ret += ConvertToRegexInternal(l.at(0).left(pos), true, true);
+				}
+				ret += "(";
+				for (int i = 0; i < l.size(); i++)
+				{
+					QString temp = l.at(i).mid(pos, l.at(i).length() - pos - pos2);
+					retlist.append(ConvertToRegexInternal(temp, true, false));
+				}
+				ret += retlist.join("|");
+				ret += ")";
+                if (pos2 > 0)
+				{
+					ret += ConvertToRegexInternal(l.at(0).right(pos2), true, false);
+				}
+				ret += "$";
+				s = ret;
+				return;
+			}
+			// Fall through
+		}
+	}
+
+	ret += ConvertToRegexInternal(s, simple, true);
 	if (!simple)
 		ret += "$";
 	s = ret;

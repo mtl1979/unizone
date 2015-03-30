@@ -539,6 +539,55 @@ WSearch::GoSearch()
 	StartQuery(userExp.isEmpty() ? ".*" : userExp, fileExp.isEmpty() ? ".*" : fileExp);
 }
 
+// Convert case-sensitive pattern as case-insensitive regex
+QString
+UnSimplify(const QString &str)
+{
+	QString ret;
+	int x = 0;
+	while (x < str.length())
+	{
+		if (str[x] == '\\')
+		{
+			ret += str.mid(x, 2);
+			x++; // Also skip character following slash
+		}
+		else if (str[x] == '*')
+		{
+			ret += ".*";
+		}
+		else if (str[x] == '?')
+		{
+			ret += ".";
+		}
+		else if (str[x].upper() != str[x].lower())
+		{
+			if ((str[x].lower() < (QChar) 128) && (str.upper() < (QChar) 128))
+			{
+				ret += "[";
+				ret += str[x].lower();
+				ret += str[x].upper();
+				ret += "]";
+			}
+			else
+			{
+				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
+				ret += "(";
+				ret += str[x].lower();
+				ret += "|";
+				ret += str[x].upper();
+				ret += ")";
+			}
+		}
+		else
+		{
+			ret += str[x];
+		}
+		x++; // Always skip at least one character
+	}
+	return ret;
+}
+
 QString
 Simplify(const QString &str)
 {
@@ -568,7 +617,7 @@ Simplify(const QString &str)
 		}
 		else if (str[x].upper() != str[x].lower())
 		{
-			if ((str[x].lower() < (QChar) 128) && (str.lower() < (QChar) 128))
+			if ((str[x].lower() < (QChar) 128) && (str[x].upper() < (QChar) 128))
 			{
 				ret += "[";
 				ret += str[x].lower();
@@ -639,7 +688,7 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 
 	fSearchLock.Unlock();
 
-	SetSearchStatus(tr("Searching for: \"%1\".").arg(Simplify(fileRegExp)));
+	SetSearchStatus(tr("Searching for: \"%1\"").arg(UnSimplify(fileRegExp)));
 	SetSearchStatus(tr("active"), 2);
 }
 
