@@ -576,6 +576,7 @@ QString ConvertToRegexInternal(const QString & s, bool simple, bool isFirst)
 void ConvertToRegex(QString & s, bool simple)
 {
 	QString ret;
+start:
 	if (!simple)
 	{
 		ret = "^";
@@ -584,6 +585,13 @@ void ConvertToRegex(QString & s, bool simple)
 			int pos = 0;
 			int pos2 = 0;
 			QStringList l = s.split(",");
+			l.removeDuplicates();
+			if (l.count() == 1) // Only one item left
+			{
+				ret = "";
+				s = l.at(0);
+				goto start; // We need to restart with the only entry as the "original" string
+			}
 			while (pos < l.at(0).length()) // Check start of strings
 			{
 				for (int i = 1; i < l.size(); i++)
@@ -610,16 +618,15 @@ step3:
 restart1:
 				if (pos > 0)
 				{
-					ret += ConvertToRegexInternal(l.at(0).left(pos), true, true);
+					ret += ConvertToRegexInternal(l.at(0).left(pos), simple, true);
 				}
-				ret += "(";
 				for (int i = 0; i < l.size(); i++)
 				{
 					QString temp;
 restart2:
 					temp = l.at(i).mid(pos, l.at(i).length() - pos - pos2);
 					if (temp.length() > 0)
-						retlist.append(ConvertToRegexInternal(temp, true, false));
+						retlist.append(ConvertToRegexInternal(temp, simple, false));
 					else
 					{
 						// We try to expand the middle section by one character and then restart
@@ -638,8 +645,15 @@ restart2:
 						}
 					}	
 				}
-				ret += retlist.join("|");
-				ret += ")";
+				retlist.removeDuplicates();
+				if (retlist.count() > 1)
+				{
+					ret += "(";
+					ret += retlist.join("|");
+					ret += ")";
+				}
+				else
+					ret += retlist.at(0);
                 if (pos2 > 0)
 				{
 					ret += ConvertToRegexInternal(l.at(0).right(pos2), true, false);

@@ -552,14 +552,6 @@ UnSimplify(const QString &str)
 			ret += str.mid(x, 2);
 			x++; // Also skip character following slash
 		}
-		else if (str[x] == '*')
-		{
-			ret += ".*";
-		}
-		else if (str[x] == '?')
-		{
-			ret += ".";
-		}
 		else if (str[x].upper() != str[x].lower())
 		{
 			if ((str[x].lower() < (QChar) 128) && (str.upper() < (QChar) 128))
