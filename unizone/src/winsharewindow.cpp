@@ -2245,7 +2245,7 @@ void
 WinShareWindow::SearchPictures()
 {
 	OpenSearch();
-	fSearch->SetSearch(imageFormats());
+	fSearch->SetSearch(imageFormats().replace(";", ","));
 	fSearch->GoSearch();
 }
 
