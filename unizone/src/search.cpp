@@ -545,6 +545,7 @@ UnSimplify(const QString &str)
 {
 	QString ret;
 	int x = 0;
+	if (str[x] == '`') x++; 
 	while (x < str.length())
 	{
 		if (str[x] == '\\')
@@ -581,16 +582,97 @@ UnSimplify(const QString &str)
 }
 
 QString
-Simplify(const QString &str)
+SimplifyNew(const QString &str)
 {
 	QString ret;
 	int x = 0;
+	bool inGroup = false;
+	bool simple = (str.left(2) != "`^");
+
 	while (x < str.length())
 	{
 		if (str[x] == '\\')
 		{
 			ret += str.mid(x, 2);
 			x += 2;
+		}
+		else if (str[x] == '[')
+		{
+			inGroup = true;
+			ret += str[x++];
+		}
+		else if (str[x] == ']')
+		{
+			inGroup = false;
+			ret += str[x++];
+		}
+		else if (str.midRef(x, 2) == ".*" && simple)
+		{
+			ret += "*";
+			x += 2;
+		}
+		else if (str[x] == '.' && simple)
+		{
+			ret += "?";
+			x++;
+		}
+		else if (str[x] == '|' && simple)
+		{
+			ret += ",";
+			x++;
+		}
+		else if (str[x].upper() != str[x].lower())
+		{
+			if ((str[x].lower() < (QChar) 128) && (str[x].upper() < (QChar) 128))
+			{
+				if (!inGroup) 
+					ret += "[";
+				ret += str[x].lower();
+				ret += str[x].upper();
+				if (!inGroup)
+					ret += "]";
+			}
+			else
+			{
+				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
+				ret += "(";
+				ret += str[x].lower();
+				ret += "|";
+				ret += str[x].upper();
+				ret += ")";
+			}
+			x++;
+		}
+		else
+		{
+			ret += str[x++];
+		}
+	}
+	return ret;
+}
+
+QString
+SimplifyOld(const QString &str)
+{
+	QString ret;
+	int x = 0;
+	bool inGroup = false;
+	while (x < str.length())
+	{
+		if (str[x] == '\\')
+		{
+			ret += str.mid(x, 2);
+			x += 2;
+		}
+		else if (str[x] == '[')
+		{
+			inGroup = true;
+			ret += str[x++];
+		}
+		else if (str[x] == ']')
+		{
+			inGroup = false;
+			ret += str[x++];
 		}
 		else if (str.midRef(x, 2) == ".*")
 		{
@@ -611,10 +693,12 @@ Simplify(const QString &str)
 		{
 			if ((str[x].lower() < (QChar) 128) && (str[x].upper() < (QChar) 128))
 			{
-				ret += "[";
+				if (!inGroup)
+					ret += "[";
 				ret += str[x].lower();
 				ret += str[x].upper();
-				ret += "]";
+				if (!inGroup)
+					ret += "]";
 			}
 			else
 			{
@@ -641,9 +725,9 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 {
 	fSearchLock.Lock();
 	QString tmp("SUBSCRIBE:/*/");
-	tmp += Simplify(sidRegExp);
+	tmp += IsNewServer() ? SimplifyNew(sidRegExp) : SimplifyOld(sidRegExp);
 	tmp += "/beshare/fi?es/";
-	tmp += Simplify(fileRegExp);
+	tmp += IsNewServer() ? SimplifyNew(fileRegExp) : SimplifyOld(fileRegExp);
 	fCurrentSearchPattern = tmp;
 	// <postmaster@raasu.org> 20021023 -- Fixed typo
 
@@ -657,12 +741,20 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 	fUserRegExpNeg = sidRegExp[0] == '~';
 	fUserRegExpStr = fUserRegExpNeg ? sidRegExp.mid(1) : sidRegExp;
 	fUserRegExpStr.replace(QRegExp(","), "|");
+	fUserRegExpStr.replace(QRegExp("`"), "");
 	fUserRegExp.setPattern(fUserRegExpStr);
 	fUserRegExp.setCaseSensitive(false);
 	fFileRegExpNeg = fileRegExp[0] == '~';
 	fFileRegExpStr = fFileRegExpNeg ? fileRegExp.mid(1) : fileRegExp;
+	fFileRegExpStr.replace(QRegExp("`"), "");
 	fFileRegExp.setPattern(fFileRegExpStr);
 	fFileRegExp.setCaseSensitive(false);
+
+#ifdef _DEBUG
+	wsid = fUserRegExpStr;
+	wfile = fFileRegExpStr;
+	PRINT("Current Search Pattern = %S, fUserRegExp = %S, fFileRegExp = %S\n", wpattern.getBuffer(), wsid.getBuffer(), wfile.getBuffer());
+#endif
 
 	if (!fGotResults)
 	{

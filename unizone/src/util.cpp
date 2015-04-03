@@ -14,6 +14,8 @@
 using namespace muscle;
 
 #include "debugimpl.h"
+#include "regex_new.h"
+#include "regex_old.h"
 #include "tokenizer.h"
 #include "global.h"
 #include "winsharewindow.h"
@@ -27,6 +29,11 @@ using namespace muscle;
 extern QString gDataDir;
 #endif
 
+bool
+IsNewServer()
+{
+	return (gWin->GetServerVersion() >= 6.12);
+}
 
 QString
 EscapeHTML(const QString & str)
@@ -531,145 +538,12 @@ void ConvertToRegex(String & s)
 	s = ret;
 }
 
-QString ConvertToRegexInternal(const QString & s, bool simple, bool isFirst)
-{
-	int x = 0;
-	QString ret;
-	while(x < s.length())
-	{
-		if (s[x] == '\\')			// skip \c
-		{
-			if (x + 1 < s.length())
-			{
-				if (s[x + 1] != '@')	// convert \@ to @
-					ret += s[x];
-				x++;
-				ret += s[x];
-			}
-		}
-		else if (s[x] == '*')
-		{
-			ret += simple ? "*" : ".*";
-		}
-		else if (s[x] == '?')
-		{
-			ret += simple ? "?" : ".";
-		}
-		else if (s[x] == ',')
-		{
-			ret += "|";
-		}
-		else
-		{
-			if (IsRegexToken2(s[x], false)) ret += '\\';
-			ret += s[x];
-		}
-
-		x++;
-		// reset
-		if (isFirst)
-			isFirst = false;
-	}
-	return ret;
-}
-
 void ConvertToRegex(QString & s, bool simple)
 {
-	QString ret;
-start:
-	if (!simple)
-	{
-		ret = "^";
-		if (s.count(",") > 0)
-		{
-			int pos = 0;
-			int pos2 = 0;
-			QStringList l = s.split(",");
-			l.removeDuplicates();
-			if (l.count() == 1) // Only one item left
-			{
-				ret = "";
-				s = l.at(0);
-				goto start; // We need to restart with the only entry as the "original" string
-			}
-			while (pos < l.at(0).length()) // Check start of strings
-			{
-				for (int i = 1; i < l.size(); i++)
-				{
-					if (pos == min(l.at(i).length(), l.at(0).length()) || l.at(i)[pos] != l.at(0)[pos])
-						goto step2;
-				}
-				pos++;
-			}
-step2:
-			while (pos2 < l.at(0).length()) // Check end of strings
-			{
-				for (int i = 1; i < l.size(); i++)
-				{
-					if (pos2 == min(l.at(i).length(), l.at(0).length()) || l.at(i)[l.at(i).length() - pos2 - 1] != l.at(0)[l.at(0).length() - pos2 - 1])
-						goto step3;
-				}
-				pos2++;
-			}
-step3:
-			if (pos > 0 || pos2 > 0)
-			{
-				QStringList retlist;
-restart1:
-				if (pos > 0)
-				{
-					ret += ConvertToRegexInternal(l.at(0).left(pos), simple, true);
-				}
-				for (int i = 0; i < l.size(); i++)
-				{
-					QString temp;
-restart2:
-					temp = l.at(i).mid(pos, l.at(i).length() - pos - pos2);
-					if (temp.length() > 0)
-						retlist.append(ConvertToRegexInternal(temp, simple, false));
-					else
-					{
-						// We try to expand the middle section by one character and then restart
-						retlist.clear();
-						if (pos2 > 0)
-						{ 
-							i = 0;
-							pos2--;
-							goto restart2;
-						}
-						else if (pos > 0)
-						{
-							pos--;
-							ret = "^"; // Re-initialize
-							goto restart1;
-						}
-					}	
-				}
-				retlist.removeDuplicates();
-				if (retlist.count() > 1)
-				{
-					ret += "(";
-					ret += retlist.join("|");
-					ret += ")";
-				}
-				else
-					ret += retlist.at(0);
-                if (pos2 > 0)
-				{
-					ret += ConvertToRegexInternal(l.at(0).right(pos2), simple, false);
-				}
-				ret += "$";
-				s = ret;
-				return;
-			}
-			// Fall through
-		}
-	}
-
-	ret += ConvertToRegexInternal(s, simple, true);
-	if (!simple)
-		ret += "$";
-	s = ret;
+	if (IsNewServer())
+		ConvertToRegexNew(s, simple);
+	else
+		ConvertToRegexOld(s, simple);
 }
 
 bool HasRegexTokens(const QString & str)

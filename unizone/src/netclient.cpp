@@ -169,13 +169,14 @@ NetClient::Disconnect()
 	Cleanup();
 	fLoggedIn = false;
 	fLoginTime = 0;
+	fServerVersion = 0.0f;
 
 	if (IsConnected())
 	{
 		WinShareWindow *win = GetWindow(this);
 		if (win)
 		{
-			win->setCaption("Unizone");
+			win->setWindowTitle("Unizone");
 			win->setStatus(QString::null, 3);
 		}
 		// Reset() implies ShutdownInternalThread();
@@ -760,6 +761,13 @@ NetClient::HandleParameters(const MessageRef & next)
 {
 	PRINT("PR_RESULT_PARAMETERS received\n");
 
+	PRINT("Extracting server version\n");
+	const char * serverVersion;
+	if (next()->FindString(PR_NAME_SERVER_VERSION, &serverVersion) == B_OK)
+		fServerVersion = atof(serverVersion);
+	else
+		fServerVersion = 0.0f;
+
 	PRINT("Extracting session id\n");
 	const char * sessionRoot;
 
@@ -821,7 +829,7 @@ NetClient::HandleParameters(const MessageRef & next)
 					temp += GetServerIP();
 					win->setStatus( temp , 2);
 				}
-				win->setCaption( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
+				win->setWindowTitle( tr("Unizone - User #%1 on %2").arg(fSessionID).arg(GetServer()) );
 			}
 		}
 	}

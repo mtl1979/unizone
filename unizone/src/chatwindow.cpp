@@ -15,7 +15,8 @@
 #include "debugimpl.h"
 #include "tokenizer.h"
 
-ChatWindow::ChatWindow(ChatType type)
+ChatWindow::ChatWindow(ChatType type, QWidget* parent,  const char* name, Qt::WFlags fl)
+	: Q3MainWindow(parent, name, fl)
 {
 	_type = type;
 }
@@ -597,18 +598,6 @@ ChatWindow::InitUserList(Q3ListView *lv)
 	lv->setAllColumnsShowFocus(true);
 
 	lv->setAcceptDrops(true);
-}
-
-QString
-ChatWindow::tr(const char *s)
-{
-	return qApp->translate("ChatWindow", s);
-}
-
-QString
-ChatWindow::tr(const char *s, const char *c)
-{
-	return qApp->translate("ChatWindow", s, c);
 }
 
 void

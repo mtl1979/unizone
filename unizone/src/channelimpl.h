@@ -20,12 +20,12 @@
 
 class NetClient;
 
-class Channel : public QDialog, public ChatWindow
+class Channel : public ChatWindow
 { 
     Q_OBJECT
 
 public:
-	Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0);
+	Channel( QWidget* parent = 0, NetClient * net = 0, QString cname = QString::null, const char* name = 0, Qt::WFlags fl = 0);
     ~Channel();
 	void SetOwner(const QString &);
 	void SetTopic(const QString &);

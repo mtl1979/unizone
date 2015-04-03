@@ -7,7 +7,6 @@
 
 #include "reflector/StorageReflectConstants.h"
 
-#include "ui_channel.h"
 #include "global.h"
 #include "wpwevent.h"
 #include "gotourl.h"
@@ -20,10 +19,9 @@
 #include "netclient.h"
 #include "debugimpl.h"
 
-Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, bool modal, Qt::WFlags /* fl */)
-: QDialog(/* parent */ NULL, name, modal, Qt::WDestructiveClose | Qt::WStyle_Minimize | 
-			  Qt::WStyle_Maximize | Qt::WStyle_Title | Qt::WStyle_SysMenu /* flags */),
-			  ChatWindow(PrivateType)
+Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, Qt::WFlags /* fl */)
+: ChatWindow(ChannelType, /* parent */ NULL, name, Qt::WDestructiveClose | Qt::WStyle_Minimize | 
+			  Qt::WStyle_Maximize | Qt::WStyle_Title | Qt::WStyle_SysMenu /* flags */)
 {
 	if (!name)
 	{
@@ -34,14 +32,18 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	fActive = false;
 	fStrAdmins = QString::null;
 	fParent = parent;
-	Ui_ChannelBase *ui = new Ui_ChannelBase();
-	ui->setupUi(this);
+
+	resize(640, 480);
 
 	if (fName != QString::null)
 	{
-		setCaption( tr("Channel Window - %1").arg(fName) );
+		setWindowTitle( tr("Channel Window - %1").arg(fName) );
 		fActive = gWin->fChannels->IsPublic(fName);
 	}
+	else
+		setWindowTitle( tr("Channel Window") );
+
+
 	fSplit = new QSplitter(Qt::Vertical, this);
 	Q_CHECK_PTR(fSplit);
 
@@ -74,20 +76,20 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	// Set widget size relationships
 
 	Q3ValueList<int> splitList1;
-	splitList1.append(1);
-	splitList1.append(10);
+	splitList1.append(40);
+	splitList1.append(440);
 
 	fSplit->setSizes(splitList1);
 
 	Q3ValueList<int> splitList2;
-	splitList2.append(4);
-	splitList2.append(1);
+	splitList2.append(440);
+	splitList2.append(200);
 
 	fSplitBottom->setSizes(splitList2);
 
 	Q3ValueList<int> splitList3;
-	splitList3.append(5);
-	splitList3.append(1);
+	splitList3.append(365);
+	splitList3.append(75);
 
 	fSplitChat->setSizes(splitList3);
 	

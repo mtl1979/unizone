@@ -16,13 +16,13 @@
 
 class NetClient;
 
-class WPrivateWindow : public QDialog, public ChatWindow
+class WPrivateWindow : public ChatWindow
 { 
     Q_OBJECT
 
 public:
     WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent = 0, 
-		const char* name = 0, bool modal = false, 
+		const char* name = 0, 
 		Qt::WindowFlags fl = Qt::WDestructiveClose | Qt::WStyle_Customize | 
 		Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_Minimize | 
 		Qt::WStyle_Maximize | Qt::WStyle_SysMenu);

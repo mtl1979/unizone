@@ -76,7 +76,7 @@ class WChatText;
 class WSettings;
 class WStatusBar;
 
-class WinShareWindow : public Q3MainWindow, public ChatWindow
+class WinShareWindow : public ChatWindow
 {
 	Q_OBJECT
 public:
@@ -109,6 +109,7 @@ public:
 
 	QString GetUserName() const;
 	QString GetServer() const;
+	double GetServerVersion();
 	QString GetStatus() const;
 	QString GetUserID() const; 
 	QString GetLocalIP() const;

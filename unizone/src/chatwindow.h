@@ -21,10 +21,11 @@ typedef enum
 	ChannelType
 } ChatType;
 
-class ChatWindow
+class ChatWindow : public Q3MainWindow
 {
+	Q_OBJECT
 public:
-	ChatWindow(ChatType type);
+	ChatWindow(ChatType type, QWidget* parent, const char* name, Qt::WFlags fl);
 	virtual ~ChatWindow();
 
 	WSettings *Settings();
@@ -137,8 +138,6 @@ private:
 	bool NameSaid(QString & msg);	// msg will be syntaxed if needed
 	bool NameSaid2(const QString &sname, QString & msg, unsigned long index = 0); // Private version for recursing
 
-	QString tr(const char *);
-	QString tr(const char *, const char *);
 	QString tr2(const char *s);		// Appends space if not empty
 	QString tr3(const QString &s);	// Adds leading space if needed.
 

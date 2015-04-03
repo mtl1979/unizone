@@ -2,11 +2,11 @@
 
 #include <qapplication.h>
 
-const QString uzYears = "2002-2014";
+const QString uzYears = "2002-2015";
 const int kMajor = 1;
 const int kMinor = 3;
 const int kPatch = 0;
-const int kBuild = 1;
+const int kBuild = 2;
 
 
 QString

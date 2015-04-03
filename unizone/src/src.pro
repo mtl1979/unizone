@@ -12,7 +12,8 @@ CONFIG(debug, debug|release) {
 CONFIG += precompile_header
 CONFIG -= debug
 
-SOURCES =	aboutdlgimpl.cpp \
+#Source files for Unizone
+SOURCES1 =	aboutdlgimpl.cpp \
 			botitem.cpp \
 			channelimpl.cpp \
 			channelinfo.cpp \
@@ -41,6 +42,8 @@ SOURCES =	aboutdlgimpl.cpp \
 			platform.cpp \
 			prefsimpl.cpp \
 			privatewindowimpl.cpp \
+			regex_new.cpp \
+			regex_old.cpp \
 			resolver.cpp \
 			resolver4.cpp \
 			resolver6.cpp \
@@ -75,8 +78,12 @@ SOURCES =	aboutdlgimpl.cpp \
 			wstring.cpp \
 			wsystemevent.cpp \
 			wwarningevent.cpp \
-			Log.cpp \
-			muscle/qtsupport/QMessageTransceiverThread.cpp \
+			Log.cpp
+
+SOURCES1 +=	$$DEBUG_SOURCES
+
+#Source files for MUSCLE
+SOURCES2 =  muscle/qtsupport/QMessageTransceiverThread.cpp \
 			muscle/qtsupport/QAcceptSocketsThread.cpp \
 			muscle/iogateway/AbstractMessageIOGateway.cpp \
 			muscle/iogateway/MessageIOGateway.cpp \
@@ -115,19 +122,16 @@ SOURCES =	aboutdlgimpl.cpp \
 			muscle/zlib/ZLibCodec.cpp \
 			muscle/zlib/ZLibUtilityFunctions.cpp
 
-SOURCES +=	$$DEBUG_SOURCES
-
 FORMS = 	aboutdlg.ui \
-			channel.ui \
 			picviewer.ui \
 			prefs.ui \
-			privatewindow.ui \
 			scanprogress.ui
 
 HEADERS =	aboutdlgimpl.h \
 			channelimpl.h \
 			channels.h \
 			chattext.h \
+			chatwindow.h \
 			combo.h \
 			downloadimpl.h \
 			downloadthread.h \
@@ -148,11 +152,13 @@ HEADERS =	aboutdlgimpl.h \
 			updateclient.h \
 			uploadimpl.h \
 			uploadthread.h \
+			user.h \
 			util.h \
 			winsharewindow.h \
 			muscle/qtsupport/QMessageTransceiverThread.h \
 			muscle/qtsupport/QAcceptSocketsThread.h
 
+RESOURCES    = unizone.qrc
 
 TRANSLATIONS =  unizone_en.ts \
 				unizone_fi.ts \
@@ -172,11 +178,11 @@ CODEC =		UTF-8
 DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS
 !isEmpty(SSL_DIR) {
 	DEFINES += MUSCLE_ENABLE_SSL
-	SOURCES +=	muscle/dataio/SSLSocketDataIO.cpp \
-			muscle/iogateway/SSLSocketAdapterGateway.cpp
+	SOURCES2 +=	muscle/dataio/SSLSocketDataIO.cpp \
+			    muscle/iogateway/SSLSocketAdapterGateway.cpp
 	win32 {
 		LIBS += -L$$SSLDIR\\out32dll libeay32.lib ssleay32.lib
-		SOURCES += $$SSLDIR\\inc32\\openssl\\applink.c
+		SOURCES2 += $$SSLDIR\\inc32\\openssl\\applink.c
 	} else: LIBS += -L$$SSLDIR/lib -llibeay32 -lssleay32
 }
 
@@ -184,7 +190,7 @@ win32 {
 	DEFINES += WIN32_LEAN_AND_MEAN UNICODE REGEX_USEDLL
 	LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib version.lib regex.lib
 	!contains(CONFIG, zlib):LIBS += zlib1.lib
-	SOURCES += scanprogressimpl.cpp \
+	SOURCES1 += scanprogressimpl.cpp \
 			   windows/_filwbuf.c \
 			   windows/_getbuf.c \
 			   windows/vwsscanf.c \
@@ -234,18 +240,20 @@ win32 {
 }
 
 unix {
-	SOURCES += unix/fileinfo_unix.cpp \
-			   unix/filethread_unix.cpp \
-			   unix/gotourl_unix.cpp \
-			   unix/mimedb.cpp \
-			   unix/wcslwr.c \
-			   unix/wcsupr.c \
-			   unix/wfile.cpp \
-			   unix/wfile_unix.cpp \
-			   unix/wlaunchthread_unix.cpp \
-			   unix/wutil_unix.cpp
+	SOURCES1 += unix/fileinfo_unix.cpp \
+			    unix/filethread_unix.cpp \
+			    unix/gotourl_unix.cpp \
+			    unix/mimedb.cpp \
+			    unix/wcslwr.c \
+			    unix/wcsupr.c \
+			    unix/wfile.cpp \
+			    unix/wfile_unix.cpp \
+			    unix/wlaunchthread_unix.cpp \
+			    unix/wutil_unix.cpp
 	!contains(CONFIG, zlib):LIBS += -lz
 }
+
+SOURCES  =  $$SOURCES1 $$SOURCES2
 
 QT += qt3support
 
@@ -255,6 +263,19 @@ INCLUDEPATH += muscle ../regex ../zlib
 target.path = ../..
 INSTALLS += target
 
+isEmpty(QMAKE_LUPDATE) {
+	win32:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]\\lupdate.exe
+	else:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]/lupdate
+}
+
+updatets.input = TRANSLATIONS 
+updatets.depends = $$SOURCES1 $$FORMS src.pro
+updatets.output = ${QMAKE_FILE_IN}
+updatets.commands = $$QMAKE_LUPDATE src.pro
+updatets.CONFIG += no_link no_clean explicit_dependencies recursive target_predeps
+
+QMAKE_EXTRA_COMPILERS += updatets
+
 isEmpty(QMAKE_LRELEASE) {
 	win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe
 	else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
@@ -263,11 +284,9 @@ isEmpty(QMAKE_LRELEASE) {
 updateqm.input = TRANSLATIONS
 updateqm.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
 updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.CONFIG += no_link recursive
+updateqm.CONFIG += no_link recursive target_predeps
 
 QMAKE_EXTRA_COMPILERS += updateqm
-
-PRE_TARGETDEPS += compiler_updateqm_make_all
 
 translations.files = $$TRANSLATIONS
 translations.files ~= s/\\.ts/.qm/g

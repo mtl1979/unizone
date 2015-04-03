@@ -116,8 +116,7 @@ enum
 WinShareWindow * gWin = NULL;
 
 WinShareWindow::WinShareWindow(QWidget * parent, const char* name, Qt::WFlags f)
-	: Q3MainWindow(parent, name, f | Qt::WPaintDesktop | Qt::WPaintClever),
-	ChatWindow(MainType)
+	: ChatWindow(MainType, parent, name, f | Qt::WPaintDesktop | Qt::WPaintClever)
 {
 	fMenus = NULL;
 
@@ -159,7 +158,7 @@ WinShareWindow::WinShareWindow(QWidget * parent, const char* name, Qt::WFlags f)
 	fSettings = new WSettings;
 	Q_CHECK_PTR(fSettings);
 
-	setCaption("Unizone");
+	setWindowTitle("Unizone");
 
 	resize(800, 600);
 	InitGUI();
@@ -845,10 +844,12 @@ WinShareWindow::NameChanged(const QString & newName)
 void
 WinShareWindow::InitGUI()
 {
+	setWindowIcon(QIcon(":/unizone.png"));
+
 	// divide our splitter(s)
 	Q3ValueList<int> splitList;
-	splitList.append(4);
-	splitList.append(1);
+	splitList.append(500);
+	splitList.append(100);
 	//
 
 	fMenus = new MenuBar(this);
@@ -2353,7 +2354,7 @@ WinShareWindow::GetRegisterTime() const
 void
 WinShareWindow::keyPressEvent(QKeyEvent *event)
 {
-	Q3MainWindow::keyPressEvent(event);
+	ChatWindow::keyPressEvent(event);
 }
 
 QWidget *

@@ -14,8 +14,9 @@ class QString;
   *  As the user message becomes more revealed, add more
   *  methods to it.
   */
-class WUser : public RefCountable
+class WUser : public QObject, public RefCountable 
 {
+	Q_OBJECT
 public:
 	WUser(const QString & sid);
 	~WUser();
@@ -80,7 +81,6 @@ public:
 	void SetLastLine(const QString & channel, const QString & line);
 
 private:
-	QString tr(const char *);
 
 	QString fHostName;
 	QString fHostOS;

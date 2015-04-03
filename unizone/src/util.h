@@ -63,9 +63,11 @@ QString GetServerName(const QString & server);
 uint16 GetServerPort(const QString & server);
 
 // Convert simple wildcard pattern to regex
+bool IsNewServer();
 void ConvertToRegex(String & s);
 void ConvertToRegex(QString & s, bool simple = false);
 bool HasRegexTokens(const QString & s);
+bool IsRegexToken2(QChar c, bool isFirstCharInString);
 
 // Localize Month Names
 QString TranslateMonth(const QString & m);

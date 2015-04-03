@@ -42,6 +42,8 @@ public:
 	bool IsConnected() const;
 	bool IsLoggedIn() const { return fLoggedIn; }
 	uint64 LoginTime() const { return fLoginTime; }
+
+	double GetServerVersion() {return IsConnected() ? fServerVersion : 0.0f;}
 	
 	// if "q" is true, you won't get an initial response
 	void AddSubscription(const QString & str, bool q = false);	
@@ -214,7 +216,9 @@ private:
 	QString fUserName;
 	QObject * fOwner;
 	WUserMap fUsers;		// a list of users
-	MessageRef fChannels;		// channel database
+	MessageRef fChannels;	// channel database
+	double fServerVersion;
+
 	
 	void HandleBeRemoveMessage(const String &nodePath);
 	void HandleBeAddMessage(const String &nodePath, MessageRef ref);

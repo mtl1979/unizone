@@ -13,7 +13,6 @@
 
 #include "util/String.h"
 
-#include "ui_privatewindow.h"
 #include "gotourl.h"
 #include "chatevent.h"
 #include "textevent.h"
@@ -34,16 +33,15 @@
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, bool modal, Qt::WFlags fl)
-    : QDialog(parent, name, modal, fl),
-	ChatWindow(PrivateType)
+WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent,  const char* name, Qt::WFlags fl)
+    : ChatWindow(PrivateType, parent, name, fl)
 {
 	fOwner = owner;
 	fNet = net;
 	fEncrypted = false;
 
-	Ui_WPrivateWindowBase *ui = new Ui_WPrivateWindowBase();
-	ui->setupUi(this);
+	setWindowTitle(tr("Private"));
+	resize(550, 300);
 
 	if ( !name ) 
 		setName( "WPrivateWindow" );
@@ -68,12 +66,16 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 
 	InitUserList(fPrivateUsers);
 
-	Q3ValueList<int> splitList;
-	splitList.append(4);
-	splitList.append(1);
+	Q3ValueList<int> splitList1;
+	splitList1.append(250);
+	splitList1.append(50);
 
-	fSplit->setSizes(splitList);
-	fSplitChat->setSizes(splitList);
+	fSplit->setSizes(splitList1);
+
+	Q3ValueList<int> splitList2;
+	splitList2.append(450);
+	splitList2.append(100);
+	fSplitChat->setSizes(splitList2);
 	fSplitChat->setOrientation(Qt::Vertical);
 
 	// create popup menu
@@ -591,13 +593,13 @@ WPrivateWindow::CheckEmpty()
 					tr( "Yes" ), tr( "No" )) == 0)	
 					// 0 is the index of "yes"
 				{
-					done(QDialog::Accepted);
+					close();
 				}
 				break;
 			}
 		case 2:
 			{
-				done(QDialog::Accepted);
+				close();
 				break;
 			}
 		}

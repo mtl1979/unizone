@@ -3168,3 +3168,9 @@ WinShareWindow::GetLocalIP() const
 {
 	return fNetClient->IsConnected() ? fNetClient->GetLocalIP() : QString::null;
 }
+
+double
+WinShareWindow::GetServerVersion()
+{
+	return fNetClient ? fNetClient->GetServerVersion() : 0.0f;
+}

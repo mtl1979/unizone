@@ -506,9 +506,4 @@ WUser::SetClient(const QString &s)
 	}
 }
 
-QString
-WUser::tr(const char *s)
-{
-	return qApp->translate("WUser", s);
-}
 
