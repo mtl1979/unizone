@@ -284,187 +284,187 @@
 <context>
     <name>ChatWindow</name>
     <message>
-        <location filename="chatwindow.cpp" line="579"/>
+        <location filename="chatwindow.cpp" line="580"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="580"/>
+        <location filename="chatwindow.cpp" line="581"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="581"/>
+        <location filename="chatwindow.cpp" line="582"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="582"/>
+        <location filename="chatwindow.cpp" line="583"/>
         <source>Files</source>
         <translation>Dateien</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="583"/>
+        <location filename="chatwindow.cpp" line="584"/>
         <source>Connection</source>
         <translation>Verbindung</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="584"/>
+        <location filename="chatwindow.cpp" line="585"/>
         <source>Load</source>
         <translation>Lade</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="585"/>
+        <location filename="chatwindow.cpp" line="586"/>
         <source>Client</source>
         <translation>Client</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="586"/>
+        <location filename="chatwindow.cpp" line="587"/>
         <source>OS</source>
         <translation>OS</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="721"/>
+        <location filename="chatwindow.cpp" line="722"/>
         <source>Date: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="860"/>
+        <location filename="chatwindow.cpp" line="861"/>
         <source>System:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="872"/>
+        <location filename="chatwindow.cpp" line="873"/>
         <source>User #%1 is now connected.</source>
         <translation>Benutzer #%1 ist jetzt verbunden.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="882"/>
+        <location filename="chatwindow.cpp" line="883"/>
         <source>User #%1 (a.k.a %2) has disconnected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="885"/>
+        <location filename="chatwindow.cpp" line="886"/>
         <source>User #%1 has disconnected.</source>
         <translation type="unfinished">Benutzer #%1 hat die Verbindung getrennt.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="893"/>
+        <location filename="chatwindow.cpp" line="894"/>
         <source>User #%1 is now known as %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="909"/>
+        <location filename="chatwindow.cpp" line="910"/>
         <source>User #%1 (a.k.a %2) is now known as %3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="921"/>
+        <location filename="chatwindow.cpp" line="922"/>
         <source>User #%1 (a.k.a %2) is now %3.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="925"/>
+        <location filename="chatwindow.cpp" line="926"/>
         <source>User #%1 is now %2.</source>
         <translation type="unfinished">Benutzer #%1 ist jetzt %2.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="934"/>
+        <location filename="chatwindow.cpp" line="935"/>
         <source>%1&apos;s IP address is %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="971"/>
+        <location filename="chatwindow.cpp" line="972"/>
         <source>Error:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="983"/>
+        <location filename="chatwindow.cpp" line="984"/>
         <source>Warning:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="992"/>
+        <location filename="chatwindow.cpp" line="993"/>
         <source>You are now %1.</source>
         <translation type="unfinished">Sie sind jetzt %1.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1000"/>
+        <location filename="chatwindow.cpp" line="1001"/>
         <source>Name changed to %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1053"/>
+        <location filename="chatwindow.cpp" line="1054"/>
         <source>Action:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1083"/>
+        <location filename="chatwindow.cpp" line="1084"/>
         <source>User #%1 (a.k.a %2) pinged you.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1086"/>
+        <location filename="chatwindow.cpp" line="1087"/>
         <source>User #%1 pinged you.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1099"/>
+        <location filename="chatwindow.cpp" line="1100"/>
         <source>Ping sent to user #%1 (a.k.a %2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1102"/>
+        <location filename="chatwindow.cpp" line="1103"/>
         <source>Ping sent to user #%1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1120"/>
+        <location filename="chatwindow.cpp" line="1121"/>
         <source>Time request sent to user #%1 (a.k.a %2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1124"/>
+        <location filename="chatwindow.cpp" line="1125"/>
         <source>Time request sent to user #%1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1133"/>
+        <location filename="chatwindow.cpp" line="1134"/>
         <source>User #%1 (a.k.a %2) is a bot!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1136"/>
+        <location filename="chatwindow.cpp" line="1137"/>
         <source>User #%1 is a bot!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1145"/>
+        <location filename="chatwindow.cpp" line="1146"/>
         <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1148"/>
+        <location filename="chatwindow.cpp" line="1149"/>
         <source>User #%1 was removed from the private chat window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="899"/>
+        <location filename="chatwindow.cpp" line="900"/>
         <source>User #%1 is now nameless.</source>
         <translation>Benutzer #%1 ist jetzt namenslos.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="941"/>
+        <location filename="chatwindow.cpp" line="942"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation>Benutzer #%1&apos;s IP Addresse ist %2.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="950"/>
+        <location filename="chatwindow.cpp" line="951"/>
         <source>Ping returned in %1 milliseconds</source>
         <translation>Ping zurück in %1 Milliseconden</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="960"/>
+        <location filename="chatwindow.cpp" line="961"/>
         <source>Uptime: %1, Logged on for %2</source>
         <translation>Uptime: %1, eingeloggt seit %2</translation>
     </message>
@@ -3179,8 +3179,8 @@ Date: %4</translation>
 <context>
     <name>WUser</name>
     <message>
-        <location filename="chatwindow.cpp" line="1021"/>
-        <location filename="chatwindow.cpp" line="1041"/>
+        <location filename="chatwindow.cpp" line="1022"/>
+        <location filename="chatwindow.cpp" line="1042"/>
         <location filename="user.cpp" line="22"/>
         <location filename="user.cpp" line="53"/>
         <source>Unknown</source>
@@ -3297,7 +3297,7 @@ Date: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="83"/>
         <location filename="winshare_network.cpp" line="378"/>
-        <location filename="winshare_network.cpp" line="3096"/>
+        <location filename="winshare_network.cpp" line="3120"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="979"/>
@@ -3354,15 +3354,15 @@ Date: %4</translation>
         <location filename="winshare_network.cpp" line="885"/>
         <location filename="winshare_network.cpp" line="904"/>
         <location filename="winshare_network.cpp" line="945"/>
-        <location filename="winshare_network.cpp" line="1378"/>
-        <location filename="winshare_network.cpp" line="1663"/>
+        <location filename="winshare_network.cpp" line="1400"/>
+        <location filename="winshare_network.cpp" line="1685"/>
         <source>No users passed.</source>
         <translation>Kein(e) Benutzer anwesend.</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="620"/>
         <location filename="winshare_network.cpp" line="687"/>
-        <location filename="winshare_network.cpp" line="2439"/>
+        <location filename="winshare_network.cpp" line="2461"/>
         <source>Current time: %1 %2</source>
         <translation>Uhrzeit: %1 %2</translation>
     </message>
@@ -3392,9 +3392,9 @@ Date: %4</translation>
         <location filename="winshare_network.cpp" line="935"/>
         <location filename="winshare_network.cpp" line="957"/>
         <location filename="winshare_network.cpp" line="976"/>
-        <location filename="winshare_network.cpp" line="998"/>
-        <location filename="winshare_network.cpp" line="1116"/>
-        <location filename="winshare_network.cpp" line="3012"/>
+        <location filename="winshare_network.cpp" line="1020"/>
+        <location filename="winshare_network.cpp" line="1138"/>
+        <location filename="winshare_network.cpp" line="3036"/>
         <source>Invalid index.</source>
         <translation>Fehlerhafter Index.</translation>
     </message>
@@ -3411,7 +3411,7 @@ Date: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="926"/>
         <location filename="winshare_network.cpp" line="967"/>
-        <location filename="winshare_network.cpp" line="986"/>
+        <location filename="winshare_network.cpp" line="1008"/>
         <source>No index specified.</source>
         <translation>Kein Index angegeben.</translation>
     </message>
@@ -3426,91 +3426,91 @@ Date: %4</translation>
         <translation>Server %1: %2</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="994"/>
+        <location filename="winshare_network.cpp" line="1016"/>
         <source>Server %1 (%2) removed</source>
         <translation>Server %1 (%2) entfernt</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1019"/>
+        <location filename="winshare_network.cpp" line="1041"/>
         <source>Uploaded: This session %1, total %2</source>
         <translation>Upgeloaded: Diese Sitzung %1, Gesamt %2</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1020"/>
+        <location filename="winshare_network.cpp" line="1042"/>
         <source>Downloaded: This session %1, total %2</source>
         <translation>Heruntergeladen: Diese Sitzung %1, Gesamt %2</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1031"/>
-        <location filename="winshare_network.cpp" line="2761"/>
+        <location filename="winshare_network.cpp" line="1053"/>
+        <location filename="winshare_network.cpp" line="2785"/>
         <source>Auto-private pattern: %1</source>
         <translation>Auto-private Muster: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1043"/>
-        <location filename="winshare_network.cpp" line="2769"/>
+        <location filename="winshare_network.cpp" line="1065"/>
+        <location filename="winshare_network.cpp" line="2793"/>
         <source>Blacklist pattern: %1</source>
         <translation>Schwarze Liste Muster: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1054"/>
-        <location filename="winshare_network.cpp" line="2773"/>
+        <location filename="winshare_network.cpp" line="1076"/>
+        <location filename="winshare_network.cpp" line="2797"/>
         <source>Ignore pattern: %1</source>
         <translation>Ignorieren Muster: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1060"/>
-        <location filename="winshare_network.cpp" line="2777"/>
+        <location filename="winshare_network.cpp" line="1082"/>
+        <location filename="winshare_network.cpp" line="2801"/>
         <source>Watch pattern: %1</source>
         <translation>Beobachtungsmuster: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1092"/>
+        <location filename="winshare_network.cpp" line="1114"/>
         <source>Remote password: %1</source>
         <translation>Entfernt Passwort: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1096"/>
+        <location filename="winshare_network.cpp" line="1118"/>
         <source>Remote password set to: %1</source>
         <translation>Entfernt Passwort gesetzt zu: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1133"/>
+        <location filename="winshare_network.cpp" line="1155"/>
         <source>MUSCLE version: %1</source>
         <translation>MUSCLE Version: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1488"/>
-        <location filename="winshare_network.cpp" line="1494"/>
+        <location filename="winshare_network.cpp" line="1510"/>
+        <location filename="winshare_network.cpp" line="1516"/>
         <source>Unknown command!</source>
         <translation>Unbekannter Befehl!</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="659"/>
-        <location filename="winshare_network.cpp" line="1405"/>
-        <location filename="winshare_network.cpp" line="1594"/>
-        <location filename="winshare_network.cpp" line="1600"/>
+        <location filename="winshare_network.cpp" line="1427"/>
+        <location filename="winshare_network.cpp" line="1616"/>
+        <location filename="winshare_network.cpp" line="1622"/>
         <source>User(s) not found!</source>
         <translation>Benutzer nicht gefunden!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2484"/>
+        <location filename="winshare_network.cpp" line="2506"/>
         <source>Connecting to server %1.</source>
         <translation>Verbinde mit Server %1.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2490"/>
+        <location filename="winshare_network.cpp" line="2512"/>
         <location filename="winshare_slots.cpp" line="470"/>
         <source>Connection to server failed!</source>
         <translation>Verbindung mit Server fehlgeschlagen!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2842"/>
+        <location filename="winshare_network.cpp" line="2866"/>
         <source>Command %1 not found</source>
         <translation>Befehl %1 nicht gefunden</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2964"/>
+        <location filename="winshare_network.cpp" line="2988"/>
         <source>File %1: (%2) from %3</source>
         <translation>Datei %1: (%2) von %3</translation>
     </message>
@@ -3575,12 +3575,12 @@ Date: %4</translation>
         <translation>Start der Befehlsfolge fehlgeschlagen!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3105"/>
+        <location filename="winshare_network.cpp" line="3129"/>
         <source>Connected.</source>
         <translation>Verbunden.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2521"/>
+        <location filename="winshare_network.cpp" line="2543"/>
         <location filename="winsharewindow.cpp" line="545"/>
         <source>Reconnect timer stopped</source>
         <translation>Wiederverbinden Timer gestoppt</translation>
@@ -3651,7 +3651,7 @@ Date: %4</translation>
         <translation>Scanning gemeinsamer...</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2265"/>
+        <location filename="winshare_network.cpp" line="2287"/>
         <source>Nick collision with user #%1</source>
         <translation>Nick kollidiert mit Benutzer #%1</translation>
     </message>
@@ -3707,22 +3707,22 @@ Date: %4</translation>
         <translation>Fehler beim updaten des Auto-Privat Musters!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1003"/>
+        <location filename="winshare_network.cpp" line="1025"/>
         <source>Saving configuration...</source>
         <translation>Speichere Einstellungen...</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1005"/>
+        <location filename="winshare_network.cpp" line="1027"/>
         <source>Configuration saved.</source>
         <translation>Einstellungen gespeichert.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1086"/>
+        <location filename="winshare_network.cpp" line="1108"/>
         <source>Transfer statistics cleared.</source>
         <translation>Übertragungsstatistiken gelöscht.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2956"/>
+        <location filename="winshare_network.cpp" line="2980"/>
         <source>Resume list:</source>
         <translation>Wiederaufnahme Liste:</translation>
     </message>
@@ -3738,7 +3738,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="389"/>
-        <location filename="winshare_network.cpp" line="3093"/>
+        <location filename="winshare_network.cpp" line="3117"/>
         <source>Number of users logged in: %1</source>
         <translation>Anzahl eingeloggter Benutzer : %1</translation>
     </message>
@@ -3799,7 +3799,7 @@ Date: %4</translation>
         <translation>und</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2313"/>
+        <location filename="winshare_network.cpp" line="2335"/>
         <source>Unizone (English)</source>
         <translation>Unizone (Deutsch)</translation>
     </message>
@@ -3830,337 +3830,342 @@ Date: %4</translation>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2550"/>
+        <location filename="winshare_network.cpp" line="2572"/>
         <source>Unizone Command Reference</source>
         <translation>Unizone Kommando Übersicht</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2553"/>
+        <location filename="winshare_network.cpp" line="2575"/>
         <source>/action [action] - do something</source>
         <translation>/action [action] - etwas machen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2555"/>
+        <location filename="winshare_network.cpp" line="2577"/>
         <source>/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/addautopriv [pattern] - updaten des Auto-Private Musters (das kann ein Benutzername sein oder mehrere Namen, oder Stichworte)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2557"/>
+        <location filename="winshare_network.cpp" line="2579"/>
         <source>/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/addblacklist [pattern] - update des schwarze Liste Musters (kann ein Benutzername sein, oder mehrere Namen, oder Stichworte)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2563"/>
+        <location filename="winshare_network.cpp" line="2585"/>
         <source>/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/addignore [pattern] - update des Ignorieren Musters (kann ein Benutzername sein oder mehrere Namen, oder Stichworte)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2565"/>
+        <location filename="winshare_network.cpp" line="2587"/>
+        <source>/addserver [server] - add server to server list without connecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="winshare_network.cpp" line="2589"/>
         <source>/adduser [name or session ids] - add users to a private chat window (works in private windows only!)</source>
         <translation>/adduser [name or session ids] - hinzufügen eines Benutzers ins Privat Chat Fenster (geht nur im Privat Fenster!)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2567"/>
+        <location filename="winshare_network.cpp" line="2591"/>
         <source>/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)</source>
         <translation>/autopriv [pattern] - setze Auto-Private Muster (Benutzername, mehrere Namen oder Stichworte)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2569"/>
+        <location filename="winshare_network.cpp" line="2593"/>
         <source>/away - set away state (same as selecting away from the list)</source>
         <translation>/away - setze entfernt Status (wie beim wählen in der Liste)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2571"/>
+        <location filename="winshare_network.cpp" line="2595"/>
         <source>/awaymsg - away message for away state (when /away is invoked)</source>
         <translation>/awaymsg - Entfernt Nachricht für Entfernt Status (wenn /away  aufgerufen ist)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2579"/>
+        <location filename="winshare_network.cpp" line="2603"/>
         <source>/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/blacklist [Muster] - setzt Schwarze Liste Muster (Benutzername oder mehrere Namen oder Stichworte)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2581"/>
+        <location filename="winshare_network.cpp" line="2605"/>
         <source>/btime [gmt] - Broadcast and show local (or GMT) time</source>
         <translation>/btime [gmt] - Broadcast und zeigt lokale (oder GMT) Zeit</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2583"/>
+        <location filename="winshare_network.cpp" line="2607"/>
         <source>/buptime - Broadcast and show uptime</source>
         <translation>/buptime - Broadcast und zeigt Betriebszeit</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2585"/>
+        <location filename="winshare_network.cpp" line="2609"/>
         <source>/chkserver [index] - check server string</source>
         <translation>/chkserver [index] - checkt Server String</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2587"/>
+        <location filename="winshare_network.cpp" line="2611"/>
         <source>/chkstatus [index] - check status string</source>
         <translation>/chkstatus [index] - checkt Status String</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2589"/>
+        <location filename="winshare_network.cpp" line="2613"/>
         <source>/chkuser [index] - check nick string</source>
         <translation>/chkuser [index] - checkt Nick String</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2591"/>
+        <location filename="winshare_network.cpp" line="2615"/>
         <source>/clear - clear the text in the chat view</source>
         <translation>/clear - löscht Text in Chat- Ansicht</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2593"/>
+        <location filename="winshare_network.cpp" line="2617"/>
         <source>/clearline - clear all the line buffers</source>
         <translation>/clearline - löscht alle Line Buffers</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2597"/>
+        <location filename="winshare_network.cpp" line="2621"/>
         <source>/clearstats - clear transfer statistics</source>
         <translation>/clearstats - löscht Transfer Statistiken</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2601"/>
+        <location filename="winshare_network.cpp" line="2625"/>
         <source>/connect - connect to the currently selected server</source>
         <translation>/connect - verbinden mit ausgewähltem Server</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2607"/>
+        <location filename="winshare_network.cpp" line="2631"/>
         <source>/disconnect - disconnect from server</source>
         <translation>/disconnect - trennt Verbindung vom Server</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2609"/>
+        <location filename="winshare_network.cpp" line="2633"/>
         <source>/dns [user|host] - give information about host</source>
         <translation>/dns [Benutzer|Host] - Information über den Host</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2619"/>
+        <location filename="winshare_network.cpp" line="2643"/>
         <source>/help [command] - show help for command (no &apos;/&apos; in front of command) or show this help text if no command given.</source>
         <translation>/help [Befehl] - Hilfe zum Befehl (no &apos;/&apos; in front of command) or show this help text if no command given.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2621"/>
+        <location filename="winshare_network.cpp" line="2645"/>
         <source>/heremsg - message for here state</source>
         <translation>/heremsg - Nachricht für Hier Status</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2629"/>
+        <location filename="winshare_network.cpp" line="2653"/>
         <source>/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/ignore [Muster] - setzt Ignorieren Muster (Benutzername oder mehrere Namen oder Stichworte)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2633"/>
+        <location filename="winshare_network.cpp" line="2657"/>
         <source>/logged - show the time you have been logged in to a server</source>
         <translation>/logged - zeigt Zeitraum seit  in Server eingelogged</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2635"/>
+        <location filename="winshare_network.cpp" line="2659"/>
         <source>/me [action] - /action synonym</source>
         <translation>/me [Aktion] - /action synonym</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2641"/>
+        <location filename="winshare_network.cpp" line="2665"/>
         <source>/msg [name] [message] - send a private message</source>
         <translation>/msg [Name] [Nachricht] - sende private Nachricht</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2643"/>
+        <location filename="winshare_network.cpp" line="2667"/>
         <source>/nick [name] - change your user name</source>
         <translation>/nick [Name] - Benutzername ändern</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2649"/>
+        <location filename="winshare_network.cpp" line="2673"/>
         <source>/onconnect [command] - set or clear command to perform on successful connect</source>
         <translation>/onconnect [command] - setze oder lösche Befehl für erfolgreiche Verbindung</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2655"/>
+        <location filename="winshare_network.cpp" line="2679"/>
         <source>/ping [name or session ids] - ping other clients</source>
         <translation>/ping [Name oder Sitzungs ID] - pinge andere Klienten</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2657"/>
+        <location filename="winshare_network.cpp" line="2681"/>
         <source>/priv [name or session ids] - open private chat with these users added</source>
         <translation>/priv [Name oder Sitzungs ID] - öffnet privaten Chat mit diesen Usern</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2659"/>
+        <location filename="winshare_network.cpp" line="2683"/>
         <source>/quit - quit Unizone</source>
         <translation>/quit - Unizone beenden</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2663"/>
+        <location filename="winshare_network.cpp" line="2687"/>
         <source>/remote [password] - set &amp; view remote password</source>
         <translation>/remote [Passwort] - setzen &amp; sehen Remote Passwort</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2665"/>
+        <location filename="winshare_network.cpp" line="2689"/>
         <source>/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)</source>
         <translation>/removeuser [Name oder Sitzungs ID] - entfernt Benutzer vom Privat Chat Fenster (geht nur im Privat Chat Fenster!)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2667"/>
+        <location filename="winshare_network.cpp" line="2691"/>
         <source>/remserver [index] - remove server from server list</source>
         <translation>/remserver [index] - entfernt Server von der Serverliste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2669"/>
+        <location filename="winshare_network.cpp" line="2693"/>
         <source>/remstatus [index] - remove status from status list</source>
         <translation>/remstatus [index] - entfernt Status von der Statusliste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2671"/>
+        <location filename="winshare_network.cpp" line="2695"/>
         <source>/remuser [index] - remove nick from nick list</source>
         <translation>/remuser [index] - entfernt Nick von der Nickliste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2673"/>
+        <location filename="winshare_network.cpp" line="2697"/>
         <source>/resumes - list files waiting to be resumed</source>
         <translation>/resumes - listet wartende Datein auf Wiederaufnahme auf</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2681"/>
+        <location filename="winshare_network.cpp" line="2705"/>
         <source>/save - saves settings (might be necessary after editing drop-down lists)</source>
         <translation>/save - speichert Einstellungen (notwendig nach Bearbeiten der Drop-Down-Listen)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2683"/>
+        <location filename="winshare_network.cpp" line="2707"/>
         <source>/scan - rescan shared directory</source>
         <translation>/scan - rescannen des gemeinsame Dateien Ordners</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2687"/>
+        <location filename="winshare_network.cpp" line="2711"/>
         <source>/search [pattern] - open search window</source>
         <translation>/search [Muster] - öffnet Suchen Fenster</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2689"/>
+        <location filename="winshare_network.cpp" line="2713"/>
         <source>/server [server] - set the current server</source>
         <translation>/server [server] - setzt den aktuellen Server</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2691"/>
+        <location filename="winshare_network.cpp" line="2715"/>
         <source>/serverinfo - check status of server</source>
         <translation>/serverinfo - checkt Status des Server</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2693"/>
+        <location filename="winshare_network.cpp" line="2717"/>
         <source>/shell [command] - execute command</source>
         <translation>/shell [Befehl] - führt Befehl aus</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2695"/>
+        <location filename="winshare_network.cpp" line="2719"/>
         <source>/showpatterns - show auto-private, blacklist, ignore and watch patterns</source>
         <translation>/showpatterns - zeigt Auto-Privat, Schwarze Liste, Ignorieren und Beobachtungsmuster</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2697"/>
+        <location filename="winshare_network.cpp" line="2721"/>
         <source>/showstats - show transfer statistics</source>
         <translation>/showstats - zeigt Transfer Statistiken</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2699"/>
+        <location filename="winshare_network.cpp" line="2723"/>
         <source>/status [status] - set status string</source>
         <translation>/status [Status] - setzt Status String</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2705"/>
+        <location filename="winshare_network.cpp" line="2729"/>
         <source>/time [gmt] - show local (or GMT) time</source>
         <translation>/time [gmt] - zeigt lokale (oder GMT) Zeit an</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2709"/>
+        <location filename="winshare_network.cpp" line="2733"/>
         <source>/unautopriv [name] - remove name from auto-private list</source>
         <translation>/unautopriv [Name] - entfernt Name von Auto-Privat Liste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2711"/>
+        <location filename="winshare_network.cpp" line="2735"/>
         <source>/unblacklist [name] - remove name from blacklist</source>
         <translation>/unblacklist [Name] - entfernt Name von Schwarzer Liste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2715"/>
+        <location filename="winshare_network.cpp" line="2739"/>
         <source>/unignore [name] - remove name from ignore list</source>
         <translation>/unignore [Name] - entfernt Name von Ignorieren Liste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2719"/>
+        <location filename="winshare_network.cpp" line="2743"/>
         <source>/uptime - show system uptime</source>
         <translation>/uptime - zeigt Betriebszeit</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2721"/>
+        <location filename="winshare_network.cpp" line="2745"/>
         <source>/users - show number of users connected</source>
         <translation>/users - zeigt Anzahl verbundener Benutzer</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2723"/>
+        <location filename="winshare_network.cpp" line="2747"/>
         <source>/version - show client version strings</source>
         <translation>/version - zeigt Klient Version Strings</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2727"/>
+        <location filename="winshare_network.cpp" line="2751"/>
         <source>/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)</source>
         <translation>/watch [pattern] - setzt Beobachtungsmuster (Benutzername oder mehrere Namen oder Stichwort)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2733"/>
+        <location filename="winshare_network.cpp" line="2757"/>
         <source>Admin Command Reference</source>
         <translation>Admin Kommando Übersicht</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2736"/>
+        <location filename="winshare_network.cpp" line="2760"/>
         <source>/addbans [users] - add bans by user names or session ids</source>
         <translation>/addbans [Benutzer] - fügt verbannte Benutzer per Namen oder Sitzungs-IDs hinzu</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2738"/>
+        <location filename="winshare_network.cpp" line="2762"/>
         <source>/addipbans [ips] - add bans by ip addresses</source>
         <translation>/addipbans [IPs] - fügt Verbannte per IP Adresse hinzu</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2740"/>
+        <location filename="winshare_network.cpp" line="2764"/>
         <source>/kick [users] - kick by user names or session ids</source>
         <translation>/kick [Benutzer] - hinauswerfen von Benutzern per Namen oder Sitzungs IDs</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2742"/>
+        <location filename="winshare_network.cpp" line="2766"/>
         <source>/kickips [ips] - kick by ip addresses</source>
         <translation>/kickips [IPs] - hinauswerfen per IP Adresse</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2744"/>
+        <location filename="winshare_network.cpp" line="2768"/>
         <source>/rembans [users] - remove bans by user names</source>
         <translation>/rembans [Benutzer] - entfernen Verbannter per Benutzername</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2746"/>
+        <location filename="winshare_network.cpp" line="2770"/>
         <source>/remipbans [ips] - remove bans by ip addresses</source>
         <translation>/remipbans [IPs] - entfernen Verbannter per IP Adresse</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2748"/>
+        <location filename="winshare_network.cpp" line="2772"/>
         <source>/require [ips] - add require mask</source>
         <translation>/require [IPs] - Suchmaske hinzufügen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2750"/>
+        <location filename="winshare_network.cpp" line="2774"/>
         <source>/unrequire [ips] - remove require mask</source>
         <translation>/unrequire [IPs] - Suchmaske entfernen</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2754"/>
+        <location filename="winshare_network.cpp" line="2778"/>
         <source>The list of commands is being worked on. More will be added</source>
         <translation>Die Liste der Befehle wird ständig erweitert. Es weden mehr</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2756"/>
+        <location filename="winshare_network.cpp" line="2780"/>
         <source>as time goes on.</source>
         <translation>mit der Zeit.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2814"/>
+        <location filename="winshare_network.cpp" line="2838"/>
         <source>Help for %1:</source>
         <translation>Hilfe für %1:</translation>
     </message>
@@ -4170,7 +4175,7 @@ Date: %4</translation>
         <translation>Neuverbinden in 1 Minute!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2707"/>
+        <location filename="winshare_network.cpp" line="2731"/>
         <source>/time [nick] [gmt] - request time stamp from other user</source>
         <translation>/time [nick] [gmt] - Erfragen der Zeitmarke von anderem Benutzer</translation>
     </message>
@@ -4188,12 +4193,12 @@ Date: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="265"/>
         <location filename="winshare_network.cpp" line="273"/>
-        <location filename="winshare_network.cpp" line="3108"/>
+        <location filename="winshare_network.cpp" line="3132"/>
         <source>Current compression: %1</source>
         <translation>Aktuelle Kompression: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2599"/>
+        <location filename="winshare_network.cpp" line="2623"/>
         <source>/compression [level] - set or view message compression level</source>
         <translation>/compression [Level] - Meldung Kompression Level setzen oder sehen</translation>
     </message>
@@ -4203,7 +4208,7 @@ Date: %4</translation>
         <translation>Läuft: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2679"/>
+        <location filename="winshare_network.cpp" line="2703"/>
         <source>/running - show time elapsed since you started Unizone</source>
         <translation>/running - zeigt die verstrichene Zeit seit Deinem Unizone Start</translation>
     </message>
@@ -4238,7 +4243,7 @@ Date: %4</translation>
         <translation>Beobachtungsmuster gesetzt zu %1.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2967"/>
+        <location filename="winshare_network.cpp" line="2991"/>
         <source>- Local File: %1</source>
         <translation>- Lokale Datei: %1</translation>
     </message>
@@ -4258,38 +4263,38 @@ Date: %4</translation>
         <translation>Statusleiste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1132"/>
+        <location filename="winshare_network.cpp" line="1154"/>
         <source>Unizone version: %1</source>
         <translation>Unizone Version: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2595"/>
+        <location filename="winshare_network.cpp" line="2619"/>
         <source>/clearresumes - clear all pending resumes</source>
         <translation>/clearresumes - lösche alle laufenden Resumes</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3020"/>
+        <location filename="winshare_network.cpp" line="3044"/>
         <source>Cleared resume list.</source>
         <translation>Resume Liste gelöscht.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1077"/>
-        <location filename="winshare_network.cpp" line="1148"/>
-        <location filename="winshare_network.cpp" line="2789"/>
+        <location filename="winshare_network.cpp" line="1099"/>
+        <location filename="winshare_network.cpp" line="1170"/>
+        <location filename="winshare_network.cpp" line="2813"/>
         <source>1. %1</source>
         <translation>1. %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1079"/>
-        <location filename="winshare_network.cpp" line="1150"/>
-        <location filename="winshare_network.cpp" line="2793"/>
+        <location filename="winshare_network.cpp" line="1101"/>
+        <location filename="winshare_network.cpp" line="1172"/>
+        <location filename="winshare_network.cpp" line="2817"/>
         <source>2. %1</source>
         <translation>2. %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1076"/>
-        <location filename="winshare_network.cpp" line="1147"/>
-        <location filename="winshare_network.cpp" line="2787"/>
+        <location filename="winshare_network.cpp" line="1098"/>
+        <location filename="winshare_network.cpp" line="1169"/>
+        <location filename="winshare_network.cpp" line="2811"/>
         <source>On Connect:</source>
         <translation>Verbunden:</translation>
     </message>
@@ -4304,30 +4309,30 @@ Date: %4</translation>
         <translation>Lade Datei %1 von User #%2 herunter.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2675"/>
+        <location filename="winshare_network.cpp" line="2699"/>
         <source>/reverse [text] - say text in reverse</source>
         <translation>/reverse [text] - sage den Text umgekehrt</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2677"/>
+        <location filename="winshare_network.cpp" line="2701"/>
         <source>/revsay [nick]: [text] - say text reversed but prefix with nick</source>
         <translation>/revsay [nick]: [text] - sage den Text umgekehrt, aber Präfix mit Nick</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1072"/>
-        <location filename="winshare_network.cpp" line="1143"/>
-        <location filename="winshare_network.cpp" line="2782"/>
+        <location filename="winshare_network.cpp" line="1094"/>
+        <location filename="winshare_network.cpp" line="1165"/>
+        <location filename="winshare_network.cpp" line="2806"/>
         <source>On Connect: Do Nothing ;)</source>
         <translation>Beim Verbinden: Nichts tun ;)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1025"/>
-        <location filename="winshare_network.cpp" line="2547"/>
+        <location filename="winshare_network.cpp" line="1047"/>
+        <location filename="winshare_network.cpp" line="2569"/>
         <source>&amp;lt;None&amp;gt;</source>
         <translation>&amp;lt;None&amp;gt;</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2631"/>
+        <location filename="winshare_network.cpp" line="2655"/>
         <source>/ip [user|host] - give information about host</source>
         <translation>/ip [user|host] - give information about host</translation>
     </message>
@@ -4376,42 +4381,52 @@ Date: %4</translation>
         <translation>Fehler beim updaten der Muster Liste!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1048"/>
+        <location filename="winshare_network.cpp" line="992"/>
+        <source>Server already exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="winshare_network.cpp" line="998"/>
+        <source>Server %1 added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="winshare_network.cpp" line="1070"/>
         <source>Filter list pattern: %1</source>
         <translation>Filter Liste Muster: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1066"/>
+        <location filename="winshare_network.cpp" line="1088"/>
         <source>Whitelist pattern: %1</source>
         <translation>Weiße Liste Muster: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2559"/>
+        <location filename="winshare_network.cpp" line="2581"/>
         <source>/addfilter [pattern] - update the word filter pattern</source>
         <translation>/addfilter [pattern] - updated das Wort Filter Muster</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2561"/>
+        <location filename="winshare_network.cpp" line="2583"/>
         <source>/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)</source>
         <translation>addwhitelist [pattern] - updated das Weiße Liste Muster (kann ein Benutzername sein,verschiedene Namen, oder einfache Ausdrücke)</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2615"/>
+        <location filename="winshare_network.cpp" line="2639"/>
         <source>/filter [pattern] - set the word filter pattern</source>
         <translation>/filter [pattern] - setze Wortfiltermuster</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2713"/>
+        <location filename="winshare_network.cpp" line="2737"/>
         <source>/unfilter [pattern] - remove pattern from word filters</source>
         <translation>/unfilter [pattern] - entferne Muster vom Wortfilter</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2717"/>
+        <location filename="winshare_network.cpp" line="2741"/>
         <source>/unwhitelist [name] - remove name from whitelist</source>
         <translation>/unwhitelist [name] - entfernt Name von der Weißen Liste</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2729"/>
+        <location filename="winshare_network.cpp" line="2753"/>
         <source>/whitelist [pattern] - set the whitelist pattern</source>
         <translation>/whitelist [pattern] - setzt das Weiße Liste Muster</translation>
     </message>
@@ -4427,12 +4442,12 @@ Date: %4</translation>
         <translation>Fehlerhafter Nickname!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2653"/>
+        <location filename="winshare_network.cpp" line="2677"/>
         <source>/picture [name or session ids] - send picture to other clients</source>
         <translation>/picture [Name oder Sitzungs ID] - send picture to other clients</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2725"/>
+        <location filename="winshare_network.cpp" line="2749"/>
         <source>/view - view picture on local machine</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4447,12 +4462,12 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1156"/>
+        <location filename="winshare_network.cpp" line="1178"/>
         <source>Memory used: %1</source>
         <translation>Memory used: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2638"/>
+        <location filename="winshare_network.cpp" line="2662"/>
         <source>/memory - show number of bytes Unizone is using memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4462,87 +4477,87 @@ Date: %4</translation>
         <translation>Copyright (C) %1 Mika T. Lindqvist.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1445"/>
-        <location filename="winshare_network.cpp" line="1469"/>
+        <location filename="winshare_network.cpp" line="1467"/>
+        <location filename="winshare_network.cpp" line="1491"/>
         <source>Bad Conversion!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1449"/>
+        <location filename="winshare_network.cpp" line="1471"/>
         <source>%1 degrees in %2 is:</source>
         <translation>%1 degrees in %2 is:</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1453"/>
+        <location filename="winshare_network.cpp" line="1475"/>
         <source>%1 degrees Celsius</source>
         <translation>%1 degrees Celsius</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1458"/>
+        <location filename="winshare_network.cpp" line="1480"/>
         <source>%1 degrees Fahrenheit</source>
         <translation>%1 degrees Fahrenheit</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1463"/>
+        <location filename="winshare_network.cpp" line="1485"/>
         <source>%1 degrees Kelvin</source>
         <translation>%1 degrees Kelvin</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2703"/>
+        <location filename="winshare_network.cpp" line="2727"/>
         <source>/temp [temperature] [C|F|K] - convert between temperature units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1181"/>
+        <location filename="winshare_network.cpp" line="1203"/>
         <source>Encrypted: %1</source>
         <translation>Encrypted: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1191"/>
+        <location filename="winshare_network.cpp" line="1213"/>
         <source>Decrypted: %1</source>
         <translation>Decrypted: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1202"/>
-        <location filename="winshare_network.cpp" line="1223"/>
-        <location filename="winshare_network.cpp" line="1241"/>
+        <location filename="winshare_network.cpp" line="1224"/>
+        <location filename="winshare_network.cpp" line="1245"/>
+        <location filename="winshare_network.cpp" line="1263"/>
         <source>Decoded: %1</source>
         <translation>Decoded: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1212"/>
-        <location filename="winshare_network.cpp" line="1231"/>
-        <location filename="winshare_network.cpp" line="1251"/>
+        <location filename="winshare_network.cpp" line="1234"/>
+        <location filename="winshare_network.cpp" line="1253"/>
+        <location filename="winshare_network.cpp" line="1273"/>
         <source>Encoded: %1</source>
         <translation>Encoded: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2603"/>
+        <location filename="winshare_network.cpp" line="2627"/>
         <source>/crypt - encrypt text and display it as hexadecimal data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2605"/>
+        <location filename="winshare_network.cpp" line="2629"/>
         <source>/decrypt - decrypt text and display it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2611"/>
+        <location filename="winshare_network.cpp" line="2635"/>
         <source>/emsg [name] [message] - send an encrypted private message</source>
         <translation>/emsg [Name] [Nachricht] - sende enkryptiert private Nachricht</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2613"/>
+        <location filename="winshare_network.cpp" line="2637"/>
         <source>/encryption [on|off] - toggle encryption in private windows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2623"/>
+        <location filename="winshare_network.cpp" line="2647"/>
         <source>/hexdecode - decode hexadecimal data and display it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2625"/>
+        <location filename="winshare_network.cpp" line="2649"/>
         <source>/hexencode - encode as hexadecimal data and display it</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4552,12 +4567,12 @@ Date: %4</translation>
         <translation>Willkommen bei Unizone (Deutsch)!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2573"/>
+        <location filename="winshare_network.cpp" line="2597"/>
         <source>/bindecode - decode binary data and display it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2575"/>
+        <location filename="winshare_network.cpp" line="2599"/>
         <source>/binencode - encode as binary data and display it</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4567,22 +4582,22 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1134"/>
+        <location filename="winshare_network.cpp" line="1156"/>
         <source>zlib version: %1</source>
         <translation>zlib version: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2645"/>
+        <location filename="winshare_network.cpp" line="2669"/>
         <source>/octdecode - decode octal data and display it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2647"/>
+        <location filename="winshare_network.cpp" line="2671"/>
         <source>/octencode - encode as octal data and display it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3110"/>
+        <location filename="winshare_network.cpp" line="3134"/>
         <source>Logging in...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4603,43 +4618,43 @@ Date: %4</translation>
         <translation>Private Message redirect pattern set to: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1037"/>
-        <location filename="winshare_network.cpp" line="2765"/>
+        <location filename="winshare_network.cpp" line="1059"/>
+        <location filename="winshare_network.cpp" line="2789"/>
         <source>Private Message redirect pattern: %1</source>
         <translation>Private Message redirect pattern: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2661"/>
+        <location filename="winshare_network.cpp" line="2685"/>
         <source>/redirect [nick] - Redirect all private messages to another user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1135"/>
+        <location filename="winshare_network.cpp" line="1157"/>
         <source>Qt version: %1</source>
         <translation>Qt version: %1</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2455"/>
+        <location filename="winshare_network.cpp" line="2477"/>
         <source>You must change your nickname before connecting!</source>
         <translation>Sie müssen Ihren Nickname vor dem Verbinden ändern!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2456"/>
+        <location filename="winshare_network.cpp" line="2478"/>
         <source>We prefer that none of the nicknames contain word &apos;binky&apos;.</source>
         <translation>Keiner der Nicknames sollte &apos;binky&apos; enthalten.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2685"/>
+        <location filename="winshare_network.cpp" line="2709"/>
         <source>/screenshot - grab screenshot and save to file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2577"/>
+        <location filename="winshare_network.cpp" line="2601"/>
         <source>/binsay [nick]: [text] - say text in binary but prefix with nick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2627"/>
+        <location filename="winshare_network.cpp" line="2651"/>
         <source>/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4654,62 +4669,62 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2485"/>
+        <location filename="winshare_network.cpp" line="2507"/>
         <source>Connecting...</source>
         <translation>Verbinde...</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1128"/>
+        <location filename="winshare_network.cpp" line="1150"/>
         <source>Resuming files is %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1128"/>
+        <location filename="winshare_network.cpp" line="1150"/>
         <source>enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="1128"/>
+        <location filename="winshare_network.cpp" line="1150"/>
         <source>disabled</source>
         <translation>deaktiviert</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2651"/>
+        <location filename="winshare_network.cpp" line="2675"/>
         <source>/pauseresumes - toggle resuming of file transfers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2701"/>
+        <location filename="winshare_network.cpp" line="2725"/>
         <source>/stopresume [index] - stop resuming file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2999"/>
+        <location filename="winshare_network.cpp" line="3023"/>
         <source>Removed file &apos;%1&apos; from resume list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2974"/>
+        <location filename="winshare_network.cpp" line="2998"/>
         <source>Total:</source>
         <translation>Gesamt:</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2977"/>
+        <location filename="winshare_network.cpp" line="3001"/>
         <source>1 file</source>
         <translation>1 Datei</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2979"/>
+        <location filename="winshare_network.cpp" line="3003"/>
         <source>%1 files</source>
         <translation>%1 Dateien</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2617"/>
+        <location filename="winshare_network.cpp" line="2641"/>
         <source>/google [string] - open entry in Google</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="2731"/>
+        <location filename="winshare_network.cpp" line="2755"/>
         <source>/wiki [string] - open entry in Wikipedia</source>
         <translation type="unfinished"></translation>
     </message>

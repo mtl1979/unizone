@@ -976,11 +976,33 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					PrintError(tr("Invalid index."));
 			}
 		}
+		else if (CompareCommand(sendText, "/addserver"))
+		{
+			QString server = GetParameterString(sendText);
+
+			if (!server.isEmpty())
+			{
+				QString serverStr = server.stripWhiteSpace();
+
+				for (int i = 0; i < fServerList->count(); i++)
+				{
+					QString slist = fServerList->text(i).stripWhiteSpace();
+					if (slist.lower() == serverStr.lower())
+					{
+						PrintError(tr("Server already exists!"));
+						return;
+					}
+				}
+				// the easy way to add the server to the list...
+				GotUpdateCmd("addserver", serverStr);
+				PrintSystem(tr("Server %1 added.").arg(serverStr));
+			}
+		}
 		else if (CompareCommand(sendText, "/remserver"))
 		{
-			QString user = GetParameterString(sendText);
+			QString index = GetParameterString(sendText);
 			
-			if (user.isEmpty())
+			if (index.isEmpty())
 			{
 				if (fSettings->GetError())
 					PrintError(tr("No index specified."));
@@ -988,7 +1010,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 			{
 				bool ok;
-				int u = user.toInt(&ok);
+				int u = index.toInt(&ok);
 				if (ok && (u < fServerList->count()))
 				{
 					PrintSystem(tr("Server %1 (%2) removed").arg(u).arg(fServerList->text(u)));
@@ -2562,6 +2584,8 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)");
 	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=  tr("/addserver [server] - add server to server list without connecting");
+	helpText			+=  "\n\t\t\t\t";
 	helpText			+=	tr("/adduser [name or session ids] - add users to a private chat window (works in private windows only!)");
 	helpText			+=	"\n\t\t\t\t"; 
 	helpText			+=	tr("/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)");

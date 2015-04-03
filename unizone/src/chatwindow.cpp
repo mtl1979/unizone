@@ -218,7 +218,8 @@ ChatWindow::ParseChatText(const QString & str)
 			QString urltmp = "<a href=\"";
 			if ( qUrl.startsWith("www.") )		urltmp += "http://";
 			if ( qUrl.startsWith("ftp.") )		urltmp += "ftp://";
-			if ( qUrl.startsWith("beshare.") )	urltmp += "server://";
+			if ( qUrl.startsWith("beshare.", Qt::CaseInsensitive) )
+				urltmp += "server://";
 			if ( qUrl.startsWith("irc.") )		urltmp += "irc://";
 			urltmp += qUrl;
 			urltmp += "\">";
