@@ -80,10 +80,13 @@ public slots:
 	void ChannelPublic(const QString &, const QString &, bool);
 	void ChannelOwner(const QString &, const QString &, const QString &);
 	void UserIDChanged(const QString &, const QString &);
+	void ServerConnected();
+	void ServerDisconnected();
 
 private slots:
 	void CreateChannel();
 	void JoinChannel();
+	void ChannelSelected();
 
 
 signals:

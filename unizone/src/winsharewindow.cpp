@@ -2194,7 +2194,7 @@ WinShareWindow::OpenUpload()
 void
 WinShareWindow::OpenDownloads()
 {
-	if (fDLWindow && !fDLWindow->isHidden())
+	if (fDLWindow && fDLWindow->isVisible())
 		fDLWindow->hide();
 	else
 		OpenDownload();
@@ -2203,7 +2203,7 @@ WinShareWindow::OpenDownloads()
 void
 WinShareWindow::OpenUploads()
 {
-	if (fULWindow && fULWindow->isHidden())
+	if (fULWindow && fULWindow->isVisible())
 		fULWindow->hide();
 	else
 		OpenUpload();
@@ -2220,10 +2220,10 @@ WinShareWindow::OpenSearch()
 		fSearch->LoadSettings();
 	}
 
-	if (fSearch->isHidden())
-		fSearch->show();
-	else
+	if (fSearch->isVisible())
 		fSearch->hide();
+	else
+		fSearch->show();
 }
 
 void
@@ -2268,19 +2268,19 @@ WinShareWindow::OpenViewer()
 		fPicViewer->LoadSettings();
 	}
 
-	if (fPicViewer->isHidden())
-		fPicViewer->show();
-	else
+	if (fPicViewer->isVisible())
 		fPicViewer->hide();
+	else
+		fPicViewer->show();
 }
 
 void
 WinShareWindow::OpenChannels()
 {
-	if (fChannels->isHidden())
-		fChannels->show();
-	else
+	if (fChannels->isVisible())
 		fChannels->hide();
+	else
+		fChannels->show();
 }
 
 void

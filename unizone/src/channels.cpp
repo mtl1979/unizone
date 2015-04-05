@@ -44,6 +44,7 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 
 	ChannelList = new Q3ListView( this, "ChannelList" );
 	Q_CHECK_PTR(ChannelList);
+	connect(ChannelList, SIGNAL(SelectionChanged()), this, SLOT(ChannelSelected()));
 
 	ChannelList->addColumn( tr( "Name" ) );
 	ChannelList->addColumn( tr( "Topic" ) );
@@ -55,11 +56,14 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 	
 	Create = new QPushButton( tr( "&Create" ), this, "Create" );
 	Q_CHECK_PTR(Create);
+	Create->setEnabled(fNetClient->IsConnected());
 
 	fChannelsTab->addWidget(Create, 6, 1);
 
 	Join = new QPushButton( tr( "&Join" ), this, "Join" );
 	Q_CHECK_PTR(Join);
+	Join->setEnabled(false);
+
 
 	fChannelsTab->addWidget(Join, 6, 3);
 
@@ -87,7 +91,8 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 		fNetClient, SIGNAL(UserIDChanged(const QString &, const QString &)),
 		this, SLOT(UserIDChanged(const QString &, const QString &))
 		);
-
+	connect(fNetClient, SIGNAL(ConnectedToServer()), this, SLOT(ServerConnected()));
+	connect(fNetClient, SIGNAL(DisconnectedFromServer()), this, SLOT(ServerDisconnected()));
 	// Window widget events
 	connect(Create, SIGNAL(clicked()), this, SLOT(CreateChannel()));
 	connect(Join, SIGNAL(clicked()), this, SLOT(JoinChannel()));
@@ -818,5 +823,40 @@ Channels::HandleMessage(MessageRef & msg)
 				}
 				break;
 			}
+	}
+}
+
+void
+Channels::ServerConnected()
+{
+	Create->setEnabled(true);
+}
+
+void
+Channels::ServerDisconnected()
+{
+	Create->setEnabled(false);
+	Join->setEnabled(false);
+}
+
+void
+Channels::ChannelSelected()
+{
+	if (fNetClient->IsConnected())
+	{
+		if (ChannelList->selectedItem() != NULL)
+		{
+			QString channel = ChannelList->selectedItem()->text(0);
+			ChannelInfo * info;
+			if (fChannels.GetValue(channel, info) == B_OK)
+			{
+				if (!info->FindUser(gWin->GetUserID()))
+				{
+					Join->setEnabled(true);
+					return;
+				}
+			}
+		}
+		Join->setEnabled(false);
 	}
 }

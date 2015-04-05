@@ -97,6 +97,12 @@ ChannelInfo::RemoveUser(const QString & user)
 	}
 }
 
+bool
+ChannelInfo::FindUser(const QString & user)
+{
+	return fUsers.IndexOf(user) != -1; 
+}
+
 void
 ChannelInfo::AddAdmin(const QString & user)
 {

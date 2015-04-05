@@ -34,6 +34,7 @@ public:
 
 	void AddUser(const QString &);
 	void RemoveUser(const QString &);
+	bool FindUser(const QString &);
 	QString GetUsers() const;
 	int NumUsers() const; 
 

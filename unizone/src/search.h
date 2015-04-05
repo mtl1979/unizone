@@ -105,6 +105,9 @@ public slots:
 	void StopSearch();
 
 private slots:
+	void ServerConnected();
+	void ServerDisconnected();
+
 	void AddFile(const WUserRef &, const QString &, bool, MessageRef);
 	void RemoveFile(const WUserRef &, const QString &);
 

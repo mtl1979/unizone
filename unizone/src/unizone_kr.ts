@@ -205,78 +205,78 @@
 <context>
     <name>Channels</name>
     <message>
-        <location filename="channels.cpp" line="214"/>
-        <location filename="channels.cpp" line="541"/>
-        <location filename="channels.cpp" line="560"/>
+        <location filename="channels.cpp" line="219"/>
+        <location filename="channels.cpp" line="546"/>
+        <location filename="channels.cpp" line="565"/>
         <source>Yes</source>
         <translation>예</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="214"/>
-        <location filename="channels.cpp" line="541"/>
-        <location filename="channels.cpp" line="560"/>
+        <location filename="channels.cpp" line="219"/>
+        <location filename="channels.cpp" line="546"/>
+        <location filename="channels.cpp" line="565"/>
         <source>No</source>
         <translation>아니오</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="228"/>
+        <location filename="channels.cpp" line="233"/>
         <source>Create Channel</source>
         <translation>채널 만들기</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="229"/>
+        <location filename="channels.cpp" line="234"/>
         <source>Please enter channel name</source>
         <translation>채널 이름을 입력하여 주십시요</translation>
     </message>
     <message>
         <location filename="channels.cpp" line="22"/>
-        <location filename="channels.cpp" line="539"/>
-        <location filename="channels.cpp" line="558"/>
+        <location filename="channels.cpp" line="544"/>
+        <location filename="channels.cpp" line="563"/>
         <source>Channels</source>
         <translation>채널</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="540"/>
+        <location filename="channels.cpp" line="545"/>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
         <translation>사용자 #%1 님이 채널 %2 로 당신을 초대하셨습니다. 허락하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="559"/>
+        <location filename="channels.cpp" line="564"/>
         <source>User #%1 requested invite to channel %2. Do you?</source>
         <translation>사용자 #%1 님이 채널 %2로 초대를 요청하셨습니다. 응답하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="48"/>
+        <location filename="channels.cpp" line="49"/>
         <source>Name</source>
         <translation>이름</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="49"/>
+        <location filename="channels.cpp" line="50"/>
         <source>Topic</source>
         <translation>주제</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="50"/>
+        <location filename="channels.cpp" line="51"/>
         <source>Users</source>
         <translation>사용자</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="51"/>
+        <location filename="channels.cpp" line="52"/>
         <source>Admins</source>
         <translation>관리자</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="52"/>
+        <location filename="channels.cpp" line="53"/>
         <source>Public</source>
         <translation>일반</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="56"/>
+        <location filename="channels.cpp" line="57"/>
         <source>&amp;Create</source>
         <translation>만들기(&amp;C)</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="61"/>
+        <location filename="channels.cpp" line="63"/>
         <source>&amp;Join</source>
         <translation>참가하기(&amp;J)</translation>
     </message>
@@ -999,7 +999,7 @@ Date: %4</source>
         <translation>당신은 %1 [%2]에 허락되지 않았습니다</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1367"/>
+        <location filename="netclient.cpp" line="1368"/>
         <source>Send Queue Overflow!</source>
         <translation></translation>
     </message>
@@ -2695,18 +2695,21 @@ Date: %4</source>
         <translation>중단</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="188"/>
-        <location filename="search.cpp" line="344"/>
+        <location filename="search.cpp" line="194"/>
+        <location filename="search.cpp" line="360"/>
+        <location filename="search.cpp" line="1007"/>
         <source>Idle.</source>
         <translation>대기.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="445"/>
+        <location filename="search.cpp" line="200"/>
+        <location filename="search.cpp" line="465"/>
+        <location filename="search.cpp" line="1018"/>
         <source>Not connected.</source>
         <translation>연결되지 않았습니다.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="851"/>
+        <location filename="search.cpp" line="873"/>
         <source>Results: %1</source>
         <translation>결과: %1</translation>
     </message>
@@ -2716,27 +2719,27 @@ Date: %4</source>
         <translation>Clear History</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="512"/>
+        <location filename="search.cpp" line="532"/>
         <source>User(s) not found!</source>
         <translation>사용자를 찾을 수 없습니다!</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="761"/>
+        <location filename="search.cpp" line="781"/>
         <source>Initializing...</source>
         <translation>Initializing...</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="775"/>
+        <location filename="search.cpp" line="795"/>
         <source>Searching for: &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="search.cpp" line="776"/>
+        <location filename="search.cpp" line="796"/>
         <source>active</source>
         <translation>active</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="965"/>
+        <location filename="search.cpp" line="994"/>
         <source>passive</source>
         <translation>passive</translation>
     </message>

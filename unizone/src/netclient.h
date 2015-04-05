@@ -192,6 +192,7 @@ signals:
 	void UserConnected(const WUserRef &);
 	void UserNameChanged(const WUserRef &, const QString &, 
 		const QString &);
+	void ConnectedToServer();
 	void DisconnectedFromServer();
 	void UserStatusChanged(const WUserRef &, const QString &, 
 		const QString &);

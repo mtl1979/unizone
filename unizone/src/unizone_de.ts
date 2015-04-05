@@ -205,78 +205,78 @@
 <context>
     <name>Channels</name>
     <message>
-        <location filename="channels.cpp" line="228"/>
+        <location filename="channels.cpp" line="233"/>
         <source>Create Channel</source>
         <translation>Erzeuge Channel</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="229"/>
+        <location filename="channels.cpp" line="234"/>
         <source>Please enter channel name</source>
         <translation>Bitte den Namen des Channels eingeben</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="214"/>
-        <location filename="channels.cpp" line="541"/>
-        <location filename="channels.cpp" line="560"/>
+        <location filename="channels.cpp" line="219"/>
+        <location filename="channels.cpp" line="546"/>
+        <location filename="channels.cpp" line="565"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="214"/>
-        <location filename="channels.cpp" line="541"/>
-        <location filename="channels.cpp" line="560"/>
+        <location filename="channels.cpp" line="219"/>
+        <location filename="channels.cpp" line="546"/>
+        <location filename="channels.cpp" line="565"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
         <location filename="channels.cpp" line="22"/>
-        <location filename="channels.cpp" line="539"/>
-        <location filename="channels.cpp" line="558"/>
+        <location filename="channels.cpp" line="544"/>
+        <location filename="channels.cpp" line="563"/>
         <source>Channels</source>
         <translation>Channels</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="559"/>
+        <location filename="channels.cpp" line="564"/>
         <source>User #%1 requested invite to channel %2. Do you?</source>
         <translation>Benutzer #%1 fragt nach Einladung zum Channel %2. Was nun?</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="540"/>
+        <location filename="channels.cpp" line="545"/>
         <source>User #%1 invited you to channel %2. Do you accept?</source>
         <translation>Benutzer #%1 lädt Dich ein zum Channel %2. Akzeptieren?</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="48"/>
+        <location filename="channels.cpp" line="49"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="49"/>
+        <location filename="channels.cpp" line="50"/>
         <source>Topic</source>
         <translation>Thema</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="50"/>
+        <location filename="channels.cpp" line="51"/>
         <source>Users</source>
         <translation>Benutzer</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="51"/>
+        <location filename="channels.cpp" line="52"/>
         <source>Admins</source>
         <translation>Admins</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="52"/>
+        <location filename="channels.cpp" line="53"/>
         <source>Public</source>
         <translation>Publik</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="56"/>
+        <location filename="channels.cpp" line="57"/>
         <source>&amp;Create</source>
         <translation>&amp;Erstellen</translation>
     </message>
     <message>
-        <location filename="channels.cpp" line="61"/>
+        <location filename="channels.cpp" line="63"/>
         <source>&amp;Join</source>
         <translation>&amp;Anschließen</translation>
     </message>
@@ -999,7 +999,7 @@ Date: %4</translation>
         <translation>Nicht Gestattet zu %1 [%2]</translation>
     </message>
     <message>
-        <location filename="netclient.cpp" line="1367"/>
+        <location filename="netclient.cpp" line="1368"/>
         <source>Send Queue Overflow!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2695,18 +2695,21 @@ Date: %4</translation>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="188"/>
-        <location filename="search.cpp" line="344"/>
+        <location filename="search.cpp" line="194"/>
+        <location filename="search.cpp" line="360"/>
+        <location filename="search.cpp" line="1007"/>
         <source>Idle.</source>
         <translation>Bereit.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="445"/>
+        <location filename="search.cpp" line="200"/>
+        <location filename="search.cpp" line="465"/>
+        <location filename="search.cpp" line="1018"/>
         <source>Not connected.</source>
         <translation>Nicht verbunden.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="851"/>
+        <location filename="search.cpp" line="873"/>
         <source>Results: %1</source>
         <translation>Ergebnisse: %1</translation>
     </message>
@@ -2716,27 +2719,27 @@ Date: %4</translation>
         <translation>Historie löschen</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="512"/>
+        <location filename="search.cpp" line="532"/>
         <source>User(s) not found!</source>
         <translation>Benutzer nicht gefunden!</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="761"/>
+        <location filename="search.cpp" line="781"/>
         <source>Initializing...</source>
         <translation>Initialisieren...</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="775"/>
+        <location filename="search.cpp" line="795"/>
         <source>Searching for: &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="search.cpp" line="776"/>
+        <location filename="search.cpp" line="796"/>
         <source>active</source>
         <translation>activ</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="965"/>
+        <location filename="search.cpp" line="994"/>
         <source>passive</source>
         <translation>passiv</translation>
     </message>

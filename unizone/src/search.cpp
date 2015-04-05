@@ -178,6 +178,8 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 			this, SLOT(AddFile(const WUserRef &, const QString &, bool, MessageRef)));
 	connect(fNetClient, SIGNAL(RemoveFile(const WUserRef &, const QString &)), 
 			this, SLOT(RemoveFile(const WUserRef &, const QString &)));
+	connect(fNetClient, SIGNAL(ConnectedToServer()), this, SLOT(ServerConnected()));
+	connect(fNetClient, SIGNAL(DisconnectedFromServer()), this, SLOT(ServerDisconnected()));
 
 	connect(fClear, SIGNAL(clicked()), this, SLOT(ClearList()));
 	connect(fStop, SIGNAL(clicked()), this, SLOT(StopSearch()));
@@ -185,7 +187,18 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	connect(fDownloadAll, SIGNAL(clicked()), this, SLOT(DownloadAll()));
 	connect(fClearHistory, SIGNAL(clicked()), this, SLOT(ClearHistory()));
 
-	SetSearchStatus(tr("Idle."));
+	fClear->setEnabled(false);
+	fClearHistory->setEnabled(fSearchEdit->count() > 0);
+
+	if (fNetClient->IsConnected())
+		SetSearchStatus(tr("Idle."));
+	else
+	{
+		fStop->setEnabled(false);
+		fDownload->setEnabled(false);
+		fDownloadAll->setEnabled(false);
+		SetSearchStatus(tr("Not connected."));
+	}
 
 	//
 	// End of Search Pane
@@ -315,6 +328,9 @@ void
 WSearch::StopSearch()
 {
 	fSearchLock.Lock();
+
+	fStop->setEnabled(false);
+
 	if (!fCurrentSearchPattern.isEmpty())	// we actually have an old search pattern,
 	{
 		// cancel it
@@ -349,6 +365,8 @@ WSearch::StopSearch()
 void
 WSearch::ClearList()
 {
+	fClear->setEnabled(false);
+
 	fSearchLock.Lock();
 	// go through and empty the list
 	WFileInfo * info;
@@ -367,6 +385,8 @@ WSearch::ClearList()
 	// delete them NOW
 	fSearchList->clear();
 	fQueryBytes = 0;
+	fDownload->setEnabled(false);
+	fDownloadAll->setEnabled(false);
 	fSearchLock.Unlock();
 	SetSearchStatus(QString::null, 1);
 }
@@ -774,6 +794,8 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 
 	SetSearchStatus(tr("Searching for: \"%1\"").arg(UnSimplify(fileRegExp)));
 	SetSearchStatus(tr("active"), 2);
+
+	fStop->setEnabled(true);
 }
 
 void
@@ -852,6 +874,11 @@ WSearch::SetResultsMessage()
 	qmsg += " (";
 	qmsg += MakeSizeString(fQueryBytes);
 	qmsg += ")";
+
+	fClear->setEnabled(!fFileList.IsEmpty());
+	fDownload->setEnabled(!fFileList.IsEmpty());
+	fDownloadAll->setEnabled(fFileList.GetNumItems() > 1);
+		
 	SetSearchStatus(qmsg, 1);
 }
 
@@ -874,6 +901,7 @@ WSearch::SetSearch(const QString & pattern)
 			return;
 		}
 	}
+	fClearHistory->setEnabled(true);
 	fSearchEdit->insertItem(pattern, 0);
 	fSearchEdit->setCurrentItem(0);
 	GoSearch();
@@ -884,6 +912,7 @@ void
 WSearch::ClearHistory()
 {
 	fSearchEdit->clear();
+	fClearHistory->setEnabled(false);
 }
 
 void
@@ -933,7 +962,7 @@ WSearch::LoadSettings()
 		fSearchEdit->setCurrentItem(i);
 
 	fSearchList->setSorting(gWin->fSettings->GetSearchListSortColumn(), gWin->fSettings->GetSearchListSortAscending());
-
+	fClearHistory->setEnabled(fSearchEdit->count() > 0);
 }
 
 void
@@ -970,3 +999,22 @@ WSearch::SetSearchPassive()
 		GoSearch();
 	}
 }
+
+void
+WSearch::ServerConnected()
+{
+	if (fCurrentSearchPattern.isEmpty())
+		SetSearchStatus(tr("Idle."));
+	else
+		GoSearch(); // Resume old search
+}
+
+void
+WSearch::ServerDisconnected()
+{
+		fStop->setEnabled(false);
+		fDownload->setEnabled(false);
+		fDownloadAll->setEnabled(false);
+		SetSearchStatus(tr("Not connected."));
+}
+

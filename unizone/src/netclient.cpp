@@ -1155,6 +1155,7 @@ NetClient::SessionConnected(const String & /* sessionID */, const IPAddressAndPo
 
 	timerID = startTimer(15000);
 
+	emit ConnectedToServer();
 	SendSignal(NetClient::SESSION_CONNECTED);
 	PRINT("Returning\n");
 }
