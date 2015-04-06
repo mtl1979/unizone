@@ -43,36 +43,36 @@
 
 
 const char * kColorDesc[13] = {
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of other users' names." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of text sent by you and other users." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"System\"." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in a ping response." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Error\"." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in error messages." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of private text." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Action\"." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of URLs." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name in text when someone says your name in the main chat." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Warning\"." ),
-					QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in warning messages." )
-								};
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of other users' names." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of text sent by you and other users." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"System\"." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in a ping response." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Error\"." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in error messages." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of private text." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Action\"." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of URLs." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of your user name in text when someone says your name in the main chat." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of \"Warning\"." ),
+	QT_TRANSLATE_NOOP( "WPrefs", "This is the color of the text in warning messages." )
+};
 
 const char * kSampleText[13] = {
-									QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Remote User" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "<b>System</b> " ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "<b>Error</b>" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Error text" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Private text" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "<b>Action</b>" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "<u>http://magep.com/</u>" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "<b>Warning</b>" ),
-									QT_TRANSLATE_NOOP( "WPrefs", "Warning text" )
-								};
+	QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Remote User" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "<b>System</b> " ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Sample text" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "<b>Error</b>" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Error text" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Private text" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "<b>Action</b>" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "<u>http://magep.com/</u>" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Username" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "<b>Warning</b>" ),
+	QT_TRANSLATE_NOOP( "WPrefs", "Warning text" )
+};
 
 /*
  *  Constructs a prefs which is a child of 'parent', with the
@@ -158,6 +158,7 @@ WPrefs::WPrefs( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
 	ui->fSounds->setChecked(gWin->fSettings->GetSounds());
 	ui->fSoundFile->setText(gWin->fSettings->GetSoundFile());
 	ui->fIPAddresses->setChecked(gWin->fSettings->GetIPAddresses());
+	ui->fRegexs->setChecked(gWin->fSettings->GetRegexes());
 
 	ui->fStyleList->insertItem(tr("CDE"));
 #if defined(QT_NO_STYLE_CDE)
@@ -388,6 +389,7 @@ WPrefs::OK()
 	gWin->fSettings->SetSounds(ui->fSounds->isChecked());
 	gWin->fSettings->SetSoundFile(ui->fSoundFile->text());
 	gWin->fSettings->SetIPAddresses(ui->fIPAddresses->isChecked());
+	gWin->fSettings->SetRegexes(ui->fRegexs->isChecked());
 
 	// flash settings
 	int flags = WSettings::FlashNone;
