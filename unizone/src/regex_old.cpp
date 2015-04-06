@@ -50,6 +50,18 @@ bool FindDuplicatesOld(QStringList & l, bool simple)
 	int pos = 0;
 	int pos2 = 0;
 
+	// Convert all to lowercase
+	while (pos < l.count())
+	{
+		QString tmp = l.at(pos);
+		if (tmp != tmp.lower())
+		{
+			l.remove(tmp);
+			l.insert(pos, tmp.lower());
+		}
+		pos++;
+	}
+
 	if (l.count() == 1)
 		return false;
 
@@ -186,10 +198,10 @@ start:
 	if (!simple)
 	{
 		ret = "^";
-		if (s.count(",") > 0)
+		if (s.count("|") > 0)
 		{
 			bool found = false;
-			QStringList l = s.split(",");
+			QStringList l = s.split("|");
 			l.removeDuplicates();
 			if (l.count() == 1) // Only one item left
 			{

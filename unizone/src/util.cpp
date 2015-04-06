@@ -72,10 +72,13 @@ QString
 GetCommandString(const QString & qCommand)
 {
 	QString qCommand2 = qCommand.lower();
-	int sPos = qCommand2.find(" ");  // parameters should follow after <space> so they should be stripped off
-	if ((sPos > 0) && qCommand2.startsWith("/")) // Is / first letter?
+	if (qCommand2.startsWith("/")) // Is / first letter?
 	{
-		qCommand2.truncate(sPos);
+		int sPos = qCommand2.find(" ");  // parameters should follow after <space> so they should be stripped off
+		if (sPos > 0) 
+		{
+			qCommand2.truncate(sPos);
+		}
 	}
 	return qCommand2;
 }
@@ -483,18 +486,18 @@ GetServerPort(const QString & server)
 // Skip \ now, it's a special case
 bool IsRegexToken2(QChar c, bool isFirstCharInString)
 {
-   switch(c.unicode())
-   {
-      case '[': case ']': case '|': case '(': case ')': case '=': case '^': case '+': case '$': case '{':  case '}':
-	  case ':': case '-': case '.':
-        return true;
+	switch(c.unicode())
+	{
+		case '[': case ']': case '|': case '(': case ')': case '=': case '^': case '+': case '$': case '{':  case '}':
+		case ':': case '-': case '.':
+			return true;
 
-      case '<': case '~':   // these chars are only special if they are the first character in the string
-         return isFirstCharInString;
+		case '<': case '~':   // these chars are only special if they are the first character in the string
+			return isFirstCharInString;
 
-      default:
-         return false;
-   }
+		default:
+			return false;
+	}
 }
 
 bool IsRegexToken2(char c, bool isFirstCharInString)
@@ -544,39 +547,42 @@ void ConvertToRegex(QString & s, bool simple)
 		ConvertToRegexNew(s, simple);
 	else
 		ConvertToRegexOld(s, simple);
+	if (simple)
+		s.prepend("*").append("*");
 }
 
 bool HasRegexTokens(const QString & str)
 {
-   bool isFirst = true;
-   int x = 0;
-   while(x < str.length())
-   {
-      if (IsRegexToken2(str[x], isFirst)) return true;
-	  else if (str[x] == '*') return true;
-	  else if (str[x] == '?') return true;
-      else
-      {
-         x++;
-         isFirst = false;
-      }
-   }
-   return false;
+	bool isFirst = true;
+	int x = 0;
+	while(x < str.length())
+	{
+		if (IsRegexToken2(str[x], isFirst))
+			return true;
+		else if (str[x] == '*' || str[x] == '?')
+			return true;
+		else
+		{
+			x++;
+			isFirst = false;
+		}
+	}
+	return false;
 }
 
 const char * MonthNames[12] = {
-								QT_TRANSLATE_NOOP( "Date", "Jan" ),
-								QT_TRANSLATE_NOOP( "Date", "Feb" ),
-								QT_TRANSLATE_NOOP( "Date", "Mar" ),
-								QT_TRANSLATE_NOOP( "Date", "Apr" ),
-								QT_TRANSLATE_NOOP( "Date", "May" ),
-								QT_TRANSLATE_NOOP( "Date", "Jun" ),
-								QT_TRANSLATE_NOOP( "Date", "Jul" ),
-								QT_TRANSLATE_NOOP( "Date", "Aug" ),
-								QT_TRANSLATE_NOOP( "Date", "Sep" ),
-								QT_TRANSLATE_NOOP( "Date", "Oct" ),
-								QT_TRANSLATE_NOOP( "Date", "Nov" ),
-								QT_TRANSLATE_NOOP( "Date", "Dec" )
+	QT_TRANSLATE_NOOP( "Date", "Jan" ),
+	QT_TRANSLATE_NOOP( "Date", "Feb" ),
+	QT_TRANSLATE_NOOP( "Date", "Mar" ),
+	QT_TRANSLATE_NOOP( "Date", "Apr" ),
+	QT_TRANSLATE_NOOP( "Date", "May" ),
+	QT_TRANSLATE_NOOP( "Date", "Jun" ),
+	QT_TRANSLATE_NOOP( "Date", "Jul" ),
+	QT_TRANSLATE_NOOP( "Date", "Aug" ),
+	QT_TRANSLATE_NOOP( "Date", "Sep" ),
+	QT_TRANSLATE_NOOP( "Date", "Oct" ),
+	QT_TRANSLATE_NOOP( "Date", "Nov" ),
+	QT_TRANSLATE_NOOP( "Date", "Dec" )
 };
 
 QString TranslateMonth(const QString & m)
@@ -585,13 +591,13 @@ QString TranslateMonth(const QString & m)
 }
 
 const char * DayNames[7] = {
-								QT_TRANSLATE_NOOP( "Date", "Mon" ),
-								QT_TRANSLATE_NOOP( "Date", "Tue" ),
-								QT_TRANSLATE_NOOP( "Date", "Wed" ),
-								QT_TRANSLATE_NOOP( "Date", "Thu" ),
-								QT_TRANSLATE_NOOP( "Date", "Fri" ),
-								QT_TRANSLATE_NOOP( "Date", "Sat" ),
-								QT_TRANSLATE_NOOP( "Date", "Sun" )
+	QT_TRANSLATE_NOOP( "Date", "Mon" ),
+	QT_TRANSLATE_NOOP( "Date", "Tue" ),
+	QT_TRANSLATE_NOOP( "Date", "Wed" ),
+	QT_TRANSLATE_NOOP( "Date", "Thu" ),
+	QT_TRANSLATE_NOOP( "Date", "Fri" ),
+	QT_TRANSLATE_NOOP( "Date", "Sat" ),
+	QT_TRANSLATE_NOOP( "Date", "Sun" )
 };
 
 QString TranslateDay(const QString & d)
@@ -678,10 +684,7 @@ IsAction(const QString &text, const QString &user)
 {
 	bool ret = false;
 
-	if (text.startsWith(user + " "))
-		ret = true;
-
-	if (text.startsWith(user + "'s "))
+	if (text.startsWith(user + " ") || text.startsWith(user + "'s "))
 		ret = true;
 
 	return ret;
@@ -958,7 +961,7 @@ void HEXClean(QString &in)
 		if (
 			muscleInRange(c.unicode(), (unichar) '0', (unichar) '9') ||
 			muscleInRange(c.unicode(), (unichar) 'a', (unichar) 'f')
-		   )
+			)
 			tmp += c;
 	}
 	in = tmp;
@@ -991,7 +994,7 @@ void BINClean(QString &in)
 		while (p < 8)
 		{
 			if (s == in.length())
-			  break;
+				break;
 			QChar c = in[s++];
 			if (muscleInRange(c.unicode(), (unichar) '0', (unichar) '1'))
 				part += c;
@@ -1034,7 +1037,7 @@ void OCTClean(QString &in)
 		while (p < 3)
 		{
 			if (s == in.length())
-			  break;
+				break;
 			QChar c = in[s++];
 			if (muscleInRange(c.unicode(), (unichar) '0', (unichar) '6'))
 				part += c;
@@ -1156,7 +1159,7 @@ Match(const QString &string, const QRegExp &exp)
 int64
 ConvertPtr(void *ptr)
 {
-		return (int64) ((intptr_t) ptr);
+	return (int64) ((intptr_t) ptr);
 }
 
 bool BinkyCheck(const QString &user)
@@ -1261,11 +1264,14 @@ QString WikiEscape(const QString &page)
 	for (int x = 0; x < in.length(); x++)
 	{
 		const char c = in.at(x);
-		     if ((c >= '0') && (c <= '9')) out += c;
-		else if ((c >= 'a') && (c <= 'z')) out += c;
-		else if ((c >= 'A') && (c <= 'Z')) out += c;
-		else if ((c == '_') || (c == ' ')) out += '_';
-		else    out += "%" + chartohex(c);
+		if ( muscleInRange(c, '0', '9')
+			|| muscleInRange(c, 'a', 'z')
+			|| muscleInRange(c, 'A', 'Z') )
+			out += c;
+		else if ((c == '_') || (c == ' '))
+			out += '_';
+		else
+			out += "%" + chartohex(c);
 	}
 	return out;
 }
@@ -1277,11 +1283,14 @@ QString URLEscape(const QString &page)
 	for (int x = 0; x < in.length(); x++)
 	{
 		const char c = in.at(x);
-		     if ((c >= '0') && (c <= '9')) out += c;
-		else if ((c >= 'a') && (c <= 'z')) out += c;
-		else if ((c >= 'A') && (c <= 'Z')) out += c;
-		else if (c == '_') out += '_';
-		else    out += "%" + chartohex(c);
+		if ( muscleInRange(c, '0', '9')
+			|| muscleInRange(c, 'a', 'z')
+			|| muscleInRange(c, 'A', 'Z') )
+			out += c;
+		else if (c == '_')
+			out += '_';
+		else
+			out += "%" + chartohex(c);
 	}
 	return out;
 }

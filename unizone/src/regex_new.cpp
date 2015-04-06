@@ -3,6 +3,73 @@
 #include "util.h"
 #include "wstring.h"
 
+void UncompressCharacterGroups(QString &s)
+{
+	int pos;
+	while ((pos = s.find("-")) != -1)
+	{
+		QChar first = s[pos-1];
+		QChar last = s[pos+1];
+		QString tmp;
+		for (int x = first.unicode(); x <= last.unicode(); x++)
+			tmp += QChar(x);
+		s.replace(s.mid(pos-1, 3), tmp);
+	}
+}
+
+void CompressCharacterGroup(QStringList & s)
+{
+	int first = -1, last = -1;
+	int x = 0;
+	QChar prevchar;
+
+#ifdef _DEBUG
+	WString l = s.join("|");
+#endif
+
+	s.sort();
+	s.removeDuplicates();
+
+	if (s.count() == 1)
+		return;
+
+	x = 0;
+	while (x < s.count())
+	{
+		while (s.at(x).length() == 1 && s.at(x)[0].unicode() - prevchar.unicode() == 1)
+		{
+			last = x;
+			prevchar = s.at(x)[0];
+			if (++x == s.count())
+				break;
+		}
+		if (last - first > 2)
+		{
+			QString p;
+			p = s.at(first)[0];
+			p += "-";
+			p += s.at(last)[0].lower();
+			for (int y = last; y >= first; y--)
+				s.remove(s.at(y));
+			s.insert(first, p);
+			x = first;
+			first = last = -1;
+			prevchar = QChar::null;
+		}
+
+		if (x < s.count() && s.at(x).length() == 1)
+		{
+			first = x;
+			prevchar = s.at(x)[0];
+		}
+		x++;
+	}
+#ifdef _DEBUG
+	WString l2 = s.join("|");
+	PRINT("Group in = %S, out = %S\n", l.getBuffer(), l2.getBuffer());
+#endif
+}
+
 QString ConvertToRegexInternalNew(const QString & s, bool simple, bool isFirst)
 {
 	int x = 0;
@@ -52,10 +119,24 @@ bool FindDuplicatesNew(QStringList & l, bool simple)
 	int pos = 0;
 	int pos2 = 0;
 
+	// Convert all to lowercase
+	while (pos < l.count())
+	{
+		QString tmp = l.at(pos);
+		if (tmp != tmp.lower())
+		{
+			l.remove(tmp);
+			l.insert(pos, tmp.lower());
+		}
+		pos++;
+	}
+
 	if (l.count() == 1)
 		return false;
 
-	while (pos < l.at(0).length()) // Check start of strings
+	// Check start of strings
+	pos = 0;
+	while (pos < l.at(0).length()) 
 	{
 		for (int i = 1; i < l.size(); i++)
 		{
@@ -91,7 +172,6 @@ step2:
 step3:
 	if (pos == 0 && pos2 == 0 && l.count() > 1)
 	{
-//		QStringList sorted = l;
 		QStringList templist;
 
 #ifdef _DEBUG
@@ -175,6 +255,23 @@ pass2:
 			bool singleChar = true;
 			for (int y = 0; y < retlist.count(); y++)
 			{
+				if (retlist.at(y).find(QRegExp("^\\[[\\x0020-\\x007F]-[\\x0020-\\x007F]\\]$")) == 0)
+				{
+					QChar first = retlist.at(y)[1];
+					QChar last = retlist.at(y)[3];
+#ifdef _DEBUG
+					WString rin = retlist.join("|");
+#endif
+					retlist.remove(retlist.at(y));
+					for (int z = last.unicode(); z >= first.unicode(); z--)
+					{
+						retlist.insert(y, QChar(z));
+					}
+#ifdef _DEBUG
+					WString rout = retlist.join("|");
+					PRINT("List in = %S, out = %S\n", rin.getBuffer(), rout.getBuffer());
+#endif
+				}
 				if (retlist.at(y).length() > 1)
 				{
 					singleChar = false;
@@ -192,16 +289,17 @@ pass2:
 			if (singleChar)
 			{
 				ret += "[";
-				retlist.sort();
+#ifdef _DEBUG
+				WString rin = retlist.join("|");
+#endif
+				CompressCharacterGroup(retlist);
+#ifdef _DEBUG
+				WString rout = retlist.join("|");
+				PRINT("List in = %S, out = %S\n", rin.getBuffer(), rout.getBuffer());
+#endif
 				for (int y = 0; y < retlist.count(); y++)
 				{
-					QChar qc = retlist.at(y)[0];
-					if (muscleInRange(qc, (QChar) '0', (QChar) '9'))
-						ret += qc;
-					else
-					{
-						ret += qc.lower();
-					}
+					ret += retlist.at(y);
 				}
 				ret += "]";
 			}
@@ -239,10 +337,10 @@ pass2:
 							QString item = retlist.at(y);
 							retlist.remove(item);
 							item = item.mid(1, item.length() - 2);
+							UncompressCharacterGroups(item);
 							for (int z = 0; z < item.length(); z++)
 							{
-								if (item.at(z).category() == QChar::Letter_Lowercase)
-									retlist.insert(y++, item.at(z));
+								retlist.insert(y++, item.at(z));
 							}
 							merged = true;
 						}
@@ -285,7 +383,7 @@ pass2:
 			ret += retlist.at(0);
 			if (empty) ret += "?";
 		}
-        if (pos2 > 0)
+		if (pos2 > 0)
 		{
 			ret += ConvertToRegexInternalNew(l.at(0).right(pos2), simple, false);
 		}
@@ -306,10 +404,10 @@ start:
 	if (!simple)
 	{
 		ret = "`^";
-		if (s.count(",") > 0)
+		if (s.count("|") > 0)
 		{
 			bool found = false;
-			QStringList l = s.split(",");
+			QStringList l = s.split("|");
 			l.removeDuplicates();
 			if (l.count() == 1) // Only one item left
 			{

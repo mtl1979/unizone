@@ -541,12 +541,11 @@ WSearch::GoSearch()
 
 	if (!fileExp.isEmpty())
 	{
-		if (!HasRegexTokens(fileExp))
-			fileExp.prepend("*").append("*");
-
+		fileExp.replace(QRegExp(","), "|");
 		fileExp.replace(QRegExp("/"), "?");
+		bool simple = !HasRegexTokens(fileExp);
 
-		ConvertToRegex(fileExp);	
+		ConvertToRegex(fileExp, simple);
 	}
 
 	if (!userExp.isEmpty())
@@ -565,6 +564,7 @@ UnSimplify(const QString &str)
 {
 	QString ret;
 	int x = 0;
+	bool inGroup = false;
 	if (str[x] == '`') x++; 
 	while (x < str.length())
 	{
@@ -573,23 +573,57 @@ UnSimplify(const QString &str)
 			ret += str.mid(x, 2);
 			x++; // Also skip character following slash
 		}
+		else if (str[x] == '[')
+		{
+			ret += "[";
+			inGroup = true;
+		}
+		else if (str[x] == ']')
+		{
+			ret += "]";
+			inGroup = false;
+		}
 		else if (str[x].upper() != str[x].lower())
 		{
 			if ((str[x].lower() < (QChar) 128) && (str.upper() < (QChar) 128))
 			{
-				ret += "[";
-				ret += str[x].lower();
-				ret += str[x].upper();
-				ret += "]";
+				if (inGroup)
+				{
+					if (str[x+1] == '-') // range
+					{
+						ret += str[x].lower();
+						ret += "-";
+						ret += str[x+2].lower();
+						ret += str[x].upper();
+						ret += "-";
+						ret += str[x+2].upper();
+						x += 2;
+					}
+					else
+					{
+						ret += str[x].lower();
+						ret += str[x].upper();
+					}
+				}
+				else
+				{
+					ret += "[";
+					ret += str[x].lower();
+					ret += str[x].upper();
+					ret += "]";
+				}
 			}
 			else
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
-				ret += "(";
+				bool inside = (x > 0 && (str[x-1] == '(' || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
+				if (!inside)
+					ret += "(";
 				ret += str[x].lower();
 				ret += "|";
 				ret += str[x].upper();
-				ret += ")";
+				if (!inside)
+					ret += ")";
 			}
 		}
 		else
@@ -645,21 +679,43 @@ SimplifyNew(const QString &str)
 		{
 			if ((str[x].lower() < (QChar) 128) && (str[x].upper() < (QChar) 128))
 			{
-				if (!inGroup) 
+				if (inGroup)
+				{
+					if (str[x+1] == '-') // range
+					{
+						ret += str[x].lower();
+						ret += "-";
+						ret += str[x+2].lower();
+						ret += str[x].upper();
+						ret += "-";
+						ret += str[x+2].upper();
+						x += 2;
+					}
+					else
+					{
+						ret += str[x].lower();
+						ret += str[x].upper();
+					}
+				}
+				else
+				{
 					ret += "[";
-				ret += str[x].lower();
-				ret += str[x].upper();
-				if (!inGroup)
+					ret += str[x].lower();
+					ret += str[x].upper();
 					ret += "]";
+				}
 			}
 			else
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
-				ret += "(";
+				bool inside = (x > 0 && (str[x-1] == '(' || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
+				if (!inside) 
+					ret += "(";
 				ret += str[x].lower();
 				ret += "|";
 				ret += str[x].upper();
-				ret += ")";
+				if (!inside) 
+					ret += ")";
 			}
 			x++;
 		}
@@ -723,11 +779,14 @@ SimplifyOld(const QString &str)
 			else
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
-				ret += "(";
+				bool inside = (x > 1 && (str[x-1] == '(' || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
+				if (!inside)
+					ret += "(";
 				ret += str[x].lower();
 				ret += "|";
 				ret += str[x].upper();
-				ret += ")";
+				if (!inside)
+					ret += ")";
 			}
 			x++;
 		}
