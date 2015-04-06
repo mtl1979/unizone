@@ -838,6 +838,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="fRegexs">
+          <property name="text">
+           <string>Regular expressions</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -2851,6 +2858,12 @@
    <class>Q3GroupBox</class>
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3Frame</class>
+   <extends>QFrame</extends>
+   <header>Qt3Support/Q3Frame</header>
    <container>1</container>
   </customwidget>
   <customwidget>

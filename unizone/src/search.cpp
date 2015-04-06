@@ -851,7 +851,10 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 
 	fSearchLock.Unlock();
 
-	SetSearchStatus(tr("Searching for: \"%1\"").arg(UnSimplify(fileRegExp)));
+	if (gWin->fSettings->GetRegexes())
+		SetSearchStatus(tr("Searching for: \"%1\"").arg(UnSimplify(fileRegExp)));
+	else
+		SetSearchStatus(tr("Searching..."));
 	SetSearchStatus(tr("active"), 2);
 
 	fStop->setEnabled(true);
@@ -979,12 +982,12 @@ WSearch::HandleComboEvent(WTextEvent * e)
 {
 	if (e)
 	{
-	WComboBox * sender = (WComboBox *)e->data();
-	if (sender == fSearchEdit)
-	{
-		PRINT("Received text change event from Search combo\n");
-		GoSearch();
-	}
+		WComboBox * sender = (WComboBox *)e->data();
+		if (sender == fSearchEdit)
+		{
+			PRINT("Received text change event from Search combo\n");
+			GoSearch();
+		}
 	}
 }
 

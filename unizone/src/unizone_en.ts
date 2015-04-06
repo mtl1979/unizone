@@ -472,123 +472,123 @@
 <context>
     <name>Connection</name>
     <message>
-        <location filename="util.cpp" line="349"/>
+        <location filename="util.cpp" line="352"/>
         <source>300 baud</source>
         <translation>300 baud</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="351"/>
+        <location filename="util.cpp" line="354"/>
         <source>14.4 kbps</source>
         <translation>14.4 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="352"/>
+        <location filename="util.cpp" line="355"/>
         <source>28.8 kbps</source>
         <translation>28.8 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="353"/>
+        <location filename="util.cpp" line="356"/>
         <source>33.6 kbps</source>
         <translation>33.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="355"/>
+        <location filename="util.cpp" line="358"/>
         <source>36.6 kbps</source>
         <translation>36.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="356"/>
+        <location filename="util.cpp" line="359"/>
         <source>57.6 kbps</source>
         <translation>57.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="357"/>
+        <location filename="util.cpp" line="360"/>
         <source>ISDN-64k</source>
         <translation>ISDN-64k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="358"/>
+        <location filename="util.cpp" line="361"/>
         <source>ISDN-128k</source>
         <translation>ISDN-128k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="359"/>
+        <location filename="util.cpp" line="362"/>
         <source>DSL-256k</source>
         <translation>DSL-256k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="361"/>
+        <location filename="util.cpp" line="364"/>
         <source>EDGE</source>
         <translation>EDGE</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="364"/>
+        <location filename="util.cpp" line="367"/>
         <source>DSL</source>
         <translation>DSL</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="362"/>
+        <location filename="util.cpp" line="365"/>
         <source>DSL-384k</source>
         <translation>DSL-384k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="347"/>
+        <location filename="util.cpp" line="350"/>
         <source>75 baud</source>
         <translation>75 baud</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="350"/>
+        <location filename="util.cpp" line="353"/>
         <source>9.6 kbps</source>
         <translation>9.6 kbps</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="365"/>
+        <location filename="util.cpp" line="368"/>
         <source>HSDPA</source>
         <translation>HSDPA</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="366"/>
+        <location filename="util.cpp" line="369"/>
         <source>DSL-512k</source>
         <translation>DSL-512k</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="367"/>
+        <location filename="util.cpp" line="370"/>
         <source>Cable</source>
         <translation>Cable</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="369"/>
-        <location filename="util.cpp" line="371"/>
+        <location filename="util.cpp" line="372"/>
+        <location filename="util.cpp" line="374"/>
         <source>DSL-1M</source>
         <translation>DSL-1M</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="372"/>
+        <location filename="util.cpp" line="375"/>
         <source>DSL-2M</source>
         <translation>DSL-2M</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="373"/>
+        <location filename="util.cpp" line="376"/>
         <source>T1</source>
         <translation>T1</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="374"/>
+        <location filename="util.cpp" line="377"/>
         <source>T3</source>
         <translation>T3</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="376"/>
+        <location filename="util.cpp" line="379"/>
         <source>OC-3</source>
         <translation>OC-3</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="378"/>
+        <location filename="util.cpp" line="381"/>
         <source>HSUPA</source>
         <translation>HSUPA</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="380"/>
+        <location filename="util.cpp" line="383"/>
         <source>OC-12</source>
         <translation>OC-12</translation>
     </message>
@@ -601,8 +601,8 @@
         <location filename="user.cpp" line="185"/>
         <location filename="user.cpp" line="187"/>
         <location filename="user.cpp" line="375"/>
-        <location filename="util.cpp" line="382"/>
-        <location filename="util.cpp" line="440"/>
+        <location filename="util.cpp" line="385"/>
+        <location filename="util.cpp" line="443"/>
         <source>Unknown</source>
         <translation>Unknown</translation>
     </message>
@@ -610,97 +610,97 @@
 <context>
     <name>Date</name>
     <message>
-        <location filename="util.cpp" line="568"/>
+        <location filename="util.cpp" line="574"/>
         <source>Jan</source>
         <translation>Jan</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="569"/>
+        <location filename="util.cpp" line="575"/>
         <source>Feb</source>
         <translation>Feb</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="570"/>
+        <location filename="util.cpp" line="576"/>
         <source>Mar</source>
         <translation>Mar</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="571"/>
+        <location filename="util.cpp" line="577"/>
         <source>Apr</source>
         <translation>Apr</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="572"/>
+        <location filename="util.cpp" line="578"/>
         <source>May</source>
         <translation>May</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="573"/>
+        <location filename="util.cpp" line="579"/>
         <source>Jun</source>
         <translation>Jun</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="574"/>
+        <location filename="util.cpp" line="580"/>
         <source>Jul</source>
         <translation>Jul</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="575"/>
+        <location filename="util.cpp" line="581"/>
         <source>Aug</source>
         <translation>Aug</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="576"/>
+        <location filename="util.cpp" line="582"/>
         <source>Sep</source>
         <translation>Sep</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="577"/>
+        <location filename="util.cpp" line="583"/>
         <source>Oct</source>
         <translation>Oct</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="578"/>
+        <location filename="util.cpp" line="584"/>
         <source>Nov</source>
         <translation>Nov</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="579"/>
+        <location filename="util.cpp" line="585"/>
         <source>Dec</source>
         <translation>Dec</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="588"/>
+        <location filename="util.cpp" line="594"/>
         <source>Mon</source>
         <translation>Mon</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="589"/>
+        <location filename="util.cpp" line="595"/>
         <source>Tue</source>
         <translation>Tue</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="590"/>
+        <location filename="util.cpp" line="596"/>
         <source>Wed</source>
         <translation>Wed</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="591"/>
+        <location filename="util.cpp" line="597"/>
         <source>Thu</source>
         <translation>Thu</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="592"/>
+        <location filename="util.cpp" line="598"/>
         <source>Fri</source>
         <translation>Fri</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="593"/>
+        <location filename="util.cpp" line="599"/>
         <source>Sat</source>
         <translation>Sat</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="594"/>
+        <location filename="util.cpp" line="600"/>
         <source>Sun</source>
         <translation>Sun</translation>
     </message>
@@ -738,22 +738,22 @@ Date: %4</translation>
 <context>
     <name>MakeSizeString</name>
     <message>
-        <location filename="util.cpp" line="311"/>
+        <location filename="util.cpp" line="314"/>
         <source>B</source>
         <translation>B</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="315"/>
+        <location filename="util.cpp" line="318"/>
         <source>kB</source>
         <translation>kB</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="320"/>
+        <location filename="util.cpp" line="323"/>
         <source>MB</source>
         <translation>MB</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="325"/>
+        <location filename="util.cpp" line="328"/>
         <source>GB</source>
         <translation>GB</translation>
     </message>
@@ -1552,7 +1552,7 @@ Date: %4</translation>
 <context>
     <name>WPrefs</name>
     <message>
-        <location filename="prefsimpl.cpp" line="594"/>
+        <location filename="prefsimpl.cpp" line="596"/>
         <source>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</source>
         <translation>&lt;font color=&quot;%1&quot;&gt;%2&lt;/font&gt;</translation>
     </message>
@@ -1744,37 +1744,37 @@ Date: %4</translation>
         <translation>Warning Message Text</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="162"/>
+        <location filename="prefsimpl.cpp" line="163"/>
         <source>CDE</source>
         <translation>CDE</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="166"/>
+        <location filename="prefsimpl.cpp" line="167"/>
         <source>Motif</source>
         <translation>Motif</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="170"/>
+        <location filename="prefsimpl.cpp" line="171"/>
         <source>WindowsXP</source>
         <translation>WindowsXP</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="174"/>
+        <location filename="prefsimpl.cpp" line="175"/>
         <source>Windows</source>
         <translation>Windows</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="178"/>
+        <location filename="prefsimpl.cpp" line="179"/>
         <source>Mac</source>
         <translation>Mac</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="182"/>
+        <location filename="prefsimpl.cpp" line="183"/>
         <source>Plastique</source>
         <translation>Platinum</translation>
     </message>
     <message>
-        <location filename="prefsimpl.cpp" line="186"/>
+        <location filename="prefsimpl.cpp" line="187"/>
         <source>WindowsVista</source>
         <translation>WindowsVista</translation>
     </message>
@@ -1803,7 +1803,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="prefs.ui" line="213"/>
-        <location filename="prefs.ui" line="1843"/>
+        <location filename="prefs.ui" line="1850"/>
         <source>Disabled</source>
         <translation>Disabled</translation>
     </message>
@@ -1948,17 +1948,17 @@ Date: %4</translation>
         <translation>Connection</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="899"/>
+        <location filename="prefs.ui" line="906"/>
         <source>Warning Messages</source>
         <translation>Warning Messages</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="906"/>
+        <location filename="prefs.ui" line="913"/>
         <source>Error Messages</source>
         <translation>Error Messages</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="885"/>
+        <location filename="prefs.ui" line="892"/>
         <source>Private Messages</source>
         <translation>Private Messages</translation>
     </message>
@@ -1973,7 +1973,7 @@ Date: %4</translation>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="892"/>
+        <location filename="prefs.ui" line="899"/>
         <source>Info Messages</source>
         <translation>Info Messages</translation>
     </message>
@@ -1988,17 +1988,17 @@ Date: %4</translation>
         <translation>Time Stamps</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="957"/>
+        <location filename="prefs.ui" line="964"/>
         <source>Flash Window When Mentioned</source>
         <translation>Flash Window When Mentioned</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="964"/>
+        <location filename="prefs.ui" line="971"/>
         <source>Flash Private Windows</source>
         <translation>Flash Private Windows</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1058"/>
+        <location filename="prefs.ui" line="1065"/>
         <source>Font Size</source>
         <translation>Font Size</translation>
     </message>
@@ -2008,32 +2008,32 @@ Date: %4</translation>
         <translation>Display</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1158"/>
+        <location filename="prefs.ui" line="1165"/>
         <source>Description:</source>
         <translation>Description:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1203"/>
+        <location filename="prefs.ui" line="1210"/>
         <source>Preview:</source>
         <translation>Preview:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1268"/>
+        <location filename="prefs.ui" line="1275"/>
         <source>Change</source>
         <translation>Change</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1106"/>
+        <location filename="prefs.ui" line="1113"/>
         <source>Colors</source>
         <translation>Colors</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1354"/>
+        <location filename="prefs.ui" line="1361"/>
         <source>The selected style will be applied as soon as it is selected.</source>
         <translation>The selected style will be applied as soon as it is selected.</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1281"/>
+        <location filename="prefs.ui" line="1288"/>
         <source>Style</source>
         <translation>Style</translation>
     </message>
@@ -2063,196 +2063,196 @@ Date: %4</translation>
         <translation>HSUPA</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1635"/>
-        <location filename="prefs.ui" line="1961"/>
+        <location filename="prefs.ui" line="1642"/>
+        <location filename="prefs.ui" line="1968"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1640"/>
-        <location filename="prefs.ui" line="1966"/>
+        <location filename="prefs.ui" line="1647"/>
+        <location filename="prefs.ui" line="1973"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1645"/>
-        <location filename="prefs.ui" line="1971"/>
+        <location filename="prefs.ui" line="1652"/>
+        <location filename="prefs.ui" line="1978"/>
         <source>3</source>
         <translation>3</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1650"/>
-        <location filename="prefs.ui" line="1976"/>
+        <location filename="prefs.ui" line="1657"/>
+        <location filename="prefs.ui" line="1983"/>
         <source>4</source>
         <translation>4</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1655"/>
-        <location filename="prefs.ui" line="1981"/>
+        <location filename="prefs.ui" line="1662"/>
+        <location filename="prefs.ui" line="1988"/>
         <source>5</source>
         <translation>5</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1660"/>
-        <location filename="prefs.ui" line="1986"/>
+        <location filename="prefs.ui" line="1667"/>
+        <location filename="prefs.ui" line="1993"/>
         <source>10</source>
         <translation>10</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1665"/>
-        <location filename="prefs.ui" line="1991"/>
+        <location filename="prefs.ui" line="1672"/>
+        <location filename="prefs.ui" line="1998"/>
         <source>15</source>
         <translation>15</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1670"/>
-        <location filename="prefs.ui" line="1996"/>
+        <location filename="prefs.ui" line="1677"/>
+        <location filename="prefs.ui" line="2003"/>
         <source>20</source>
         <translation>20</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1675"/>
-        <location filename="prefs.ui" line="2001"/>
+        <location filename="prefs.ui" line="1682"/>
+        <location filename="prefs.ui" line="2008"/>
         <source>30</source>
         <translation>30</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1680"/>
-        <location filename="prefs.ui" line="2006"/>
+        <location filename="prefs.ui" line="1687"/>
+        <location filename="prefs.ui" line="2013"/>
         <source>Unlimited</source>
         <translation>Unlimited</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1922"/>
+        <location filename="prefs.ui" line="1929"/>
         <source>Maximum Simultaneous Downloads:</source>
         <translation>Maximum Simultaneous Downloads:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1596"/>
+        <location filename="prefs.ui" line="1603"/>
         <source>Maximum Simultaneous Uploads:</source>
         <translation>Maximum Simultaneous Uploads:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1416"/>
+        <location filename="prefs.ui" line="1423"/>
         <source>File sharing enabled?</source>
         <translation>File sharing enabled?</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1529"/>
+        <location filename="prefs.ui" line="1536"/>
         <source>Block binkies?</source>
         <translation>Block binkies?</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1536"/>
+        <location filename="prefs.ui" line="1543"/>
         <source>Block disconnected users?</source>
         <translation>Block disconnected users?</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1387"/>
+        <location filename="prefs.ui" line="1394"/>
         <source>File Sharing</source>
         <translation>File Sharing</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2114"/>
+        <location filename="prefs.ui" line="2121"/>
         <source>HTTP launcher:</source>
         <translation>HTTP launcher:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2143"/>
+        <location filename="prefs.ui" line="2150"/>
         <source>FTP launcher:</source>
         <translation>FTP launcher:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2085"/>
+        <location filename="prefs.ui" line="2092"/>
         <source>Mailto: launcher:</source>
         <translation>Mailto: launcher:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2050"/>
+        <location filename="prefs.ui" line="2057"/>
         <source>URL Launching</source>
         <translation>URL Launching</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2261"/>
-        <location filename="prefs.ui" line="2423"/>
-        <location filename="prefs.ui" line="2569"/>
-        <location filename="prefs.ui" line="2725"/>
+        <location filename="prefs.ui" line="2268"/>
+        <location filename="prefs.ui" line="2430"/>
+        <location filename="prefs.ui" line="2576"/>
+        <location filename="prefs.ui" line="2732"/>
         <source>No Limit</source>
         <translation>No Limit</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1742"/>
-        <location filename="prefs.ui" line="1848"/>
+        <location filename="prefs.ui" line="1749"/>
+        <location filename="prefs.ui" line="1855"/>
         <source>1 kB</source>
         <translation>1 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1747"/>
-        <location filename="prefs.ui" line="1853"/>
+        <location filename="prefs.ui" line="1754"/>
+        <location filename="prefs.ui" line="1860"/>
         <source>2 kB</source>
         <translation>2 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1752"/>
-        <location filename="prefs.ui" line="1858"/>
+        <location filename="prefs.ui" line="1759"/>
+        <location filename="prefs.ui" line="1865"/>
         <source>4 kB</source>
         <translation>4 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1757"/>
-        <location filename="prefs.ui" line="1863"/>
+        <location filename="prefs.ui" line="1764"/>
+        <location filename="prefs.ui" line="1870"/>
         <source>8 kB</source>
         <translation>8 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1762"/>
-        <location filename="prefs.ui" line="1868"/>
+        <location filename="prefs.ui" line="1769"/>
+        <location filename="prefs.ui" line="1875"/>
         <source>16 kB</source>
         <translation>16 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1767"/>
-        <location filename="prefs.ui" line="1873"/>
+        <location filename="prefs.ui" line="1774"/>
+        <location filename="prefs.ui" line="1880"/>
         <source>32 kB</source>
         <translation>32 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1772"/>
-        <location filename="prefs.ui" line="1878"/>
+        <location filename="prefs.ui" line="1779"/>
+        <location filename="prefs.ui" line="1885"/>
         <source>64 kB</source>
         <translation>64 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1777"/>
-        <location filename="prefs.ui" line="1883"/>
+        <location filename="prefs.ui" line="1784"/>
+        <location filename="prefs.ui" line="1890"/>
         <source>128 kB</source>
         <translation>128 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1782"/>
-        <location filename="prefs.ui" line="1888"/>
+        <location filename="prefs.ui" line="1789"/>
+        <location filename="prefs.ui" line="1895"/>
         <source>256 kB</source>
         <translation>256 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1787"/>
-        <location filename="prefs.ui" line="1893"/>
+        <location filename="prefs.ui" line="1794"/>
+        <location filename="prefs.ui" line="1900"/>
         <source>512 kB</source>
         <translation>512 kB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1792"/>
-        <location filename="prefs.ui" line="1898"/>
+        <location filename="prefs.ui" line="1799"/>
+        <location filename="prefs.ui" line="1905"/>
         <source>1 MB</source>
         <translation>1 MB</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2234"/>
+        <location filename="prefs.ui" line="2241"/>
         <source>Chat:</source>
         <translation>Chat:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2205"/>
+        <location filename="prefs.ui" line="2212"/>
         <source>Throttling</source>
         <translation>Throttling</translation>
     </message>
@@ -2272,27 +2272,27 @@ Date: %4</translation>
         <translation>DSL-512k</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2396"/>
+        <location filename="prefs.ui" line="2403"/>
         <source>Uploads (per upload):</source>
         <translation>Uploads (per upload):</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2698"/>
+        <location filename="prefs.ui" line="2705"/>
         <source>Downloads (per download):</source>
         <translation>Downloads (per download):</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2542"/>
+        <location filename="prefs.ui" line="2549"/>
         <source>Uploads (per blacklisted):</source>
         <translation>Uploads (per blacklisted):</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2172"/>
+        <location filename="prefs.ui" line="2179"/>
         <source>Default launcher:</source>
         <translation>Default launcher:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1698"/>
+        <location filename="prefs.ui" line="1705"/>
         <source>Upload Packet Size:</source>
         <translation>Upload Packet Size:</translation>
     </message>
@@ -2307,12 +2307,12 @@ Date: %4</translation>
         <translation>Downloads</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1437"/>
+        <location filename="prefs.ui" line="1444"/>
         <source>Base Port:</source>
         <translation>Base Port:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1810"/>
+        <location filename="prefs.ui" line="1817"/>
         <source>Minimum File Size to Queue:</source>
         <translation>Minimum File Size to Queue:</translation>
     </message>
@@ -2322,27 +2322,27 @@ Date: %4</translation>
         <translation>IP Addresses</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1482"/>
+        <location filename="prefs.ui" line="1489"/>
         <source>Number of Ports:</source>
         <translation>Number of Ports:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="997"/>
+        <location filename="prefs.ui" line="1004"/>
         <source>Empty Windows:</source>
         <translation>Empty Windows:</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1008"/>
+        <location filename="prefs.ui" line="1015"/>
         <source>Do Nothing</source>
         <translation>Do Nothing</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1013"/>
+        <location filename="prefs.ui" line="1020"/>
         <source>Prompt</source>
         <translation>Prompt</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1018"/>
+        <location filename="prefs.ui" line="1025"/>
         <source>Automatically Close</source>
         <translation>Automatically Close</translation>
     </message>
@@ -2357,154 +2357,159 @@ Date: %4</translation>
         <translation>DSL-2M</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2266"/>
-        <location filename="prefs.ui" line="2428"/>
-        <location filename="prefs.ui" line="2574"/>
-        <location filename="prefs.ui" line="2730"/>
+        <location filename="prefs.ui" line="843"/>
+        <source>Regular expressions</source>
+        <translation>Regular expressions</translation>
+    </message>
+    <message>
+        <location filename="prefs.ui" line="2273"/>
+        <location filename="prefs.ui" line="2435"/>
+        <location filename="prefs.ui" line="2581"/>
+        <location filename="prefs.ui" line="2737"/>
         <source>128 B/s</source>
         <translation>128 B/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2271"/>
-        <location filename="prefs.ui" line="2433"/>
-        <location filename="prefs.ui" line="2579"/>
-        <location filename="prefs.ui" line="2735"/>
+        <location filename="prefs.ui" line="2278"/>
+        <location filename="prefs.ui" line="2440"/>
+        <location filename="prefs.ui" line="2586"/>
+        <location filename="prefs.ui" line="2742"/>
         <source>256 B/s</source>
         <translation>256 B/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2276"/>
-        <location filename="prefs.ui" line="2438"/>
-        <location filename="prefs.ui" line="2584"/>
-        <location filename="prefs.ui" line="2740"/>
+        <location filename="prefs.ui" line="2283"/>
+        <location filename="prefs.ui" line="2445"/>
+        <location filename="prefs.ui" line="2591"/>
+        <location filename="prefs.ui" line="2747"/>
         <source>512 B/s</source>
         <translation>512 B/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2281"/>
-        <location filename="prefs.ui" line="2443"/>
-        <location filename="prefs.ui" line="2589"/>
-        <location filename="prefs.ui" line="2745"/>
+        <location filename="prefs.ui" line="2288"/>
+        <location filename="prefs.ui" line="2450"/>
+        <location filename="prefs.ui" line="2596"/>
+        <location filename="prefs.ui" line="2752"/>
         <source>1 kB/s</source>
         <translation>1 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2286"/>
-        <location filename="prefs.ui" line="2448"/>
-        <location filename="prefs.ui" line="2594"/>
-        <location filename="prefs.ui" line="2750"/>
+        <location filename="prefs.ui" line="2293"/>
+        <location filename="prefs.ui" line="2455"/>
+        <location filename="prefs.ui" line="2601"/>
+        <location filename="prefs.ui" line="2757"/>
         <source>2 kB/s</source>
         <translation>2 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2291"/>
-        <location filename="prefs.ui" line="2453"/>
-        <location filename="prefs.ui" line="2599"/>
-        <location filename="prefs.ui" line="2755"/>
+        <location filename="prefs.ui" line="2298"/>
+        <location filename="prefs.ui" line="2460"/>
+        <location filename="prefs.ui" line="2606"/>
+        <location filename="prefs.ui" line="2762"/>
         <source>4 kB/s</source>
         <translation>4 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2296"/>
-        <location filename="prefs.ui" line="2458"/>
-        <location filename="prefs.ui" line="2604"/>
-        <location filename="prefs.ui" line="2760"/>
+        <location filename="prefs.ui" line="2303"/>
+        <location filename="prefs.ui" line="2465"/>
+        <location filename="prefs.ui" line="2611"/>
+        <location filename="prefs.ui" line="2767"/>
         <source>8 kB/s</source>
         <translation>8 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2301"/>
-        <location filename="prefs.ui" line="2463"/>
-        <location filename="prefs.ui" line="2609"/>
-        <location filename="prefs.ui" line="2765"/>
+        <location filename="prefs.ui" line="2308"/>
+        <location filename="prefs.ui" line="2470"/>
+        <location filename="prefs.ui" line="2616"/>
+        <location filename="prefs.ui" line="2772"/>
         <source>16 kB/s</source>
         <translation>16 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2306"/>
-        <location filename="prefs.ui" line="2468"/>
-        <location filename="prefs.ui" line="2614"/>
-        <location filename="prefs.ui" line="2770"/>
+        <location filename="prefs.ui" line="2313"/>
+        <location filename="prefs.ui" line="2475"/>
+        <location filename="prefs.ui" line="2621"/>
+        <location filename="prefs.ui" line="2777"/>
         <source>32 kB/s</source>
         <translation>32 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2311"/>
-        <location filename="prefs.ui" line="2473"/>
-        <location filename="prefs.ui" line="2619"/>
-        <location filename="prefs.ui" line="2775"/>
+        <location filename="prefs.ui" line="2318"/>
+        <location filename="prefs.ui" line="2480"/>
+        <location filename="prefs.ui" line="2626"/>
+        <location filename="prefs.ui" line="2782"/>
         <source>64 kB/s</source>
         <translation>64 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2316"/>
-        <location filename="prefs.ui" line="2478"/>
-        <location filename="prefs.ui" line="2624"/>
-        <location filename="prefs.ui" line="2780"/>
+        <location filename="prefs.ui" line="2323"/>
+        <location filename="prefs.ui" line="2485"/>
+        <location filename="prefs.ui" line="2631"/>
+        <location filename="prefs.ui" line="2787"/>
         <source>128 kB/s</source>
         <translation>128 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2321"/>
-        <location filename="prefs.ui" line="2483"/>
-        <location filename="prefs.ui" line="2629"/>
-        <location filename="prefs.ui" line="2785"/>
+        <location filename="prefs.ui" line="2328"/>
+        <location filename="prefs.ui" line="2490"/>
+        <location filename="prefs.ui" line="2636"/>
+        <location filename="prefs.ui" line="2792"/>
         <source>256 kB/s</source>
         <translation>256 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2326"/>
-        <location filename="prefs.ui" line="2488"/>
-        <location filename="prefs.ui" line="2634"/>
-        <location filename="prefs.ui" line="2790"/>
+        <location filename="prefs.ui" line="2333"/>
+        <location filename="prefs.ui" line="2495"/>
+        <location filename="prefs.ui" line="2641"/>
+        <location filename="prefs.ui" line="2797"/>
         <source>512 kB/s</source>
         <translation>512 kB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2331"/>
-        <location filename="prefs.ui" line="2493"/>
-        <location filename="prefs.ui" line="2639"/>
-        <location filename="prefs.ui" line="2795"/>
+        <location filename="prefs.ui" line="2338"/>
+        <location filename="prefs.ui" line="2500"/>
+        <location filename="prefs.ui" line="2646"/>
+        <location filename="prefs.ui" line="2802"/>
         <source>1 MB/s</source>
         <translation>1 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2336"/>
-        <location filename="prefs.ui" line="2498"/>
-        <location filename="prefs.ui" line="2644"/>
-        <location filename="prefs.ui" line="2800"/>
+        <location filename="prefs.ui" line="2343"/>
+        <location filename="prefs.ui" line="2505"/>
+        <location filename="prefs.ui" line="2651"/>
+        <location filename="prefs.ui" line="2807"/>
         <source>2 MB/s</source>
         <translation>2 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2341"/>
-        <location filename="prefs.ui" line="2503"/>
-        <location filename="prefs.ui" line="2649"/>
-        <location filename="prefs.ui" line="2805"/>
+        <location filename="prefs.ui" line="2348"/>
+        <location filename="prefs.ui" line="2510"/>
+        <location filename="prefs.ui" line="2656"/>
+        <location filename="prefs.ui" line="2812"/>
         <source>4 MB/s</source>
         <translation>4 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2346"/>
-        <location filename="prefs.ui" line="2508"/>
-        <location filename="prefs.ui" line="2654"/>
-        <location filename="prefs.ui" line="2810"/>
+        <location filename="prefs.ui" line="2353"/>
+        <location filename="prefs.ui" line="2515"/>
+        <location filename="prefs.ui" line="2661"/>
+        <location filename="prefs.ui" line="2817"/>
         <source>8 MB/s</source>
         <translation>8 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2351"/>
-        <location filename="prefs.ui" line="2513"/>
-        <location filename="prefs.ui" line="2659"/>
-        <location filename="prefs.ui" line="2815"/>
+        <location filename="prefs.ui" line="2358"/>
+        <location filename="prefs.ui" line="2520"/>
+        <location filename="prefs.ui" line="2666"/>
+        <location filename="prefs.ui" line="2822"/>
         <source>16 MB/s</source>
         <translation>16 MB/s</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2356"/>
-        <location filename="prefs.ui" line="2518"/>
-        <location filename="prefs.ui" line="2664"/>
-        <location filename="prefs.ui" line="2820"/>
+        <location filename="prefs.ui" line="2363"/>
+        <location filename="prefs.ui" line="2525"/>
+        <location filename="prefs.ui" line="2671"/>
+        <location filename="prefs.ui" line="2827"/>
         <source>32 MB/s</source>
         <translation>32 MB/s</translation>
     </message>
@@ -2524,17 +2529,17 @@ Date: %4</translation>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1737"/>
+        <location filename="prefs.ui" line="1744"/>
         <source>512 B</source>
         <translation>512 B</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2032"/>
+        <location filename="prefs.ui" line="2039"/>
         <source>Automatically clear finished transfers?</source>
         <translation>Automatically clear finished transfers?</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="2039"/>
+        <location filename="prefs.ui" line="2046"/>
         <source>Automatically close upload window?</source>
         <translation>Automatically close upload window?</translation>
     </message>
@@ -2554,7 +2559,7 @@ Date: %4</translation>
         <translation>Reset</translation>
     </message>
     <message>
-        <location filename="prefs.ui" line="1559"/>
+        <location filename="prefs.ui" line="1566"/>
         <source>Preserve paths?</source>
         <translation>Preserve paths?</translation>
     </message>
@@ -2697,19 +2702,19 @@ Date: %4</translation>
     <message>
         <location filename="search.cpp" line="194"/>
         <location filename="search.cpp" line="360"/>
-        <location filename="search.cpp" line="1007"/>
+        <location filename="search.cpp" line="1069"/>
         <source>Idle.</source>
         <translation>Idle.</translation>
     </message>
     <message>
         <location filename="search.cpp" line="200"/>
         <location filename="search.cpp" line="465"/>
-        <location filename="search.cpp" line="1018"/>
+        <location filename="search.cpp" line="1080"/>
         <source>Not connected.</source>
         <translation>Not connected.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="873"/>
+        <location filename="search.cpp" line="935"/>
         <source>Results: %1</source>
         <translation>Results: %1</translation>
     </message>
@@ -2724,22 +2729,27 @@ Date: %4</translation>
         <translation>User(s) not found!</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="781"/>
+        <location filename="search.cpp" line="840"/>
         <source>Initializing...</source>
         <translation>Initializing...</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="795"/>
+        <location filename="search.cpp" line="855"/>
         <source>Searching for: &quot;%1&quot;</source>
         <translation>Searching for: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="796"/>
+        <location filename="search.cpp" line="857"/>
+        <source>Searching...</source>
+        <translation>Searching...</translation>
+    </message>
+    <message>
+        <location filename="search.cpp" line="858"/>
         <source>active</source>
         <translation>active</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="994"/>
+        <location filename="search.cpp" line="1056"/>
         <source>passive</source>
         <translation>passive</translation>
     </message>

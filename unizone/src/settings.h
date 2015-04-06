@@ -48,6 +48,7 @@ using namespace muscle;
 #define WARNING				"warning"
 #define ERRORS				"errorS"
 #define IPADDRESSES			"ipaddr"
+#define REGEXES				"regexes"
 
 #define AUTO_AWAY			"autoaway"
 #define FLASH				"flash"
@@ -262,6 +263,7 @@ public:
 	void SetError(bool b);
 	void SetSounds(bool b);
 	void SetIPAddresses(bool b);
+	void SetRegexes(bool b);
 
 	bool GetTimeStamps() const;
 	bool GetUserEvents() const;
@@ -274,6 +276,7 @@ public:
 	bool GetError() const;
 	bool GetSounds() const;
 	bool GetIPAddresses() const;
+	bool GetRegexes() const;
 
 	QString GetSoundFile() const;
 	void SetSoundFile(const QString &);

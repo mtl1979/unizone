@@ -760,6 +760,18 @@ WSettings::GetIPAddresses() const
 }
 
 void
+WSettings::SetRegexes(bool b)
+{
+	SET_BOOL(REGEXES, b);
+}
+
+bool
+WSettings::GetRegexes() const
+{
+	GET_BOOL(REGEXES, true);
+}
+
+void
 WSettings::SetUploads(bool b)
 {
 	SET_BOOL(UPLOADS, b);
