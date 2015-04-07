@@ -616,7 +616,7 @@ UnSimplify(const QString &str)
 			else
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
-				bool inside = (x > 0 && (str[x-1] == '(' || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
+				bool inside = (x > 0 && ((str[x-1] == '(' && (x == 1 || str[x-2] != '\\')) || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
 				if (!inside)
 					ret += "(";
 				ret += str[x].lower();
@@ -708,7 +708,7 @@ SimplifyNew(const QString &str)
 			else
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
-				bool inside = (x > 0 && (str[x-1] == '(' || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
+				bool inside = (x > 0 && ((str[x-1] == '(' && (x == 1 || str[x-2] != '\\')) || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
 				if (!inside) 
 					ret += "(";
 				ret += str[x].lower();
@@ -779,7 +779,7 @@ SimplifyOld(const QString &str)
 			else
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
-				bool inside = (x > 0 && (str[x-1] == '(' || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
+				bool inside = (x > 0 && ((str[x-1] == '(' && (x == 1 || str[x-2] != '\\')) || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
 				if (!inside)
 					ret += "(";
 				ret += str[x].lower();
