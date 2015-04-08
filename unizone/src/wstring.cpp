@@ -342,11 +342,7 @@ WString::sscanf(const WString &fmt, ...)
 	{
 	va_list a;
 	va_start(a, fmt);
-#if defined(WIN32) || defined(_WIN32)
-	return vwsscanf(buffer, fmt.getBuffer(), a);
-#else
 	return vswscanf(buffer, fmt.getBuffer(), a);
-#endif
 	}
 	else
 		return -1;
@@ -359,11 +355,7 @@ WString::sscanf(const wchar_t *fmt, ...)
 	{
 	va_list a;
 	va_start(a, fmt);
-#if defined(WIN32) || defined(_WIN32)
-	return vwsscanf(buffer, fmt, a);
-#else
 	return vswscanf(buffer, fmt, a);
-#endif
 	}
 	else
 		return -1;

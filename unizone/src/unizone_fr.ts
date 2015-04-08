@@ -2791,52 +2791,52 @@ Date: %4</translation>
 <context>
     <name>WUniListItem</name>
     <message>
-        <location filename="ulistview.cpp" line="361"/>
+        <location filename="ulistview.cpp" line="378"/>
         <source>B</source>
         <translation>o</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="379"/>
+        <location filename="ulistview.cpp" line="396"/>
         <source>TB</source>
         <translation>To</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="382"/>
+        <location filename="ulistview.cpp" line="399"/>
         <source>GB</source>
         <translation>Go</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="385"/>
+        <location filename="ulistview.cpp" line="402"/>
         <source>MB</source>
         <translation>Mo</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="388"/>
+        <location filename="ulistview.cpp" line="405"/>
         <source>kB</source>
         <translation>ko</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="416"/>
+        <location filename="ulistview.cpp" line="433"/>
         <source>B/s</source>
         <translation>o/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="434"/>
+        <location filename="ulistview.cpp" line="451"/>
         <source>TB/s</source>
         <translation>To/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="437"/>
+        <location filename="ulistview.cpp" line="454"/>
         <source>GB/s</source>
         <translation>Go/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="440"/>
+        <location filename="ulistview.cpp" line="457"/>
         <source>MB/s</source>
         <translation>Mo/s</translation>
     </message>
     <message>
-        <location filename="ulistview.cpp" line="443"/>
+        <location filename="ulistview.cpp" line="460"/>
         <source>kB/s</source>
         <translation>ko/s</translation>
     </message>

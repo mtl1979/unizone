@@ -18,6 +18,7 @@
  * because there is no vsscanf in Visual C++
  */
 
+#if _MSC_VER < 1800
 /*** Microsoft License for Redistributable Code
 
 i.    Right to Use and Distribute.  The code and text files listed below are 
@@ -195,7 +196,7 @@ static wchar_t __cdecl _whiteout(int *, FILE *);
 *
 *******************************************************************************/
 
-int __cdecl vwsscanf (
+int __cdecl vswscanf (
     const wchar_t *str,
     const wchar_t *format,
     va_list arglist
@@ -972,3 +973,4 @@ static wchar_t __cdecl _whiteout (
     return ch;
 }
 
+#endif

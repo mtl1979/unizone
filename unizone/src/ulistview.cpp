@@ -57,8 +57,12 @@ WUniListItem::WUniListItem(
 void
 WUniListItem::setText(int col, const QString & text)
 {
-	fKey[col] = text;					// insensitive sort
-	Q3ListViewItem::setText(col, text);	// pass it on
+	// Check that passed in column number is within range
+	if (col >= 0 && col < NUM_COLUMNS)
+	{
+		fKey[col] = text;					// insensitive sort
+		Q3ListViewItem::setText(col, text);	// pass it on
+	}
 }
 
 // Returns sort key by converting to hexadecimal numeric value or ten spaces
@@ -74,6 +78,10 @@ WUniListItem::key(int c, bool /* asc */) const
 #ifdef _DEBUG
 	WString wres;
 #endif
+
+	// Check that passed in column number is within range
+	if (c < 0 || c >= NUM_COLUMNS)
+		return QString::null;
 
 	switch (UColumnType[c])
 	{
@@ -144,7 +152,7 @@ WUniListItem::key(int c, bool /* asc */) const
 					o = lrint((double) ( (double) n / (double) m * 10000.0f ));
 					o = o * 100 + m;
 				}
-#ifdef __amd64
+#if defined(__amd64) || defined(__amd64__)
 				result.sprintf("0x%08lx", o);
 #else
 				result.sprintf("0x%08llx", o);
@@ -227,6 +235,11 @@ WUniListItem::item(int c)
 	int64 n, m, o;
 	int32 bw;
 	QStringRef q1, q2;
+
+	// Check that passed in column number is within range
+	if (c < 0 || c >= NUM_COLUMNS)
+		return -1;
+
 	switch (UColumnType[c])
 	{
 	case Number:
@@ -342,6 +355,10 @@ WUniListItem::text(int c) const
 #ifdef DEBUG2
 	WString wres;
 #endif
+
+	// Check that passed in column number is within range
+	if (c < 0 || c >= NUM_COLUMNS)
+		return QString::null;
 
 	switch (UColumnType[c])
 	{
@@ -505,7 +522,7 @@ WUniListItem::text(int c) const
 
 		if (lMod > 0)
 		{
-#ifdef __amd64__
+#if defined(__amd64) || defined(__amd64__)
 			result.sprintf("%u:%.2u:%.2u", hours, min, secs);
 #else
 			result.sprintf("%lu:%.2lu:%.2lu", hours, min, secs);
@@ -540,38 +557,56 @@ WUniListItem::text(int c) const
 void
 WUniListItem::setColumnType(int c, WUniListItem::ColumnType ct)
 {
-	UColumnType[c] = ct;
+	// Check that passed in column number is within range
+	if (c >= 0 && c < NUM_COLUMNS)
+		UColumnType[c] = ct;
 }
 
 WUniListItem::ColumnType
 WUniListItem::columnType(int c) const
 {
-	return UColumnType[c];
+	// Check that passed in column number is within range
+	if (c < 0 || c >= NUM_COLUMNS)
+		return Invalid;
+	else
+		return UColumnType[c];
 }
 
 // set/get user colors
 void
 WUniListItem::setRowBaseColor(int i, const QColor & color)
 {
-	RowBaseColor[i] = color;
+	// Check that passed in row number is within range
+	if (i >= 0 && i < NUM_ROW_COLORS)
+		RowBaseColor[i] = color;
 }
 
 QColor
 WUniListItem::rowBaseColor(int i) const
 {
-	return RowBaseColor[i];
+	// Check that passed in row number is within range
+	if (i < 0 || i >= NUM_ROW_COLORS)
+		return QColor();
+	else
+		return RowBaseColor[i];
 }
 
 void
 WUniListItem::setRowTextColor(int i, const QColor & color)
 {
-	RowTextColor[i] = color;
+	// Check that passed in row number is within range
+	if (i >= 0 && i < NUM_ROW_COLORS)
+		RowTextColor[i] = color;
 }
 
 QColor
 WUniListItem::rowTextColor(int i) const
 {
-	return RowTextColor[i];
+	// Check that passed in row number is within range
+	if (i < 0 || i >= NUM_ROW_COLORS)
+		return QColor();
+	else
+		return RowTextColor[i];
 }
 
 void
@@ -583,8 +618,8 @@ WUniListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int w,
 void
 WUniListView::dragEnterEvent(QDragEnterEvent* event)
 {
-    if (event->mimeData()->hasUrls())
-         event->acceptProposedAction();
+	if (event->mimeData()->hasUrls())
+		 event->acceptProposedAction();
 }
 
 void

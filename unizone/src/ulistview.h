@@ -32,7 +32,8 @@ public:
 		Date,						// Time or Date
 		TransferSpeed,				// Transfer Speed, just like Size, but per second
 		ConnectionSpeed,			// Connection Speed
-		Time						// Time expressed in seconds
+		Time,						// Time expressed in seconds
+		Invalid						// 
 	} ;
 
 #define NUM_ROW_COLORS	10

@@ -175,7 +175,7 @@ PRECOMPILED_HEADER = unizone_pch.h
 
 CODEC =		UTF-8
 
-DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS
+DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS _WINSOCK_DEPRECATED_NO_WARNINGS
 !isEmpty(SSL_DIR) {
 	DEFINES += MUSCLE_ENABLE_SSL
 	SOURCES2 +=	muscle/dataio/SSLSocketDataIO.cpp \
@@ -193,7 +193,7 @@ win32 {
 	SOURCES1 += scanprogressimpl.cpp \
 			   windows/_filwbuf.c \
 			   windows/_getbuf.c \
-			   windows/vwsscanf.c \
+			   windows/vswscanf.c \
 			   windows/fileinfo_win.cpp \
 			   windows/filethread_win.cpp \
 			   windows/gotourl_win.cpp \
