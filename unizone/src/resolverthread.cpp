@@ -74,12 +74,14 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 				out += "\n" + tr("Host Name: %1").arg(qhost);
 			}
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 			QString aliases = ResolveAliases(address);
 			if (!aliases.isEmpty())
 			{
 				aliases.replace(QRegExp(","), " ");
 				out += "\n" + tr("Aliases: %1").arg(aliases);
 			}
+#endif
 		}
 		SystemEvent(gWin, gWin->FixString(out));
 	}					
@@ -115,6 +117,7 @@ ResolverThread::PrintAddressInfo(muscle::ip_address address, bool verbose)
 				found = true;
 			}
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 			QString aliases = ResolveAliases(address);
 
 			if (!aliases.isEmpty())
@@ -124,6 +127,7 @@ ResolverThread::PrintAddressInfo(muscle::ip_address address, bool verbose)
 				out += "\n" + tr("Aliases: %1").arg(aliases);
 				found = true;
 			}
+#endif
 					
 			// List all users from this ip
 						

@@ -58,7 +58,7 @@ WFileThread::InternalThreadEntry()
 	SendShow();
 	SendReset();
 
-	CoInitialize(NULL);
+	(void) CoInitialize(NULL);
 #endif
 
 	fPaths.AddTail("shared");

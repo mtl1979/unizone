@@ -104,13 +104,15 @@ ResolveHost(muscle::ip_address ip)
 	return ResolveHost6(ip);
 }
 
-QString 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
+QString
 ResolveAliases(muscle::ip_address ip)
 {
 	if (IsIPv4Address(ip))
 		return ResolveAliases4(ConvertIP4(ip));
 	return ResolveAliases6(ip);
 }
+#endif
 
 uint32
 ConvertIP4(muscle::ip_address ip)

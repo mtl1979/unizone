@@ -35,12 +35,15 @@ struct NetAddress6
 {
 	muscle::ip_address ip;
 	QString address;
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 	QString aliases;
+#endif
 	uint64 lastcheck;
 };
 
 Queue<NetAddress6> fAddressCache6;
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 void
 UpdateEntry6(NetAddress6 &na, LPHOSTENT lpHostEntry)
 {
@@ -61,20 +64,40 @@ UpdateEntry6(NetAddress6 &na, LPHOSTENT lpHostEntry)
 	else
 		na.address = QString::null;
 }
+#endif
 
 void
 UpdateEntry6(NetAddress6 &na, muscle::ip_address ip)
 {
-	struct in6_addr iaHost;	   // Internet address structure
-	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	
 	na.ip = ip;					// We need to remember to initialize this
+
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+	struct sockaddr_in6 saGNI;
+	WCHAR hostname[NI_MAXHOST];
+	DWORD dwRetval;
+
+	ip.WriteToNetworkArray((uint8 *)&saGNI.sin6_addr.u.Byte, NULL);
+
+	dwRetval = GetNameInfoW((struct sockaddr *) &saGNI, sizeof(struct sockaddr_in6),
+		hostname, NI_MAXHOST, NULL, 0, 0);
+
+	if (dwRetval == 0)
+	{
+		na.address = QString::fromUcs2(hostname);
+		na.lastcheck = GetCurrentTime64();
+	}
+#else
+	struct in6_addr iaHost;	   // Internet address structure
+	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 
 	ip.WriteToNetworkArray((uint8 *)&iaHost, NULL );
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in6_addr), AF_INET6);
 	UpdateEntry6(na, lpHostEntry);
+#endif
 }
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 void
 ResolveAliasesAux6(NetAddress6 &na, muscle::ip_address ip)
 {
@@ -86,6 +109,7 @@ ResolveAliasesAux6(NetAddress6 &na, muscle::ip_address ip)
 		na.aliases = QString::null;
 	}
 }
+#endif
 
 muscle::ip_address
 ResolveAddress6(const QString &address)
@@ -99,10 +123,15 @@ ResolveAddress6(const QString &address)
 		for (unsigned int i = 0; i < fAddressCache6.GetNumItems(); i++)
 		{
 			na = fAddressCache6[i];
-			if ((na.address == address) || Contains(na.aliases, address) || (na.ip == res))
+			if ((na.address == address) ||
+#if !defined(_MSC_VER) || _MSC_VER < 1800
+				Contains(na.aliases, address) || 
+#endif
+				(na.ip == res))
 			{
 				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
 				{
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 					if (res != 0)
 					{
 						if ((address != na.address) && !Contains(na.aliases, address))
@@ -111,6 +140,7 @@ ResolveAddress6(const QString &address)
 							fAddressCache6.ReplaceItemAt(i, na);
 						}
 					}
+#endif
 
 					return na.ip;
 				}
@@ -119,9 +149,11 @@ ResolveAddress6(const QString &address)
 					if (res != 0)	// Do not cache failures
 					{
 						na.address = ResolveHost6(res);		// Double check
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 						ResolveAliasesAux6(na, res);
 						if ((address != na.address) && !Contains(na.aliases, address))
 							AddToList(na.aliases, address);
+#endif
 						na.lastcheck = GetCurrentTime64();
 						fAddressCache6.ReplaceItemAt(i, na);
 					}
@@ -135,9 +167,11 @@ ResolveAddress6(const QString &address)
 
 	if (res != 0)						// Do not cache failures
 	{
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 		ResolveAliasesAux6(na, res);
 		if ((na.address != address) && !Contains(na.aliases, address))
 			AddToList(na.aliases, address);
+#endif
 		fAddressCache6.AddTail(na);
 	}
 	return res;
@@ -152,8 +186,10 @@ ResolveAddress6(const String &address)
 QString
 ResolveHost6(muscle::ip_address ip)
 {
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 	struct in6_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
+#endif
 	
 	//
 	NetAddress6 na;
@@ -170,7 +206,22 @@ ResolveHost6(muscle::ip_address ip)
 					if (!na.address.isEmpty())
 						return na.address;
 				}
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+				struct sockaddr_in6 saGNI;
+				WCHAR hostname[NI_MAXHOST];
+				DWORD dwRetval;
 
+				ip.WriteToNetworkArray((uint8 *)&saGNI.sin6_addr.u.Byte, (uint32 *)&saGNI.sin6_scope_id);
+
+				dwRetval = GetNameInfoW((struct sockaddr *) &saGNI, sizeof(struct sockaddr_in6),
+					hostname, NI_MAXHOST, NULL, 0, 0);
+
+				if (dwRetval == 0)
+				{
+					na.address = QString::fromUcs2(hostname);
+					na.lastcheck = GetCurrentTime64();
+				}
+#else
 				ip.WriteToNetworkArray((uint8 *)&iaHost, NULL);
 				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in6_addr), AF_INET6);
 				
@@ -187,6 +238,7 @@ ResolveHost6(muscle::ip_address ip)
 					UpdateEntry6(na, lpHostEntry);
 					fAddressCache6.ReplaceItemAt(i, na);
 				}
+#endif
 				return na.address;
 			}
 		};
@@ -194,14 +246,34 @@ ResolveHost6(muscle::ip_address ip)
 
 	//
 
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+	struct sockaddr_in6 saGNI;
+	WCHAR hostname[NI_MAXHOST];
+	DWORD dwRetval;
+
+	ip.WriteToNetworkArray((uint8 *)&saGNI.sin6_addr.u.Byte, (uint32 *)&saGNI.sin6_scope_id);
+
+	dwRetval = GetNameInfoW((struct sockaddr *) &saGNI, sizeof(struct sockaddr_in6),
+		hostname, NI_MAXHOST, NULL, 0, 0);
+
+	if (dwRetval == 0)
+	{
+		na.address = QString::fromUcs2(hostname);
+		na.lastcheck = GetCurrentTime64();
+	}
+	return na.address;
+#else
 	ip.WriteToNetworkArray((uint8 *)&iaHost, NULL);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in6_addr), AF_INET6);
 
 	if (lpHostEntry)
 		return QString::fromLocal8Bit(lpHostEntry->h_name);
+#endif
 	return QString::null;
 }
 
+
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 QString
 ResolveAliases6(muscle::ip_address ip)
 {
@@ -236,4 +308,5 @@ ResolveAliases6(muscle::ip_address ip)
 	fAddressCache6.AddTail(na);
 	return na.aliases;
 }
+#endif
 #endif

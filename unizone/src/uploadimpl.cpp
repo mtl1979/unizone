@@ -794,8 +794,8 @@ WUpload::UpdateLoad()
 		if (gWin->fSettings)
 		{
 			mu = gWin->fSettings->GetMaxUploads();
+			netClient()->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
 		}
-		netClient()->SetLoad(GetUploadQueue(), gWin->fSettings->GetMaxUploads());
 	}
 	PRINT("WUpload::UpdateLoad OK\n");
 }
@@ -1803,7 +1803,7 @@ WUpload::ClearFinishedUL()
 		{
 			ULPair pair;
 			fUploadList.GetItemAt(i, pair);
-			if (pair.thread->IsFinished() == true)
+			if (pair.thread && pair.thread->IsFinished() == true)
 			{
 				// found finished item, erase it
 				fUploadList.RemoveItemAt(i);

@@ -1,7 +1,11 @@
 #include "resolver4.h"
 #include "resolver.h"
 
-#ifndef _WIN32
+#ifdef _WIN32
+# if defined(_MSC_VER) && _MSC_VER >= 1800
+#  include <ws2tcpip.h>
+# endif
+#else
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -32,13 +36,16 @@ struct NetAddress4
 {
 	uint32 ip;
 	QString address;
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 	QString aliases;
+#endif
 	uint64 lastcheck;
 };
 
 Queue<NetAddress4> fAddressCache4;
 
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 void
 UpdateEntry(NetAddress4 &na, LPHOSTENT lpHostEntry)
 {
@@ -59,20 +66,41 @@ UpdateEntry(NetAddress4 &na, LPHOSTENT lpHostEntry)
 	else
 		na.address = QString::null;
 }
+#endif
 
 void
 UpdateEntry4(NetAddress4 &na, uint32 ip)
 {
-	struct in_addr iaHost;	   // Internet address structure
-	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 	
 	na.ip = ip;					// We need to remember to initialize this
+
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+	struct sockaddr_in saGNI;
+	WCHAR hostname[NI_MAXHOST];
+	DWORD dwRetval;
+
+	saGNI.sin_family = AF_INET;
+	saGNI.sin_addr.s_addr = htonl(ip);
+
+	dwRetval = GetNameInfoW((struct sockaddr *) &saGNI, sizeof(struct sockaddr),
+		hostname, NI_MAXHOST, NULL, 0, 0);
+
+	if (dwRetval == 0)
+	{
+		na.address = QString::fromUcs2(hostname);
+		na.lastcheck = GetCurrentTime64();
+	}
+#else
+	struct in_addr iaHost;	   // Internet address structure
+	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
 
 	iaHost.s_addr = htonl(ip);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 	UpdateEntry(na, lpHostEntry);
+#endif
 }
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 void
 ResolveAliasesAux4(NetAddress4 &na, uint32 ip)
 {
@@ -84,7 +112,7 @@ ResolveAliasesAux4(NetAddress4 &na, uint32 ip)
 		na.aliases = QString::null;
 	}
 }
-
+#endif
 
 uint32
 ResolveAddress4(const QString &address)
@@ -110,10 +138,15 @@ ResolveAddress4(const QString &address)
 		for (unsigned int i = 0; i < fAddressCache4.GetNumItems(); i++)
 		{
 			na = fAddressCache4[i];
-			if ((na.address == address) || Contains(na.aliases, address) || (na.ip == res))
+			if ((na.address == address) ||
+#if !defined(_MSC_VER) || _MSC_VER < 1800
+				Contains(na.aliases, address) || 
+#endif
+				(na.ip == res))
 			{
 				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
 				{
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 					if (res != 0)
 					{
 						if ((address != na.address) && !Contains(na.aliases, address))
@@ -122,6 +155,7 @@ ResolveAddress4(const QString &address)
 							fAddressCache4.ReplaceItemAt(i, na);
 						}
 					}
+#endif
 
 					return na.ip;
 				}
@@ -130,9 +164,11 @@ ResolveAddress4(const QString &address)
 					if (res != 0)	// Do not cache failures
 					{
 						na.address = ResolveHost4(res);		// Double check
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 						ResolveAliasesAux4(na, res);
 						if ((address != na.address) && !Contains(na.aliases, address))
 							AddToList(na.aliases, address);
+#endif
 						na.lastcheck = GetCurrentTime64();
 						fAddressCache4.ReplaceItemAt(i, na);
 					}
@@ -146,9 +182,11 @@ ResolveAddress4(const QString &address)
 
 	if (res != 0)						// Do not cache failures
 	{
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 		ResolveAliasesAux4(na, res);
 		if ((na.address != address) && !Contains(na.aliases, address))
 			AddToList(na.aliases, address);
+#endif
 		fAddressCache4.AddTail(na);
 	}
 	return res;
@@ -163,8 +201,10 @@ ResolveAddress4(const String &address)
 QString
 ResolveHost4(uint32 ip)
 {
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 	struct in_addr iaHost;	   // Internet address structure
 	LPHOSTENT lpHostEntry;	   // Pointer to host entry structure
+#endif
 	
 	//
 	NetAddress4 na;
@@ -176,11 +216,28 @@ ResolveHost4(uint32 ip)
 			na = fAddressCache4[i];
 			if (na.ip == ip)
 			{
-				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
+				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME)
 				{
 					if (!na.address.isEmpty())
 						return na.address;
 				}
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+				struct sockaddr_in saGNI;
+				WCHAR hostname[NI_MAXHOST];
+				DWORD dwRetval;
+
+				saGNI.sin_family = AF_INET;
+				saGNI.sin_addr.s_addr = htonl(ip);
+
+				dwRetval = GetNameInfoW((struct sockaddr *) &saGNI, sizeof(struct sockaddr),
+					hostname, NI_MAXHOST, NULL, 0, 0);
+
+				if (dwRetval == 0)
+				{
+					na.address = QString::fromUcs2(hostname);
+					na.lastcheck = GetCurrentTime64();
+				}
+#else
 				iaHost.s_addr = htonl(ip);
 				lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 				
@@ -197,6 +254,7 @@ ResolveHost4(uint32 ip)
 					UpdateEntry(na, lpHostEntry);
 					fAddressCache4.ReplaceItemAt(i, na);
 				}
+#endif
 				return na.address;
 			}
 		};
@@ -204,15 +262,35 @@ ResolveHost4(uint32 ip)
 
 	//
 
+#if defined(_MSC_VER) && _MSC_VER >= 1800
+	struct sockaddr_in saGNI;
+	WCHAR hostname[NI_MAXHOST];
+	DWORD dwRetval;
+
+	saGNI.sin_family = AF_INET;
+	saGNI.sin_addr.s_addr = htonl(ip);
+
+	dwRetval = GetNameInfoW((struct sockaddr *) &saGNI, sizeof(struct sockaddr),
+		hostname, NI_MAXHOST, NULL, 0, 0);
+
+	if (dwRetval == 0)
+	{
+		na.address = QString::fromUcs2(hostname);
+		na.lastcheck = GetCurrentTime64();
+	}
+	return na.address;
+#else
 	iaHost.s_addr = htonl(ip);
 	lpHostEntry = gethostbyaddr((const char *)&iaHost, sizeof(struct in_addr), AF_INET);
 
 	if (lpHostEntry)
 		return QString::fromLocal8Bit(lpHostEntry->h_name);
+#endif
 	return QString::null;
 }
 
 
+#if !defined(_MSC_VER) || _MSC_VER < 1800
 QString
 ResolveAliases4(uint32 ip)
 {
@@ -247,3 +325,4 @@ ResolveAliases4(uint32 ip)
 	fAddressCache4.AddTail(na);
 	return na.aliases;
 }
+#endif

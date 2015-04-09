@@ -50,13 +50,13 @@ UFileInfo::InitMIMEType()
 						{
 							bool found = false;
 							wchar_t lname[MAX_PATH];
-							dsize = MAX_PATH * 2;
+							dsize = MAX_PATH;
 							if (RegEnumKeyW(hk3, keys, lname, dsize) == ERROR_SUCCESS)
 							{
 								if (RegOpenKeyW(hk3, lname, &hk4) == ERROR_SUCCESS)
 								{
 									wchar_t lext[MAX_PATH];
-									dsize = MAX_PATH * 2;
+									dsize = MAX_PATH;
 									if (RegQueryValueExW(hk4, L"Extension", NULL, &type, (LPBYTE) lext, &dsize) == ERROR_SUCCESS)
 									{
 										if (wcscmp(lext, tExt) == 0)

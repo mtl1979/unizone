@@ -2073,7 +2073,7 @@ uint64
 WinShareWindow::GetUptime()
 {
 #ifdef WIN32
-	return ((uint64)GetTickCount()) * 1000;
+	return ((uint64)GetTickCount64()) * 1000;
 #elif defined(__LINUX__) || defined(linux)
 	struct sysinfo sinfo;
 	sysinfo(&sinfo);

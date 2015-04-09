@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #endif
 
-#define ARRAYITEMS(x) (sizeof(x)/sizeof(x[0]))  /* returns # of items in array */
-
 WString::WString()
 {
 	buffer = NULL;
@@ -364,33 +362,30 @@ WString::sscanf(const wchar_t *fmt, ...)
 int
 WString::sprintf(const WString &fmt, ...)
 {
-	if (!buffer)
-	{
-		buffer = new wchar_t[255];
-	}
-	int len = ARRAYITEMS(buffer) - 1;
+	if (buffer)
+		delete buffer;
+	buffer = new wchar_t[255];
+
 	va_list a;
 	va_start(a, fmt);
 #if defined(WIN32) || defined(_WIN32)
-	return _vsnwprintf(buffer, len, fmt.getBuffer(), a);
+	return _vsnwprintf(buffer, 255, fmt.getBuffer(), a);
 #else
-	return vswprintf(buffer, len, fmt.getBuffer(), a);
+	return vswprintf(buffer, 255, fmt.getBuffer(), a);
 #endif
 }
 
 int
 WString::sprintf(const wchar_t *fmt, ...)
 {
-	if (!buffer)
-	{
-		buffer = new wchar_t[255];
-	}
-	int len = ARRAYITEMS(buffer) - 1;
+	if (buffer)
+		delete buffer;
+	buffer = new wchar_t[255];
 	va_list a;
 	va_start(a, fmt);
 #if defined(WIN32) || defined(_WIN32)
-	return _vsnwprintf(buffer, len, fmt, a);
+	return _vsnwprintf(buffer, 255, fmt, a);
 #else
-	return vswprintf(buffer, len, fmt, a);
+	return vswprintf(buffer, 255, fmt, a);
 #endif
 }
