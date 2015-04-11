@@ -65,6 +65,7 @@ bool FindDuplicatesOld(QStringList & l, bool simple)
 	if (l.count() == 1)
 		return false;
 
+	pos = 0;
 	while (pos < l.at(0).length()) // Check start of strings
 	{
 		for (int i = 1; i < l.size(); i++)
@@ -120,7 +121,7 @@ restart2:
 				// We try to expand the middle section by one character and then restart
 				retlist.clear();
 				if (pos2 > 0)
-				{ 
+				{
 					i = 0;
 					pos2--;
 					goto restart2;
