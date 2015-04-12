@@ -49,6 +49,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fFile = NULL;
 	fFileDl = NULL;
 	fLocalFileDl = NULL;
+	fTempFileDl = NULL;
 	fNumFiles = -1;
 	fCurFile = -2;
 	timerID = 0;
@@ -120,7 +121,7 @@ WDownloadThread::~WDownloadThread()
 		*fShutdownFlag = true;
 	}
 
-	CloseFile(fFile);
+	_CloseFile(fFile);
 
 	if (fFileDl)
 	{
@@ -132,6 +133,12 @@ WDownloadThread::~WDownloadThread()
 	{
 		delete [] fLocalFileDl;
 		fLocalFileDl = NULL;
+	}
+
+	if (fTempFileDl)
+	{
+		delete [] fTempFileDl;
+		fTempFileDl = NULL;
 	}
 
    if (fPaths)
@@ -147,7 +154,7 @@ WDownloadThread::~WDownloadThread()
 }
 
 void
-WDownloadThread::SetFile(QString * files, QString * lfiles, QString * lpaths, int32 numFiles, const QString & fromIP, const QString & fromSession,
+WDownloadThread::SetFile(QString * files, QString * lfiles, QString * lpaths, QString * tfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
 						 const QString & localSession, uint32 remotePort, bool firewalled, bool partial)
 {
 	fFileDl = files;
@@ -175,6 +182,26 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, QString * lpaths, in
 		for (int l = 0; l < numFiles; l++)
 		{
 			fPaths[l] = QString::null;
+		}
+	}
+	if (tfiles)
+	{
+		fTempFileDl = tfiles;
+	}
+	else
+	{
+		fTempFileDl = new QString[numFiles];
+		Q_CHECK_PTR(fTempFileDl);
+		for (int l = 0; l < numFiles; l++)
+		{
+#if __STDC_WANT_SECURE_LIB__
+			char buffer[L_tmpnam_s];
+			tmpnam_s(buffer);
+#else
+			char buffer[L_tmpnam];
+			char * pointer = tmpnam(buffer);
+#endif
+			fTempFileDl[l] = MakePath("temp", QString::fromLocal8Bit(buffer));
 		}
 	}
 	fNumFiles = numFiles;
@@ -211,7 +238,7 @@ WDownloadThread::SetFile(QString * files, QString * lfiles, QString * lpaths, in
 }
 
 void
-WDownloadThread::SetFile(QString *files, QString *lfiles, QString *lpaths, int32 numFiles, const WUserRef &user)
+WDownloadThread::SetFile(QString *files, QString *lfiles, QString *lpaths, QString *tfiles, int32 numFiles, const WUserRef &user)
 {
 	fTunneled = true;
 	fFileDl = files;
@@ -241,6 +268,26 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, QString *lpaths, int32
 			fPaths[l] = QString::null;
 		}
 	}
+	if (tfiles)
+	{
+		fTempFileDl = tfiles;
+	}
+	else
+	{
+		fTempFileDl = new QString[numFiles];
+		Q_CHECK_PTR(fTempFileDl);
+		for (int l = 0; l < numFiles; l++)
+		{
+#if __STDC_WANT_SECURE_LIB__
+			char buffer[L_tmpnam_s];
+			tmpnam_s(buffer);
+#else
+			char buffer[L_tmpnam];
+			char * pointer = tmpnam(buffer);
+#endif
+			fTempFileDl[l] = MakePath("temp", QString::fromLocal8Bit(buffer));
+		}
+	}
 	fNumFiles = numFiles;
 	fCurFile = 0;
 	fIP = user()->GetUserHostName();
@@ -261,6 +308,18 @@ WDownloadThread::SetFile(QString *files, QString *lfiles, QString *lpaths, int32
 		if (fLocalFileDl[0] == QString::null)
 		{
 			fLocalFileDl[0] = MakePath(downloadDir(fPaths[0]), FixFileName(fFileDl[0]));
+		}
+
+		if (fTempFileDl[0] == QString::null)
+		{
+#if __STDC_WANT_SECURE_LIB__
+			char buffer[L_tmpnam_s];
+			tmpnam_s(buffer);
+#else
+			char buffer[L_tmpnam];
+			char *pointer = tmpnam(buffer);
+#endif
+			fTempFileDl[0] = MakePath("temp", QString::fromLocal8Bit(buffer));
 		}
 
 		dlFile = fLocalFileDl[0];
@@ -288,6 +347,7 @@ WDownloadThread::InitSession()
 		QString * temp = new QString[fNumFiles-fCurFile];
 		QString * temp2 = new QString[fNumFiles-fCurFile];
 		QString * temp3 = new QString[fNumFiles-fCurFile];
+		QString * temp4 = new QString[fNumFiles-fCurFile];
 		if (temp && temp2 && temp3)
 		{
 			int n = 0;
@@ -296,15 +356,18 @@ WDownloadThread::InitSession()
 				temp[n] = fFileDl[f];
 				temp2[n] = fLocalFileDl[f];
 				temp3[n] = fPaths[f];
+				temp4[n] = fTempFileDl[f];
 				n++;
 			}
 			fNumFiles = n;
 			delete [] fFileDl;
 			delete [] fLocalFileDl;
 			delete [] fPaths;
+			delete [] fTempFileDl;
 			fFileDl = temp;
 			fLocalFileDl = temp2;
 			fPaths = temp3;
+			fTempFileDl = temp4;
 		}
 		// Start from beginning
 		fCurFile = 0;
@@ -492,7 +555,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 			if (fDownloading)	// this shouldn't happen yet... we only request a single file at a time
 			{
 				// in case it was not closed when it was received
-				CloseFile(fFile);
+				_CloseFile(fFile);
 
 				if (IsLastFile())
 					SetFinished(true);
@@ -529,7 +592,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 						fFromUser = user;
 				}
 
-				QString fixed;
+				QString fixed, tfile;
 
 				if (fLocalFileDl[fCurFile] == QString::null)
 				{
@@ -537,11 +600,24 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 					fLocalFileDl[fCurFile] = MakePath(downloadDir(fPaths[fCurFile]), FixFileName(fname));
 				}
 
+				if (fTempFileDl[fCurFile] == QString::null)
+				{
+#if __STDC_WANT_SECURE_LIB__
+					char buffer[L_tmpnam_s];
+					tmpnam_s(buffer);
+#else
+					char buffer[L_tmpnam];
+					char *pointer = tmpnam(buffer);
+#endif
+					fTempFileDl[fCurFile] == MakePath("temp", QString::fromLocal8Bit(buffer));
+				}
+
 				fixed = fLocalFileDl[fCurFile];
+				tfile = fTempFileDl[fCurFile];
 
-				bool append = false;
+				bool append = false, appendtemp = false;
 
-                                if (msg()->FindInt64("beshare:StartOffset", fCurrentOffset) == B_OK)
+                if (msg()->FindInt64("beshare:StartOffset", fCurrentOffset) == B_OK)
 				{
 					if (fCurrentOffset > 0)
 					{
@@ -552,13 +628,17 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 						{
 							if (fFile->Size() == fCurrentOffset)	// sizes match up?
 								append = true;
-							CloseFile(fFile);
+							_CloseFile(fFile);
 						}
-						else
+						if (!append && fFile->Open(tfile, QIODevice::ReadOnly))
 						{
-							delete fFile;
-							fFile = NULL;
+							if (fFile->Size() == fCurrentOffset)	// sizes match up?
+								appendtemp = true;
+							_CloseFile(fFile);
 						}
+
+						delete fFile;
+						fFile = NULL;
 					}
 				}
 
@@ -601,7 +681,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 				fFile = new WFile();	// fixed filename again
 				Q_CHECK_PTR(fFile);
 
-				if (fFile->Open(fixed, (append ? QIODevice::Append | QIODevice::WriteOnly : QIODevice::WriteOnly)))
+				if (fFile->Open(append ? fixed : tfile, ((append || appendtemp) ? QIODevice::Append | QIODevice::WriteOnly : QIODevice::WriteOnly)))
 				{
 					if (fFileSize != 0)
 					{
@@ -632,7 +712,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 						}
 						else
 						{
-							CloseFile(fFile);
+							_CloseFile(fFile);
 
 							if (IsLastFile())
 								SetFinished(true);
@@ -717,7 +797,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 								SendReply(error);
 							}
 
-							CloseFile(fFile);
+							_CloseFile(fFile);
 
 							Reset();
 							return;
@@ -756,7 +836,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 								SystemEvent( gWin, tr("Finished downloading %2 from %1.").arg( GetRemoteUser() ).arg( fFileDl[fCurFile] ) );
 							}
 
-							CloseFile(fFile);
+							_CloseFile(fFile);
 
 							NextFile();
 						}
@@ -780,7 +860,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 							SendReply(error);
 						}
 
-						CloseFile(fFile);
+						_CloseFile(fFile);
 
 						Reset();
 						NextFile();
@@ -854,7 +934,7 @@ WDownloadThread::_SessionConnected(const String &sessionID)
 		for (int c = 0; c < fNumFiles; c++)
 		{
 			// check to see wether the file exists
-			if (fLocalFileDl[c] == QString:: null)
+			if (fLocalFileDl[c] == QString::null)
 			{
 				fLocalFileDl[c] = MakePath(downloadDir(fPaths[c]), FixFileName(fFileDl[c]));
 			}
@@ -913,7 +993,7 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 {
 	*fShutdownFlag = true;
 
-	CloseFile(fFile);
+	_CloseFile(fFile);
 
 	if (timerID != 0)
 	{
@@ -944,7 +1024,7 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 					dis = new WDownloadEvent(WDownloadEvent::FileDone);
 					if (dis)
 					{
-						dis->SetDone(true);		
+						dis->SetDone(true);
 						dis->SetFile(fFileDl[fNumFiles - 1]);
 						SendReply(dis);
 					}
@@ -1083,6 +1163,15 @@ WDownloadThread::GetLocalFileName(int i) const
 }
 
 QString
+WDownloadThread::GetTempFilename(int i) const
+{
+	if (i > -1 && i < fNumFiles)
+		return fTempFileDl[i];
+	else
+		return QString::null;
+}
+
+QString
 WDownloadThread::GetPath(int i) const
 {
 	if (i > -1 && i < fNumFiles)
@@ -1096,7 +1185,7 @@ WDownloadThread::timerEvent(QTimerEvent * /* e */)
 {
 	if (IsInternalThreadRunning())
 	{
-		if (fRemotelyQueued || fBlocked || fNegotiating)	
+		if (fRemotelyQueued || fBlocked || fNegotiating)
 		{
 			// Remotely queued or blocked or hashing transfer don't need idle check restricting
 			MessageRef nop(GetMessageFromPool(PR_COMMAND_NOOP));
@@ -1184,7 +1273,7 @@ WDownloadThread::Reset()
 		qmtt->Reset();
 	
 	// Make sure we close the file if user queues the transfer manually
-	CloseFile(fFile);
+	_CloseFile(fFile);
 
 	PRINT("WDownloadThread::Reset() OK\n");
 }
@@ -1339,13 +1428,13 @@ WDownloadThread::SetFinished(bool b)
 	{
 		killTimer(timerID);
 		timerID = 0;
-	}	
+	}
 }
 
 void
 WDownloadThread::SetManuallyQueued(bool b)
 {
-	fManuallyQueued = b;	
+	fManuallyQueued = b;
 }
 
 bool
@@ -1519,3 +1608,30 @@ WDownloadThread::event(QEvent * e)
 	return QObject::event(e);
 }
 
+void
+WDownloadThread::_CloseFile(WFile *& file)
+{
+	if (file)
+	{
+		QString name = QString::fromUcs2(file->Filename());
+		CloseFile(file);
+		if (name.startsWith("temp") && fCurrentOffset >= fFileSize)
+		{
+			// Move temporary file to final destination
+			QString fixed = fLocalFileDl[fCurFile];
+			if (WFile::Exists(fixed))	// create a new file name
+			{
+				QString nf = fixed;
+				int i = 1;
+				while (WFile::Exists(nf))
+				{
+					nf = UniqueName(fixed, i++);
+				}
+				fixed = nf;
+			}
+
+			fLocalFileDl[fCurFile] = fixed;
+			QFile::rename(name, fixed);
+		}
+	}
+}

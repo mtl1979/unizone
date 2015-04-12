@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include "wfile.h"
+#include "wstring.h"
 
 int
 WFile::TranslateMode(int mode)
@@ -24,5 +25,11 @@ WFile::TranslateMode(int mode)
 		return _O_TRUNC | _O_RDWR | _O_BINARY;
 	default: return -1;
 	}
+}
+
+WString
+WFile::Filename() const
+{
+	return file == -1 ? L"" : filename;
 }
 

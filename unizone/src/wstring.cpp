@@ -236,10 +236,11 @@ WString::operator const char *() const
 		utfbuf = new char[len + 1];
 		utflen = len;
 	}
+	if (len > 0)
 #if __STDC_WANT_SECURE_LIB__
-	wcstombs_s(&len, utfbuf, utflen, buffer, utflen);
+		wcstombs_s(&len, utfbuf, utflen, buffer, utflen);
 #else
-	len = wcstombs(utfbuf, buffer, utflen);
+		len = wcstombs(utfbuf, buffer, utflen);
 #endif
 	utfbuf[len] = 0;
 	return utfbuf;

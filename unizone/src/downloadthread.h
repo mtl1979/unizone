@@ -74,9 +74,9 @@ public:
 	QString GetETA(int64 cur, int64 max, double rate = -1);	// if rate < 0, then call GetCalculatedRate()
 	uint64	GetStartTime() { return fStartTime; }
 
-	void SetFile(QString * files, QString * lfiles, QString * lpaths, int32 numFiles, const QString & fromIP, const QString & fromSession,
+	void SetFile(QString * files, QString * lfiles, QString * lpaths, QString * tfiles, int32 numFiles, const QString & fromIP, const QString & fromSession,
 					const QString & localSession, uint32 remotePort, bool firewalled, bool partial);
-	void SetFile(QString * files, QString * lfiles, QString * lpaths, int32 numFiles, const WUserRef & fromUser); // Tunneled
+	void SetFile(QString * files, QString * lfiles, QString * lpaths, QString * tfiles, int32 numFiles, const WUserRef & fromUser); // Tunneled
 	void NextFile();
 	int32 GetCurrentNum() { return fCurFile; }
 	int32 GetNumFiles() { return fNumFiles; }
@@ -86,6 +86,7 @@ public:
 	QString GetCurrentLocalFile() const;
 	QString GetFileName(int i) const;
 	QString GetLocalFileName(int i) const;
+	QString GetTempFilename(int i) const;
 	QString GetPath(int i) const;
 	bool IsLastFile();
 
@@ -124,6 +125,7 @@ private slots:
 
 private:
 	void _SessionConnected(const String &sessionID);
+	void _CloseFile(WFile *& file);
 
 	// --------------------------------------------------------------------------------------------
 
@@ -139,6 +141,7 @@ protected:
 	WFile * fFile;				// file on the HD
 	QString * fFileDl;		// file to dl
 	QString * fLocalFileDl; // local filenames for downloaded files
+	QString * fTempFileDl;  // Temporary filenames for downloaded files
 	QString * fPaths;       // remote paths for downloaded files
 	QString fIP;				// ip address of remote client
 	QString fFromSession;	// session ID of remote client

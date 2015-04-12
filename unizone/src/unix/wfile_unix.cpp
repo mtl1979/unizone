@@ -23,6 +23,7 @@ WFile::Open(const WString &name, int mode)
 {
 	file = -1;
 	if (name.getBuffer() != NULL)
+		filename = name;
 #ifdef __APPLE__
 		file = open((const char *) name, mode, (mode & O_CREAT) ? S_IRUSR | S_IWUSR : 0);
 #else
@@ -45,6 +46,7 @@ WFile::Close()
 {
 	close(file);
 	file = -1;
+	filename = WString();
 }
 
 bool

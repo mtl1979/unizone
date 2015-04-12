@@ -17,6 +17,7 @@ using std::iterator;
 #include "message/Message.h"
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
+#include "support/MuscleSupport.h"
 
 #include "downloadimpl.h"
 #include "md5.h"
@@ -166,7 +167,7 @@ WDownload::EmptyDownloads()
 			{
 				for (int i = n; i < pair.thread->GetNumFiles(); i++)
 				{
-					emit FileInterrupted(pair.thread->GetFileName(i), pair.thread->GetLocalFileName(i), pair.thread->GetPath(i), pair.thread->GetRemoteUser());
+					emit FileInterrupted(pair.thread->GetFileName(i), pair.thread->GetLocalFileName(i), pair.thread->GetPath(i), pair.thread->GetTempFilename(i), pair.thread->GetRemoteUser());
 				}
 			}
 			PRINT("Reseting download\n");
@@ -185,7 +186,7 @@ WDownload::EmptyDownloads()
 
 
 void
-WDownload::AddDownload(QString * files, QString * lfiles, QString * paths,
+WDownload::AddDownload(QString * files, QString * lfiles, QString * paths, QString * tfiles,
 			int32 filecount, QString remoteSessionID,
 			uint32 remotePort, const QString & remoteIP,
 			uint64 /* remoteInstallID */, bool firewalled,
@@ -200,8 +201,8 @@ WDownload::AddDownload(QString * files, QString * lfiles, QString * paths,
 		int x;
 		
 		// Can't use localhost to download!!!
-		
-		if (remoteIP == "127.0.0.1")	
+
+		if (remoteIP == "127.0.0.1")
 		{
 			ip = netClient()->GetServerIP();
 			if (ip != "127.0.0.1")
@@ -224,8 +225,8 @@ WDownload::AddDownload(QString * files, QString * lfiles, QString * paths,
 		}
 	}
 
-	nt->SetFile(files, lfiles, paths, filecount, ip, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
-	
+	nt->SetFile(files, lfiles, paths, tfiles, filecount, ip, remoteSessionID, fLocalSID, remotePort, firewalled, partial);
+
 	DLPair p;
 	p.thread = nt;
 	p.item = new WTransferItem(fDownloads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
@@ -248,7 +249,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, QString * paths,
 }
 
 void
-WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, Queue<QString> & fPaths, const WUserRef & user)
+WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, Queue<QString> & fPaths, Queue<QString> & fTQueue, const WUserRef & user)
 {
 	int32 nFiles = fQueue.GetNumItems();
 	QString * qFiles = new QString[nFiles];
@@ -256,13 +257,16 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, Qu
 	
 	QString * qLFiles = new QString[nFiles];
 	Q_CHECK_PTR(qLFiles);
-	QString tmp, tmp2, tmp3;
+	QString tmp, tmp2, tmp3, tmp4;
 
 	QString * qPaths = new QString[nFiles];
 	Q_CHECK_PTR(qPaths);
 
+	QString * qTFiles = new QString[nFiles];
+	Q_CHECK_PTR(qTFiles);
+
 	int n = 0;
-	while ((fQueue.RemoveHead(tmp) == B_NO_ERROR) && (fLQueue.RemoveHead(tmp2) == B_NO_ERROR) && (fPaths.RemoveHead(tmp3) == B_NO_ERROR))
+	while ((fQueue.RemoveHead(tmp) == B_NO_ERROR) && (fLQueue.RemoveHead(tmp2) == B_NO_ERROR) && (fPaths.RemoveHead(tmp3) == B_NO_ERROR) && (fTQueue.RemoveHead(tmp4) == B_NO_ERROR))
 	{
 		// Remote name
 		if (tmp.isEmpty())
@@ -294,24 +298,35 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, Qu
 		{
 			qPaths[n] == tmp3;
 		}
-		
+
+		// Temporary file names
+
+		if (tmp4.isEmpty())
+		{
+			qTFiles[n] = QString::null;
+		}
+		else
+		{
+			qTFiles[n] = tmp4;
+		}
+
 		n++;
 	}
 	if (gWin->fSettings->GetFirewalled() && user()->GetFirewalled() && user()->GetTunneling())
-		CreateTunnel(qFiles, qLFiles, qPaths, n, user);
+		CreateTunnel(qFiles, qLFiles, qPaths, qTFiles, n, user);
 	else
-		AddDownload(qFiles, qLFiles, qPaths, n, user()->GetUserID(), user()->GetPort(), user()->GetUserHostName(), user()->GetInstallID(), user()->GetFirewalled(), user()->GetPartial());
+		AddDownload(qFiles, qLFiles, qPaths, qTFiles, n, user()->GetUserID(), user()->GetPort(), user()->GetUserHostName(), user()->GetInstallID(), user()->GetFirewalled(), user()->GetPartial());
 }
 
 
 bool
-WDownload::CreateTunnel(QString *files, QString *lfiles, QString *lpaths, int32 numFiles, const WUserRef &user)
+WDownload::CreateTunnel(QString *files, QString *lfiles, QString *lpaths, QString *tfiles, int32 numFiles, const WUserRef &user)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
 	Q_CHECK_PTR(nt);
 
-	nt->SetFile(files, lfiles, lpaths, numFiles, user);
-	
+	nt->SetFile(files, lfiles, lpaths, tfiles, numFiles, user);
+
 	DLPair p;
 	p.thread = nt;
 	p.item = new WTransferItem(fDownloads, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null, QString::null);
@@ -645,7 +660,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					QString qFile = dt->GetFileName(n);
 					QString qLFile = dt->GetLocalFileName(n);
 					QString qPath = dt->GetPath(n);
-					emit FileFailed(qFile, qLFile, qPath, dt->GetRemoteUser());
+					QString qTFile = dt->GetTempFilename(n);
+					emit FileFailed(qFile, qLFile, qPath, qTFile, dt->GetRemoteUser());
 				}
 			}
 			dt->Reset();
@@ -692,7 +708,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 							QString qFile = dt->GetFileName(n);
 							QString qLFile = dt->GetLocalFileName(n);
 							QString qPath = dt->GetPath(n);
-							emit FileFailed(qFile, qLFile, qPath, dt->GetRemoteUser());
+							QString qTemp = dt->GetTempFilename(n);
+							emit FileFailed(qFile, qLFile, qPath, qTemp, dt->GetRemoteUser());
 						}
 					}
 				}
@@ -758,7 +775,8 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					QString qFile = dt->GetFileName(n);
 					QString qLFile = dt->GetLocalFileName(n);
 					QString qPath = dt->GetPath(n);
-					emit FileFailed(qFile, qLFile, qPath, dt->GetRemoteUser());
+					QString qTemp = dt->GetTempFilename(n);
+					emit FileFailed(qFile, qLFile, qPath, qTemp, dt->GetRemoteUser());
 				}
 			}
 			dt->Reset();
@@ -941,7 +959,7 @@ WDownload::KillLocalQueues()
 				{
 					for (int i = n; i < pair.thread->GetNumFiles(); i++)
 					{
-						emit FileInterrupted(pair.thread->GetFileName(i), pair.thread->GetLocalFileName(i), pair.thread->GetPath(i), pair.thread->GetRemoteUser());
+						emit FileInterrupted(pair.thread->GetFileName(i), pair.thread->GetLocalFileName(i), pair.thread->GetPath(i), pair.thread->GetTempFilename(i), pair.thread->GetRemoteUser());
 					}
 				}
 				

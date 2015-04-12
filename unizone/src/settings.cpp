@@ -1561,6 +1561,7 @@ WSettings::AddResumeItem(const QString & user, const WResumeInfo & wri)
 	AddStringToMessage(fSet, RESUMEFILE, wri.fRemoteName);
 	AddStringToMessage(fSet, RESUMEFIL2, wri.fLocalName);
 	AddStringToMessage(fSet, RESUMEPATH, wri.fPath);
+	AddStringToMessage(fSet, RESUMETEMP, wri.fTempName);
 }
 
 bool
@@ -1574,7 +1575,7 @@ WSettings::GetResumeItem(int index, QString & user, WResumeInfo & wri) const
 	{
 		wri.fRemoteName = file;
 
-		// For backwards compatibility don't require entry for local file name or remote path
+		// For backwards compatibility don't require entry for local file name, remote path or temporary file name
 		//
 
 		if (GetStringFromMessage(fSet, RESUMEFIL2, index, file) == B_OK)
@@ -1586,6 +1587,11 @@ WSettings::GetResumeItem(int index, QString & user, WResumeInfo & wri) const
 			wri.fPath = path;
 		else
 			wri.fPath = QString::null;
+
+		if (GetStringFromMessage(fSet, RESUMETEMP, index, file) == B_OK)
+			wri.fTempName = file;
+		else
+			wri.fTempName = QString::null;
 
 		return true;
 	}

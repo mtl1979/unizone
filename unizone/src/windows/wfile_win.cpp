@@ -12,6 +12,7 @@
 WFile::WFile()
 {
 	file = -1;
+	filename = WString();
 }
 
 WFile::~WFile()
@@ -22,6 +23,7 @@ WFile::~WFile()
 bool
 WFile::Open(const WString &name, int mode)
 {
+	filename = name;
 #if	__STDC_WANT_SECURE_LIB__
 	_wsopen_s(&file, name.getBuffer(), mode, (mode & QIODevice::WriteOnly) ? _SH_DENYRW : _SH_DENYWR, (mode & _O_CREAT) ? S_IREAD | _S_IWRITE : 0);
 #else
@@ -46,6 +48,7 @@ WFile::Close()
 	{
 		_close(file);
 		file = -1;
+		filename = WString();
 	}
 }
 

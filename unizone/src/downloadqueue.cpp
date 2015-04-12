@@ -71,9 +71,9 @@ DownloadQueue::run()
 			}
 			gWin->OpenDownload();
 			if (u()->GetFirewalled() && u()->GetTunneling() && gWin->fSettings->GetFirewalled())
-				gWin->fDLWindow->CreateTunnel(files, NULL, paths, numItems, u);
+				gWin->fDLWindow->CreateTunnel(files, NULL, paths, NULL, numItems, u);
 			else
-				gWin->fDLWindow->AddDownload(files, NULL, paths, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
+				gWin->fDLWindow->AddDownload(files, NULL, paths, NULL, numItems, u()->GetUserID(), u()->GetPort(), u()->GetUserHostName(), u()->GetInstallID(), u()->GetFirewalled(), u()->GetPartial());
 		}
 	}
 	fQueue()->Clear();

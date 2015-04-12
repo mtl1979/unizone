@@ -506,9 +506,9 @@ WinShareWindow::UploadWindowClosed()
  */
 
 void
-WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QString &path, const QString &user)
+WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QString &path, const QString &tfile, const QString &user)
 {
-	FileInterrupted(file, lfile, path, user);
+	FileInterrupted(file, lfile, path, tfile, user);
 
 	SendTextEvent(user, WTextEvent::ResumeType);
 }
@@ -517,12 +517,13 @@ WinShareWindow::FileFailed(const QString &file, const QString &lfile, const QStr
 //
 
 void
-WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const QString &path, const QString &user)
+WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const QString &path, const QString &tfile, const QString &user)
 {
 	WResumeInfo wri;
 	wri.fRemoteName = file;
 	wri.fLocalName = lfile;
 	wri.fPath = path;
+	wri.fTempName = tfile;
 
 	rLock.Lock();
 	if (!fResumeMap.IsEmpty())
@@ -537,7 +538,8 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
                if (
                   (fResumeMap[x].files[y].fRemoteName == file) &&
                   (fResumeMap[x].files[y].fLocalName == lfile) &&
-                  (fResumeMap[x].files[y].fPath == path)
+                  (fResumeMap[x].files[y].fPath == path) &&
+                  (fResumeMap[x].files[y].fTempName == tfile)
                   )
                {
                   rLock.Unlock();
@@ -591,6 +593,7 @@ WinShareWindow::CheckResumes(const QString &user)
 	Queue<QString> fFiles;
 	Queue<QString> fLFiles;
 	Queue<QString> fPaths;
+	Queue<QString> fTFiles;
 	QString out;
 	
 	for (unsigned int x = 0; x < fResumeMap.GetNumItems(); x++)
@@ -615,6 +618,7 @@ WinShareWindow::CheckResumes(const QString &user)
             fFiles.AddTail(fResumeMap[x].files[y].fRemoteName);
             fLFiles.AddTail(fResumeMap[x].files[y].fLocalName);
             fPaths.AddTail(fResumeMap[x].files[y].fPath);
+			fTFiles.AddTail(fResumeMap[x].files[y].fTempName);
          }
 			fResumeMap.RemoveItemAt(x);
          break;
@@ -628,7 +632,7 @@ WinShareWindow::CheckResumes(const QString &user)
 
 		OpenDownload();
 
-		fDLWindow->AddDownloadList(fFiles, fLFiles, fPaths, u);
+		fDLWindow->AddDownloadList(fFiles, fLFiles, fPaths, fTFiles, u);
 	}
 }
 

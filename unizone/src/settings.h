@@ -113,6 +113,7 @@ using namespace muscle;
 #define RESUMEFILE "resumefile"
 #define RESUMEFIL2 "resumefile2"
 #define RESUMEPATH "resumepath"
+#define RESUMETEMP "resumetemp"
 #define RESUMEUSER "resumeuser"
 
 #define SOUNDS     "sounds"

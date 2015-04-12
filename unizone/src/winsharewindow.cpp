@@ -2061,6 +2061,8 @@ WinShareWindow::CreateDirectories()
 		dir.mkdir("shared");
 	if (!dir.exists("downloads"))
 		dir.mkdir("downloads");
+	if (!dir.exists("temp"))
+		dir.mkdir("temp");
 	if (!dir.exists("logs"))
 		dir.mkdir("logs");
 }
@@ -2170,10 +2172,10 @@ WinShareWindow::OpenDownload()
 		fDLWindow = new WDownload(NULL, GetUserID());
 		Q_CHECK_PTR(fDLWindow);
 
-		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &, const QString &)),
-				this, SLOT(FileFailed(const QString &, const QString &, const QString &, const QString &)));
-		connect(fDLWindow, SIGNAL(FileInterrupted(const QString &, const QString &, const QString &, const QString &)),
-				this, SLOT(FileInterrupted(const QString &, const QString &, const QString &, const QString &)));
+		connect(fDLWindow, SIGNAL(FileFailed(const QString &, const QString &, const QString &, const QString &, const QString &)),
+			this, SLOT(FileFailed(const QString &, const QString &, const QString &, const QString &, const QString &)));
+		connect(fDLWindow, SIGNAL(FileInterrupted(const QString &, const QString &, const QString &, const QString &, const QString &)),
+			this, SLOT(FileInterrupted(const QString &, const QString &, const QString &, const QString &, const QString &)));
 		connect(fDLWindow, SIGNAL(Closed()), this, SLOT(DownloadWindowClosed()));
 	}
 	fDLWindow->show();
