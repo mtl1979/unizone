@@ -74,7 +74,7 @@ size_t errbuf_size;
 	char convbuf[50];
 
 	if (regerrcode == REG_ATOI)
-		s = regatoi(preg, convbuf);
+		s = regatoi(preg, convbuf, 50);
 	else {
 		for (r = rerrs; r->code >= 0; r++)
 			if (r->code == target)
