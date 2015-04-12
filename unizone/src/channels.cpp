@@ -44,7 +44,7 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 
 	ChannelList = new Q3ListView( this, "ChannelList" );
 	Q_CHECK_PTR(ChannelList);
-	connect(ChannelList, SIGNAL(SelectionChanged()), this, SLOT(ChannelSelected()));
+	connect(ChannelList, SIGNAL(selectionChanged()), this, SLOT(ChannelSelected()));
 
 	ChannelList->addColumn( tr( "Name" ) );
 	ChannelList->addColumn( tr( "Topic" ) );
@@ -53,7 +53,7 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 	ChannelList->addColumn( tr( "Public" ) );
 
 	fChannelsTab->addMultiCellWidget(ChannelList, 0, 4, 0, 4);
-	
+
 	Create = new QPushButton( tr( "&Create" ), this, "Create" );
 	Q_CHECK_PTR(Create);
 	Create->setEnabled(fNetClient->IsConnected());
@@ -67,9 +67,9 @@ Channels::Channels(QWidget *parent, NetClient *fNet)
 
 	fChannelsTab->addWidget(Join, 6, 3);
 
-	connect( 
-		fNetClient, SIGNAL(ChannelAdded(const QString &, const QString &, int64)), 
-		this, SLOT(ChannelAdded(const QString &, const QString &, int64)) 
+	connect(
+		fNetClient, SIGNAL(ChannelAdded(const QString &, const QString &, int64)),
+		this, SLOT(ChannelAdded(const QString &, const QString &, int64))
 		);
 	connect(
 		fNetClient, SIGNAL(ChannelTopic(const QString &, const QString &, const QString &)),
@@ -229,11 +229,11 @@ Channels::CreateChannel()
 	}
 
 	bool ok = FALSE;
-	QString channel = QInputDialog::getText( 
-		tr( "Create Channel" ), 
+	QString channel = QInputDialog::getText(
+		tr( "Create Channel" ),
 		tr( "Please enter channel name" ),
-		QLineEdit::Normal, 
-		QString::null, &ok, this 
+		QLineEdit::Normal,
+		QString::null, &ok, this
 		);
 	if ( ok && !channel.isEmpty() )
 	{
@@ -304,12 +304,12 @@ Channels::JoinChannel(const QString & channel)
 			//
 			// Create Channel Window
 			//
-			
+
 			// Create Window item
 			win = new Channel(this, fNetClient, channel);
 			info->SetWindow(win);
 		}
-		
+
 		// Send user list to window
 #ifdef _DEBUG
 		WString wusers(info->GetUsers());
@@ -326,16 +326,16 @@ Channels::JoinChannel(const QString & channel)
 			}
 			delete [] user;
 		}
-		
+
 		info->AddUser(gWin->GetUserID());
 		win->SetOwner(info->GetOwner());
 		win->SetTopic(info->GetTopic());
 		win->SetPublic(info->GetPublic());
 		win->show();
-		
+
 		UpdateUsers(info);
 		UpdatePublic(info);
-		
+
 		if (!info->GetPublic()) // Needs invite?
 		{
 			// Send Channel Invite message
@@ -350,7 +350,7 @@ Channels::JoinChannel(const QString & channel)
 				AddStringToMessage(cc, "channel", channel);
 				fNetClient->SendMessageToSessions(cc);
 			}
-		}	
+		}
 	}
 }
 
@@ -380,7 +380,7 @@ Channels::ChannelCreated(const QString & channel, const QString & owner, uint64 
 		{
 			info->SetCreated(timecreated);
 			info->SetOwner(owner);
-		}	
+		}
 	}
 	else
 	{
@@ -541,7 +541,7 @@ Channels::ChannelInvite(const QString & channel, const QString & user, const QSt
 				// Got invited
 				if (!info->GetWindow())
 				{
-					if (QMessageBox::information(this, tr( "Channels" ), 
+					if (QMessageBox::information(this, tr( "Channels" ),
 						tr( "User #%1 invited you to channel %2." " Do you accept?").arg(user).arg(channel),
 						tr( "Yes" ), tr( "No" )) == 0)	// 0 is the index of "yes"
 					{
@@ -560,7 +560,7 @@ Channels::ChannelInvite(const QString & channel, const QString & user, const QSt
 			else if ( IsAdmin(channel, gWin->GetUserID()) && info->GetWindow() )
 			{
 				// User requested invite from us
-				if (QMessageBox::information(this, tr( "Channels" ), 
+				if (QMessageBox::information(this, tr( "Channels" ),
 					tr( "User #%1 requested invite to channel %2." " Do you?").arg(user).arg(channel),
 					tr( "Yes" ), tr( "No" )) == 0)	// 0 is the index of "yes"
 				{
@@ -750,7 +750,7 @@ Channels::HandleMessage(MessageRef & msg)
 			{
 				QString qChan, qUser;
 				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
@@ -762,7 +762,7 @@ Channels::HandleMessage(MessageRef & msg)
 			{
 				QString qChan, qUser;
 				if (
-					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) && 
+					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
@@ -801,7 +801,7 @@ Channels::HandleMessage(MessageRef & msg)
 				QString qChan, qUser, qTopic;
 				if (
 					(GetStringFromMessage(msg, PR_NAME_SESSION, qUser) == B_OK) &&
-					(GetStringFromMessage(msg, "topic", qTopic) == B_OK) && 
+					(GetStringFromMessage(msg, "topic", qTopic) == B_OK) &&
 					(GetStringFromMessage(msg, "channel", qChan) == B_OK)
 					)
 				{
