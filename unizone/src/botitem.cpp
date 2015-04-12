@@ -4,12 +4,12 @@
 #include "botitem.h"
 #include "nicklist.h"
 
-WBotItem::WBotItem(	
+WBotItem::WBotItem(
 				   Q3ListView * parent,
 				   QString a, QString b, QString c, QString d,
-				   QString e, QString f, QString g, QString h 
+				   QString e, QString f, QString g, QString h
 				   )
-				   : WNickListItem(parent, a, b, c, d, e, f, g, h) 
+				   : WNickListItem(parent, a, b, c, d, e, f, g, h)
 {
 	// empty
 }

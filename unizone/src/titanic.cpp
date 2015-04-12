@@ -78,7 +78,7 @@ hfind(const QChar &c)
 char
 hextochar(const QString &orig)
 {
-	if (orig.length() != 2) 
+	if (orig.length() != 2)
 		return 0;
 	
 	unsigned int l = hfind(orig.at(0)) * 16 + hfind(orig.at(1));

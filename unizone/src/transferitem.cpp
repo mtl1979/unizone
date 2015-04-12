@@ -4,11 +4,11 @@
 #include "transferitem.h"
 
 WTransferItem::WTransferItem(
-							 Q3ListView * parent, 
+							 Q3ListView * parent,
 							 QString a, QString b, QString c, QString d,
 							 QString e, QString f, QString g, QString h, QString i, QString j
 							 )
-							 : WUniListItem(parent, a, b, c, d, e, f, g, h, i, j) 
+							 : WUniListItem(parent, a, b, c, d, e, f, g, h, i, j)
 {
 	setText(Status, a);
 	setText(Filename, b);

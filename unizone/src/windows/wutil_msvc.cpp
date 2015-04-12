@@ -22,7 +22,7 @@ wreplace(wchar_t *buffer, wchar_t win, wchar_t wout)
 			if (*b == win)
 				*b = wout;
 			b++;
-		}; 
+		};
 	}
 }
 
@@ -40,7 +40,7 @@ wreverse(wchar_t *dest, const wchar_t *src, size_t len)
 	{
 		int dpos = 0;
 		size_t spos = len - 1;
-		while (spos >= 0) 
+		while (spos >= 0)
 			dest[dpos++] = src[spos--];
 		dest[len] = 0;
 	}
@@ -52,7 +52,7 @@ wreverse(wchar_t *dest, const wchar_t *src, size_t len)
  *
  */
 
-QString 
+QString
 wideCharToQString(const wchar_t *wide)
 {
     QString result;

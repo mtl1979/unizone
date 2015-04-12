@@ -129,8 +129,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			}
 		}
 		else if (	
-					(CompareCommand(sendText, "/me's")) || 
-					(CompareCommand(sendText, "/action's")) 
+					(CompareCommand(sendText, "/me's")) ||
+					(CompareCommand(sendText, "/action's"))
 				)
 		{
 			QString msg = GetParameterString(sendText);
@@ -151,8 +151,8 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
             }
 		}
 		else if (	
-					(CompareCommand(sendText, "/me")) || 
-					(CompareCommand(sendText, "/action")) 
+					(CompareCommand(sendText, "/me")) ||
+					(CompareCommand(sendText, "/action"))
 				)
 		{
 			QString msg = GetParameterString(sendText);
@@ -288,7 +288,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 						if (fSettings->GetInfo())
 						{
 							// Make the hyperlink contain port number too ;)
-							QString uri = "server://"; 
+							QString uri = "server://";
 							uri += fServer;
 							uri += " [";
 							uri += GetServerName(fServer);
@@ -382,7 +382,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 		else if (CompareCommand(sendText, "/users"))
 		{
 			// <postmaster@raasu.org> 20021005 -- I think it's 1 for current user that needs to be added to get the total count
-			uint iUsers = fUsers->childCount() + 1;  
+			uint iUsers = fUsers->childCount() + 1;
 			if (iUsers > fMaxUsers)
 				fMaxUsers = iUsers;
 			QString qUsers = QString::number(iUsers) + " (" + QString::number(fMaxUsers) + ")";
@@ -409,7 +409,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 				if (fSettings->GetError())
 					PrintError(tr("No users passed."));
 			}
-			else 
+			else
 			{
 				MessageRef mrf(GetMessageFromPool(PR_COMMAND_KICK));
 				AddStringToMessage(mrf, PR_NAME_KEYS, MapUsersToIDs(users));
@@ -606,17 +606,41 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 					localtime_r(&currentTime, &myTime);
 				else
 					gmtime_r(&currentTime, &myTime);
-				
+
+#if __STDC_WANT_SECURE_LIB__
+				char buf[26];
+				asctime_s(buf, 26, &myTime);
+				lt = buf;
+#else
 				lt = asctime(&myTime);
+#endif
 				lt = lt.Substring(0, "\n");
-				
+
 				if (command == "gmt")
+#if	__STDC_WANT_SECURE_LIB__
+					strcpy_s(zone, 64, "GMT");
+#else
 					strcpy(zone, "GMT");
-				else if (myTime.tm_isdst != 1) 
+#endif
+				else if (myTime.tm_isdst != 1)
+#if	__STDC_WANT_SECURE_LIB__
+				{
+					size_t len;
+					_get_tzname(&len, zone, 64, 0);
+				}
+#else
 					strcpy(zone, tzname[0]);
-				else 
+#endif
+				else
+#if	__STDC_WANT_SECURE_LIB__
+				{
+					size_t len;
+					_get_tzname(&len, zone, 64, 1);
+				}
+#else
 					strcpy(zone, tzname[1]);
-				
+#endif
+
 				PrintSystem(tr("Current time: %1 %2").arg(QString::fromLocal8Bit(lt.Cstr())).arg(QString::fromLocal8Bit(zone)));
 			}
 			else
@@ -674,16 +698,39 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			else
 				gmtime_r(&currentTime, &myTime);
 
+#if __STDC_WANT_SECURE_LIB__
+			char buf[26];
+			asctime_s(buf, 26, &myTime);
+			lt = buf;
+#else
 			lt = asctime(&myTime);
+#endif
 			lt = lt.Substring(0, "\n");
 
 			if (command == "gmt")
+#if __STDC_WANT_SECURE_LIB__
+				strcpy_s(zone, 64, "GMT");
+#else
 				strcpy(zone, "GMT");
-			else if (myTime.tm_isdst != 1) 
+#endif
+			else if (myTime.tm_isdst != 1)
+#if __STDC_WANT_SECURE_LIB__
+			{
+				size_t len;
+				_get_tzname(&len, zone, 64, 0);
+			}
+#else
 				strcpy(zone, tzname[0]);
-			else 
+#endif
+			else
+#if __STDC_WANT_SECURE_LIB__
+			{
+				size_t len;
+				_get_tzname(&len, zone, 64, 1);
+			}
+#else
 				strcpy(zone, tzname[1]);
-
+#endif
 			QString text = tr("Current time: %1 %2").arg(QString::fromLocal8Bit(lt.Cstr())).arg(QString::fromLocal8Bit(zone));
 
 			if (fNetClient->IsConnected())
@@ -1154,8 +1201,7 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			PrintSystem(tr("Unizone version: %1").arg(WinShareVersionString()));
 			PrintSystem(tr("MUSCLE version: %1").arg(MUSCLE_VERSION_STRING));
 			PrintSystem(tr("zlib version: %1").arg(zlibVersion()));
-			PrintSystem(tr("Qt version: %1").arg(qVersion() 
-				));
+			PrintSystem(tr("Qt version: %1").arg(qVersion()));
 		}
 		else if (CompareCommand(sendText, "/onconnect"))
 		{
@@ -1369,7 +1415,14 @@ WinShareWindow::SendChatText(WTextEvent * e, bool * reply)
 			if (base.isEmpty())
 			{
 				time_t currentTime = time(NULL);
-				QString lt = QString::fromLocal8Bit( ctime( &currentTime) );
+				QString lt;
+#if __STDC_WANT_SECURE_LIB__
+				char buf[26];
+				ctime_s(buf, 26, &currentTime);
+				lt = buf;
+#else
+				lt = QString::fromLocal8Bit( ctime(&currentTime) );
+#endif
 				lt.truncate(lt.find("\n"));
 
 				base = "desktop ";
@@ -1696,7 +1749,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 		return;
 
 	if (!IsWhiteListed(from))
-	{ 
+	{
 		if (IsFilterListed(text))
 			return;
 					
@@ -1751,7 +1804,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 			}
 			// Check for remote control commands, filter out if found
 	
-			if ( Remote(userID, text) ) 
+			if ( Remote(userID, text) )
 				return;
 						
 			if (fSettings->GetPrivate())	// and are we accepting private msgs?
@@ -1857,7 +1910,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				}
 #endif // WIN32
 				
-				SendTextEvent(chat, WTextEvent::ChatTextEvent); 
+				SendTextEvent(chat, WTextEvent::ChatTextEvent);
 				
 			}
 		}
@@ -1872,7 +1925,7 @@ WinShareWindow::HandleChatText(const WUserRef &from, const QString &text, bool p
 				else
 					chat += FormatRemoteText(userID, FixString(userName), FormatNameSaid(text));
 		
-				SendTextEvent(chat, WTextEvent::ChatTextEvent); 
+				SendTextEvent(chat, WTextEvent::ChatTextEvent);
 			}
 		}
 	}
@@ -1909,7 +1962,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 		}
 		/*
 		 *
-		 * Putting the scan here seems to fix the crash when 
+		 * Putting the scan here seems to fix the crash when
 		 * shares are scanned on startup (during connect to server)
 		 *
 		 */
@@ -2278,7 +2331,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				String repto;
 				int64 rtime = 0;
 				if (
-					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) && 
+					(msg()->FindString(PR_NAME_SESSION, repto) == B_OK) &&
 					(msg()->FindInt64("registertime", &rtime) == B_OK)
 					)
 				{
@@ -2360,7 +2413,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 				
 				if (fSettings->GetInfo())
 				{
-					if ((GetStringFromMessage(msg, PR_NAME_SESSION, session) == B_OK) && 
+					if ((GetStringFromMessage(msg, PR_NAME_SESSION, session) == B_OK) &&
                                                 (msg()->FindInt64("when", when) == B_OK))
 					{
 						WUserRef user = fNetClient->FindUser(session);
@@ -2409,24 +2462,48 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					time_t currentTime = time(NULL);
 					tm myTime;
 					char zone[64];
-					
+
 					bool g = false;
-                                        (void) msg()->FindBool("gmt", g);
+					(void) msg()->FindBool("gmt", g);
 
 					if (g)
 						gmtime_r(&currentTime, &myTime);
 					else
 						localtime_r(&currentTime, &myTime);
-					
+
+#if __STDC_WANT_SECURE_LIB__
+					char buf[26];
+					asctime_s(buf, 26, &myTime);
+					lt = buf;
+#else
 					lt = asctime(&myTime);
+#endif
 					lt = lt.Substring(0, "\n");
-					
+
 					if (g)
+#if __STDC_WANT_SECURE_LIB__
+						strcpy_s(zone, 64, "GMT");
+#else
 						strcpy(zone, "GMT");
-					else if (myTime.tm_isdst != 1) 
+#endif
+					else if (myTime.tm_isdst != 1)
+#if __STDC_WANT_SECURE_LIB__
+					{
+						size_t len;
+						_get_tzname(&len, zone, 64, 0);
+					}
+#else
 						strcpy(zone, tzname[0]);
-					else 
+#endif
+					else
+#if __STDC_WANT_SECURE_LIB__
+					{
+						size_t len;
+						_get_tzname(&len, zone, 64, 1);
+					}
+#else
 						strcpy(zone, tzname[1]);
+#endif
 
 					MessageRef tire(GetMessageFromPool(TimeReply));
 					if (tire())
@@ -2453,7 +2530,7 @@ WinShareWindow::HandleMessage(MessageRef msg)
 					if (user())
 					{
 						if (
-							(GetStringFromMessage(msg, "time", qTime) == B_OK) && 
+							(GetStringFromMessage(msg, "time", qTime) == B_OK) &&
 							(GetStringFromMessage(msg, "zone", qZone) == B_OK)
 							)
 						{
@@ -2571,53 +2648,53 @@ WinShareWindow::ShowHelp(const QString & command)
 	QString helpText;
 	helpText			+=	tr("Unizone Command Reference");
 	helpText			+=	"\n";
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/action [action] - do something");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/addautopriv [pattern] - update the auto-private pattern (can be a user name, or several names, or regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/addblacklist [pattern] - update the blacklist pattern (can be a user name, or several names, or regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/addfilter [pattern] - update the word filter pattern");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/addwhitelist [pattern] - update the whitelist pattern (can be a user name, or several names, or regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/addignore [pattern] - update the ignore pattern (can be a user name, or several names, or a regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/addserver [server] - add server to server list without connecting");
 	helpText			+=  "\n\t\t\t\t";
 	helpText			+=	tr("/adduser [name or session ids] - add users to a private chat window (works in private windows only!)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/autopriv [pattern] - set the auto-private pattern (can be a user name, or several names, or regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/away - set away state (same as selecting away from the list)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/awaymsg - away message for away state (when /away is invoked)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/bindecode - decode binary data and display it");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/binencode - encode as binary data and display it");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/binsay [nick]: [text] - say text in binary but prefix with nick");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/blacklist [pattern] - set the blacklist pattern (can be a user name, or several names, or a regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/btime [gmt] - Broadcast and show local (or GMT) time");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/buptime - Broadcast and show uptime");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/chkserver [index] - check server string");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/chkstatus [index] - check status string");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/chkuser [index] - check nick string");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/clear - clear the text in the chat view");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/clearline - clear all the line buffers");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/clearresumes - clear all pending resumes");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/clearstats - clear transfer statistics");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/compression [level] - set or view message compression level");
@@ -2629,7 +2706,7 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/decrypt - decrypt text and display it");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/disconnect - disconnect from server");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/dns [user|host] - give information about host");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/emsg [name] [message] - send an encrypted private message");
@@ -2637,39 +2714,39 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/encryption [on|off] - toggle encryption in private windows");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/filter [pattern] - set the word filter pattern");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/google [string] - open entry in Google");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/help [command] - show help for command (no '/' in front of command) or show this help text if no command given.");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/heremsg - message for here state");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/hexdecode - decode hexadecimal data and display it");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/hexencode - encode as hexadecimal data and display it");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/hexsay [nick]: [text] - say text in hexadecimal but prefix with nick");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/ignore [pattern] - set the ignore pattern (can be a user name, or several names, or a regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/ip [user|host] - give information about host");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/logged - show the time you have been logged in to a server");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/me [action] - /action synonym");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 #ifdef MUSCLE_ENABLE_MEMORY_TRACKING
 	helpText			+=	tr("/memory - show number of bytes Unizone is using memory");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 #endif
 	helpText			+=	tr("/msg [name] [message] - send a private message");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/nick [name] - change your user name");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/octdecode - decode octal data and display it");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/octencode - encode as octal data and display it");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/onconnect [command] - set or clear command to perform on successful connect");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/pauseresumes - toggle resuming of file transfers");
@@ -2677,113 +2754,113 @@ WinShareWindow::ShowHelp(const QString & command)
 	helpText			+=	tr("/picture [name or session ids] - send picture to other clients");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/ping [name or session ids] - ping other clients");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/priv [name or session ids] - open private chat with these users added");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/quit - quit Unizone");
-	helpText			+=	"\n\t\t\t\t"; 
-	helpText			+=	tr("/redirect [nick] - Redirect all private messages to another user"); 
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
+	helpText			+=	tr("/redirect [nick] - Redirect all private messages to another user");
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/remote [password] - set & view remote password");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/removeuser [name or session ids] - remove users from a private chat window (works in private windows only!)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/remserver [index] - remove server from server list");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/remstatus [index] - remove status from status list");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/remuser [index] - remove nick from nick list");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/resumes - list files waiting to be resumed");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/reverse [text] - say text in reverse");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/revsay [nick]: [text] - say text reversed but prefix with nick");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/running - show time elapsed since you started Unizone");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/save - saves settings (might be necessary after editing drop-down lists)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/scan - rescan shared directory");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/screenshot - grab screenshot and save to file");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/search [pattern] - open search window");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/server [server] - set the current server");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/serverinfo - check status of server");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/shell [command] - execute command");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/showpatterns - show auto-private, blacklist, ignore and watch patterns");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/showstats - show transfer statistics");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/status [status] - set status string");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/stopresume [index] - stop resuming file");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/temp [temperature] [C|F|K] - convert between temperature units");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/time [gmt] - show local (or GMT) time");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/time [nick] [gmt] - request time stamp from other user");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/unautopriv [name] - remove name from auto-private list");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/unblacklist [name] - remove name from blacklist");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/unfilter [pattern] - remove pattern from word filters");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/unignore [name] - remove name from ignore list");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/unwhitelist [name] - remove name from whitelist");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/uptime - show system uptime");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/users - show number of users connected");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/version - show client version strings");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/view - view picture on local machine");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/watch [pattern] - set the watch pattern (can be a user name, or several names, or a regular expression)");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=  tr("/whitelist [pattern] - set the whitelist pattern");
 	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/wiki [string] - open entry in Wikipedia");
 	helpText			+=	"\n\n";
 	helpText			+=	tr("Admin Command Reference");
 	helpText			+=	"\n";
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/addbans [users] - add bans by user names or session ids");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/addipbans [ips] - add bans by ip addresses");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/kick [users] - kick by user names or session ids");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/kickips [ips] - kick by ip addresses");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/rembans [users] - remove bans by user names");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/remipbans [ips] - remove bans by ip addresses");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/require [ips] - add require mask");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("/unrequire [ips] - remove require mask");
 #if defined(BETA) || defined(_DEBUG)
 	helpText			+=	"\n";
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("The list of commands is being worked on. More will be added");
-	helpText			+=	"\n\t\t\t\t"; 
+	helpText			+=	"\n\t\t\t\t";
 	helpText			+=	tr("as time goes on.");
 #endif
 	helpText			+=	"\n\n";
 
 	temp = CheckIfEmpty(fAutoPriv, qNone);
 	helpText			+=	tr("Auto-private pattern: %1").arg(temp);
-	helpText			+=	"\n"; 
+	helpText			+=	"\n";
 
 	temp = CheckIfEmpty(fPMRedirect, qNone);
 	helpText			+=	tr("Private Message redirect pattern: %1").arg(temp);
@@ -2791,29 +2868,29 @@ WinShareWindow::ShowHelp(const QString & command)
 	
 	temp = CheckIfEmpty(fBlackList, qNone);
 	helpText			+=	tr("Blacklist pattern: %1").arg(temp);
-	helpText			+=	"\n"; 
+	helpText			+=	"\n";
 
 	temp = CheckIfEmpty(fIgnore, qNone);
 	helpText			+=	tr("Ignore pattern: %1").arg(temp);
-	helpText			+=	"\n"; 
+	helpText			+=	"\n";
 
 	temp = CheckIfEmpty(fWatch, qNone);
 	helpText			+=	tr("Watch pattern: %1").arg(temp);
-	helpText			+=	"\n"; 
+	helpText			+=	"\n";
 
 	if (fOnConnect.isEmpty())
 	{
 		helpText			+=	tr("On Connect: Do Nothing ;)");
-		helpText			+=	"\n"; 
+		helpText			+=	"\n";
 	}
 	else
 	{
 		helpText			+=	tr("On Connect:");
-		helpText			+=	"\n"; 
+		helpText			+=	"\n";
 		helpText			+=	tr("1. %1").arg(fOnConnect);
 		if (!fOnConnect2.isEmpty())
 		{
-			helpText			+=	"\n"; 
+			helpText			+=	"\n";
 			helpText			+=	tr("2. %1").arg(fOnConnect2);
 		}
 	}
@@ -2918,7 +2995,7 @@ WinShareWindow::FindUser(const QString & user)
 	return WUserRef(NULL);
 }
 
-WUserRef 
+WUserRef
 WinShareWindow::FindUserByIPandPort(const QString & ip, uint32 port)
 {
 	if (fNetClient)
@@ -2945,7 +3022,7 @@ WinShareWindow::Remote(const QString & /* session */, const QString &text)
 		// try to parse password...
 		int sp = cmd.find("\n");
 		
-		if (sp == -1) 
+		if (sp == -1)
 			return false;
 		
 		QString pass = cmd.left(sp);
@@ -2971,7 +3048,7 @@ WinShareWindow::Remote(const QString & /* session */, const QString &text)
 
 // List files waiting to be resumed
 
-void 
+void
 WinShareWindow::ListResumes()
 {
 	QString out;
@@ -3089,7 +3166,7 @@ WinShareWindow::ConnectionAccepted(const ConstSocketRef &socketRef)
 
 QString
 WinShareWindow::GetUserID() const
-{ 
+{
 	if (fNetClient)
 	{
 		if (fNetClient->IsConnected())
@@ -3147,7 +3224,7 @@ WinShareWindow::GotParams(const MessageRef &msg)
 
 	PRINT("Uploading public data\n");
 
-	fNetClient->AddSubscriptionList(subscriptionList); 
+	fNetClient->AddSubscriptionList(subscriptionList);
 	fNetClient->SetUserName(fUserName);
 	fNetClient->SetUserStatus(fUserStatus);
 	fNetClient->SetConnection(fSettings->GetConnection());
@@ -3157,7 +3234,7 @@ WinShareWindow::GotParams(const MessageRef &msg)
 	{
 		fNetClient->SetLoad(0, fSettings->GetMaxUploads());
 		// Fake that we are scanning, so uploads get queued until we scan the very first time.
-		fScanning = true; 
+		fScanning = true;
 	}
 	else
 	{

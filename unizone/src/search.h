@@ -52,20 +52,20 @@ public:
 	void LoadSettings();
 	void SaveSettings();
 
-	bool GotResults() 
+	bool GotResults()
 	{
 		return fGotResults;
 	}
 protected:
 	friend class WinShareWindow;
 
-	void SetGotResults(bool b) 
+	void SetGotResults(bool b)
 	{
 		fGotResults = b;
 	}
 
 	void SetSearchPassive();
-	
+
 private:
 	mutable Mutex fSearchLock;		// to lock the list so only one method can be using it at a time
 

@@ -42,12 +42,12 @@ public:
 	bool FindFile(const QString & file, MessageRef & ref);
 	void EmptyList();
 
-	enum { 
-		ScanDone = QEvent::User + 28000 
+	enum {
+		ScanDone = QEvent::User + 28000
 	};
 
-	void Lock(); 
-	void Unlock(); 
+	void Lock();
+	void Unlock();
 
 protected:
 	virtual void InternalThreadEntry();

@@ -98,7 +98,7 @@ WPicViewer::eventFilter( QObject *o, QEvent *e )
 		case QEvent::Drop:
 			dropEvent((QDropEvent *) e);
 			return true;
-		default: 
+		default:
 			break; // empty
 		}
 	}
@@ -139,14 +139,14 @@ WPicViewer::mouseReleaseEvent(QMouseEvent *e)
 	QDialog::mouseReleaseEvent(e);
 }
 
-void 
+void
 WPicViewer::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasUrls() || event->mimeData()->hasImage())
          event->acceptProposedAction();
 }
 
-void 
+void
 WPicViewer::dropEvent(QDropEvent* event)
 {
 	if (event->source() != this)
@@ -182,12 +182,12 @@ WPicViewer::dropEvent(QDropEvent* event)
 				fImages.AddTail(img);
 				nFiles++;
 				LastImage();
-			} 
+			}
 		}
 	}
 }
 
-void 
+void
 WPicViewer::startDrag()
 {
 	if (fFiles[cFile] != QString::null)

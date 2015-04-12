@@ -22,9 +22,9 @@ public:
 	~ChannelInfo();
 
 	bool SetAdmins(const QString &);
-	int NumAdmins() 
-	{ 
-		return fAdmins.GetNumItems(); 
+	int NumAdmins()
+	{
+		return fAdmins.GetNumItems();
 	}
 
 	void AddAdmin(const QString &);
@@ -36,19 +36,19 @@ public:
 	void RemoveUser(const QString &);
 	bool FindUser(const QString &);
 	QString GetUsers() const;
-	int NumUsers() const; 
+	int NumUsers() const;
 
-	void SetTopic(const QString & t); 
-	QString GetTopic() const; 
+	void SetTopic(const QString & t);
+	QString GetTopic() const;
 	
-	void SetPublic(bool p); 
-	bool GetPublic() const; 
+	void SetPublic(bool p);
+	bool GetPublic() const;
 	
-	void SetItem(Q3ListViewItem * item); 
-	Q3ListViewItem * GetItem() const; 
+	void SetItem(Q3ListViewItem * item);
+	Q3ListViewItem * GetItem() const;
 	
-	void SetWindow(Channel * win); 
-	Channel * GetWindow() const; 
+	void SetWindow(Channel * win);
+	Channel * GetWindow() const;
 
 	void SetCreated(uint64 i);
 	uint64 GetCreated() const;

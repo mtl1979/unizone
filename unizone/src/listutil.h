@@ -13,7 +13,7 @@ void AddToList(String &slist, const String &entry);
 void RemoveFromList(QString &slist, const QString &entry);
 void RemoveFromList(String &slist, const String &entry);
 
-bool Contains(const QString &slist, const QString &entry); 
+bool Contains(const QString &slist, const QString &entry);
 
 #endif
 

@@ -83,7 +83,7 @@ MD5Update(struct MD5Context *ctx, md5byte const *buf, size_t len)
 }
 
 /*
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
 void
@@ -221,7 +221,7 @@ MD5Transform(UWORD32 buf[4], UWORD32 const in[16])
 /* safe and optimized comparing of minimum value between 32-bit and 64-bit unsigned integers */
 #define md_min(a, b) ( ((HIDWORD(b) == 0) && (LODWORD(b) < a)) ? LODWORD(b) : a )
 
-status_t 
+status_t
 HashFileMD5(const QString & entry, int64 & len, int64 offset, uint64 * retBytesHashed,
 			uint8 * returnDigest, volatile bool * optShutdownFlag)
 {

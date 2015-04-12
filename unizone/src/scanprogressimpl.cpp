@@ -47,7 +47,7 @@ void
 ScanProgress::SetScannedDirs(int sd)
 {
 	QString ssd;
-	ssd.setNum(sd); 
+	ssd.setNum(sd);
 	ui->fDirsScanned->setText(ssd);
 }
 

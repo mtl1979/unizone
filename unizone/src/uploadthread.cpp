@@ -22,11 +22,11 @@
 #include "wtransfer.h"
 
 WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
-	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag) 
-{ 
+	: QObject(owner), fOwner(owner), fShutdownFlag(optShutdownFlag)
+{
 	PRINT("WUploadThread ctor\n");
 	setName( "WUploadThread" );
-	fFile = NULL; 
+	fFile = NULL;
 	fFileUl = QString::null;
 	fRemoteSessionID = QString::null;
 
@@ -108,7 +108,7 @@ WUploadThread::~WUploadThread()
 {
 	PRINT("WUploadThread dtor\n");
 
-	if (timerID != 0) 
+	if (timerID != 0)
 	{
 		killTimer(timerID);
 		timerID = 0;
@@ -142,7 +142,7 @@ WUploadThread::SetUpload(const ConstSocketRef &socket, muscle::ip_address remote
 	fStrRemoteIP = host.Cstr();
 }
 
-void 
+void
 WUploadThread::SetUpload(const QString & remoteIP, uint32 remotePort, WFileThread * ft)
 {
 	fFileThread = ft;
@@ -161,7 +161,7 @@ WUploadThread::SetUpload(const QString & userID, int64 remoteID, WFileThread * f
 	hisID = remoteID;
 }
 
-bool 
+bool
 WUploadThread::InitSession()
 {
 	PRINT("WUploadThread::InitSession\n");
@@ -200,7 +200,7 @@ WUploadThread::InitSession()
 	else if (fAccept)
 	{
 		// <postmaster@raasu.org> 20021026
-		muscle::ip_address sRemoteIP = ResolveAddress(fStrRemoteIP); 
+		muscle::ip_address sRemoteIP = ResolveAddress(fStrRemoteIP);
 		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) != B_OK)
 		{
 			WUploadEvent *fail = new WUploadEvent(WUploadEvent::ConnectFailed);
@@ -282,7 +282,7 @@ WUploadThread::SetLocallyQueued(bool b)
 				MessageRef fFileList = fSavedFileList;
 				fSavedFileList.Reset();
 				WMessageEvent *wme = new WMessageEvent(fFileList);
-				if (wme) 
+				if (wme)
 					QApplication::postEvent(this, wme);
 				return;
 			}
@@ -364,7 +364,7 @@ WUploadThread::SetManuallyQueued(bool b)
 }
 
 
-void 
+void
 WUploadThread::SendReply(WUploadEvent *wue)
 {
 	if (fShutdownFlag && *fShutdownFlag)
@@ -430,7 +430,7 @@ WUploadThread::SessionDisconnected(const String & /* sessionID */)
 {
 	PRINT("WUploadThread::SessionDisconnected\n");
 
-	if (timerID != 0) 
+	if (timerID != 0)
 	{
 		killTimer(timerID);
 		timerID = 0;
@@ -485,7 +485,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 						if ((user.isEmpty()) || (fRemoteUser == fRemoteSessionID))
 							fRemoteUser = GetUserName(fRemoteSessionID);
 						else
-							fRemoteUser = user; 
+							fRemoteUser = user;
 					}
 					else
 					{
@@ -526,7 +526,7 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 		{
 			// TransferFileList(msg);
 			WMessageEvent *wme = new WMessageEvent(msg);
-			if (wme) 
+			if (wme)
 			{
 				QApplication::postEvent(this, wme);
 			}
@@ -595,7 +595,7 @@ WUploadThread::_OutputQueuesDrained()
 	}
 }
 
-void 
+void
 WUploadThread::SendQueuedNotification()
 {
 	MessageRef q(GetMessageFromPool(WTransfer::TransferNotifyQueued));
@@ -645,7 +645,7 @@ WUploadThread::SendRejectedNotification(bool direct)
 				(q()->AddString(PR_NAME_SESSION, "") == B_NO_ERROR) &&
 				(AddStringToMessage(q, PR_NAME_KEYS, node) == B_NO_ERROR) &&
 				(q()->AddInt32("port", (int32) fPort) == B_NO_ERROR)
-				) 
+				)
 			{
 				gWin->SendRejectedNotification(q);
 			}
@@ -690,7 +690,7 @@ WUploadThread::MakeUploadPath(MessageRef ref)
 	return QString::null;
 }
 
-void 
+void
 WUploadThread::DoUpload()
 {
 	PRINT("WUploadThread::DoUpload\n");
@@ -712,7 +712,7 @@ WUploadThread::DoUpload()
 	if (IsLocallyQueued())
 	{
 		if (
-			(fFile && (fFileSize >= gWin->fSettings->GetMinQueuedSize())) || 
+			(fFile && (fFileSize >= gWin->fSettings->GetMinQueuedSize())) ||
 			IsManuallyQueued()
 			)		
 		{
@@ -811,7 +811,7 @@ WUploadThread::DoUpload()
 					if (fTunneled)
 					{
 						SignalUpload();
-					} 
+					}
 					else
 					{
 						MessageRef drain(GetMessageFromPool());
@@ -870,7 +870,7 @@ WUploadThread::DoUpload()
 #ifdef _DEBUG
 				// <postmaster@raasu.org> 20021023, 20030702 -- Add additional debug message
 				WString wul(fFileUl);
-				PRINT("WUploadThread::DoUpload: filePath = %S\n", wul.getBuffer()); 
+				PRINT("WUploadThread::DoUpload: filePath = %S\n", wul.getBuffer());
 #endif
 				
 				fFile = new WFile();
@@ -1114,7 +1114,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 					ByteBufferRef hisDigest;
 					uint32 numBytes = 0L;
 					if (msg()->FindInt64("offsets", i, offset) == B_OK &&
-						msg()->FindFlat("md5", i, hisDigest) == B_OK && 
+						msg()->FindFlat("md5", i, hisDigest) == B_OK &&
 						numBytes == MD5_DIGEST_SIZE)
 					{
 						uint8 myDigest[MD5_DIGEST_SIZE];
@@ -1145,7 +1145,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 						
 						// Hash
 						
-						if (HashFileMD5(file, offset, readLen, NULL, myDigest, fShutdownFlag) == B_OK && 
+						if (HashFileMD5(file, offset, readLen, NULL, myDigest, fShutdownFlag) == B_OK &&
 							memcmp((const uint8*) hisDigest()->GetBuffer(), myDigest, sizeof(myDigest)) == 0)
 						{
 							// put this into our message ref
@@ -1214,7 +1214,7 @@ WUploadThread::TransferFileList(MessageRef msg)
 	}
 }
 
-/* 
+/*
  * Called when we have to send more data.
  *
  */
@@ -1223,7 +1223,7 @@ void
 WUploadThread::SignalUpload()
 {
 	QCustomEvent *qce = new QCustomEvent(UploadEvent);
-	if (qce) 
+	if (qce)
 	{
 		QApplication::postEvent(this, qce);
 	}
@@ -1341,7 +1341,7 @@ WUploadThread::GetCalculatedRate() const
 	return rate;
 }
 
-void 
+void
 WUploadThread::SetPacketCount(double bytes)
 {
 	fPackets += bytes / ((double) fPacket) ;
@@ -1368,10 +1368,10 @@ WUploadThread::SetMostRecentRate(double rate)
 
 bool
 WUploadThread::IsLastFile()
-{ 
+{
 	int c = GetCurrentNum() + 1;
 	int n = GetNumFiles();
-	return (c >= n); 
+	return (c >= n);
 }
 
 void
@@ -1472,7 +1472,7 @@ WUploadThread::SendMessageToSessions(const MessageRef & msgRef, const char * opt
 		return qmtt->SendMessageToSessions(msgRef, optDistPath);
 }
 
-bool 
+bool
 WUploadThread::IsInternalThreadRunning()
 {
 	if (fTunneled)
@@ -1540,8 +1540,8 @@ WUploadThread::NextFile()
 	fCurrentOffset = fFileSize = 0;
 }
 
-QString 
-WUploadThread::GetRemoteIP() const 
+QString
+WUploadThread::GetRemoteIP() const
 {
 	if (fStrRemoteIP != "127.0.0.1")
 		return fStrRemoteIP;

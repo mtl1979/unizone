@@ -361,13 +361,13 @@ ChatWindow::FormatNameSaid(const QString &msg)
 	return ParseString(ParseChatText(message));
 }
 
-bool 
+bool
 ChatWindow::NameSaid(QString & msg)
 {
 	// <postmaster@raasu.org> -- Don't use latin1 ()
-	QString sname = StripURL(gWin->GetUserName()); 
+	QString sname = StripURL(gWin->GetUserName());
 	int temp = 0;
-	
+
 	while (
 		muscleInRange(sname.at(temp).unicode(), (unichar) 'A', (unichar) 'Z')||
 		muscleInRange(sname.at(temp).unicode(), (unichar) 'a', (unichar) 'z')||
@@ -382,9 +382,9 @@ ChatWindow::NameSaid(QString & msg)
 	}
 	if (temp > 0)
 		sname.truncate(temp);
-	
+
 	sname = sname.upper();
-	
+
 	bool bNameSaid = false;
 	bool bTemp;
 	while ( (bTemp = NameSaid2(sname, msg)) )
@@ -396,7 +396,7 @@ ChatWindow::NameSaid(QString & msg)
 	if (bNameSaid)
 	{
 		int type;
-		if (_type == MainType) 
+		if (_type == MainType)
 			type = WSettings::FlashMain;
 		else
 			type = WSettings::FlashPriv;
@@ -410,16 +410,16 @@ ChatWindow::NameSaid(QString & msg)
 	return bNameSaid;
 }
 
-bool 
+bool
 ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 {
 	// <postmaster@raasu.org> -- Don't use latin1 ()
-	QString itxt = msg.upper(); 
+	QString itxt = msg.upper();
 
 	int sred = -1;
-	
-	// Check only on first iteration to avoid infinite loop, when sred = -1 and recursive call adds +1 
-	// --> (-1) + 1 = 0 
+
+	// Check only on first iteration to avoid infinite loop, when sred = -1 and recursive call adds +1
+	// --> (-1) + 1 = 0
 
 	if ((index == 0) && (itxt.startsWith(sname)))
 		sred = 0;
@@ -435,14 +435,14 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 			if (sred >= 0)
 				sred++;
 		}
-	}	
+	}
 
 	if (sred >= 0)
 	{
 		int rlen = sname.length();
 
 		// <postmaster@raasu.org> 20021005 -- don't use latin1 ()
-		QString temp = gWin->GetUserName().upper(); 
+		QString temp = gWin->GetUserName().upper();
 
 #ifdef _DEBUG
 		WString wtemp(temp);
@@ -456,7 +456,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		if (c1 < itxt.length())
 		{
 			QChar an = itxt.at(c1);
-			
+
 			if (muscleInRange(an.unicode(), (unichar) 'A', (unichar) 'Z'))
 			{
 				if (an != 'S')  // allows pluralization without apostrophes though
@@ -480,8 +480,8 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 		}
 
 		while (
-				(c1 < itxt.length()) && 
-				(c2 < temp.length()) && 
+				(c1 < itxt.length()) &&
+				(c2 < temp.length()) &&
 				(itxt.at(c1) == temp.at(c2))
 			  )
 		{
@@ -493,14 +493,14 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 
 		// yup... we've been mentioned...
 		temp = StripURL(gWin->GetUserName());
-		if (rlen > temp.length()) 
+		if (rlen > temp.length())
 			rlen = temp.length();
 		temp.truncate(rlen);
 		// <postmaster@raasu.org> 20021005 -- Need to be in original case
 		QString smsg;
 		if (sred > 0)
 			// <postmaster@raasu.org> 20021005 -- Don't use latin1 ()
-			smsg += msg.left(sred);	
+			smsg += msg.left(sred);
 		smsg += _FormatNameSaid(temp);
 		smsg += msg.mid(sred+rlen);		// <postmaster@raasu.org> 20021005
 
@@ -514,7 +514,7 @@ ChatWindow::NameSaid2(const QString &sname, QString & msg, unsigned long index)
 	}
 	return false;
 }
-void 
+void
 ChatWindow::Action(const QString & name, const QString & msg)
 {
 	QString chat = FormatAction(FixString(name), FormatNameSaid(msg));
@@ -522,7 +522,7 @@ ChatWindow::Action(const QString & name, const QString & msg)
 	PrintText(chat);
 }
 
-void 
+void
 ChatWindow::PrintText(const QString & str)
 {
 	QString out;
@@ -538,7 +538,7 @@ ChatWindow::PrintText(const QString & str)
 		LogString(out);
 }
 
-void 
+void
 ChatWindow::PrintSystem(const QString & msg)
 {
 	QString s = FormatSystemText( ParseChatText(msg) );
@@ -546,7 +546,7 @@ ChatWindow::PrintSystem(const QString & msg)
 	PrintText(s);
 }
 
-void 
+void
 ChatWindow::PrintError(const QString & error)
 {
 	if (Settings()->GetError())
@@ -557,7 +557,7 @@ ChatWindow::PrintError(const QString & error)
 	}
 }
 
-void 
+void
 ChatWindow::PrintWarning(const QString & warning)
 {
 	if (Settings()->GetWarning())
@@ -609,7 +609,7 @@ ChatWindow::beep()
 	WString wfn(fn);
 	PRINT("Sound file: %S\n", wfn.getBuffer());
 #endif
-	if (QSound::available()) 
+	if (QSound::available())
 	{
 		PRINT("Sound available\n");
 		if (!fn.isEmpty())
@@ -639,7 +639,7 @@ ChatWindow::Clear()
 	fChatText->clear();
 }
 
-int 
+int
 ChatWindow::GetFontSize()
 {
 	return Settings()->GetFontSize();
@@ -655,7 +655,13 @@ QString
 InitTimeStamp()
 {
 	time_t currentTime = time(NULL);
+#if	__STDC_WANT_SECURE_LIB__
+	char buf[26];
+	ctime_s(buf, 26, &currentTime);
+	return QString::fromLocal8Bit(buf);
+#else
 	return QString::fromLocal8Bit( ctime(&currentTime) );
+#endif
 }
 
 QString
@@ -777,14 +783,14 @@ ChatWindow::FormatLocalText(const QString &session, const QString &name,
 	return temp;
 }
 
-QString 
+QString
 ChatWindow::FormatRemoteName(const QString &session, const QString &name)
 {
 	QString temp = QString("<font size=\"%1\"><b>(%2)</b>")
 		.arg(QString::number(GetFontSize()), session);
 	if (WUser::CheckName(name))
 	{
-		QString uname = FormatUserName(name.stripWhiteSpace(), 
+		QString uname = FormatUserName(name.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 		temp += QString(" <b>%1</b>").arg(uname);
 	}
@@ -800,7 +806,7 @@ ChatWindow::FormatRemoteText(const QString &session, const QString &name,
 		.arg(QString::number(GetFontSize()), session);
 	if (WUser::CheckName(name))
 	{
-		temp += QString(" <b>%1</b>").arg(FormatUserName(name.stripWhiteSpace(), 
+		temp += QString(" <b>%1</b>").arg(FormatUserName(name.stripWhiteSpace(),
 			GetColor(WColors::RemoteName)));
 	}
 	temp += QString(": <font color=\"%1\">%2</font></font>")
@@ -826,11 +832,11 @@ ChatWindow::FormatRemoteWatch(const QString &session, const QString &name,
 }
 
 // text color...
-QString 
+QString
 ChatWindow::FormatText(const QString &text)
 {
 	return QString("<font color=\"%1\"><font size=\"%2\">"
-		"%3</font></font>").arg(GetColor(WColors::Text), 
+		"%3</font></font>").arg(GetColor(WColors::Text),
 		QString::number(GetFontSize()), text);
 }
 
@@ -839,7 +845,7 @@ QString
 ChatWindow::FormatWatch(const QString &text)
 {
 	return QString("<font color=\"%1\"><font size=\"%2\">"
-		"%3</font></font>").arg(GetColor(WColors::Watch), 
+		"%3</font></font>").arg(GetColor(WColors::Watch),
 		QString::number(GetFontSize()), text);
 }
 
@@ -853,7 +859,7 @@ ChatWindow::_FormatNameSaid(const QString &text)
 //    |
 //   \ /
 //	System: User #?? is now connected.
-QString 
+QString
 ChatWindow::FormatSystemText(const QString &text)
 {
 	QString temp = QString("<font size=\"%1\"><font color=\"%2\"><b>")
@@ -867,18 +873,18 @@ ChatWindow::FormatSystemText(const QString &text)
 	return temp.stripWhiteSpace();
 }
 
-QString 
+QString
 ChatWindow::FormatUserConnected(const QString &session)
 {
 	return tr("User #%1 is now connected.").arg(session);
 }
 
-QString 
+QString
 ChatWindow::FormatUserDisconnected(const QString &session, const QString &user)
 {
 	if (WUser::CheckName(user))
 	{
-		QString username = FormatUserName(user.stripWhiteSpace(), 
+		QString username = FormatUserName(user.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 		return tr("User #%1 (a.k.a %2) has disconnected.").arg(session, username);
 	}
@@ -889,29 +895,29 @@ ChatWindow::FormatUserDisconnected(const QString &session, const QString &user)
 QString
 ChatWindow::FormatUserNameChangedNoOld(const QString &session, const QString &name)
 {
-	QString username = FormatUserName(name.stripWhiteSpace(), 
+	QString username = FormatUserName(name.stripWhiteSpace(),
 		GetColor(WColors::RemoteName));
 	return tr("User #%1 is now known as %2.").arg(session, username);
 }
 
-QString 
+QString
 ChatWindow::FormatUserNameChangedNoNew(const QString &session)
 {
 	return tr("User #%1 is now nameless.").arg(session);
 }
 
-QString 
+QString
 ChatWindow::FormatUserNameChanged(const QString &session, const QString &oldname, const QString &newname)
 {
-	QString oname = FormatUserName(oldname.stripWhiteSpace(), 
+	QString oname = FormatUserName(oldname.stripWhiteSpace(),
 		GetColor(WColors::RemoteName));
-	QString nname = FormatUserName(newname.stripWhiteSpace(), 
+	QString nname = FormatUserName(newname.stripWhiteSpace(),
 		GetColor(WColors::RemoteName));
 	return tr("User #%1 (a.k.a %2) is now known as %3.")
 		.arg(session, oname, nname);
 }
 
-QString 
+QString
 ChatWindow::FormatUserStatusChanged(const QString &session, const QString &user,
 	const QString &status)
 {
@@ -926,7 +932,7 @@ ChatWindow::FormatUserStatusChanged(const QString &session, const QString &user,
 		return tr("User #%1 is now %2.").arg(session, status);
 }
 
-QString 
+QString
 ChatWindow::FormatUserIPAddress(const QString &user, const QString &ip)
 {
 	QString temp;
@@ -936,14 +942,14 @@ ChatWindow::FormatUserIPAddress(const QString &user, const QString &ip)
 	return temp.stripWhiteSpace();
 }
 
-QString 
+QString
 ChatWindow::FormatUserIPAddress2(const QString &session, const QString &ip)
 {
 	return tr("User #%1's IP address is %2.").arg(session).arg(ip);
 }
 
 // ping formatting
-QString 
+QString
 ChatWindow::FormatPingText(uint32 time, const QString &version)
 {
 	QString temp = QString("<font size=\"%1\"><font color=\"%2\">")
@@ -953,7 +959,7 @@ ChatWindow::FormatPingText(uint32 time, const QString &version)
 	return temp.stripWhiteSpace();
 }
 
-QString 
+QString
 ChatWindow::FormatPingUptime(const QString &uptime, const QString &logged)
 {
 	QString temp = QString("<font size=\"%1\"><font color=\"%2\">")
@@ -964,7 +970,7 @@ ChatWindow::FormatPingUptime(const QString &uptime, const QString &logged)
 }
 
 // error format
-QString 
+QString
 ChatWindow::FormatError(const QString &text)
 {
 	QString temp = QString("<font size=\"%1\"><font color=\"%2\"><b>")
@@ -976,7 +982,7 @@ ChatWindow::FormatError(const QString &text)
 }
 
 // warning format
-QString 
+QString
 ChatWindow::FormatWarning(const QString &text)
 {
 	QString temp = QString("<font size=\"%1\"><font color=\"%2\"><b>")
@@ -987,7 +993,7 @@ ChatWindow::FormatWarning(const QString &text)
 	return temp.stripWhiteSpace();
 }
 
-QString 
+QString
 ChatWindow::FormatStatusChanged(const QString &status)
 {
 	return tr("You are now %1.").arg(status);
@@ -996,21 +1002,21 @@ ChatWindow::FormatStatusChanged(const QString &status)
 QString
 ChatWindow::FormatNameChanged(const QString &name)
 {
-	QString username = FormatUserName(name.stripWhiteSpace(), 
+	QString username = FormatUserName(name.stripWhiteSpace(),
 		GetColor(WColors::LocalName));
 	return tr("Name changed to %1.").arg(username);
 }
 
 // priv messages
 
-// <postmaster@raasu.org> 20020930,20030127 
+// <postmaster@raasu.org> 20020930,20030127
 // Changed that ID is always black, uid in --
 
 QString
 ChatWindow::FormatSendPrivMsg(const QString &session, const QString &myname,
 	const QString &othername, const QString &text)
 {
-	QString mname = FormatUserName(myname.stripWhiteSpace(), 
+	QString mname = FormatUserName(myname.stripWhiteSpace(),
 	GetColor(WColors::LocalName));
 	QString temp = QString("<font size=\"%1\">-<b>%2</b>- <b>%3</b> -> <b>")
 		.arg(QString::number(GetFontSize()), session, mname);
@@ -1019,7 +1025,7 @@ ChatWindow::FormatSendPrivMsg(const QString &session, const QString &myname,
 		temp += FormatUserName(othername.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 	else
-		temp += FormatUserName(qApp->translate("WUser", "Unknown"), 
+		temp += FormatUserName(qApp->translate("WUser", "Unknown"),
 			GetColor(WColors::RemoteName));
 
 	temp += QString("</b>: <font color=\"%1\">%2</font></font>")
@@ -1028,18 +1034,18 @@ ChatWindow::FormatSendPrivMsg(const QString &session, const QString &myname,
 	return temp;
 }
 
-QString 
-ChatWindow::FormatReceivePrivMsg(const QString &session, 
+QString
+ChatWindow::FormatReceivePrivMsg(const QString &session,
 	const QString &othername, const QString &text)
 {
 	QString temp = QString("<font size=\"%1\">-<b>%2</b>- <b>")
 		.arg(QString::number(GetFontSize()), session);
 
 	if (WUser::CheckName(othername))
-		temp += FormatUserName(othername.stripWhiteSpace(), 
+		temp += FormatUserName(othername.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 	else
-		temp += FormatUserName(qApp->translate("WUser", "Unknown"), 
+		temp += FormatUserName(qApp->translate("WUser", "Unknown"),
 			GetColor(WColors::RemoteName));
 	temp += QString("</b>: <font color=\"%1\">%2</font></font>")
 		.arg(GetColor(WColors::PrivText), text);
@@ -1065,9 +1071,9 @@ ChatWindow::FormatAction(const QString &name, const QString &msg)
 	return FormatAction(temp);
 }
 
-QString 
+QString
 ChatWindow::FormatURL(const QString &url)
-{ 
+{
 	return QString("<font color=\"%1\"><u>%2</u></font>")
 		.arg(GetColor(WColors::URL), url);
 }
@@ -1079,7 +1085,7 @@ ChatWindow::FormatGotPinged(const QString &session, const QString &name)
 		.arg(QString::number(GetFontSize()), GetColor(WColors::Ping));
 	if (WUser::CheckName(name))
 	{
-		QString username = FormatUserName(name.stripWhiteSpace(), 
+		QString username = FormatUserName(name.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 		temp += tr("User #%1 (a.k.a %2) pinged you.").arg(session, username);
 	}
@@ -1095,7 +1101,7 @@ ChatWindow::FormatPingSent(const QString &session, const QString &name)
 
 	if (WUser::CheckName(name))
 	{
-		QString username = FormatUserName(name.stripWhiteSpace(), 
+		QString username = FormatUserName(name.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 		return tr("Ping sent to user #%1 (a.k.a %2).").arg(session, username);
 	}
@@ -1103,7 +1109,7 @@ ChatWindow::FormatPingSent(const QString &session, const QString &name)
 		return tr("Ping sent to user #%1.").arg(session);
 }
 
-QString 
+QString
 ChatWindow::FormatTimeStamp(const QString &stamp)
 {
 	return QString("<font size=\"%1\"><font color=\"%2\">"
@@ -1116,7 +1122,7 @@ ChatWindow::FormatTimeRequest(const QString &session, const QString &name)
 {
 	if (WUser::CheckName(name))
 	{
-		QString username = FormatUserName(name.stripWhiteSpace(), 
+		QString username = FormatUserName(name.stripWhiteSpace(),
 			GetColor(WColors::RemoteName));
 		return tr("Time request sent to user #%1 (a.k.a %2).")
 			.arg(session, username);

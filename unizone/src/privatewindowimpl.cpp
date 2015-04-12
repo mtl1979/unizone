@@ -26,9 +26,9 @@
 #include "netclient.h"
 #include "debugimpl.h"
 
-/* 
- *  Constructs a privatewindow which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+/*
+ *  Constructs a privatewindow which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
@@ -43,7 +43,7 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	setWindowTitle(tr("Private"));
 	resize(550, 300);
 
-	if ( !name ) 
+	if ( !name )
 		setName( "WPrivateWindow" );
 	// start GUI
 	fSplit = new QSplitter(this);
@@ -86,13 +86,13 @@ WPrivateWindow::WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent
 	connect(fPrivateUsers, SIGNAL(rightButtonClicked(Q3ListViewItem *, const QPoint &, int)),
 			this, SLOT(RightButtonClicked(Q3ListViewItem *, const QPoint &, int)));
 
-	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)), 
+	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)),
 			this, SLOT(UserDisconnected(const WUserRef &)));
-	connect(fNet, SIGNAL(DisconnectedFromServer()), 
+	connect(fNet, SIGNAL(DisconnectedFromServer()),
 			this, SLOT(DisconnectedFromServer()));
-	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
+	connect(fChatText, SIGNAL(URLClicked(const QString &)),
 			this, SLOT(URLClicked(const QString &)));
-	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
+	connect(fInputText, SIGNAL(TabPressed(const QString &)),
 			this, SLOT(TabPressed(const QString &)));
 
 	if (Settings()->GetLogging())
@@ -144,7 +144,7 @@ WPrivateWindow::UserDisconnected(const WUserRef & uref)
 		{
 			if (Settings()->GetUserEvents())
 			{
-				QString msg = FormatUserDisconnected(uref()->GetUserID(), FixString(name)); 
+				QString msg = FormatUserDisconnected(uref()->GetUserID(), FixString(name));
 				PrintSystem(msg);
 			}
 			uref()->RemoveFromListView(fPrivateUsers);
@@ -162,7 +162,7 @@ WPrivateWindow::URLClicked(const QString & url)
 	{
 		QString surl;
 		// <postmaster@raasu.org> 20021021 -- Use lower() to eliminate not matching because of mixed casing
-		if (url.startsWith("beshare:", false) || 
+		if (url.startsWith("beshare:", false) ||
 			url.startsWith("share:", false))
 		{
 			surl = url.mid(url.find(":") + 1);
@@ -364,7 +364,7 @@ WPrivateWindow::customEvent(QEvent * event)
 								{
 									// see if the user is already in the list
 									bool ok;
-									uint32 id = sid.toULong(&ok); 
+									uint32 id = sid.toULong(&ok);
 									if ( ok && fUsers.ContainsKey(id) )
 									{
 										WUserRef found;
@@ -373,7 +373,7 @@ WPrivateWindow::customEvent(QEvent * event)
 											PrintError(tr("User #%1 (a.k.a %2) is already in this private window!").arg(sid).arg(user()->GetUserName()));
 
 									}
-									else	// user not yet in list? 
+									else	// user not yet in list?
 									{
 										WUserIter it = fUsers.GetIterator(HTIT_FLAG_NOREGISTER);
 										bool err = false;
@@ -545,7 +545,7 @@ WPrivateWindow::RightButtonClicked(Q3ListViewItem * i, const QPoint & p, int /* 
 			// <postmaster@raasu.org> 20020924 -- Added id 2
 			fPopup->insertItem(tr("List All Files"), 2);
 			// <postmaster@raasu.org> 20020926 -- Added id 3
-			fPopup->insertItem(tr("Get IP Address"), 3); 
+			fPopup->insertItem(tr("Get IP Address"), 3);
 			
 			fPopupUser = uid;
 			fPopup->popup(p);
@@ -560,17 +560,17 @@ WPrivateWindow::PopupActivated(int id)
 	WUserRef uref = fNet->FindUser(fPopupUser);
 	if (uref())
 	{
-		if (id == 1) 
+		if (id == 1)
 		{
 			RemUser(uref);
 		}
-		else if (id == 2) 
+		else if (id == 2)
 		{
 			QString qPattern = "*@";
 			qPattern += uref()->GetUserID();
 			WinShareWindow::LaunchSearch(qPattern);
-		} 
-		else if (id == 3) 
+		}
+		else if (id == 3)
 		{
 			QString qTemp = FormatUserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 			PrintSystem(qTemp);
@@ -588,7 +588,7 @@ WPrivateWindow::CheckEmpty()
 		case 0: break;
 		case 1:
 			{
-				if (QMessageBox::information(this, tr( "Private Chat" ), 
+				if (QMessageBox::information(this, tr( "Private Chat" ),
 					tr( "There are no longer any users in this private chat window. Close window?"),
 					tr( "Yes" ), tr( "No" )) == 0)	
 					// 0 is the index of "yes"

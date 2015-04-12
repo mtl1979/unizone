@@ -3,7 +3,7 @@
 
 #include <limits.h>
 
-/* We need to implement all typedefs that MUSCLE would define even though we 
+/* We need to implement all typedefs that MUSCLE would define even though we
 	don't need them explicitly in our classes, because derived class might
 	include one of MUSCLE headers and their typedefs clash if not excluded
 */
@@ -40,7 +40,7 @@ typedef unsigned long	uint32;
 
 #ifndef int64
 # ifdef WIN32
-	typedef __int64				int64; 
+	typedef __int64				int64;
 	typedef unsigned __int64	uint64;
 # else
 #  if defined(MUSCLE_64_BIT_PLATFORM)
@@ -57,7 +57,8 @@ typedef unsigned long	uint32;
 typedef int32						status_t;
 #endif
 #endif
-#ifndef UINT32_MAX
+
+#ifndef UINT32_MAX
 # if defined(MUSCLE_64_BIT_PLATFORM)
 #  define UINT32_MAX				UINT_MAX
 # else

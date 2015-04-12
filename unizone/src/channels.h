@@ -50,7 +50,6 @@ protected:
 private:
 	NetClient * fNetClient;
 
-//	QWidget * fChannelsWidget;
 	QGridLayout * fChannelsTab;
 	Q3ListView * ChannelList;
 	QPushButton * Create;
@@ -61,7 +60,7 @@ private:
 
 	WChannelMap fChannels;
 
-   void ChannelCreated(const QString &, const QString &, uint64);
+    void ChannelCreated(const QString &, const QString &, uint64);
 	void ChannelJoin(const QString &, const QString &);
 	void ChannelPart(const QString &, const QString &);
 	void ChannelInvite(const QString &, const QString &, const QString &);

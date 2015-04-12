@@ -60,7 +60,7 @@ WHTMLView::hideEvent(QHideEvent * e)
 	PRINT("WHTMLView::hideEvent() OK\n");
 }
 
-void 
+void
 WHTMLView::showEvent(QShowEvent * e)
 {
 	PRINT("WHTMLView::showEvent()\n");
@@ -68,7 +68,7 @@ WHTMLView::showEvent(QShowEvent * e)
 	PRINT("WHTMLView::showEvent() OK\n");
 }
 
-void 
+void
 WHTMLView::URLSelected(const QString & url)
 {
 	fURL = url;
@@ -81,7 +81,7 @@ WHTMLView::URLSelected(const QString & url)
 #endif
 }
 
-void 
+void
 WHTMLView::setSource( const QString & name )	
 {
 	QString _URL = fContext;

@@ -8,7 +8,7 @@
 class Ui_WPrefsBase;
 
 class WPrefs : public QDialog
-{ 
+{
     Q_OBJECT
 
 public:
@@ -27,7 +27,7 @@ private slots:
 
 private:
 	void UpdateDescription(int);
-	
+
 	int fCurColorIndex;
 	QString fColor[WColors::NumColors];
 

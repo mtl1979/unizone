@@ -5,7 +5,7 @@
 WSearchListItem::WSearchListItem(	
 								 Q3ListView * parent,
 								 QString a, QString b, QString c, QString d,
-								 QString e, QString f, QString g, QString h 
+								 QString e, QString f, QString g, QString h
 								 )
 								 : WUniListItem(parent, a, b, c, d, e, f, g, h)
 {
@@ -23,7 +23,7 @@ WSearchListItem::WSearchListItem(
 	setColumnType(User, String_NoCase_Stripped);
 }
 
-QString 
+QString
 WSearchListItem::text(int c) const
 {
 	QString tmp = WUniListItem::text(c);
@@ -36,7 +36,7 @@ WSearchListItem::text(int c) const
 		tmp.replace(QRegExp("\r\n"), " ");
 		tmp.replace(QRegExp("\r"), " ");
 		tmp.replace(QRegExp("\n"), " ");
-	default: 
+	default:
 		break; // empty
 	};
 	return tmp;

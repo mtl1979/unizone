@@ -58,16 +58,16 @@ WDownload::WDownload(QWidget * parent, QString localID)
 	fDownloads->addColumn(tr("QR"));
 	
 	fDownloads->setColumnAlignment(WTransferItem::Received, Qt::AlignRight);	// <postmaster@raasu.org> 20021213
-	fDownloads->setColumnAlignment(WTransferItem::Total, Qt::AlignRight);		// 
-	fDownloads->setColumnAlignment(WTransferItem::Rate, Qt::AlignRight);		// 
-	fDownloads->setColumnAlignment(WTransferItem::ETA, Qt::AlignRight);			// 
+	fDownloads->setColumnAlignment(WTransferItem::Total, Qt::AlignRight);		//
+	fDownloads->setColumnAlignment(WTransferItem::Rate, Qt::AlignRight);		//
+	fDownloads->setColumnAlignment(WTransferItem::ETA, Qt::AlignRight);			//
 	fDownloads->setColumnAlignment(WTransferItem::Elapsed, Qt::AlignRight);		// 20030729
 	fDownloads->setColumnAlignment(WTransferItem::QR, Qt::AlignRight);			// 20030310
 	
 	fDownloads->setAllColumnsShowFocus(true);
 	
 	
-	connect(netClient(), SIGNAL(UserDisconnected(const WUserRef &)), 
+	connect(netClient(), SIGNAL(UserDisconnected(const WUserRef &)),
 			this, SLOT(UserDisconnected(const WUserRef &)));
 	
 	
@@ -162,7 +162,7 @@ WDownload::EmptyDownloads()
 		{
 			int n = pair.thread->GetCurrentNum();
 			
-			if (n > -1) 
+			if (n > -1)
 			{
 				for (int i = n; i < pair.thread->GetNumFiles(); i++)
 				{
@@ -186,9 +186,9 @@ WDownload::EmptyDownloads()
 
 void
 WDownload::AddDownload(QString * files, QString * lfiles, QString * paths,
-			int32 filecount, QString remoteSessionID, 
-			uint32 remotePort, const QString & remoteIP, 
-			uint64 /* remoteInstallID */, bool firewalled, 
+			int32 filecount, QString remoteSessionID,
+			uint32 remotePort, const QString & remoteIP,
+			uint64 /* remoteInstallID */, bool firewalled,
 			bool partial)
 {
 	WDownloadThread * nt = new WDownloadThread(this);
@@ -213,7 +213,7 @@ WDownload::AddDownload(QString * files, QString * lfiles, QString * paths,
 			}
 		}
 		
-		// Detect uncommon remote port 
+		// Detect uncommon remote port
 		
 		if (!muscleInRange(remotePort, (uint32) 1, (uint32) 65535))
 		{
@@ -265,7 +265,7 @@ WDownload::AddDownloadList(Queue<QString> & fQueue, Queue<QString> & fLQueue, Qu
 	while ((fQueue.RemoveHead(tmp) == B_NO_ERROR) && (fLQueue.RemoveHead(tmp2) == B_NO_ERROR) && (fPaths.RemoveHead(tmp3) == B_NO_ERROR))
 	{
 		// Remote name
-		if (tmp.isEmpty()) 
+		if (tmp.isEmpty())
 		{
 			qFiles[n] = QString::null;
 		}
@@ -388,7 +388,7 @@ WDownload::TunnelRejected(int64 myID)
 	}
 }
 
-void 
+void
 WDownload::TunnelMessage(int64 myID, MessageRef tmsg)
 {
 	Lock();
@@ -436,7 +436,7 @@ WDownload::DequeueDLSessions()
 		if (pair.thread)
 		{
 			if (
-				(pair.thread->IsLocallyQueued() == false) && 
+				(pair.thread->IsLocallyQueued() == false) &&
 				(pair.thread->IsActive() == true)
 				)
 			{
@@ -464,7 +464,7 @@ WDownload::DequeueDLSessions()
 			if (pair.thread)
 			{
 				if (
-					(pair.thread->IsLocallyQueued() == true) && 
+					(pair.thread->IsLocallyQueued() == true) &&
 					(pair.thread->IsManuallyQueued() == false) &&
 					(pair.thread->IsFinished() == false)
 					)
@@ -823,7 +823,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			WString wfile(file);
-			PRINT("WDownloadEvent::FileError: File %S\n", wfile.getBuffer()); 
+			PRINT("WDownloadEvent::FileError: File %S\n", wfile.getBuffer());
 #endif
 			break;
 		}
@@ -885,7 +885,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 					if (_now >= _fileStarted)
 					{
 						uint64 _elapsed = _now - _fileStarted;
-						if (_elapsed > 0) 
+						if (_elapsed > 0)
 							_elapsed /= 1000000;	// convert microseconds to seconds
 						item->setText(WTransferItem::Elapsed, fromULongLong(_elapsed));
 					}
@@ -912,7 +912,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 	}
 }
 
-void 
+void
 WDownload::keyPressEvent(QKeyEvent * event)
 {
 	if (event->key() == Q3Accel::stringToKey(tr("F11")))
@@ -937,7 +937,7 @@ WDownload::KillLocalQueues()
 				// Put all files in resume list
 				int n = pair.thread->GetCurrentNum();
 				
-				if (n > -1) 
+				if (n > -1)
 				{
 					for (int i = n; i < pair.thread->GetNumFiles(); i++)
 					{
@@ -1398,11 +1398,11 @@ WDownload::DLRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 				
 			case 16 * 1024:	
 				{
-					fDLThrottle = ID_16KB; 
+					fDLThrottle = ID_16KB;
 					break;
 				}
 				
-			case 32 * 1024: 
+			case 32 * 1024:
 				{
 					fDLThrottle = ID_32KB;	
 					break;
@@ -1416,13 +1416,13 @@ WDownload::DLRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 				
 			case 128 * 1024:	
 				{
-					fDLThrottle = ID_128KB; 
+					fDLThrottle = ID_128KB;
 					break;
 				}
 				
 			case 256 * 1024:	
 				{
-					fDLThrottle = ID_256KB; 
+					fDLThrottle = ID_256KB;
 					break;
 				}
 				
@@ -1464,7 +1464,7 @@ WDownload::DLRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 				
 			case 32 * 1048576:	
 				{
-					fDLThrottle = ID_32MB; 
+					fDLThrottle = ID_32MB;
 					break;
 				}
 			}
@@ -1529,7 +1529,7 @@ WDownload::DLMoveUp(unsigned int index)
 	Unlock();
 	
 	Lock();
-	while (index2 > 0) 
+	while (index2 > 0)
 	{
 		index2--;
 		DLPair p;
@@ -1610,7 +1610,7 @@ WDownload::TransferCallBackRejected(const QString &qFrom, int64 timeLeft, uint32
 		{
 			if (
 				(pair.thread->IsActive() == false) &&
-				(pair.thread->GetRemoteUser() == qFrom) && 
+				(pair.thread->GetRemoteUser() == qFrom) &&
 				(pair.thread->GetRemotePort() == port)
 				)
 			{
@@ -1699,7 +1699,7 @@ void
 WDownload::SendSignal(int signal)
 {
 	QCustomEvent *qce = new QCustomEvent(signal);
-	if (qce) 
+	if (qce)
 		QApplication::postEvent(this, qce);
 }
 
@@ -1710,22 +1710,22 @@ WDownload::netClient()
 	return gWin->fNetClient;
 }
 
-void 
+void
 WDownload::resizeEvent(QResizeEvent * e)
 {
 	fDownloads->resize(e->size());
 	QDialog::resizeEvent(e);
 }
 
-void 
-WDownload::Lock() 
-{ 
-	fLock.Lock(); 
+void
+WDownload::Lock()
+{
+	fLock.Lock();
 }
 
-void 
-WDownload::Unlock() 
-{ 
-	fLock.Unlock(); 
+void
+WDownload::Unlock()
+{
+	fLock.Unlock();
 }
 

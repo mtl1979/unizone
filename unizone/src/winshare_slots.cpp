@@ -86,7 +86,7 @@ WinShareWindow::UserDisconnected(const WUserRef & uref)
 {
 	if (fSettings->GetUserEvents())
 	{
-		QString msg = FormatUserDisconnected(uref()->GetUserID(), FixString(uref()->GetUserName())); 
+		QString msg = FormatUserDisconnected(uref()->GetUserID(), FixString(uref()->GetUserName()));
 		SendSystemEvent(msg);
 	}
 	uref()->RemoveFromListView(fUsers);
@@ -106,12 +106,12 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 			if (WUser::CheckName(old))
 			{
 				// <postmaster@raasu.org> 20021112, 20030622
-				nameformat = FormatUserNameChanged(sid, FixString(old), FixString(newname));  
+				nameformat = FormatUserNameChanged(sid, FixString(old), FixString(newname));
 			}
 			else
 			{
 				// <postmaster@raasu.org> 20021112, 20030622
-				nameformat = FormatUserNameChangedNoOld(sid, FixString(newname)); 
+				nameformat = FormatUserNameChangedNoOld(sid, FixString(newname));
 			}
 			SendSystemEvent(nameformat);
 			SendTextEvent(newname, WTextEvent::ResumeType);
@@ -119,7 +119,7 @@ WinShareWindow::UserNameChanged(const WUserRef & uref, const QString &old, const
 		else
 		{
 			// <postmaster@raasu.org> 20030819
-			nameformat = FormatUserNameChangedNoNew(sid);  
+			nameformat = FormatUserNameChangedNoNew(sid);
 			SendSystemEvent(nameformat);
 		}
 	}
@@ -178,7 +178,7 @@ WinShareWindow::UserStatusChanged(const WUserRef & uref, const QString &n, const
 			return;
 
 		// <postmaster@raasu.org> 20021112
-		QString nameformat = FormatUserStatusChanged(uref()->GetUserID(), FixString(n), FixString(status)); 
+		QString nameformat = FormatUserStatusChanged(uref()->GetUserID(), FixString(n), FixString(status));
 		SendSystemEvent(nameformat);
 	}
 }
@@ -221,7 +221,7 @@ WinShareWindow::URLClicked(const QString & url)
 		//
 		// added .lower() to all comparisons
 		//
-		QString surl;	// for LaunchSearch() and LaunchPrivate() 
+		QString surl;	// for LaunchSearch() and LaunchPrivate()
 		if (url.startsWith("beshare:", false) || url.startsWith("share:", false))
 		{
 			surl = url.mid(url.find(":") + 1);
@@ -303,16 +303,16 @@ WinShareWindow::PopupActivated(int id)
 				pLock.Lock();
 				fPrivateWindows.AddTail(window);
 				pLock.Unlock();
-			} 
+			}
 			break;
-		case 2: 
+		case 2:
 			{
 				QString qPattern = "*@";
 				qPattern += uref()->GetUserID();
 				WinShareWindow::LaunchSearch(qPattern);
-			} 
+			}
 			break;
-		case 3: 
+		case 3:
 			{
 				QString qTemp = FormatUserIPAddress(FixString(uref()->GetUserName()), uref()->GetUserHostName()); // <postmaster@raasu.org> 20021112
 				SendSystemEvent(qTemp);
@@ -537,7 +537,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
                if (
                   (fResumeMap[x].files[y].fRemoteName == file) &&
                   (fResumeMap[x].files[y].fLocalName == lfile) &&
-                  (fResumeMap[x].files[y].fPath == path) 
+                  (fResumeMap[x].files[y].fPath == path)
                   )
                {
                   rLock.Unlock();
@@ -556,7 +556,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
       WResumePair wrp;
       wrp.user = user;
       wrp.files.AddTail(wri);
-      
+
       fResumeMap.AddTail(wrp);
    }
 
@@ -566,7 +566,7 @@ WinShareWindow::FileInterrupted(const QString &file, const QString &lfile, const
 // Check username against resume list
 //
 
-void 
+void
 WinShareWindow::CheckResumes(const QString &user)
 {
 #ifdef _DEBUG
@@ -575,7 +575,7 @@ WinShareWindow::CheckResumes(const QString &user)
 #endif
 
 	// No need to check if empty!
-	if (fResumeMap.IsEmpty()) 
+	if (fResumeMap.IsEmpty())
 		return;
 
 	if (!fResumeEnabled)
@@ -626,7 +626,7 @@ WinShareWindow::CheckResumes(const QString &user)
 		SendSystemEvent(FixString(out));
 		// Make sure File Transfers window is open
 
-		OpenDownload(); 
+		OpenDownload();
 
 		fDLWindow->AddDownloadList(fFiles, fLFiles, fPaths, u);
 	}
@@ -636,7 +636,7 @@ void
 WinShareWindow::SignalDownload(int type)
 {
 	QCustomEvent *qce = new QCustomEvent(type);
-	if (qce) 
+	if (qce)
 		QApplication::postEvent(fDLWindow, qce);
 }
 
@@ -644,6 +644,6 @@ void
 WinShareWindow::SignalUpload(int type)
 {
 	QCustomEvent *qce = new QCustomEvent(type);
-	if (qce) 
+	if (qce)
 		QApplication::postEvent(fULWindow, qce);
 }

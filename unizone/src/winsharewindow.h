@@ -111,7 +111,7 @@ public:
 	QString GetServer() const;
 	double GetServerVersion();
 	QString GetStatus() const;
-	QString GetUserID() const; 
+	QString GetUserID() const;
 	QString GetLocalIP() const;
 
 	void SendChatText(const QString & sid, const QString & txt);
@@ -119,11 +119,11 @@ public:
 
 	QString GetRemoteVersionString(MessageRef);
 	// launches a search
-	static void LaunchSearch(const QString & pattern);	
+	static void LaunchSearch(const QString & pattern);
 	// launches a private window with multiple users in it
-	void LaunchPrivate(const QString & pattern);		
+	void LaunchPrivate(const QString & pattern);
 	// Queue TTP transfer
-	static void QueueFile(const QString & ref);			
+	static void QueueFile(const QString & ref);
 	void QueueFileAux(const QString & ref);
 	void StartQueue(const QString & session);
 	void UpdateTransmitStats(uint64 t);
@@ -155,9 +155,9 @@ public:
 	void SetDelayedSearchPattern(const QString & pattern);
 
 	QString CurrentServer() { return fServer; }
-	
+
 	QString TranslateStatus(const QString & s);
-	
+
 	WUserRef FindUser(const QString & user);
 	WUserRef FindUserByIPandPort(const QString & ip, uint32 port);
 	int FillUserMap(const QString & filter, WUserMap & wmap);
@@ -175,7 +175,7 @@ public:
 	Channels * fChannels;
 
 	// UniShare
-	int64 GetRegisterTime(const QString & nick) const; 
+	int64 GetRegisterTime(const QString & nick) const;
 
 	void GotParams(const MessageRef &);
 	bool GotParams() { return fGotParams; }
@@ -359,7 +359,7 @@ private:
 	// UniShare
 
 	void TransferCallbackRejected(const QString &qFrom, int64 timeLeft, uint32 port);
-	
+
 	bool IsIgnored(const WUserRef & user);
 	bool Ignore(const QString & user);
 	bool UnIgnore(const QString & user);
@@ -381,7 +381,7 @@ private:
 	bool UnAutoPrivate(const QString & user);
 
 	// Internal disconnection handling
-	void Disconnect2();					
+	void Disconnect2();
 
 	// Check if resume list contains downloads from 'user'
 	void CheckResumes(const QString &user);
@@ -397,7 +397,7 @@ private:
 	// remote password
 	QString fRemote;
 	// execute specified command
-	void ExecCommand(const QString &command);			
+	void ExecCommand(const QString &command);
 
 
 	void SignalDownload(int);
@@ -490,12 +490,12 @@ private:
 	WResumeMap fResumeMap;
 
 	QGridLayout * fMainBox;
-	
+
 	QWidget * fMainWidget;
 	QGridLayout * fMainTab;
-	
+
 	// splits user list and the rest of the window
-	QSplitter * fMainSplitter;	
+	QSplitter * fMainSplitter;
 
 	uint32 fMaxUsers;
 

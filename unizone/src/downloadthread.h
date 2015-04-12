@@ -7,7 +7,6 @@
 #include <qtimer.h>
 
 #include "downloadthread.h"
-#include "qtsupport/QMessageTransceiverThread.h"
 #include "user.h"
 #include "wfile.h"
 
@@ -88,7 +87,7 @@ public:
 	QString GetFileName(int i) const;
 	QString GetLocalFileName(int i) const;
 	QString GetPath(int i) const;
-	bool IsLastFile(); 
+	bool IsLastFile();
 
 	QString GetRemoteID() const { return fFromSession; }
 	QString GetRemoteUser() const { return fFromUser; }

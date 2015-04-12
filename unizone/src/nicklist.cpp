@@ -6,9 +6,9 @@
 WNickListItem::WNickListItem(	
 				   Q3ListView * parent,
 				   QString a, QString b, QString c, QString d,
-				   QString e, QString f, QString g, QString h 
+				   QString e, QString f, QString g, QString h
 				   )
-				   : WUniListItem(parent, a, b, c, d, e, f, g, h) 
+				   : WUniListItem(parent, a, b, c, d, e, f, g, h)
 {
 	setColumnType(Name, String_NoCase_Stripped);
 	setColumnType(ID, Number);

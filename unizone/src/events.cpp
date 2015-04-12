@@ -46,7 +46,7 @@ WarningEvent(QObject *target, const QString &text)
 // Moved out of NetClient to allow postponing chat text until user connected message arrives
 //
 
-void 
+void
 SendEvent(QObject *target, int type, const String &from)
 {
 	WMessageEvent *wme = new WMessageEvent(type, from);
@@ -54,7 +54,7 @@ SendEvent(QObject *target, int type, const String &from)
 		QApplication::postEvent(target, wme);
 }
 
-void 
+void
 SendEvent(QObject *target, int type, const String &from, MessageRef msg)
 {
 	WMessageEvent *wme = new WMessageEvent(type, from, msg);
@@ -62,7 +62,7 @@ SendEvent(QObject *target, int type, const String &from, MessageRef msg)
 		QApplication::postEvent(target, wme);
 }
 
-void 
+void
 SendEvent(QObject *target, int type, MessageRef msg)
 {
 	WMessageEvent *wme = new WMessageEvent(type, msg);

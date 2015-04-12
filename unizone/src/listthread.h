@@ -19,8 +19,8 @@ public:
 
 	virtual ~WListThread();
 
-	enum { 
-		ListDone = QEvent::User + 27000 
+	enum {
+		ListDone = QEvent::User + 27000
 	};
 
 protected:

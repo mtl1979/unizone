@@ -32,7 +32,7 @@ public:
 	QString Text() const;
 	void SetText(const QString & str);
 	bool Encrypted() const { return fEncrypted; }
-	void SetEncrypted(bool e) { fEncrypted = e; } 
+	void SetEncrypted(bool e) { fEncrypted = e; }
 
 private:
 	QString fText;

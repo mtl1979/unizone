@@ -12,7 +12,7 @@ WFile::TranslateMode(int mode)
 		return O_WRONLY | O_CREAT;
 	case 3: case 67:
 		return O_RDWR;
-	case 4: case 68: 
+	case 4: case 68:
 		return O_APPEND;
 	case 6: case 70:
 		return O_APPEND | O_WRONLY;

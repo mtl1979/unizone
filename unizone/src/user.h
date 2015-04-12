@@ -14,7 +14,7 @@ class QString;
   *  As the user message becomes more revealed, add more
   *  methods to it.
   */
-class WUser : public QObject, public RefCountable 
+class WUser : public QObject, public RefCountable
 {
 	Q_OBJECT
 public:
@@ -25,9 +25,9 @@ public:
 
 	// <postmaster@raasu.org> 20021001
 	void SetUserName(const QString & name);
-	void SetStatus(const QString & s); 
+	void SetStatus(const QString & s);
 	void SetUserHostName(const QString & h);
-	
+
 	void SetCurUploads(uint32 c);
 	void SetMaxUploads(uint32 m);
 	void SetBandwidthLabel(const char * s);
@@ -68,7 +68,7 @@ public:
 	void InitUploadStats(MessageRef msg);
 	void InitBandwidth(MessageRef msg);
 	void InitFileCount(MessageRef msg);
-	
+
 	void AddToListView(Q3ListView * view);
 	void RemoveFromListView(Q3ListView * view = NULL);	// if NULL, remove from all list views
 

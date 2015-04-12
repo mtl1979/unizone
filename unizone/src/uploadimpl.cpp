@@ -36,15 +36,15 @@ WUpload::WUpload(QWidget * parent, WFileThread * ft)
 	fUploads->addColumn(tr("QR"));
 	
 	fUploads->setColumnAlignment(WTransferItem::Received, Qt::AlignRight);	// <postmaster@raasu.org> 20021213
-	fUploads->setColumnAlignment(WTransferItem::Total, Qt::AlignRight);		// 
-	fUploads->setColumnAlignment(WTransferItem::Rate, Qt::AlignRight);		// 
+	fUploads->setColumnAlignment(WTransferItem::Total, Qt::AlignRight);		//
+	fUploads->setColumnAlignment(WTransferItem::Rate, Qt::AlignRight);		//
 	fUploads->setColumnAlignment(WTransferItem::ETA, Qt::AlignRight);		//
 	fUploads->setColumnAlignment(WTransferItem::Elapsed, Qt::AlignRight);	// 20030729
 	fUploads->setColumnAlignment(WTransferItem::QR, Qt::AlignRight);		// 20030310
 	
 	fUploads->setAllColumnsShowFocus(true);
 
-	connect(netClient(), SIGNAL(UserDisconnected(const WUserRef &)), 
+	connect(netClient(), SIGNAL(UserDisconnected(const WUserRef &)),
 			this, SLOT(UserDisconnected(const WUserRef &)));
 
 	setCaption(tr("Uploads"));
@@ -249,7 +249,7 @@ WUpload::CreateTunnel(const QString & userID, int64 hisID, void * & myID)
 	return true;
 }
 
-void 
+void
 WUpload::TunnelMessage(int64 myID, MessageRef tmsg)
 {
 	Lock();
@@ -374,8 +374,8 @@ WUpload::DequeueULSessions()
 		if (pair.thread)
 		{
 			if (
-				(pair.thread->IsLocallyQueued() == false) && 
-				(pair.thread->IsBlocked() == false) && 
+				(pair.thread->IsLocallyQueued() == false) &&
+				(pair.thread->IsBlocked() == false) &&
 				(pair.thread->IsActive() == true) &&
 				(pair.thread->IsFinished() == false)
 				)
@@ -400,7 +400,7 @@ WUpload::DequeueULSessions()
 			if (pair.thread)
 			{
 				if (
-					(pair.thread->IsLocallyQueued() == true) && 
+					(pair.thread->IsLocallyQueued() == true) &&
 					(pair.thread->IsManuallyQueued() == false) &&
 					(pair.thread->IsFinished() == false)
 					)
@@ -677,7 +677,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 #ifdef _DEBUG
 			// <postmaster@raasu.org> 20021023 -- Add debug message
 			WString wfile(file);
-			PRINT("WUploadEvent::FileError: File %S\n", wfile.getBuffer()); 
+			PRINT("WUploadEvent::FileError: File %S\n", wfile.getBuffer());
 #endif
 			break;
 		}
@@ -721,7 +721,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::Received, fromULongLong(offset));
 				// <postmaster@raasu.org> 20021104, 20030217, 20030622
 				// elapsed time >= 1 s?
-				if (secs >= 1.0f) 
+				if (secs >= 1.0f)
 				{
 					ut->SetMostRecentRate(kps);
 					ut->fLastData.restart();
@@ -764,7 +764,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 	}
 }
 
-void 
+void
 WUpload::keyPressEvent(QKeyEvent * event)
 {
 	if (event->key() == Q3Accel::stringToKey(tr("Shift+F11")))
@@ -1420,11 +1420,11 @@ WUpload::ULRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 				
 			case 16 * 1024:	
 				{
-					fULThrottle = ID_16KB; 
+					fULThrottle = ID_16KB;
 					break;
 				}
 				
-			case 32 * 1024: 
+			case 32 * 1024:
 				{
 					fULThrottle = ID_32KB;	
 					break;
@@ -1438,13 +1438,13 @@ WUpload::ULRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 				
 			case 128 * 1024:	
 				{
-					fULThrottle = ID_128KB; 
+					fULThrottle = ID_128KB;
 					break;
 				}
 				
 			case 256 * 1024:	
 				{
-					fULThrottle = ID_256KB; 
+					fULThrottle = ID_256KB;
 					break;
 				}
 				
@@ -1486,7 +1486,7 @@ WUpload::ULRightClicked(Q3ListViewItem * item, const QPoint & p, int)
 				
 			case 32 * 1048576:	
 				{
-					fULThrottle = ID_32MB; 
+					fULThrottle = ID_32MB;
 					break;
 				}
 			}
@@ -1711,7 +1711,7 @@ WUpload::ULMoveUp(unsigned int index)
 	Unlock();
 	
 	Lock();
-	while (index2 > 0) 
+	while (index2 > 0)
 	{
 		index2--;
 		ULPair p;
@@ -1894,7 +1894,7 @@ void
 WUpload::SendSignal(int signal)
 {
 	QCustomEvent *qce = new QCustomEvent(signal);
-	if (qce) 
+	if (qce)
 		QApplication::postEvent(this, qce);
 }
 
@@ -1905,22 +1905,22 @@ WUpload::netClient()
 	return gWin->fNetClient;
 }
 
-void 
+void
 WUpload::resizeEvent(QResizeEvent * e)
 {
 	fUploads->resize(e->size());
 	QDialog::resizeEvent(e);
 }
 
-void 
-WUpload::Lock() 
-{ 
-	fLock.Lock(); 
+void
+WUpload::Lock()
+{
+	fLock.Lock();
 }
 
-void 
-WUpload::Unlock() 
-{ 
-	fLock.Unlock(); 
+void
+WUpload::Unlock()
+{
+	fLock.Unlock();
 }
 

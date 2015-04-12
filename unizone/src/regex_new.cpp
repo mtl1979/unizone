@@ -74,7 +74,7 @@ QString ConvertToRegexInternalNew(const QString & s, bool simple, bool isFirst)
 {
 	int x = 0;
 	QString ret;
-	if (s[0] == '(' || s[0] == '[') // Already a regex 
+	if (s[0] == '(' || s[0] == '[') // Already a regex
 		return s;
 	while(x < s.length())
 	{
@@ -136,7 +136,7 @@ bool FindDuplicatesNew(QStringList & l, bool simple)
 
 	// Check start of strings
 	pos = 0;
-	while (pos < l.at(0).length()) 
+	while (pos < l.at(0).length())
 	{
 		for (int i = 1; i < l.size(); i++)
 		{
@@ -162,7 +162,7 @@ step2:
 #ifdef _DEBUG
 				WString tmp1 = l.at(0);
 				WString tmp2 = l.at(i);
-				PRINT("item 0 = %S, item i = %S\n", tmp1.getBuffer(), tmp2.getBuffer()); 
+				PRINT("item 0 = %S, item i = %S\n", tmp1.getBuffer(), tmp2.getBuffer());
 #endif
 				goto step3;
 			}

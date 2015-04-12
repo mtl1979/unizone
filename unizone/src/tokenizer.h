@@ -4,8 +4,8 @@ class QString;
 class QStringTokenizer
 {
 public:
-   /** Initializes the StringTokenizer to parse (tokenizeMe), which 
-    *  should be a string of tokens (e.g. words) separated by any 
+   /** Initializes the StringTokenizer to parse (tokenizeMe), which
+    *  should be a string of tokens (e.g. words) separated by any
     *  of the characters specified in (separators)
     *  @param tokenizeMe the string to break up into 'words'.
     *  @param separators ASCII string representing a list of characters to interpret a word separators.
@@ -18,7 +18,7 @@ public:
 
    /** Convenience synonym for GetNextToken() */
    QString operator()() {return GetNextToken();}
- 
+
    /** Returns the remainder of the string, starting with the next token,
     *  or NULL if there are no more tokens in the string.
     *  Doesn't affect the next return value of GetNextToken(), though.

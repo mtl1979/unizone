@@ -21,7 +21,7 @@ WLog::WLog()
 
 WLog::~WLog()
 {
-	if (InitCheck())	// are we still valid? 
+	if (InitCheck())	// are we still valid?
 		Close();		// we shouldn't be, so close the file
 }
 
@@ -47,8 +47,14 @@ WLog::Create(LogType type, const QString &name)
 {
 	int counter = 0;
 	time_t currentTime = time(NULL);
-	QString lt;
-	QString logtime = QString::fromLocal8Bit( ctime(&currentTime) );
+	QString lt, logtime;
+#if __STDC_WANT_SECURE_LIB__
+	char buf[26];
+	ctime_s(buf, 26, &currentTime);
+	logtime = QString::fromLocal8Bit(buf);
+#else
+	logtime = QString::fromLocal8Bit( ctime(&currentTime) );
+#endif
 	logtime.truncate(logtime.find("\n"));
 	QString fullPath;
 
@@ -64,7 +70,7 @@ WLog::Create(LogType type, const QString &name)
 	
 	switch (type)
 	{
-	case LogMain: 
+	case LogMain:
 		lt = logtime;
 		break;
 	case LogPrivate:

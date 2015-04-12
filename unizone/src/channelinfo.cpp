@@ -62,7 +62,7 @@ ChannelInfo::~ChannelInfo()
 	{
 		fWindow = NULL;
 	}
-	
+
 	if (fItem)
 	{
 		delete fItem;
@@ -100,7 +100,7 @@ ChannelInfo::RemoveUser(const QString & user)
 bool
 ChannelInfo::FindUser(const QString & user)
 {
-	return fUsers.IndexOf(user) != -1; 
+	return fUsers.IndexOf(user) != -1;
 }
 
 void
@@ -158,79 +158,79 @@ ChannelInfo::GetUsers() const
 	return usr;
 }
 
-int 
+int
 ChannelInfo::NumUsers() const
-{ 
-	return fUsers.GetNumItems(); 
-}
-
-void 
-ChannelInfo::SetTopic(const QString & t) 
 {
-	fTopic = t; 
+	return fUsers.GetNumItems();
 }
 
-QString 
+void
+ChannelInfo::SetTopic(const QString & t)
+{
+	fTopic = t;
+}
+
+QString
 ChannelInfo::GetTopic() const
-{ 
-	return fTopic; 
-}
-
-void 
-ChannelInfo::SetPublic(bool p) 
 {
-	fPublic = p; 
+	return fTopic;
 }
 
-bool 
+void
+ChannelInfo::SetPublic(bool p)
+{
+	fPublic = p;
+}
+
+bool
 ChannelInfo::GetPublic() const
-{ 
-	return fPublic; 
+{
+	return fPublic;
 }
 
-void 
-ChannelInfo::SetItem(Q3ListViewItem * item) 
+void
+ChannelInfo::SetItem(Q3ListViewItem * item)
 {
 	fItem = item;
 }
 
-Q3ListViewItem * 
+Q3ListViewItem *
 ChannelInfo::GetItem() const
-{ 
-	return fItem; 
-}
-
-void 
-ChannelInfo::SetWindow(Channel * win) 
 {
-	fWindow = win; 
+	return fItem;
 }
 
-Channel * 
+void
+ChannelInfo::SetWindow(Channel * win)
+{
+	fWindow = win;
+}
+
+Channel *
 ChannelInfo::GetWindow() const
-{ 
+{
 	return fWindow;
 }
 
-void 
+void
 ChannelInfo::SetCreated(uint64 i)
 {
 	fCreated = i;
 }
 
-uint64 
+uint64
 ChannelInfo::GetCreated() const
 {
 	return fCreated;
 }
 
-void 
+void
 ChannelInfo::SetOwner(const QString & owner)
 {
 	fOwner = owner;
 }
 
-QString 
+QString
 ChannelInfo::GetOwner() const
 {
 	return fOwner;

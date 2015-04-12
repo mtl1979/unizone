@@ -12,7 +12,7 @@ QStringTokenizer::QStringTokenizer(const QString &tokenizeMe, const QString &sep
 }
 
 /** Returns the next token in the parsed string, or NULL if there are no more tokens left */
-QString 
+QString
 QStringTokenizer::GetNextToken()
 {
 	if (!_seps.isEmpty())
@@ -21,7 +21,7 @@ QStringTokenizer::GetNextToken()
 		while	(
 			(_next < _tokenizeMe.length()) &&
 			(_seps.find( _tokenizeMe.at(_next) ) >= 0)
-			) 
+			)
 		{
 			_next++;
 		}
@@ -30,15 +30,15 @@ QStringTokenizer::GetNextToken()
 			QString ret = _tokenizeMe.mid(_next);
 			int prev = _next;
 			// Move until next sep-char
-			while	( 
-				(_next < _tokenizeMe.length()) && 
-				( _seps.find( _tokenizeMe.at(_next) ) < 0) 
+			while	(
+				(_next < _tokenizeMe.length()) &&
+				( _seps.find( _tokenizeMe.at(_next) ) < 0)
 				)
 			{
 				_next++;
 			}
 
-			if (_next < _tokenizeMe.length()) 
+			if (_next < _tokenizeMe.length())
 			{
 				ret = _tokenizeMe.mid(prev,_next-prev);
 				_next++;
@@ -53,7 +53,7 @@ QStringTokenizer::GetNextToken()
   *  or NULL if there are no more tokens in the string.
   *  Doesn't affect the next return value of GetNextToken(), though.
   */
-QString 
+QString
 QStringTokenizer::GetRemainderOfString()
 {
 	if (!_seps.isEmpty())

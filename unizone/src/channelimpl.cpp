@@ -20,7 +20,7 @@
 #include "debugimpl.h"
 
 Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* name, Qt::WFlags /* fl */)
-: ChatWindow(ChannelType, /* parent */ NULL, name, Qt::WDestructiveClose | Qt::WStyle_Minimize | 
+: ChatWindow(ChannelType, /* parent */ NULL, name, Qt::WDestructiveClose | Qt::WStyle_Minimize |
 			  Qt::WStyle_Maximize | Qt::WStyle_Title | Qt::WStyle_SysMenu /* flags */)
 {
 	if (!name)
@@ -92,13 +92,13 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 	splitList3.append(75);
 
 	fSplitChat->setSizes(splitList3);
-	
 
-	connect(fChatText, SIGNAL(URLClicked(const QString &)), 
+
+	connect(fChatText, SIGNAL(URLClicked(const QString &)),
 			this, SLOT(URLClicked(const QString &)));
-	connect(fInputText, SIGNAL(TabPressed(const QString &)), 
+	connect(fInputText, SIGNAL(TabPressed(const QString &)),
 			this, SLOT(TabPressed(const QString &)));
-	connect(fTopicEdit, SIGNAL(returnPressed()), 
+	connect(fTopicEdit, SIGNAL(returnPressed()),
 			this, SLOT(UpdateTopic()));
 
 	connect(
@@ -108,7 +108,7 @@ Channel::Channel( QWidget* parent, NetClient * net, QString cname, const char* n
 
 	connect(gWin, SIGNAL(NewChannelText(const QString &, const QString &, const QString &)),
 			this, SLOT(NewChannelText(const QString &, const QString &, const QString &)));
-	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)), 
+	connect(fNet, SIGNAL(UserDisconnected(const WUserRef &)),
 			this, SLOT(UserDisconnected(const WUserRef &)));
 
 	if (Settings()->GetLogging())
@@ -173,7 +173,7 @@ Channel::SetTopic(const QString & topic)
 		PrintSystem( tr( "Topic set to %1." ).arg(fTopicEdit->text() ) );
 		gWin->fChannels->SetTopic(fName, topic);
 	}
-	
+
 }
 
 void
@@ -196,7 +196,7 @@ Channel::SetPublic(bool p)
 		}
 		gWin->fChannels->SetPublic(fName, p);
 		PrintSystem( tr("Channel is now %1.").arg(p ? tr( "public" ) : tr( "private" ) ) );
-	}	
+	}
 }
 
 void
@@ -329,25 +329,25 @@ Channel::customEvent(QEvent * event)
 					help		+=	tr("/action [action] - do something");
 					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/clear - clear channel window");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/deop [name or session id] - take admin status from other user");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/help - show command reference");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/invite [name or session id] - invite user to channel");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/kick [name or session id] - kick user off the channel");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/listadmins - show channel admins");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/me [action] - same as /action");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/op [name or session id] - give admin status to other user");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/private - set channel to private mode");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/public - set channel to public mode");
-					help		+=	"\n\t\t\t\t"; 
+					help		+=	"\n\t\t\t\t";
 					help		+=	tr("/topic [topic] - change the channel topic");
 					PrintSystem(ParseString(help));
 				}
@@ -398,13 +398,13 @@ Channel::customEvent(QEvent * event)
 				else if (CompareCommand(wte->Text(), "/private"))
 				{
 					if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
-						SetPublic(false);	
+						SetPublic(false);
 					else
 					{
 						// Need to be admin
 						if (gWin->fSettings->GetError())
 							PrintError( tr( "Not allowed!" ) );
-					}				
+					}
 				}
 				// Add admin
 				else if (CompareCommand(wte->Text(), "/op"))
@@ -473,7 +473,7 @@ Channel::customEvent(QEvent * event)
 						if (qTemp.isEmpty())
 						{
 							if (gWin->fSettings->GetError())
-								PrintError(tr("No users passed."));	
+								PrintError(tr("No users passed."));
 						}
 						else
 						{
@@ -490,7 +490,7 @@ Channel::customEvent(QEvent * event)
 									{
 										if (gWin->fSettings->GetUserEvents())
 											PrintError(tr("User #%1 (a.k.a %2) is already in this channel window!").arg(uref()->GetUserID()).arg(uref()->GetUserName()));
-										
+
 										talking = true;
 										break;	// done...
 									}
@@ -520,7 +520,7 @@ Channel::customEvent(QEvent * event)
 					{
 						QString qTemp = GetParameterString(wte->Text());
 						if (qTemp.isEmpty())
-						{												
+						{
 							if (gWin->fSettings->GetError())
 								PrintError(tr("No users passed."));
 						}
@@ -535,18 +535,18 @@ Channel::customEvent(QEvent * event)
 								while (uit.HasData())
 								{
 									WUserRef found = uit.GetValue();
-									
+
 #ifdef _DEBUG
 									WString wuid1(found()->GetUserID());
 									WString wuid2(uref()->GetUserID());
 									PRINT("found - UserID = %S\n", wuid1.getBuffer());
 									PRINT("uref  - UserID = %S\n", wuid2.getBuffer());
 #endif
-									
+
 									if (found()->GetUserID() == uref()->GetUserID())
 									{
 										Kick(uref()->GetUserID());
-										
+
 										f = true;
 										break;	// done...
 									}
@@ -559,7 +559,7 @@ Channel::customEvent(QEvent * event)
 									PrintError( tr( "User(s) not found!" ) );
 							}
 						}
-					}	
+					}
 					else
 					{
 						// Need to be admin
@@ -574,12 +574,12 @@ Channel::customEvent(QEvent * event)
 					QString message = gWin->GetUserName();
 					message += "'s ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					
+
 #ifdef _DEBUG
 					WString wmessage(message);
 					PRINT("\t\t%S\n", wmessage.getBuffer());
 #endif
-					
+
 					SendChannelText(message);
 				}
 				else if (CompareCommand(wte->Text(), "/action") ||
@@ -589,12 +589,12 @@ Channel::customEvent(QEvent * event)
 					QString message = gWin->GetUserName();
 					message += " ";
 					message += GetParameterString(stxt); // <postmaster@raasu.org> 20021021 -- Use Special Function to check validity
-					
+
 #ifdef _DEBUG
 					WString wmessage(message);
 					PRINT("\t\t%S\n", wmessage.getBuffer());
 #endif
-					
+
 					SendChannelText(message);
 				}
 				else if (CompareCommand(wte->Text(), "/clear"))
@@ -609,7 +609,7 @@ Channel::customEvent(QEvent * event)
 			}
 			return;
 		}
-	}		
+	}
 }
 
 void
@@ -675,7 +675,7 @@ Channel::UpdateTopic()
 	if ( gWin->fChannels->IsAdmin(fName, fNet->LocalSessionID()) )
 	{
 		SetTopic( fTopicEdit->text() );
-	}	
+	}
 }
 
 void
@@ -734,7 +734,7 @@ Channel::UserDisconnected(const WUserRef &user)
 		{
 			if (gWin->fSettings->GetUserEvents())
 			{
-				QString msg = FormatUserDisconnected(sid, FixString(user()->GetUserName())); 
+				QString msg = FormatUserDisconnected(sid, FixString(user()->GetUserName()));
 				PrintSystem(msg);
 			}
 			user()->RemoveFromListView(fChannelUsers);

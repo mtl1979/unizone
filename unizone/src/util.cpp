@@ -75,7 +75,7 @@ GetCommandString(const QString & qCommand)
 	if (qCommand2.startsWith("/")) // Is / first letter?
 	{
 		int sPos = qCommand2.find(" ");  // parameters should follow after <space> so they should be stripped off
-		if (sPos > 0) 
+		if (sPos > 0)
 		{
 			qCommand2.truncate(sPos);
 		}
@@ -116,7 +116,7 @@ StripURL(const String & strip)
 				if (right != -1)	// ']' does exist
 				{
 					String label;
-					while (strip.Substring(left, right).GetNumInstancesOf("[") > 
+					while (strip.Substring(left, right).GetNumInstancesOf("[") >
 							strip.Substring(left, right).GetNumInstancesOf("]")
 							)
 					{
@@ -738,7 +738,7 @@ uint32
 CalculateFileChecksum(const uint8 *data, size_t size)
 {
 	uint32 sum = 0L;
-	for (size_t i=0; i<size; i++) 
+	for (size_t i=0; i<size; i++)
 		sum += (*(data++)<<(i%24));
 	return sum;
 }
@@ -789,7 +789,7 @@ SavePicture(QString &file, const uint8 * buf, size_t bufsize)
 	WFile fFile;
 	WString wfile(nf);
 	PRINT("SavePicture: file=%ls, buf=%p, size=%ld\n", wfile.getBuffer(), buf, bufsize);
-	if (fFile.Open(wfile, 
+	if (fFile.Open(wfile,
 #ifdef WIN32
 		O_WRONLY | O_CREAT | O_BINARY
 #else

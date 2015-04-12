@@ -26,7 +26,6 @@ class NetClient;
 
 typedef Ref<WUser> WUserRef;
 
-// This class needs to be able to handle downloads AND uploads
 class WUpload : public QDialog
 {
 	Q_OBJECT
@@ -68,7 +67,7 @@ protected:
 	virtual void resizeEvent(QResizeEvent * e);
 
 private:
-		
+
 	ULList fUploadList;
 
 	Q3ListView * fUploads;
@@ -197,7 +196,7 @@ private:
 	void SendSignal(int signal);
 
 	mutable Mutex fLock;
-	void Lock(); 
+	void Lock();
 	void Unlock();
 
 private slots:
@@ -211,7 +210,7 @@ public slots:
 
 signals:
 	// the upload window has been closed
-	void Closed();		
+	void Closed();
 
 };
 

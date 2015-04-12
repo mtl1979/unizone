@@ -23,7 +23,7 @@ const int kListSizes[6] = { 200, 75, 100, 150, 150, 75 };
 // quick inline method to generate a pair
 
 inline
-QString 
+QString
 MakeKey(const QString & a, const QString &b)
 {
 	QString out(a);
@@ -119,7 +119,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fSearchLabel = new QLabel(this);
 	Q_CHECK_PTR(fSearchLabel);
 
-	fSearchTab->addMultiCellWidget(fSearchLabel, 1, 1, 0, 3); 
+	fSearchTab->addMultiCellWidget(fSearchLabel, 1, 1, 0, 3);
 
 	// Search Query Combo Box
 
@@ -174,9 +174,9 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 
 	// connect up slots
 
-	connect(fNetClient, SIGNAL(AddFile(const WUserRef &, const QString &, bool, MessageRef)), 
+	connect(fNetClient, SIGNAL(AddFile(const WUserRef &, const QString &, bool, MessageRef)),
 			this, SLOT(AddFile(const WUserRef &, const QString &, bool, MessageRef)));
-	connect(fNetClient, SIGNAL(RemoveFile(const WUserRef &, const QString &)), 
+	connect(fNetClient, SIGNAL(RemoveFile(const WUserRef &, const QString &)),
 			this, SLOT(RemoveFile(const WUserRef &, const QString &)));
 	connect(fNetClient, SIGNAL(ConnectedToServer()), this, SLOT(ServerConnected()));
 	connect(fNetClient, SIGNAL(DisconnectedFromServer()), this, SLOT(ServerDisconnected()));
@@ -277,7 +277,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				
 				fQueryBytes += size;
 				
-				QString qsize	= fromULongLong(size); 
+				QString qsize	= fromULongLong(size);
 				QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
 				QString quser	= user()->GetUserName();
 				
@@ -565,7 +565,7 @@ UnSimplify(const QString &str)
 	QString ret;
 	int x = 0;
 	bool inGroup = false;
-	if (str[x] == '`') x++; 
+	if (str[x] == '`') x++;
 	while (x < str.length())
 	{
 		if (str[x] == '\\')
@@ -709,12 +709,12 @@ SimplifyNew(const QString &str)
 			{
 				// Characters above 0x7F will be encoded using multiple bytes, so we use special trick.
 				bool inside = (x > 0 && ((str[x-1] == '(' && (x == 1 || str[x-2] != '\\')) || str[x-1] == '|') && (str[x+1] == ')' || str[x+1] == '|'));
-				if (!inside) 
+				if (!inside)
 					ret += "(";
 				ret += str[x].lower();
 				ret += "|";
 				ret += str[x].upper();
-				if (!inside) 
+				if (!inside)
 					ret += ")";
 			}
 			x++;
@@ -847,7 +847,7 @@ WSearch::StartQuery(const QString & sidRegExp, const QString & fileRegExp)
 
 	fNetClient->AddSubscription(tmp); // <postmaster@raasu.org> 20021026
 	// Test when initial results have been returned
-	fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING)); 
+	fNetClient->SendMessageToSessions(GetMessageFromPool(PR_COMMAND_PING));
 
 	fSearchLock.Unlock();
 

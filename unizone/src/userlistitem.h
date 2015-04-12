@@ -14,26 +14,26 @@ class WUserListItem : public WNickListItem
 {
 public:
 
-	WUserListItem(Q3ListView * parent) 
-		: WNickListItem(parent) 
+	WUserListItem(Q3ListView * parent)
+		: WNickListItem(parent)
 	{
 		// empty
 	}
 	
-	WUserListItem(Q3ListViewItem * parent) 
-		: WNickListItem(parent) 
+	WUserListItem(Q3ListViewItem * parent)
+		: WNickListItem(parent)
 	{
 		// empty
 	}
 	
-	WUserListItem(Q3ListView * parent, Q3ListViewItem * after) 
-		: WNickListItem(parent, after) 
+	WUserListItem(Q3ListView * parent, Q3ListViewItem * after)
+		: WNickListItem(parent, after)
 	{
 		// empty
 	}
 	
 	WUserListItem(Q3ListViewItem * parent, Q3ListViewItem * after)
-		: WNickListItem(parent, after) 
+		: WNickListItem(parent, after)
 	{
 		// empty
 	}
@@ -49,14 +49,14 @@ public:
 							int alignment);
 	
 
-	void SetFirewalled(bool b) 
-	{ 
-		fFire = b; 
+	void SetFirewalled(bool b)
+	{
+		fFire = b;
 	}
 	
 	bool Firewalled() const
-	{ 
-		return fFire; 
+	{
+		return fFire;
 	}
 
 private:

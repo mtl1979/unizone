@@ -1,7 +1,7 @@
 #include "resolver.h"
 
 #include "resolver4.h"
-#include "resolver6.h" 
+#include "resolver6.h"
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -32,7 +32,7 @@ ParseIP4(const QString &address, uint32 &result)
 	QStringList ipv4 = QStringList::split(".", address, false);
 	if (ipv4.count() == 4) {
 		bool ok = true;
-		for (int i = 0; i < 4; i++) 
+		for (int i = 0; i < 4; i++)
 		{
 			uint byteValue = ipv4[i].toUInt(&ok);
 
@@ -47,31 +47,31 @@ ParseIP4(const QString &address, uint32 &result)
 }
 
 #ifdef MUSCLE_AVOID_IPV6
-uint32 
+uint32
 ResolveAddress(const QString &address)
 {
 	return ResolveAddress4(address);
 }
 
-uint32 
+uint32
 ResolveAddress(const String &address)
 {
 	return ResolveAddress4(address);
 }
 
-QString 
+QString
 ResolveHost(uint32 ip)
 {
 	return ResolveHost4(ip);
 }
 
-QString 
+QString
 ResolveAliases(uint32 ip)
 {
 	return ResolveAliases4(ip);
 }
 #else
-muscle::ip_address 
+muscle::ip_address
 ResolveAddress(const QString &address)
 {
 	uint32 res;
@@ -90,13 +90,13 @@ ResolveAddress(const QString &address)
 	return ip;
 }
 
-muscle::ip_address 
+muscle::ip_address
 ResolveAddress(const String &address)
 {
 	return ResolveAddress( QString::fromLocal8Bit( address.Cstr() ) );
 }
 
-QString 
+QString
 ResolveHost(muscle::ip_address ip)
 {
 	if (IsIPv4Address(ip))

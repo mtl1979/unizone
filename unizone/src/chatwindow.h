@@ -14,7 +14,7 @@ class WSettings;
 class QListView;
 class QString;
 
-typedef enum 
+typedef enum
 {
 	MainType,
 	PrivateType,
@@ -90,7 +90,7 @@ public:
 	QString FormatPingSent(const QString &session, const QString &name);
 
 	QString FormatTimeStamp(const QString &stamp);
-	
+
 	// Private Windows
 	QString FormatPrivateRemoved(const QString &session, const QString &name);
 	QString FormatPrivateIsBot(const QString &session, const QString &name);

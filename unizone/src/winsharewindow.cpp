@@ -1049,9 +1049,11 @@ WinShareWindow::MakeHumanDiffTime(uint64 time)
 
 	QString s;
 
-	char buf[25];
+	char buf[26];
 #ifdef __amd64__
 	sprintf(buf, "%lu:%02lu:%02lu", hours, minutes, seconds);
+#elif __STDC_WANT_SECURE_LIB__
+	sprintf_s(buf, 26, "%llu:%02llu:%02llu", hours, minutes, seconds);
 #else
 	sprintf(buf, "%llu:%02llu:%02llu", hours, minutes, seconds);
 #endif

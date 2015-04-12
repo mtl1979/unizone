@@ -13,7 +13,7 @@
 class WNickListItem : public WUniListItem
 {
 public:
-	enum 
+	enum
 	{
 		Name,
 		ID,
@@ -26,26 +26,26 @@ public:
 		NumColumns
 	};
 	
-	WNickListItem(Q3ListView * parent) 
-		: WUniListItem(parent) 
+	WNickListItem(Q3ListView * parent)
+		: WUniListItem(parent)
 	{
 		// empty
 	}
 	
-	WNickListItem(Q3ListViewItem * parent) 
-		: WUniListItem(parent) 
+	WNickListItem(Q3ListViewItem * parent)
+		: WUniListItem(parent)
 	{
 		// empty
 	}
 	
-	WNickListItem(Q3ListView * parent, Q3ListViewItem * after) 
-		: WUniListItem(parent, after) 
+	WNickListItem(Q3ListView * parent, Q3ListViewItem * after)
+		: WUniListItem(parent, after)
 	{
 		// empty
 	}
 	
 	WNickListItem(Q3ListViewItem * parent, Q3ListViewItem * after)
-		: WUniListItem(parent, after) 
+		: WUniListItem(parent, after)
 	{
 		// empty
 	}

@@ -75,7 +75,7 @@ protected:
 	virtual void resizeEvent(QResizeEvent *);
 
 private:
-		
+
 	DLList fDownloadList;
 
 	QSplitter * fMainSplit;
@@ -156,7 +156,7 @@ private:
 	void SendSignal(int signal);
 
 	mutable Mutex fLock;
-	void Lock(); 
+	void Lock();
 	void Unlock();
 
 private slots:
@@ -170,10 +170,10 @@ public slots:
 
 signals:
 	// Parameter 1 = Remote File Name, Parameter 2 = Local File Name, Parameter 3 = Remote Path, Parameter 4 = User Name
-	void FileFailed(const QString &, const QString &, const QString &, const QString &); 
+	void FileFailed(const QString &, const QString &, const QString &, const QString &);
 	void FileInterrupted(const QString &, const QString &, const QString &, const QString &);
 	// the download window has been closed
-	void Closed();		
+	void Closed();
 
 };
 

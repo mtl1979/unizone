@@ -117,7 +117,7 @@ WFile::ReadBlock(uint8 *buf, uint64 size)
 	return ReadBlock32(buf, (unsigned int) size);
 }
 
-int 
+int
 WFile::ReadLine(char *buf, int size)
 {
 	int numbytes = 0;

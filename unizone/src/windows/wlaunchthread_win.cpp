@@ -13,7 +13,7 @@ WLaunchThread::InternalThreadEntry()
 	GotoURL(fURL, SW_SHOW);
 }
 
-bool 
+bool
 WLaunchThread::GotoURL(const QString & url, int showcmd)
 {
 	WString wurl(url);

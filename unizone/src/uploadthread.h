@@ -77,7 +77,7 @@ public:
 	uint64	GetStartTime() { return fStartTime; }
 
 	QString GetRemoteID() const {return fRemoteSessionID;}
-	QString GetRemoteUser() const; 
+	QString GetRemoteUser() const;
 	QString GetRemoteIP() const;
 	uint32 GetRemotePort() const {return fPort;}
 	QString GetCurrentFile() const {return fFileUl;}
@@ -85,12 +85,12 @@ public:
 
 	int32 GetCurrentNum() const { return fCurFile; }
 	int32 GetNumFiles() const { return fNumFiles; }
-	bool IsLastFile(); 
+	bool IsLastFile();
 	bool IsTunneled() const { return fTunneled; }
 
 	int GetRate() { return fTXRate; }
-	virtual void SetRate(int rate, ThreadWorkerSessionRef & ref); 
-	virtual void SetRate(int rate); 
+	virtual void SetRate(int rate, ThreadWorkerSessionRef & ref);
+	virtual void SetRate(int rate);
 	virtual void ResetRate() { SetRate(fTXRate); }
 	virtual void ResetRate(ThreadWorkerSessionRef & ref) { SetRate(fTXRate, ref); }
 
@@ -99,7 +99,7 @@ public:
 
 	int64 GetBanTime();
 
-	int GetCompression() const; 
+	int GetCompression() const;
 	void SetCompression(int c);
 
 	// forwarders
@@ -118,7 +118,7 @@ private slots:
 
 	void MessageReceived(const MessageRef & msg, const String &sessionID);
 	void OutputQueuesDrained(const MessageRef & msg);
-	
+
 	void SessionConnected(const String &sessionID, const IPAddressAndPort &connectedTo);
 	void SessionDisconnected(const String &sessionID);
 

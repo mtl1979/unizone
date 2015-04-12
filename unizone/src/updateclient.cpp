@@ -89,10 +89,10 @@ void
 UpdateClient::Disconnect()
 {
 	PRINT("DISCONNECT\n");
-	if (qmtt->IsInternalThreadRunning()) 
+	if (qmtt->IsInternalThreadRunning())
 	{
 		fHostName = "";
-		Reset(); 
+		Reset();
 	}
 }
 
@@ -143,13 +143,13 @@ UpdateClient::CheckVersion(const QString & buf, QString & version)
 	return false;
 }
 
-status_t 
-UpdateClient::StartInternalThread() 
+status_t
+UpdateClient::StartInternalThread()
 {
-	return qmtt->StartInternalThread(); 
+	return qmtt->StartInternalThread();
 }
 	
-status_t 
+status_t
 UpdateClient::AddNewConnectSession(const String & targetHostName, uint16 port, ThreadWorkerSessionRef optSessionRef)
 {
 	fHostName = targetHostName;
@@ -166,7 +166,7 @@ UpdateClient::AddNewConnectSession(const String & targetHostName, uint16 port, T
 	}
 }
 
-void 
+void
 UpdateClient::Reset()
 {
 	qmtt->Reset();

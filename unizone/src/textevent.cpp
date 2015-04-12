@@ -15,8 +15,8 @@ WTextEvent::WTextEvent(const QString & text, int type)
 {
 	fText = text.stripWhiteSpace();
 	fEncrypted = false;
-	// <postmaster@raasu.org> 20021024 
-	if (fText.isEmpty()) 
+	// <postmaster@raasu.org> 20021024
+	if (fText.isEmpty())
 		return; // empty string
 	
 	for (int i = 0; i < fText.length(); i++)
@@ -58,5 +58,5 @@ WTextEvent::Text() const
 void
 WTextEvent::SetText(const QString & str)
 {
-	fText = str; 
+	fText = str;
 }

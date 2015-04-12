@@ -176,7 +176,7 @@ main( int argc, char** argv )
 	QString lfile;
 	if (!WFile::Exists(wlangfile))
 	{
-		lfile = Q3FileDialog::getOpenFileName( 
+		lfile = Q3FileDialog::getOpenFileName(
 #ifdef _WIN32
 			MakePath(gAppDir, "translations"),
 #else
@@ -186,12 +186,12 @@ main( int argc, char** argv )
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
-			if ( lang.Open(wlangfile, 
+			if ( lang.Open(wlangfile,
 #if defined(WIN32) || defined(_WIN32)
 				O_WRONLY | O_CREAT | O_BINARY
 #else
 				O_WRONLY | O_CREAT
-#endif 
+#endif
 			   ) )
 			{
 				QByteArray clang = lfile.utf8();
@@ -280,7 +280,7 @@ main( int argc, char** argv )
 #endif
    ByteBufferRef fileData = GetByteBufferFromPool((uint32)fdio.GetLength());
    if ((fdio.GetFile())&&(fileData())&&(fdio.ReadFully(fileData()->GetBuffer(), fileData()->GetNumBytes()) == fileData()->GetNumBytes()))
-   { 
+   {
 #ifdef _DEBUG
 # ifdef _WIN32
       PRINT("Using public key file [%S] to authenticate with servers\n", publicKeyFilePath);

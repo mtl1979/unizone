@@ -18,13 +18,13 @@ class QString;
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 #ifdef __APPLE__
 wchar_t *wcsdup(const wchar_t *);
 #endif
 
-#if defined(__APPLE__) || defined(__LINUX__) 
+#if defined(__APPLE__) || defined(__LINUX__)
 wchar_t *wcslwr(wchar_t *);
 wchar_t *wcsupr(wchar_t *);
 #endif
@@ -47,6 +47,6 @@ QString wideCharToQString(const wchar_t *wide);
 // Converts QString to pointer to array of wchar_t, pointer must be deleted when not needed anymore
 wchar_t *qStringToWideChar(const QString &str);
 
-#endif 
+#endif
 
 #endif

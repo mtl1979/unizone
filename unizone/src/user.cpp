@@ -72,7 +72,7 @@ WUser::InitName(MessageRef msg)
 		fUserStatus = "Bot";
 		fBandwidthLabel = "Bot";
 	}
-	else 
+	else
 		fBot = false;
 
         if (msg()->FindInt64("installid", installID) != B_OK)
@@ -85,7 +85,7 @@ WUser::InitName(MessageRef msg)
 	if (GetUInt32FromMessage(msg, "port", fPort) != B_OK)
 		fPort = 0;
 
-	if ((GetStringFromMessage(msg, "version_name", vname) == B_OK) && 
+	if ((GetStringFromMessage(msg, "version_name", vname) == B_OK) &&
 		(GetStringFromMessage(msg, "version_num", vnum) == B_OK))
 	{
 		QString vt(vname);
@@ -273,13 +273,13 @@ WUser::AddToListView(Q3ListView * view)
 		// not found? create a new item
 		if (fBot)
 		{
-			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
+			item = new WBotItem(view, fUserName, fUserID, fUserStatus, strFileCount,
 								fBandwidthLabel, qUpload, fClient, fHostOS);
 			Q_CHECK_PTR(item);
 		}
 		else
 		{
-			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount, 
+			item = new WUserListItem(view, fUserName, fUserID, fUserStatus, strFileCount,
 								fBandwidthLabel, qUpload, fClient, fHostOS);
 			Q_CHECK_PTR(item);
 			((WUserListItem *)(item))->SetFirewalled(fFirewalled);
@@ -338,55 +338,55 @@ WUser::SetFirewalled(bool f)
 	}
 }
 
-void 
-WUser::SetUserName(const QString & name) 
+void
+WUser::SetUserName(const QString & name)
 {
-	fUserName = name; 
+	fUserName = name;
 }
 	
-void 
-WUser::SetStatus(const QString & s) 
+void
+WUser::SetStatus(const QString & s)
 {
-	fUserStatus = s; 
-} 
+	fUserStatus = s;
+}
 
-void 
-WUser::SetUserHostName(const QString & h) 
-{ 
-	fHostName = h; 
+void
+WUser::SetUserHostName(const QString & h)
+{
+	fHostName = h;
 }
 	
-void 
-WUser::SetCurUploads(uint32 c) 
-{ 
-	fCurUploads = c; 
+void
+WUser::SetCurUploads(uint32 c)
+{
+	fCurUploads = c;
 }
 	
-void 
-WUser::SetMaxUploads(uint32 m) 
-{ 
-	fMaxUploads = m; 
+void
+WUser::SetMaxUploads(uint32 m)
+{
+	fMaxUploads = m;
 }
 	
-void 
-WUser::SetBandwidthLabel(const char * s) 
-{ 
+void
+WUser::SetBandwidthLabel(const char * s)
+{
 	if (strcmp(s, "?") == 0)
 		fBandwidthLabel = qApp->translate("Connection", "Unknown");
-	else 
-		fBandwidthLabel = qApp->translate("Connection", s); 
+	else
+		fBandwidthLabel = qApp->translate("Connection", s);
 }
 
-void 
-WUser::SetBandwidthBPS(uint32 bps) 
-{ 
-	fBandwidthBPS = bps; 
+void
+WUser::SetBandwidthBPS(uint32 bps)
+{
+	fBandwidthBPS = bps;
 }
 	
-void 
-WUser::SetFileCount(int32 fc) 
-{ 
-	fFileCount = fc; 
+void
+WUser::SetFileCount(int32 fc)
+{
+	fFileCount = fc;
 }
 
 QString
@@ -428,7 +428,7 @@ WUser::SetLastLine(const QString & channel, const QString &line)
 
 void
 WUser::SetClient(const char *c)
-{ 
+{
 	SetClient(QString::fromUtf8(c));
 }
 

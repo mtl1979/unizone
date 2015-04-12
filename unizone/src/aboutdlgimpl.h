@@ -4,7 +4,7 @@
 #include <qdialog.h>
 
 class AboutDlg : public QDialog
-{ 
+{
     Q_OBJECT
 
 public:

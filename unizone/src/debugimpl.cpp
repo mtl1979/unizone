@@ -41,8 +41,13 @@ RedirectDebugOutput()
 #ifdef _WIN32
 	QString logfile = MakePath(gDataDir, "stdout.txt");
 	WString wlogfile(logfile);
+#  if __STDC_WANT_SECURE_LIB__
+	_wfopen_s(&nfp, wlogfile, L"w");
+	setvbuf(nfp, NULL, _IOLBF, 1024);
+#  else
 	nfp = _wfopen(wlogfile, L"w");
 	setbuf(nfp, NULL);
+#  endif
 #else
 	nfp = fopen("stdout.txt", "w");
 	setbuf(nfp, NULL);

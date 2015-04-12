@@ -16,7 +16,7 @@ public:
 
 private slots:
 	void SendEvent(const QString &);
-	
+
 private:
 	QObject * fOwner;
 

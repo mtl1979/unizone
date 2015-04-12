@@ -398,15 +398,15 @@ WSettings::GetColorItem(int index) const
 	// Default values
 	switch (index)
 	{
-	case WColors::LocalName: 
+	case WColors::LocalName:
 		return "#008800";
-	case WColors::RemoteName: 
+	case WColors::RemoteName:
 		return "#000000";
-	case WColors::Text: 
+	case WColors::Text:
 		return "#000000";
 	case WColors::System:
 		return "#0000FF";
-	case WColors::Ping: 
+	case WColors::Ping:
 		return "#DD2488";
 	case WColors::Error:
 		return "#FF0000";
@@ -457,7 +457,7 @@ WSettings::Load()
 #ifdef _DEBUG
 	PRINT("Settings file: %S\n", wf.getBuffer());
 #endif
-	if (file.Open(wf, 
+	if (file.Open(wf,
 #if defined(WIN32) || defined(_WIN32)
 		O_RDONLY | O_BINARY
 #else
@@ -497,7 +497,7 @@ WSettings::Save()
 	PRINT("Settings file: %S\n", wf.getBuffer());
 #endif
 	WFile file;
-	if (file.Open(wf, 
+	if (file.Open(wf,
 #ifdef WIN32
 		O_WRONLY | O_CREAT | O_BINARY
 #else
@@ -691,7 +691,7 @@ WSettings::GetHTTPPort() const
 	return p;
 }
 
-void 
+void
 WSettings::SetEncoding(const QString & server, uint16 port, uint32 encoding)
 {
 	QString key = server+":"+QString::number(port);
@@ -1310,37 +1310,37 @@ WSettings::GetMinQueuedSize()
 	{
 	case 1:
 		{
-			mqs = 1024; 
+			mqs = 1024;
 			break;
 		}
-	case 2: 
+	case 2:
 		{
-			mqs = 2048; 
+			mqs = 2048;
 			break;
 		}
-	case 3: 
+	case 3:
 		{
-			mqs = 4096; 
+			mqs = 4096;
 			break;
 		}
-	case 4: 
+	case 4:
 		{
-			mqs = 8192; 
+			mqs = 8192;
 			break;
 		}
-	case 5: 
+	case 5:
 		{
-			mqs = 16384; 
+			mqs = 16384;
 			break;
 		}
 	case 6:
 		{
-			mqs = 32768; 
+			mqs = 32768;
 			break;
 		}
 	case 7:		
 		{
-			mqs = 65536; 
+			mqs = 65536;
 			break;
 		}
 	case 8:
@@ -1365,7 +1365,7 @@ WSettings::GetMinQueuedSize()
 		}
 	default:	
 		{
-			mqs = 0; 
+			mqs = 0;
 			break;
 		}
 	}
@@ -1554,7 +1554,7 @@ WSettings::GetCurrentQueryItem() const
 	return i;
 }
 
-void 
+void
 WSettings::AddResumeItem(const QString & user, const WResumeInfo & wri)
 {
 	AddStringToMessage(fSet, RESUMEUSER, user);
@@ -1563,13 +1563,13 @@ WSettings::AddResumeItem(const QString & user, const WResumeInfo & wri)
 	AddStringToMessage(fSet, RESUMEPATH, wri.fPath);
 }
 
-bool 
+bool
 WSettings::GetResumeItem(int index, QString & user, WResumeInfo & wri) const
 {
 	QString file, path;
 	if (
 		(GetStringFromMessage(fSet, RESUMEFILE, index, file) == B_OK) &&
-		(GetStringFromMessage(fSet, RESUMEUSER, index, user) == B_OK) 
+		(GetStringFromMessage(fSet, RESUMEUSER, index, user) == B_OK)
 		)
 	{
 		wri.fRemoteName = file;
@@ -1600,7 +1600,7 @@ WSettings::GetResumeCount() const
 	return i;
 }
 
-void 
+void
 WSettings::SetResumeCount(int32 c)
 {
 	fSet()->ReplaceInt32(true, RESUMELIST, c);
@@ -1615,7 +1615,7 @@ WSettings::EmptyResumeList()
 	fSet()->RemoveName(RESUMEUSER);
 }
 
-bool 
+bool
 WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl, int32 & extra) const
 {
 	dock = (int) Qt::DockTop;
@@ -1643,7 +1643,7 @@ WSettings::GetToolBarLayout(int toolbar, int32 & dock, int32 & index, bool & nl,
 	else return false;
 }
 
-void 
+void
 WSettings::SetToolBarLayout(int toolbar, int32 dock, int32 index, bool nl, int32 extra)
 {
 	String sToolBar = "toolbar";

@@ -12,18 +12,18 @@ class WTransferEvent : public QCustomEvent
 {
 public:
 	WTransferEvent(int type)
-		: QCustomEvent(type) 
-	{ 
-		fFile = QString::null; 
-		fSession = QString::null; 
-		fError = QString::null; 
-		fPort = 0; 
-		fTime = (uint64) -1; 
+		: QCustomEvent(type)
+	{
+		fFile = QString::null;
+		fSession = QString::null;
+		fError = QString::null;
+		fPort = 0;
+		fTime = (uint64) -1;
 		fStart = -1;
-		fSize = -1; 
-		fOffset = -1; 
-		fDone = false; 
-		fFailed = false; 
+		fSize = -1;
+		fOffset = -1;
+		fDone = false;
+		fFailed = false;
 	}
 
 	virtual ~WTransferEvent() {}

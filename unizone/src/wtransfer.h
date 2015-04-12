@@ -4,7 +4,7 @@
 namespace WTransfer
 {
 	// ways to disguise data
-	enum 
+	enum
 	{
 		MungeModeNone = 0,
 		MungeModeXOR,
@@ -12,7 +12,7 @@ namespace WTransfer
 	};
 	
 	// transfer commands
-	enum 
+	enum
 	{
 		// um... I don't use this one
 		TransferConnectedToPeer = 1953720434,	// tshr

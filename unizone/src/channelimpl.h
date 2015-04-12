@@ -21,7 +21,7 @@
 class NetClient;
 
 class Channel : public ChatWindow
-{ 
+{
     Q_OBJECT
 
 public:

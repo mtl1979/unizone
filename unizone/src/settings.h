@@ -331,7 +331,7 @@ public:
 		Unlimited = 999999
 	};
 
-	// 
+	//
 	int32 GetMaxUploads() const;
 	void SetMaxUploads(int32 u);
 

@@ -48,10 +48,10 @@ WFileThread::InternalThreadEntry()
 
 	PRINT("Clearing list\n");
 	EmptyList();
-	Lock(); 
+	Lock();
 	fScannedDirs.clear();
 	fPaths.Clear();
-	Unlock(); 
+	Unlock();
 	int iScannedDirs = 0;
 
 #ifdef WIN32
@@ -81,7 +81,7 @@ WFileThread::InternalThreadEntry()
 #ifdef WIN32
 		SendInt(ScanEvent::ScannedDirs, iScannedDirs);
 #endif
-	} 
+	}
 #ifdef WIN32
 	CoUninitialize();
 
@@ -102,7 +102,7 @@ WFileThread::InternalThreadEntry()
 	}
 }
 
-void 
+void
 WFileThread::postEvent( QObject *o,QEvent * e)
 {
 	QApplication::postEvent(o, e);
@@ -163,7 +163,7 @@ WFileThread::ParseDirAux(QString &dir)
 				{
 					// Add to checked dirs
 					Lock();
-					fScannedDirs.append(dir); 
+					fScannedDirs.append(dir);
 					Unlock();
 				}
 			}
@@ -250,7 +250,7 @@ WFileThread::ScanFiles(const QString & directory)
 
 				if (!skip)
 				{
-					QString qfile = dir->absFilePath(ndata); 
+					QString qfile = dir->absFilePath(ndata);
 					files.AddTail(qfile);
 				}
 
@@ -305,7 +305,7 @@ WFileThread::AddFile(const QString & filePath)
 			QString gfn = ufi->getFullName();
 			QString ret = ResolveLink(gfn);
 			
-			if (gfn == ret) 
+			if (gfn == ret)
 			{
 				// is this a directory?
 				if (ufi->isDir())
@@ -321,9 +321,9 @@ WFileThread::AddFile(const QString & filePath)
 					{
 						QString name = ufi->getName();
 						
-						Lock(); 
+						Lock();
 						fFiles.Put(name, filePath);
-						Unlock(); 
+						Unlock();
 
 #ifdef WIN32
 						UpdateFileCount();
@@ -346,11 +346,11 @@ WFileThread::CheckFile(const QString & file)
 {
 	bool ret;
 
-	Lock(); 
+	Lock();
 
 	ret = fFiles.ContainsKey(file);
 
-	Unlock(); 
+	Unlock();
 	return ret;
 }
 
@@ -383,10 +383,10 @@ WFileThread::GetNumFiles() const
 void
 WFileThread::EmptyList()
 {
-	Lock(); 
+	Lock();
 	fFiles.Clear(true);
 	files.Clear(true);
-	Unlock(); 
+	Unlock();
 }
 
 void
@@ -471,7 +471,7 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref) const
          return false; // Don't return files from Unizone main directory
       // strip "shared" from path
       if (qPath == "shared")
-         qPath = ""; 
+         qPath = "";
       if (qPath.startsWith(QString("shared") + QDir::separator()))
          qPath = qPath.mid(7);
       //

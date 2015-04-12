@@ -271,7 +271,7 @@ WinShareWindow::IsIgnored(const QString & user, bool bTransfer, bool bDisconnect
 
 		if (fSettings->GetBinkyNuke() && bTransfer)
 		{	
-			if ( BinkyCheck( uref()->GetUserName() ) ) 
+			if ( BinkyCheck( uref()->GetUserName() ) )
 				return true;
 		}
 	

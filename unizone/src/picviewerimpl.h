@@ -15,8 +15,8 @@ class WPicViewer : public QDialog
 {
 	Q_OBJECT
 public:
-	WPicViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, 
-		Qt::WindowFlags fl = Qt::WStyle_Customize | Qt::WStyle_NormalBorder | 
+	WPicViewer( QWidget* parent = 0, const char* name = 0, bool modal = FALSE,
+		Qt::WindowFlags fl = Qt::WStyle_Customize | Qt::WStyle_NormalBorder |
 		Qt::WStyle_SysMenu | Qt::WStyle_MinMax | Qt::WStyle_Title );
 	~WPicViewer();
 

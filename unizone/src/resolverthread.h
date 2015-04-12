@@ -22,7 +22,7 @@ struct ResolverEntry
 	bool verbose;
 };
 
-class ResolverThread : public QThread 
+class ResolverThread : public QThread
 {
 	Q_OBJECT;
 public:

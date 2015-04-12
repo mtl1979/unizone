@@ -64,7 +64,7 @@ WStatusBar::resizeEvent(QResizeEvent *e)
 	for (unsigned int i = 0; i < fColumns; i++)
 	{
 		QString t = checkText(fLabels[i], i);
-		if (t != fText[i]->text()) 
+		if (t != fText[i]->text())
 			fText[i]->setText(t);
 	}
 	inResize = false;
@@ -72,7 +72,7 @@ WStatusBar::resizeEvent(QResizeEvent *e)
 
 /*
  * Checks if text fits in to the space left for particular label and clips it, if not.
- * 
+ *
  */
 
 QString
@@ -82,7 +82,7 @@ WStatusBar::checkText(const QString &text, unsigned int index)
 	int w = 0;
 
 	QWidget * _parent = dynamic_cast<QWidget *>(parent());
-	if (_parent) 
+	if (_parent)
 	{
 		w = _parent->width();
 	}
@@ -98,10 +98,10 @@ WStatusBar::checkText(const QString &text, unsigned int index)
 	if ((qfm.width(text) > columnWidth) && (columnWidth > 0))
 	{
 		int i = text.length() - 1;
-		while ( 
-			(qfm.width(text.left(i) + "...") > columnWidth) && 
-			(i > 0) 
-			) 
+		while (
+			(qfm.width(text.left(i) + "...") > columnWidth) &&
+			(i > 0)
+			)
 		{
 			i--;
 		}

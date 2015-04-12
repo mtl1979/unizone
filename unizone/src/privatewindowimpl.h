@@ -17,14 +17,14 @@
 class NetClient;
 
 class WPrivateWindow : public ChatWindow
-{ 
+{
     Q_OBJECT
 
 public:
-    WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent = 0, 
-		const char* name = 0, 
-		Qt::WindowFlags fl = Qt::WDestructiveClose | Qt::WStyle_Customize | 
-		Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_Minimize | 
+    WPrivateWindow(QObject * owner, NetClient * net, QWidget* parent = 0,
+		const char* name = 0,
+		Qt::WindowFlags fl = Qt::WDestructiveClose | Qt::WStyle_Customize |
+		Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_Minimize |
 		Qt::WStyle_Maximize | Qt::WStyle_SysMenu);
 		// the window will destroy itself when closed... and the destructor will throw a
 		// WPWTextEvent with itself as the "SendTo" target. Be aware, this pointer is invalid!

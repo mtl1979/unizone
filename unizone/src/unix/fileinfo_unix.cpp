@@ -19,7 +19,7 @@ UFileInfo::InitModificationTime()
 	{
 		struct stat fst;
 		// Encode the Unicode filename to local file system character set
-		const char * fname = (const char *) QFile::encodeName(fFullName); 
+		const char * fname = (const char *) QFile::encodeName(fFullName);
 		int ret = stat(fname, &fst);
 		if (ret == 0)
 		{

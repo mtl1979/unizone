@@ -509,7 +509,13 @@ WUniListItem::text(int c) const
 	case Date:
 		{
 		lMod = fKey[c].toLong();
+#if __STDC_WANT_SECURE_LIB__
+		char buf[26];
+		ctime_s(buf, 26, (const time_t *)&lMod);
+		result = QString::fromLocal8Bit(buf);
+#else
 		result = QString::fromLocal8Bit( ctime((const time_t *)&lMod) );
+#endif
 		result.truncate(result.length() - 1);
 		return result;
 		}

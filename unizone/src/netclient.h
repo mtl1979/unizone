@@ -19,13 +19,13 @@ struct NetPacket
 	String path;
 };
 
-class NetClient : public QObject 
+class NetClient : public QObject
 {
 	Q_OBJECT
 public:
 	NetClient(QObject * owner);
 	virtual ~NetClient();
-	
+
 	// <postmaster@raasu.org> -- Add support for port numbers
 	status_t Connect(const QString &server, uint16 port);
 	status_t Connect(const QString &server);
@@ -34,48 +34,48 @@ public:
 	// Get current server hostname or ip address if hostname isn't available
 	QString GetServer() const { return fServer; }
  	// Get current server IP address
-	QString GetServerIP() const;				
+	QString GetServerIP() const;
 	// Get current server port number
-	uint32 GetServerPort() const { return fServerPort; } 
-	
+	uint32 GetServerPort() const { return fServerPort; }
+
 	QString GetLocalIP() const { return fLocalIP; }
 	bool IsConnected() const;
 	bool IsLoggedIn() const { return fLoggedIn; }
 	uint64 LoginTime() const { return fLoginTime; }
 
 	double GetServerVersion() {return IsConnected() ? fServerVersion : 0.0f;}
-	
+
 	// if "q" is true, you won't get an initial response
-	void AddSubscription(const QString & str, bool q = false);	
+	void AddSubscription(const QString & str, bool q = false);
 	void AddSubscriptionList(const String * str, bool q = false);
 	void RemoveSubscription(const QString & str);
-	
-	void SendChatText(const QString &target, const QString &text, 
+
+	void SendChatText(const QString &target, const QString &text,
 		bool encoded = false);
 	void SendPing(const QString &target);
-	void SendPicture(const QString & target, const ByteBufferRef &buffer, 
+	void SendPicture(const QString & target, const ByteBufferRef &buffer,
 		const QString &name);
-	
+
 	// <postmaster@raasu.org> 20021001
-	void SetUserName(const QString &user); 	
-	void SetUserStatus(const QString &status);		
+	void SetUserName(const QString &user);
+	void SetUserStatus(const QString &status);
 	//
 	void SetConnection(const QString &connection);
 	void SetPort(uint32 port) { fPort = port; }
 	void SetFileCount(int32 count);
 	void SetLoad(int32 num, int32 max);
-	
-	status_t SendMessageToSessions(const MessageRef & msgRef, 
+
+	status_t SendMessageToSessions(const MessageRef & msgRef,
 		int priority = 100, const char * optDistPath = NULL);
-	void SetNodeValue(const char * node, const MessageRef & val, 
+	void SetNodeValue(const char * node, const MessageRef & val,
 		int priority = 100); // set the Message of a node
-	
+
 	QString * GetChannelList();
 	int GetChannelCount();
-	
+
 	QString * GetChannelUsers(const QString &channel);
 	int GetUserCount(const QString &channel);
-	
+
 	// events
 	enum
 	{
@@ -87,7 +87,7 @@ public:
 	};
 
 	// client messages
-	enum 
+	enum
 	{
 		CONNECTED_TO_SERVER = 0,
 		DISCONNECTED_FROM_SERVER,
@@ -102,22 +102,22 @@ public:
 		ACCEPT_TUNNEL,
 		REJECT_TUNNEL,
 		TUNNEL_MESSAGE
-	}; 
-	
+	};
+
 	// path matching -- BeShare
-	enum 
+	enum
 	{
 		ROOT_DEPTH = 0, 	// root node
-		HOST_NAME_DEPTH,		 
+		HOST_NAME_DEPTH,
 		SESSION_ID_DEPTH,
-		BESHARE_HOME_DEPTH, 	
-			// used to separate our stuff from other (non-BeShare) 
+		BESHARE_HOME_DEPTH,
+			// used to separate our stuff from other (non-BeShare)
 			// data on the same server
-		USER_NAME_DEPTH,	
+		USER_NAME_DEPTH,
 			// user's handle node would be found here
 		FILE_INFO_DEPTH 	// user's shared file list is here
 	};
-	
+
 	// path matching -- UniShare
 	enum
 	{
@@ -126,7 +126,7 @@ public:
 		CHANNEL_DEPTH,
 		CHANNELINFO_DEPTH
 	};
-	
+
 	// UniShare event codes
 	enum
 	{
@@ -144,13 +144,13 @@ public:
 		ChannelSetTopic,
 		ChannelSetPublic
 	};
-	
+
 	QString LocalSessionID() const;
-	
-	
+
+
 	void HandleParameters(const MessageRef & next);
 	void HandleResultMessage(const MessageRef & ref);
-	
+
 	bool ExistUser(const QString &sid);
 	/*
 	 *
@@ -170,16 +170,16 @@ public:
 	// deletes a user and removes from the list view
 	void RemoveUser(const QString & sessionID);
 	void RemoveUser(const WUserRef & user);
-	
+
 	WUserMap & Users() { return fUsers; }
-	WUserIter UsersIterator(uint32 flags) { 
-		return fUsers.GetIterator(flags); 
+	WUserIter UsersIterator(uint32 flags) {
+		return fUsers.GetIterator(flags);
 	}
-	
+
 	// forwarders
 
 	void Reset();
-	status_t SetOutgoingMessageEncoding(int32 encoding, 
+	status_t SetOutgoingMessageEncoding(int32 encoding,
 		const char * optDistPath = NULL);
 	status_t WaitForInternalThreadToExit();
 
@@ -190,29 +190,29 @@ public:
 signals:
 	void UserDisconnected(const WUserRef &);
 	void UserConnected(const WUserRef &);
-	void UserNameChanged(const WUserRef &, const QString &, 
+	void UserNameChanged(const WUserRef &, const QString &,
 		const QString &);
 	void ConnectedToServer();
 	void DisconnectedFromServer();
-	void UserStatusChanged(const WUserRef &, const QString &, 
+	void UserStatusChanged(const WUserRef &, const QString &,
 		const QString &);
 	void UserIDChanged(const QString &, const QString &);
 	void UserHostName(const WUserRef &, const QString &);
-	
+
 	void RemoveFile(const WUserRef &, const QString &);
 	void AddFile(const WUserRef &, const QString &, bool, MessageRef);
-	
+
 	void ChannelTopic(const QString &, const QString &, const QString &);
 	void ChannelAdmins(const QString &, const QString &, const QString &);
 	void ChannelAdded(const QString &, const QString &, int64);
 	void ChannelPublic(const QString &, const QString &, bool);
 	void ChannelOwner(const QString &, const QString &, const QString &);
-	
+
 private:
 	uint32 fPort, fServerPort;
 	QString fSessionID, fServer;
 	QString fLocalIP;
-	QString fOldID; 		
+	QString fOldID;
 		// Old id for persistent channel admin/owner state
 	QString fUserName;
 	QObject * fOwner;
@@ -220,13 +220,13 @@ private:
 	MessageRef fChannels;	// channel database
 	double fServerVersion;
 
-	
+
 	void HandleBeRemoveMessage(const String &nodePath);
 	void HandleBeAddMessage(const String &nodePath, MessageRef ref);
-	
+
 	void HandleUniRemoveMessage(const String &nodePath);
 	void HandleUniAddMessage(const String &nodePath, MessageRef ref);
-	
+
 	void AddChannel(const QString &sid, const QString &channel);
 	void RemoveChannel(const QString &sid, const QString &channel);
 
@@ -258,7 +258,7 @@ private slots:
 
 	void SessionAttached(const String & sessionID);
 	void SessionDetached(const String & sessionID);
-   
+
 	void SessionAccepted(const String & sessionID, uint32 factoryID, const IPAddressAndPort & iap);
 
 	void SessionConnected(const String & sessionID, const IPAddressAndPort & connectedTo);

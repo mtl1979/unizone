@@ -16,7 +16,7 @@
 #define MAX_SIZE 100
 
 WChatText::WChatText(QObject * target, QWidget * parent)
-	: Q3MultiLineEdit(parent), fTarget(target) 
+	: Q3MultiLineEdit(parent), fTarget(target)
 {
 	fBuffer = new Queue<QString>();
 	fCurLine = 0;
@@ -31,7 +31,7 @@ WChatText::~WChatText()
 void
 WChatText::keyPressEvent(QKeyEvent * event)
 {
-	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)    
+	if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
 		// check for BOTH (they ARE different to Qt)
 	{
 		if ((event->state() & Qt::ShiftButton))
@@ -54,7 +54,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 			}
 			QString line;
 			fBuffer->GetItemAt(fCurLine, line);
-			
+
 			// don't add duplicate items
 			if (text() != line)
 			{
@@ -70,14 +70,14 @@ WChatText::keyPressEvent(QKeyEvent * event)
 		PRINT("Emitting TAB\n");
 		// tab completion
 		emit TabPressed(text());
-	}	
+	}
 	else if (event->key() == Qt::Key_Up)
 	{
 		if (event->state() & Qt::AltButton)
 		{
 			Q3MultiLineEdit::keyPressEvent(event);
 		}
-		else if (event->state() & Qt::ControlButton)				
+		else if (event->state() & Qt::ControlButton)
 		{
 			// First line
 			if (fCurLine > 0)
@@ -108,7 +108,7 @@ WChatText::keyPressEvent(QKeyEvent * event)
 		{
 			Q3MultiLineEdit::keyPressEvent(event);
 		}
-		else if (event->state() & Qt::ControlButton)					
+		else if (event->state() & Qt::ControlButton)
 		{
 			// Last line
 			if (fCurLine < fBuffer->GetNumItems() - 2)
@@ -197,7 +197,7 @@ WChatText::AddLine(const QString &line)
 	while (fBuffer->GetNumItems() >= MAX_SIZE)
 	{
 		fBuffer->RemoveHead(junk);
-		if (fCurLine > 0) 
+		if (fCurLine > 0)
 			fCurLine--;
 	}
 	fBuffer->AddTail(line);
@@ -212,7 +212,7 @@ WChatText::dropEvent(QDropEvent* event)
 
 	printf("in dropEvent()\n");
 	if (!uid.isEmpty())
-	{	
+	{
 		if (event->mimeData()->hasUrls())
 		{
 			QList<QUrl> urls = event->mimeData()->urls();
@@ -233,7 +233,7 @@ WChatText::dropEvent(QDropEvent* event)
 	Q3MultiLineEdit::dropEvent(event);
 }
 
-void 
+void
 WChatText::dragEnterEvent(QDragEnterEvent* event)
 {
 	if (event->mimeData()->hasUrls())

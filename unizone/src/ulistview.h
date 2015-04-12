@@ -33,49 +33,49 @@ public:
 		TransferSpeed,				// Transfer Speed, just like Size, but per second
 		ConnectionSpeed,			// Connection Speed
 		Time,						// Time expressed in seconds
-		Invalid						// 
+		Invalid						//
 	} ;
 
 #define NUM_ROW_COLORS	10
 #define NUM_COLUMNS		10
-	
-	WUniListItem(Q3ListView * parent) 
-		: Q3ListViewItem(parent) 
+
+	WUniListItem(Q3ListView * parent)
+		: Q3ListViewItem(parent)
 	{
 		// empty
 	}
 
-	WUniListItem(Q3ListViewItem * parent) 
-		: Q3ListViewItem(parent) 
+	WUniListItem(Q3ListViewItem * parent)
+		: Q3ListViewItem(parent)
 	{
 		// empty
 	}
 
-	WUniListItem(Q3ListView * parent, Q3ListViewItem * after) 
-		: Q3ListViewItem(parent, after) 
+	WUniListItem(Q3ListView * parent, Q3ListViewItem * after)
+		: Q3ListViewItem(parent, after)
 	{
 		// empty
 	}
 
-	WUniListItem(Q3ListViewItem * parent, Q3ListViewItem * after) 
-		: Q3ListViewItem(parent, after) 
+	WUniListItem(Q3ListViewItem * parent, Q3ListViewItem * after)
+		: Q3ListViewItem(parent, after)
 	{
 		// empty
 	}
 
-	WUniListItem(Q3ListView * parent, QString a, 
-		QString b = QString::null, QString c = QString::null, 
-		QString d = QString::null, QString e = QString::null, 
-		QString f = QString::null, QString g = QString::null, 
+	WUniListItem(Q3ListView * parent, QString a,
+		QString b = QString::null, QString c = QString::null,
+		QString d = QString::null, QString e = QString::null,
+		QString f = QString::null, QString g = QString::null,
 		QString h = QString::null, QString i = QString::null,
 		QString j = QString::null);
-	
+
 	// if more constructors are needed, they will be added later
-	
-	
+
+
 	virtual void setText(int col, const QString & text);
 	virtual QString text(int c) const;
-	
+
 	// for case insensitive sorting
 	virtual QString key(int c, bool asc) const;
 
@@ -83,11 +83,11 @@ public:
 	virtual int64 item(int c);
 
 	// set/get user colors
-	virtual void setRowBaseColor(int i, const QColor & color); 
-	virtual void setRowTextColor(int i, const QColor & color); 
+	virtual void setRowBaseColor(int i, const QColor & color);
+	virtual void setRowTextColor(int i, const QColor & color);
 	virtual QColor rowBaseColor(int i) const;
 	virtual QColor rowTextColor(int i) const;
-		
+
 	// set column type for sorting
 	virtual void setColumnType(int c, WUniListItem::ColumnType ct);
 	virtual WUniListItem::ColumnType columnType(int c) const;
@@ -95,7 +95,7 @@ public:
 	virtual void paintCell(QPainter *, const QColorGroup & cg, int column, int w,
 		int alignment);
 
-	
+
 private:
 	QString fKey[NUM_COLUMNS];
 	WUniListItem::ColumnType UColumnType[NUM_COLUMNS];
@@ -108,37 +108,37 @@ class WUniListView : public Q3ListView
 {
 	Q_OBJECT
 public:
-	WUniListView( QWidget * parent, const char * name, Qt::WindowFlags f ) 
+	WUniListView( QWidget * parent, const char * name, Qt::WindowFlags f )
 		: Q3ListView( parent, name, f )
 	{
 		if (!name)
 			setName("WUniListView");
 	}
-	
-	WUniListView( QWidget * parent = 0, const char * name = 0 ) 
+
+	WUniListView( QWidget * parent = 0, const char * name = 0 )
 		: Q3ListView( parent, name )
 	{
 		if (!name)
 			setName("WUniListView");
 	}
-	
+
 	virtual void setSorting( int column, bool ascending = TRUE )
 	{
 		_sortColumn = column;
 		_sortAscending = ascending;
 		Q3ListView::setSorting(column, ascending);
 	}
-	
-	virtual int sortColumn() 
-	{ 
-		return _sortColumn; 
+
+	virtual int sortColumn()
+	{
+		return _sortColumn;
 	}
-	
-	virtual bool sortAscending() 
-	{ 
-		return _sortAscending; 
+
+	virtual bool sortAscending()
+	{
+		return _sortAscending;
 	}
-	
+
 protected:
 	void dragEnterEvent(QDragEnterEvent* event);
 	void dropEvent(QDropEvent* event);

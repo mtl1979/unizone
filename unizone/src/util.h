@@ -25,7 +25,7 @@ QString EscapeHTML(const QString & str);
 // <postmaster@raasu.org> 20021021
 //
 
-// Get parameters after command, f.ex. '/nick Unizone Binky' returns 'Unizone Binky' 
+// Get parameters after command, f.ex. '/nick Unizone Binky' returns 'Unizone Binky'
 QString GetParameterString(const QString & qCommand);
 
 // Get command from full string, converts to lower case for using with CompareCommand()
@@ -41,7 +41,7 @@ QString StripURL(const QString & u);
 
 // Is the specified string an URL?
 bool IsURL(const String &);
-bool IsURL(const char *); 
+bool IsURL(const char *);
 bool IsURL(const QString &);
 
 // Is the specified string an action text?

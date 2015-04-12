@@ -16,7 +16,7 @@ public:
 	WHTMLView(QWidget * parent = NULL, const char * name = NULL);
 	virtual ~WHTMLView() {}
 
-	virtual void setSource(const QString & name);	
+	virtual void setSource(const QString & name);
 	virtual void appendText(const QString & text);
 	virtual QString context() const {return fContext;}
 	virtual void clear();

@@ -20,7 +20,7 @@ WFile::TranslateMode(int mode)
 		return _O_APPEND | _O_RDWR | _O_BINARY;
 	case 10: case 74:
 		return _O_TRUNC | _O_WRONLY | _O_BINARY;
-	case 11: case 75: 
+	case 11: case 75:
 		return _O_TRUNC | _O_RDWR | _O_BINARY;
 	default: return -1;
 	}

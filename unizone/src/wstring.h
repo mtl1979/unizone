@@ -33,7 +33,7 @@ public:
 	operator wchar_t *() const { return buffer; };
 	operator const char *() const;
 	wchar_t *getBuffer() const { return buffer; };
-	size_t length() const; 
+	size_t length() const;
 	QString toQString() const;
 
 	WString &operator=(const wchar_t *);
@@ -63,6 +63,8 @@ protected:
 private:
 	wchar_t *buffer;
 	void free();						// Free internal buffer
+
+	int _sprintf_internal(const size_t &bufsize, const wchar_t *fmt, va_list a);
 
 	mutable char * utfbuf;
 	mutable size_t utflen;

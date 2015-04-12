@@ -140,11 +140,11 @@ ResolveAddress4(const QString &address)
 			na = fAddressCache4[i];
 			if ((na.address == address) ||
 #if !defined(_MSC_VER) || _MSC_VER < 1800
-				Contains(na.aliases, address) || 
+				Contains(na.aliases, address) ||
 #endif
 				(na.ip == res))
 			{
-				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
+				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME)
 				{
 #if !defined(_MSC_VER) || _MSC_VER < 1800
 					if (res != 0)
@@ -304,7 +304,7 @@ ResolveAliases4(uint32 ip)
 			na = fAddressCache4[i];
 			if (na.ip == ip)
 			{
-				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME) 
+				if ((GetCurrentTime64() - na.lastcheck) < EXPIRETIME)
 					return na.aliases;
 				else
 				{
