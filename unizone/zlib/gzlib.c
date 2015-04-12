@@ -215,7 +215,7 @@ local gzFile gz_open(path, fd, mode)
 #if __STDC_WANT_SECURE_LIB__
         {
             size_t bytes;
-            wcstombs_s(&bytes, state->path, len + 1, path, len + 1);
+            (void) wcstombs_s(&bytes, state->path, len + 1, path, len + 1);
         }
 #else
             wcstombs(state->path, path, len + 1);
