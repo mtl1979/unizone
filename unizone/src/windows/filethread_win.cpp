@@ -36,6 +36,11 @@ WFileThread::ResolveLink(const QString & lnk) const
 		IShellLinkW * psl;
 		wchar_t szFile[MAX_PATH];
 		WIN32_FIND_DATAW wfd;
+#if __STDC_WANT_SECURE_LIB__
+		RtlSecureZeroMemory(&wfd, sizeof(wfd));
+#else
+		RtlZeroMemory(&wfd, sizeof(wfd));
+#endif
 		
 		hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID *)&psl);
 		if (SUCCEEDED(hres))

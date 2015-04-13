@@ -43,7 +43,8 @@ RedirectDebugOutput()
 	WString wlogfile(logfile);
 #  if __STDC_WANT_SECURE_LIB__
 	_wfopen_s(&nfp, wlogfile, L"w");
-	setvbuf(nfp, NULL, _IOLBF, 1024);
+	if (nfp != NULL)
+		setvbuf(nfp, NULL, _IOLBF, 1024);
 #  else
 	nfp = _wfopen(wlogfile, L"w");
 	setbuf(nfp, NULL);
