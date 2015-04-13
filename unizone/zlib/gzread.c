@@ -98,7 +98,7 @@ local int gz_look(state)
     if (state->size == 0) {
         /* allocate buffers */
         state->in = (unsigned char *)malloc(state->want);
-        state->out = (unsigned char *)malloc(state->want << 1);
+        state->out = (unsigned char *)malloc(state->want * 2);
         if (state->in == NULL || state->out == NULL) {
             if (state->out != NULL)
                 free(state->out);

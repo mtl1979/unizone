@@ -103,7 +103,7 @@ local gzFile gz_open(path, fd, mode)
     int exclusive = 0;
 #endif
 #if __STDC_WANT_SECURE_LIB__
-	int tempfd = -1;
+    int tempfd = -1;
 #endif
 
     /* check input */
@@ -212,14 +212,14 @@ local gzFile gz_open(path, fd, mode)
 #ifdef _WIN32
     if (fd == -2)
         if (len)
-#if __STDC_WANT_SECURE_LIB__
+#  if __STDC_WANT_SECURE_LIB__
         {
             size_t bytes;
             (void) wcstombs_s(&bytes, state->path, len + 1, path, len + 1);
         }
-#else
+#  else
             wcstombs(state->path, path, len + 1);
-#endif
+#  endif
         else
             *(state->path) = 0;
     else
