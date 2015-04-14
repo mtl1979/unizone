@@ -259,13 +259,13 @@ local gzFile gz_open(path, fd, mode)
     state->fd = fd > -1 ? fd : (
 #ifdef _WIN32
 #  if __STDC_WANT_SECURE_LIB__
-        fd == -2 ? (_wsopen_s(&tempfd, path, oflag, state->mode = GZ_WRITE ? _SH_DENYWR : _SH_DENYNO, 0666) == 0 ? tempfd : -1) :
+        fd == -2 ? (_wsopen_s(&tempfd, path, oflag, (state->mode == GZ_WRITE || state->mode == GZ_APPEND) ? _SH_DENYWR : _SH_DENYNO, 0666) == 0 ? tempfd : -1) :
 #  else
         fd == -2 ? _wopen(path, oflag, 0666) :
 #  endif
 #endif
 #if __STDC_WANT_SECURE_LIB__
-        (_sopen_s(&tempfd, (const char *)path, oflag, state->mode = GZ_WRITE ? _SH_DENYWR : _SH_DENYNO, 0666) == 0 ? tempfd : -1));
+        (_sopen_s(&tempfd, (const char *)path, oflag, (state->mode == GZ_WRITE || state->mode == GZ_APPEND) ? _SH_DENYWR : _SH_DENYNO, 0666) == 0 ? tempfd : -1));
 #else
         open((const char *)path, oflag, 0666));
 #endif
