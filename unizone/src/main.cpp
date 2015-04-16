@@ -25,7 +25,9 @@
 #include "uenv.h"
 
 #ifdef MUSCLE_ENABLE_SSL
-#include "wchar.h"
+#  ifdef UNICODE
+#    include "wchar.h"
+#  endif
 #include "dataio/FileDataIO.h"
 #endif
 
@@ -69,24 +71,40 @@ QString
 GetAppDirectory()
 {
 	// we have to use some windows api to get our path...
-	wchar_t * name = new wchar_t[MAX_PATH];	// maximum size for Win32 filenames
+	TCHAR * name = new TCHAR[MAX_PATH];	// maximum size for Win32 filenames
 	Q_CHECK_PTR(name);
 	if (GetModuleFileName(NULL,				/* current apps module */
 							name,			/* buffer */
 							MAX_PATH		/* buffer length */
 							) != 0)
 	{
+#ifdef UNICODE
 		qDebug("Module filename: %ls", name);
+#else
+		qDebug("Module filename; %s", name);
+#endif
 		PathRemoveFileSpec(name);
 		if (SetCurrentDirectory(name) == 0)
 		{
 			GetCurrentDirectory(MAX_PATH, name);
+#ifdef UNICODE
 			qDebug("Current directory: %ls", name);
+#else
+			qDebug("Current directory: %s", name);
+#endif
 		}
 		else
+#ifdef UNICODE
 			qDebug("Application directory: %ls", name);
+#else
+			qDebug("Application directory: %s", name);
+#endif
 	}
+#ifdef UNICODE
 	QString qname = QString::fromUtf16((const ushort *) name);
+#else
+	QString qname = QString::fromLocal8Bit(name);
+#endif
 	delete [] name;
 	name = NULL; // <postmaster@raasu.org> 20021027
 	return qname;
@@ -97,9 +115,9 @@ int
 main( int argc, char** argv )
 {
 #ifdef _WIN32
-# ifdef MUSCLE_ENABLE_SSL
-    wchar_t publicKeyFilePath[255];
-# endif
+#  ifdef MUSCLE_ENABLE_SSL
+     TCHAR publicKeyFilePath[255];
+#  endif
 
 	QString datadir = EnvironmentVariable("APPDATA");
 	QDir(datadir).mkdir("Unizone");
@@ -145,7 +163,13 @@ main( int argc, char** argv )
 		{
 			a++;
 #ifdef _WIN32
+#  ifdef UNICODE
 			wcscpy(publicKeyFilePath, app.arguments().at(a).utf16());
+#  elif __STDC_WANT_SECURE_LIB__
+			strcpy_s(publicKeyFilePath, app.arguments().at(a).local8Bit());
+#  else
+			strcpy(publicKeyFilePath, app.arguments().at(a).local8Bit());
+#  endif
 #else
 			strcpy(publicKeyFilePath, app.arguments().at(a).utf8());
 #endif
@@ -162,7 +186,7 @@ main( int argc, char** argv )
 	SetWorkingDirectory(argv[0]);
 	gAppDir = QDir::currentDirPath();
 #else
-	QString datafile = MakePath(gDataDir, "unizone.lng");	
+	QString datafile = MakePath(gDataDir, "unizone.lng");
 	wlangfile = datafile;
 
 # ifdef _DEBUG
@@ -264,17 +288,25 @@ main( int argc, char** argv )
 			}
 		}
 	}
-	
+
 	WinShareWindow * window = new WinShareWindow(NULL);
 	Q_CHECK_PTR(window);
 
 	app.setMainWidget(window);
 
-	// Setup SSL	
+	// Setup SSL
 #ifdef MUSCLE_ENABLE_SSL
    ByteBufferRef optCryptoBuf;
-#ifdef _WIN32
-   FileDataIO fdio(_wfopen(publicKeyFilePath, L"rb"));
+#if defined(_WIN32)
+#  if defined(UNICODE)
+     FileDataIO fdio(_wfopen(publicKeyFilePath, L"rb"));
+#  elif __STDC_WANT_SECURE_LIB__
+     FILE *file;
+     (void) fopen_s(&file, publicKeyFilePath, "rb");
+     FileDataIO fdio(file);
+#  else
+     FileDataIO fdio(fopen(publicKeyFilePath, "rb"));
+#  endif
 #else
    FileDataIO fdio(fopen(publicKeyFilePath, "rb"));
 #endif
@@ -282,7 +314,7 @@ main( int argc, char** argv )
    if ((fdio.GetFile())&&(fileData())&&(fdio.ReadFully(fileData()->GetBuffer(), fileData()->GetNumBytes()) == fileData()->GetNumBytes()))
    {
 #ifdef _DEBUG
-# ifdef _WIN32
+# if defined(_WIN32) && defined(UNICODE)
       PRINT("Using public key file [%S] to authenticate with servers\n", publicKeyFilePath);
 # else
       PRINT("Using public key file [%s] to authenticate with servers\n", publicKeyFilePath);
@@ -291,15 +323,15 @@ main( int argc, char** argv )
       window->SetSSLPublicKey(fileData);
    }
    else
-      {
+   {
 #ifdef _DEBUG
-# ifdef _WIN32
+# if defined(_WIN32) && defined(UNICODE)
          PRINT("Couldn't load public key file [%S] (file not found?)\n", publicKeyFilePath);
 # else
          PRINT("Couldn't load public key file [%s] (file not found?)\n", publicKeyFilePath);
 # endif
 #endif
-      }
+   }
 #endif
 
 
