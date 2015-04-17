@@ -175,7 +175,7 @@ PRECOMPILED_HEADER = unizone_pch.h
 
 CODEC =		UTF-8
 
-DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS _WINSOCK_DEPRECATED_NO_WARNINGS
+DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING
 !isEmpty(SSL_DIR) {
 	DEFINES += MUSCLE_ENABLE_SSL
 	SOURCES2 +=	muscle/dataio/SSLSocketDataIO.cpp \
@@ -187,7 +187,7 @@ DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING _CRT_SECURE_NO_WARNINGS _WINSOCK_DEPRECAT
 }
 
 win32 {
-	DEFINES += WIN32_LEAN_AND_MEAN UNICODE REGEX_USEDLL
+	DEFINES += WIN32_LEAN_AND_MEAN UNICODE _UNICODE REGEX_USEDLL
 	LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib version.lib regex.lib
 	!contains(CONFIG, zlib):LIBS += zlib1.lib
 	SOURCES1 += scanprogressimpl.cpp \
@@ -203,7 +203,7 @@ win32 {
 			   windows/wutil_msvc.cpp
 	RC_FILE =  icon.rc
 	!isEmpty(DEBUG_SOURCES) {
-		LIBS += -L..\\regex\\debug 
+		LIBS += -L..\\regex\\debug
 		!contains(CONFIG, zlib):LIBS += -L..\\zlib\\debug
 		qtlibs.files = $$[QT_INSTALL_LIBS]\\Qt3Supportd4.dll \
 					   $$[QT_INSTALL_LIBS]\\QtCored4.dll \
@@ -212,7 +212,7 @@ win32 {
 					   $$[QT_INSTALL_LIBS]\\QtSqld4.dll \
 					   $$[QT_INSTALL_LIBS]\\QtXmld4.dll
 	} else {
-		LIBS += -L..\\regex\\release 
+		LIBS += -L..\\regex\\release
 		!contains(CONFIG, zlib):LIBS += -L..\\zlib\\release
 		qtlibs.files = $$[QT_INSTALL_LIBS]\\Qt3Support4.dll \
 					   $$[QT_INSTALL_LIBS]\\QtCore4.dll \
@@ -263,12 +263,13 @@ INCLUDEPATH += muscle ../regex ../zlib
 target.path = ../..
 INSTALLS += target
 
+!equals(TEMPLATE, vcapp) {
 isEmpty(QMAKE_LUPDATE) {
 	win32:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]\\lupdate.exe
 	else:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]/lupdate
 }
 
-updatets.input = TRANSLATIONS 
+updatets.input = TRANSLATIONS
 updatets.depends = $$SOURCES1 $$FORMS src.pro
 updatets.output = ${QMAKE_FILE_IN}
 updatets.commands = $$QMAKE_LUPDATE src.pro
@@ -293,3 +294,4 @@ translations.files ~= s/\\.ts/.qm/g
 translations.path = ../../translations
 translations.CONFIG += recursive
 INSTALLS += translations
+}
