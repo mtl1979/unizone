@@ -84,8 +84,8 @@ WFileThread::ResolveLink(const QString & lnk) const
 			PRINT("Resolved to: %S\n", wret.getBuffer());
 #endif
 			return ret;
-		}	
-	}	
+		}
+	}
 	return lnk;
 }
 
