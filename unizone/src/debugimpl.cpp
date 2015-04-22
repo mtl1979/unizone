@@ -32,6 +32,7 @@ void PRINT(const char *fmt, ...)
 }
 
 #ifdef _WIN32
+#include <tchar.h>
 extern QString gDataDir; // main.cpp
 #endif
 
@@ -39,19 +40,16 @@ void
 RedirectDebugOutput()
 {
 #ifdef _WIN32
-	QString logfile = MakePath(gDataDir, "stdout.txt");
-	WString wlogfile(logfile);
-#  if __STDC_WANT_SECURE_LIB__
-	_wfopen_s(&nfp, wlogfile, L"w");
-	if (nfp != NULL)
-		setvbuf(nfp, NULL, _IOLBF, 1024);
-#  else
-	nfp = _wfopen(wlogfile, L"w");
-	setbuf(nfp, NULL);
-#  endif
-#else
+	WString logfile = MakePath(gDataDir, "stdout.txt");
+	nfp = _tfsopen(logfile, _T("w"), _SH_DENYWR);
+#else // _WIN32
 	nfp = fopen("stdout.txt", "w");
-	setbuf(nfp, NULL);
+#endif
+	if (nfp)
+#if __STDC_WANT_SECURE_LIB__
+		setvbuf(nfp, NULL, _IOLBF, 1024);
+#else
+		setbuf(nfp, NULL);
 #endif
 }
 

@@ -81,7 +81,7 @@ WUser::InitName(MessageRef msg)
 		fInstallID = installID;
 
 	GetStringFromMessage(msg, "name", fUserName);
-	
+
 	if (GetUInt32FromMessage(msg, "port", fPort) != B_OK)
 		fPort = 0;
 
@@ -131,7 +131,7 @@ WUser::InitName(MessageRef msg)
 	PRINT("WUser: %S is a %s with installid " UINT64_FORMAT_SPEC,
 		wuser.getBuffer(), (fBot ? "bot" : "user"), fInstallID);
 	if (GetFirewalled())
-		PRINT("\n");	
+		PRINT("\n");
 	else
 		PRINT(" on port %lu\n", fPort);
 #endif
@@ -179,15 +179,16 @@ WUser::InitBandwidth(MessageRef msg)
 
 	if (fBandwidthLabel == qApp->translate("Connection", "Unknown"))
 	{
-                if (msg()->FindString("label", l) == B_OK)
+		if (msg()->FindString("label", l) == B_OK)
 		{
-			if (strcmp(l, "?") == 0)
-				fBandwidthLabel = qApp->translate("Connection", "Unknown");
-			else if (strcmp(l, "Unknown") == 0)
-				fBandwidthLabel = qApp->translate("Connection", "Unknown");
-			else
-				AddToList(fBandwidthLabel, qApp->translate("Connection", l));
+			if ((strcmp(l, "?") != 0) && (strcmp(l, "Unknown") != 0))
+				fBandwidthBPS = BandwidthToBytes(l);
+
+			if (fBandwidthBPS > 0)
+			{
+				fBandwidthLabel = qApp->translate("Connection", l);
 				AddToList(fBandwidthLabel, QString::number(fBandwidthBPS));
+			}
 		}
 	}
 #ifdef _DEBUG
@@ -252,7 +253,7 @@ WUser::AddToListView(Q3ListView * view)
 		{
 			item->setText(WNickListItem::Connection, fBandwidthLabel);
 		}
-		
+
 		if (item->text(WNickListItem::Load) != qUpload)
 		{
 			item->setText(WNickListItem::Load, qUpload);
@@ -343,7 +344,7 @@ WUser::SetUserName(const QString & name)
 {
 	fUserName = name;
 }
-	
+
 void
 WUser::SetStatus(const QString & s)
 {
@@ -355,19 +356,19 @@ WUser::SetUserHostName(const QString & h)
 {
 	fHostName = h;
 }
-	
+
 void
 WUser::SetCurUploads(uint32 c)
 {
 	fCurUploads = c;
 }
-	
+
 void
 WUser::SetMaxUploads(uint32 m)
 {
 	fMaxUploads = m;
 }
-	
+
 void
 WUser::SetBandwidthLabel(const char * s)
 {
@@ -382,7 +383,7 @@ WUser::SetBandwidthBPS(uint32 bps)
 {
 	fBandwidthBPS = bps;
 }
-	
+
 void
 WUser::SetFileCount(int32 fc)
 {
@@ -418,7 +419,7 @@ WUser::SetLastLine(const QString & channel, const QString &line)
 			return;
 		}
 	}
-	
+
 	// No entry yet?
 
 	sp.channel = channel;
@@ -450,14 +451,14 @@ OSPair Systems[] = {
 	{"WinShare", QT_TRANSLATE_NOOP("WUser", "Windows")},
 	{"LinShare", QT_TRANSLATE_NOOP("WUser", "Linux")},
 	// Known OS tags used by MUSCLE and JavaShare
-	{"Windows", QT_TRANSLATE_NOOP("WUser", "Windows")},		
+	{"Windows", QT_TRANSLATE_NOOP("WUser", "Windows")},
 	{"Linux", QT_TRANSLATE_NOOP("WUser", "Linux")},
 	{"FreeBSD", QT_TRANSLATE_NOOP("WUser", "FreeBSD")},
 	{"OpenBSD", QT_TRANSLATE_NOOP("WUser", "OpenBSD")},
 	{"NetBSD", QT_TRANSLATE_NOOP("WUser", "NetBSD")},
 	{"BeOS", QT_TRANSLATE_NOOP("WUser", "BeOS")},
 	{"MacOS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},
-	{"Mac OS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},	
+	{"Mac OS", QT_TRANSLATE_NOOP("WUser", "Mac OS")},
 	{"QNX", QT_TRANSLATE_NOOP("WUser", "QNX")},
 	{"OS/2", QT_TRANSLATE_NOOP("WUser", "OS/2")},
 	{"SunOS", QT_TRANSLATE_NOOP("WUser", "SunOS")},
@@ -479,7 +480,7 @@ WUser::SetClient(const QString &s)
 {
 	if (fNeedPing)
 		fNeedPing = false;
-	
+
 	fClient = s;
 	OSPair p;
 

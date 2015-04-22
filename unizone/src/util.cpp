@@ -347,9 +347,9 @@ struct ConPair
 
 ConPair Bandwidths[] = {
 	// For reverse lookup
-	{QT_TRANSLATE_NOOP("Connection", "75 baud"),	75},		
+	{QT_TRANSLATE_NOOP("Connection", "75 baud"),	75},
 	// 300 down / 75 up
-	{QT_TRANSLATE_NOOP("Connection", "300 baud"),	75},		
+	{QT_TRANSLATE_NOOP("Connection", "300 baud"),	75},
 	{QT_TRANSLATE_NOOP("Connection", "9.6 kbps"),	9600},
 	{QT_TRANSLATE_NOOP("Connection", "14.4 kbps"),	14400},
 	{QT_TRANSLATE_NOOP("Connection", "28.8 kbps"),	28800},
@@ -373,8 +373,14 @@ ConPair Bandwidths[] = {
 	// For reverse lookup
 	{QT_TRANSLATE_NOOP("Connection", "DSL-1M"),	1000000},
 	{QT_TRANSLATE_NOOP("Connection", "DSL-2M"),	2048000},
-	{QT_TRANSLATE_NOOP("Connection", "T1"),		1500000},
-	{QT_TRANSLATE_NOOP("Connection", "T3"),		4500000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-8M"), 8192000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-10M"), 10240000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-12M"), 12288000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-24M"), 24576000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-50M"), 51200000},
+	{QT_TRANSLATE_NOOP("Connection", "DSL-100M"), 102400000},
+	{QT_TRANSLATE_NOOP("Connection", "T1"), 1500000},
+	{QT_TRANSLATE_NOOP("Connection", "T3"), 4500000},
 	// 3  * 51840000
 	{QT_TRANSLATE_NOOP("Connection", "OC-3"),	155520000},
 	// 5.76 Mbit/s
@@ -439,7 +445,7 @@ BandwidthToString(uint32 bps)
 			return qApp->translate("Connection", bw.id);
 		}
 	};
-	
+
 	return qApp->translate("Connection", "Unknown");
 }
 

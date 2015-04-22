@@ -614,6 +614,36 @@
               <string>OC-12</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>DSL-8M</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DSL-10M</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DSL-12M</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DSL-24M</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DSL-50M</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>DSL-100M</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
