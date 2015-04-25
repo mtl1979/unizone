@@ -31,10 +31,20 @@ wchar_t *wcsupr(wchar_t *);
 
 // Replace all instances of 'in' with 'out'
 void wreplace(wchar_t *buffer, wchar_t in, wchar_t out);
+#if __STDC_WANT_SECURE_LIB__
+// Concatenate 'src' and 'dest', which is destlen long, at position 'pos'
+errno_t wcat_s(wchar_t *dest, size_t destlen, const wchar_t *src, size_t pos);
+
+// Copy 'len' characters of 'src' to 'dest' which is 'destlen' big
+errno_t wcopy_s(wchar_t *dest, size_t destlen, const wchar_t *src, size_t len);
+#else
 // Concatenate 'src' and 'dest' at position 'pos'
 void wcat(wchar_t *dest, const wchar_t *src, size_t pos);
+
 // Copy 'len' characters of 'src' to 'dest'
 void wcopy(wchar_t *dest, const wchar_t *src, size_t len);
+#endif
+
 // Reverse 'len' characters of 'src' to 'dest'
 void wreverse(wchar_t *dest, const wchar_t *src, size_t len);
 

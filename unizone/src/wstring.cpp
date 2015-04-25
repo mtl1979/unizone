@@ -22,7 +22,11 @@ WString::WString(const wchar_t *str)
 	size_t len = wcslen(str);
 	buffer = new wchar_t[len+1];
 	if (buffer)
+#if __STDC_WANT_SECURE_LIB__
+		wcopy_s(buffer, len + 1, str, len);
+#else
 		wcopy(buffer, str, len);
+#endif
 	utfbuf = NULL;
 	utflen = 0;
 }
@@ -111,7 +115,11 @@ WString::operator+=(const wchar_t *str)
 		wchar_t *buf2 = (wchar_t *)realloc(buffer, newlen * sizeof(wchar_t));
 		if (buf2)
 		{
+#if __STDC_WANT_SECURE_LIB__
+			wcat_s(buf2, newlen, str, oldlen);
+#else
 			wcat(buf2, str, oldlen);
+#endif
 			setBuffer(buf2);
 		}
 	}
@@ -136,7 +144,11 @@ WString::operator+=(const WString &str)
 		wchar_t *buf2 = (wchar_t *)realloc(buffer, newlen * sizeof(wchar_t));
 		if (buf2)
 		{
+#if __STDC_WANT_SECURE_LIB__
+			wcat_s(buf2, newlen, str.getBuffer(), oldlen);
+#else
 			wcat(buf2, str.getBuffer(), oldlen);
+#endif
 			setBuffer(buf2);
 		}
 	}
@@ -158,7 +170,11 @@ WString::operator+=(const QString &str)
 		if (buf2)
 		{
 			WString s2(str);
+#if __STDC_WANT_SECURE_LIB__
+			wcat_s(buf2, newlen, s2.getBuffer(), oldlen);
+#else
 			wcat(buf2, s2.getBuffer(), oldlen);
+#endif
 			setBuffer(buf2);
 		}
 	}
@@ -360,13 +376,13 @@ WString::replace(wchar_t in, wchar_t out)
 int
 WString::sscanf(const WString &fmt, ...)
 {
-    int ret = -1;
+	int ret = -1;
 	if (buffer)
 	{
 		va_list a;
 		va_start(a, fmt);
 		ret = vswscanf(buffer, fmt.getBuffer(), a);
-        va_end(a);
+		va_end(a);
 	}
 	return ret;
 }
@@ -380,7 +396,7 @@ WString::sscanf(const wchar_t *fmt, ...)
 		va_list a;
 		va_start(a, fmt);
 		ret = vswscanf(buffer, fmt, a);
-        va_end(a);
+		va_end(a);
 	}
 	return ret;
 }
@@ -404,10 +420,10 @@ WString::_sprintf_internal(const size_t &bufsize, const wchar_t *fmt, va_list a)
 	{
 		wchar_t *newbuf = (wchar_t *)realloc(buffer, bufsize * sizeof(wchar_t));
 		if (newbuf == NULL)
-        {
-            va_end(a2);
+		{
+			va_end(a2);
 			return -1;
-        }
+		}
 		buffer = newbuf;
 	}
 
@@ -415,10 +431,10 @@ WString::_sprintf_internal(const size_t &bufsize, const wchar_t *fmt, va_list a)
 		buffer = new wchar_t[bufsize];
 
 	if (buffer == NULL)
-    {
-        va_end(a2);
+	{
+		va_end(a2);
 		return -1;
-    }
+	}
 
 #if defined(WIN32) || defined(_WIN32)
 #  if __STDC_WANT_SECURE_LIB__
@@ -433,22 +449,22 @@ WString::_sprintf_internal(const size_t &bufsize, const wchar_t *fmt, va_list a)
 	ret = vswprintf(buffer, bufsize - 1, fmt, a);
 #endif
 	if (ret == -1) // Recurse with bigger buffer if truncated
-    {
-        ret = _sprintf_internal(bufsize + 32, fmt, a2);
-    }
-    va_end(a2);
-    return ret;
+	{
+		ret = _sprintf_internal(bufsize + 32, fmt, a2);
+	}
+	va_end(a2);
+	return ret;
 }
 
 int
 WString::sprintf(const WString &fmt, ...)
 {
-    int ret;
+	int ret;
 	va_list a;
 	va_start(a, fmt);
 	ret = _sprintf_internal(max(length(), 32), fmt.getBuffer(), a);
-    va_end(a);
-    return ret;
+	va_end(a);
+	return ret;
 }
 
 int
