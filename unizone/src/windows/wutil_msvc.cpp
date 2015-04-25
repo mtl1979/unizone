@@ -29,8 +29,8 @@ wreplace(wchar_t *buffer, wchar_t win, wchar_t wout)
 void
 wcat(wchar_t *dest, const wchar_t *src, size_t pos)
 {
-	dest += pos;
-	wcopy(dest, src, wcslen(src));
+	wchar_t *dpos = dest + pos;
+	wcopy(dpos, src, wcslen(src));
 }
 
 void
@@ -67,7 +67,7 @@ qStringToWideChar(const QString &str)
 	{
        	return NULL;
 	}
-	
+
 	wchar_t *result = new wchar_t[str.length() + 1];
 	if (result)
 	{

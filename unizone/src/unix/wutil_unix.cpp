@@ -20,8 +20,8 @@ void wcopy(wchar_t *dest, const wchar_t *src, size_t len)
 
 void wcat(wchar_t *dest, const wchar_t *src, size_t pos)
 {
-	dest += pos;
-	wcopy(dest, src, wcslen(src));
+	wchar_t *dpos = dest + pos;
+	wcopy(dpos, src, wcslen(src));
 }
 
 void wreverse(wchar_t *dest, const wchar_t *src, size_t len)
