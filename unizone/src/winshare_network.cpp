@@ -3134,7 +3134,8 @@ WinShareWindow::ExecCommand(const QString &command)
 	WTextEvent * wte = new WTextEvent(command);
 	if (wte)
 	{
-		SendChatText(wte, false);
+		bool reply = false;
+		SendChatText(wte, &reply);
 		delete wte;
 	}
 }

@@ -1613,7 +1613,7 @@ WDownloadThread::_CloseFile(WFile *& file)
 {
 	if (file)
 	{
-		QString name = QString::fromUcs2(file->Filename());
+		QString name = QString::fromWCharArray(file->Filename());
 		CloseFile(file);
 		if (name.startsWith("temp") && fCurrentOffset >= fFileSize)
 		{

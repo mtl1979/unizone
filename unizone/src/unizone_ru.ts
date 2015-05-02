@@ -3368,7 +3368,7 @@ Date: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="83"/>
         <location filename="winshare_network.cpp" line="378"/>
-        <location filename="winshare_network.cpp" line="3197"/>
+        <location filename="winshare_network.cpp" line="3198"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="979"/>
@@ -3646,7 +3646,7 @@ Date: %4</translation>
         <translation>Failed to start accept thread!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3206"/>
+        <location filename="winshare_network.cpp" line="3207"/>
         <source>Connected.</source>
         <translation>Соединение установлено.</translation>
     </message>
@@ -3809,7 +3809,7 @@ Date: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="389"/>
-        <location filename="winshare_network.cpp" line="3194"/>
+        <location filename="winshare_network.cpp" line="3195"/>
         <source>Number of users logged in: %1</source>
         <translation>Number of users logged in: %1</translation>
     </message>
@@ -4264,7 +4264,7 @@ Date: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="265"/>
         <location filename="winshare_network.cpp" line="273"/>
-        <location filename="winshare_network.cpp" line="3209"/>
+        <location filename="winshare_network.cpp" line="3210"/>
         <source>Current compression: %1</source>
         <translation>Current compression: %1</translation>
     </message>
@@ -4668,7 +4668,7 @@ Date: %4</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3211"/>
+        <location filename="winshare_network.cpp" line="3212"/>
         <source>Logging in...</source>
         <translation type="unfinished"></translation>
     </message>

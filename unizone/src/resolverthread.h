@@ -36,7 +36,7 @@ private:
 	void PrintAddressInfo(const WUserRef &user, bool verbose);
 #ifdef MUSCLE_AVOID_IPV6
 	bool PrintAddressInfo(uint32 address, bool verbose);
-#else;
+#else
 	bool PrintAddressInfo(muscle::ip_address address, bool verbose);
 #endif
 

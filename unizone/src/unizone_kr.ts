@@ -3368,7 +3368,7 @@ Date: %4</source>
     <message>
         <location filename="winshare_network.cpp" line="83"/>
         <location filename="winshare_network.cpp" line="378"/>
-        <location filename="winshare_network.cpp" line="3197"/>
+        <location filename="winshare_network.cpp" line="3198"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="979"/>
@@ -3416,7 +3416,7 @@ Date: %4</source>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="389"/>
-        <location filename="winshare_network.cpp" line="3194"/>
+        <location filename="winshare_network.cpp" line="3195"/>
         <source>Number of users logged in: %1</source>
         <translation>로그인한 사용자 수: %1</translation>
     </message>
@@ -3749,7 +3749,7 @@ Date: %4</source>
         <translation>Failed to start accept thread!</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3206"/>
+        <location filename="winshare_network.cpp" line="3207"/>
         <source>Connected.</source>
         <translation>연결됨.</translation>
     </message>
@@ -3928,7 +3928,7 @@ Date: %4</source>
     <message>
         <location filename="winshare_network.cpp" line="265"/>
         <location filename="winshare_network.cpp" line="273"/>
-        <location filename="winshare_network.cpp" line="3209"/>
+        <location filename="winshare_network.cpp" line="3210"/>
         <source>Current compression: %1</source>
         <translation>Current compression: %1</translation>
     </message>
@@ -4668,7 +4668,7 @@ Date: %4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3211"/>
+        <location filename="winshare_network.cpp" line="3212"/>
         <source>Logging in...</source>
         <translation></translation>
     </message>

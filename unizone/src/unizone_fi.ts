@@ -4882,7 +4882,7 @@ Päiväys: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="83"/>
         <location filename="winshare_network.cpp" line="378"/>
-        <location filename="winshare_network.cpp" line="3197"/>
+        <location filename="winshare_network.cpp" line="3198"/>
         <location filename="winshare_slots.cpp" line="135"/>
         <location filename="winshare_slots.cpp" line="465"/>
         <location filename="winsharewindow.cpp" line="979"/>
@@ -5261,7 +5261,7 @@ Päiväys: %4</translation>
         <translation type="obsolete">%1 tiedosto(a) jaossa.</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3206"/>
+        <location filename="winshare_network.cpp" line="3207"/>
         <source>Connected.</source>
         <translation>Yhdistetty.</translation>
     </message>
@@ -5556,7 +5556,7 @@ Päiväys: %4</translation>
     </message>
     <message>
         <location filename="winshare_network.cpp" line="389"/>
-        <location filename="winshare_network.cpp" line="3194"/>
+        <location filename="winshare_network.cpp" line="3195"/>
         <source>Number of users logged in: %1</source>
         <translation>Käyttäjiä linjoilla: %1</translation>
     </message>
@@ -6047,7 +6047,7 @@ Päiväys: %4</translation>
     <message>
         <location filename="winshare_network.cpp" line="265"/>
         <location filename="winshare_network.cpp" line="273"/>
-        <location filename="winshare_network.cpp" line="3209"/>
+        <location filename="winshare_network.cpp" line="3210"/>
         <source>Current compression: %1</source>
         <translation>Nykyinen pakkaustaso: %1</translation>
     </message>
@@ -6615,7 +6615,7 @@ Päiväys: %4</translation>
         <translation>/octencode - muunna teksti oktaalimuotoon ja näytä se</translation>
     </message>
     <message>
-        <location filename="winshare_network.cpp" line="3211"/>
+        <location filename="winshare_network.cpp" line="3212"/>
         <source>Logging in...</source>
         <translation>Kirjaudutaan...</translation>
     </message>
