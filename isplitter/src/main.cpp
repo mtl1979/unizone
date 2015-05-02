@@ -17,6 +17,8 @@
 # if !defined(QT_NO_STYLE_WINDOWSXP)
 #  include <qwindowsxpstyle.h>
 # endif
+#else
+#include <unistd.h>
 #endif
 
 QString gAppDir;

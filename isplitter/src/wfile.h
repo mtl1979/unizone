@@ -3,6 +3,8 @@
 
 #ifdef WIN32
 #include <windows.h>
+#else
+#include <stddef.h>
 #endif
 
 #include "utypes.h"
