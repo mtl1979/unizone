@@ -519,7 +519,7 @@ int starordinary;		/* is a leading * an ordinary character? */
 		i = (c&~BACKSL) - '0';
 		assert(i < NPAREN);
 		if (p->pend[i] != 0) {
-			assert(i <= p->g->nsub);
+			assert(i <= (int) p->g->nsub);
 			EMIT(OBACK_, i);
 			assert(p->pbegin[i] != 0);
 			assert(OP(p->strip[p->pbegin[i]]) == OLPAREN);
