@@ -51,16 +51,16 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 #if defined(lrint)
 #  define HAVE_LRINT
 #elif defined(_MSC_VER)
-# ifdef _M_AMD64
+# if _MSC_VER >= 1800
+#  define HAVE_LRINT
+# elif defined(_M_AMD64)
 #  include <emmintrin.h>
 
 #  define lrint(dbl) _mm_cvttsd_si32(_mm_set_sd(dbl))
 #  define llrint(dbl) _mm_cvttsd_si64x(_mm_set_sd(dbl))
 #  define lrintf(flt) _mm_cvttss_si32(_mm_set_ss(flt))
 #  define HAVE_LRINT
-# elif defined(_M_IX86) && _MSC_VER >= 1800
-#  define HAVE_LRINT
-# elif defined(_M_IX86) && _MSC_VER < 1800
+# elif defined(_M_IX86)
 	// http://mega-nerd.com/FPcast/float_cast.h
 
 	/*	Win32 doesn't seem to have these functions.

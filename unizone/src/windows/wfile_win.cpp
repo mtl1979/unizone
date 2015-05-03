@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include <QByteArray>
+#include <QIODevice>
 
 WFile::WFile()
 {

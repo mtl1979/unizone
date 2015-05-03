@@ -236,7 +236,10 @@ win32 {
 
 	qtimageformats.CONFIG += recursive
 	INSTALLS += qtimageformats
+}
 
+win32-msvc2013 {
+	DEFINES += MUSCLE_USE_CPLUSPLUS11
 }
 
 unix {
