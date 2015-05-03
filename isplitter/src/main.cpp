@@ -110,7 +110,8 @@ main( int argc, char** argv )
 	QString lfile;
 	if (!lang.exists())
 	{
-		lfile = QFileDialog::getOpenFileName(NULL, app.translate("main", "Open translation file..."), 
+		lfile = QFileDialog::getOpenFileName(NULL, app.translate("main", "Open translation file..."),
+
 #ifdef _WIN32
 			MakePath(gAppDir, "translations"),
 #else

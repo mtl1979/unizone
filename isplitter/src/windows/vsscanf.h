@@ -5,8 +5,12 @@
 extern "C" {
 #endif
 
-int __cdecl vwsscanf (const wchar_t* str, const wchar_t *format, va_list arglist);
+#include <stdio.h>
+
+#if _MSC_VER < 1800
+int __cdecl vswscanf (const wchar_t* str, const wchar_t *format, va_list arglist);
 int __cdecl vsscanf (const char* str, const unsigned char *format, va_list arglist);
+#endif
 
 #ifdef __cplusplus
 }

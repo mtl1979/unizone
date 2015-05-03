@@ -23,11 +23,14 @@ WFile::Open(const WString &name, int mode)
 {
 	file = -1;
 	if (name.getBuffer() != NULL)
+	{
+		filename = name;
 #ifdef __APPLE__
 		file = open((const char *) name, mode, (mode & O_CREAT) ? S_IRUSR | S_IWUSR : 0);
 #else
 		file = open64((const char *) name, mode, (mode & O_CREAT) ? S_IRUSR | S_IWUSR : 0);
 #endif
+	}
 	return (file != -1);
 }
 
@@ -45,6 +48,7 @@ WFile::Close()
 {
 	close(file);
 	file = -1;
+	filename = WString();
 }
 
 bool
@@ -117,7 +121,7 @@ WFile::ReadBlock(uint8 *buf, uint64 size)
 	return ReadBlock32(buf, (unsigned int) size);
 }
 
-int 
+int
 WFile::ReadLine(char *buf, int size)
 {
 	int numbytes = 0;

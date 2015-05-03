@@ -34,7 +34,7 @@ typedef unsigned long	uint32;
 
 #ifndef int64
 # ifdef WIN32
-	typedef __int64				int64; 
+	typedef __int64				int64;
 	typedef unsigned __int64	uint64;
 # else
 #  if defined(ISPLITTER_64_BIT_PLATFORM)

@@ -8,10 +8,12 @@
 #include <sys/stat.h>
 
 #include <QByteArray>
+#include <QIODevice>
 
 WFile::WFile()
 {
 	file = -1;
+	filename = WString();
 }
 
 WFile::~WFile()
@@ -22,7 +24,12 @@ WFile::~WFile()
 bool
 WFile::Open(const WString &name, int mode)
 {
+	filename = name;
+#if	__STDC_WANT_SECURE_LIB__
+	_wsopen_s(&file, name.getBuffer(), mode, (mode & QIODevice::WriteOnly) ? _SH_DENYRW : _SH_DENYWR, (mode & _O_CREAT) ? S_IREAD | _S_IWRITE : 0);
+#else
 	file = _wopen(name.getBuffer(), mode, (mode & _O_CREAT) ? _S_IREAD | _S_IWRITE : 0);
+#endif
 	return (file != -1);
 }
 
@@ -42,6 +49,7 @@ WFile::Close()
 	{
 		_close(file);
 		file = -1;
+		filename = WString();
 	}
 }
 
@@ -59,7 +67,12 @@ WFile::Exists(const WString &name)
 	bool ret = false;
 	if (name.getBuffer() != NULL)
 	{
-		FILE * f = _wfopen(name.getBuffer(), L"r");
+		FILE * f;
+#if	__STDC_WANT_SECURE_LIB__
+		_wfopen_s(&f, name.getBuffer(), L"r");
+#else
+		f = _wfopen(name.getBuffer(), L"r");
+#endif
 		if (f)
 		{
 			fclose(f);
@@ -114,7 +127,7 @@ WFile::ReadBlock(uint8 *buf, uint64 size)
 	return ReadBlock32(buf, (unsigned int) size);
 }
 
-int 
+int
 WFile::ReadLine(char *buf, int size)
 {
 	int numbytes = 0;

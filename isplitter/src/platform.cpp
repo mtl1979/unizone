@@ -6,7 +6,7 @@
 #ifdef WIN32
 #include <windows.h>
 
-void 
+void
 WFlashWindow(HWND fWinHandle)
 {
 #ifdef BUILD_WIN98	// flash our window

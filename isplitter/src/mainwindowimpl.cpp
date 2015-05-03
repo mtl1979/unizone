@@ -20,7 +20,8 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QEvent>
-#include <QDragEnterEvent> 
+#include <QDragEnterEvent>
+
 #include <QUrl>
 
 ImageSplitter::ImageSplitter( QWidget* parent, const char* name, Qt::WFlags fl)
@@ -48,7 +49,8 @@ ImageSplitter::ImageSplitter( QWidget* parent, const char* name, Qt::WFlags fl)
 	ClearImage();
 };
 
-void 
+void
+
 ImageSplitter::dragEnterEvent(QDragEnterEvent* event)
 {
     if (event->mimeData()->hasUrls())
@@ -80,7 +82,8 @@ ImageSplitter::eventFilter( QObject *o, QEvent *e )
 	return false;
 }
 
-void 
+void
+
 ImageSplitter::dropEvent(QDropEvent* event)
 {
 	if (event->mimeData()->hasUrls())
@@ -142,7 +145,8 @@ ImageSplitter::mouseReleaseEvent(QMouseEvent *e)
 	Q3MainWindow::mouseReleaseEvent(e);
 }
 
-void 
+void
+
 ImageSplitter::startDrag()
 {
 	if (fFilename != QString::null)
@@ -181,7 +185,8 @@ ImageSplitter::SaveSettings()
 	if (qf.open(QIODevice::WriteOnly))
 	{
 		QByteArray temp = lastdir.utf8();
-		qf.writeBlock(temp, temp.length()); 
+		qf.writeBlock(temp, temp.length());
+
 		qf.close();
 	}
 }
@@ -276,7 +281,8 @@ ImageSplitter::Load(const QString &filename)
 void
 ImageSplitter::ClearImage()
 {
-	if (image) 
+	if (image)
+
 	{
 		delete image;
 		image = NULL;

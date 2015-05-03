@@ -29,34 +29,51 @@ void WFlashWindow(HWND fWinHandle);
 #ifdef WIN32
 inline struct tm * gmtime_r(const time_t *clock, struct tm *result)
 {
+#if __STDC_WANT_SECURE_LIB__
+	gmtime_s(result, clock);
+#else
 	memcpy(result, gmtime(clock), sizeof(struct tm));
+#endif
 	return result;
 }
 
 inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 {
+#if __STDC_WANT_SECURE_LIB__
+	localtime_s(result, clock);
+#else
 	memcpy(result, localtime(clock), sizeof(struct tm));
+#endif
 	return result;
 }
 #endif
 
 #if defined(lrint)
 #  define HAVE_LRINT
-#elif defined(_MSC_VER) && defined(_M_IX86)
+#elif defined(_MSC_VER)
+# if _MSC_VER >= 1800
+#  define HAVE_LRINT
+# elif defined(_M_AMD64)
+#  include <emmintrin.h>
 
+#  define lrint(dbl) _mm_cvttsd_si32(_mm_set_sd(dbl))
+#  define llrint(dbl) _mm_cvttsd_si64x(_mm_set_sd(dbl))
+#  define lrintf(flt) _mm_cvttss_si32(_mm_set_ss(flt))
+#  define HAVE_LRINT
+# elif defined(_M_IX86)
 	// http://mega-nerd.com/FPcast/float_cast.h
 
-	/*	Win32 doesn't seem to have these functions. 
+	/*	Win32 doesn't seem to have these functions.
 	**	Therefore implement inline versions of these functions here.
 	*/
-	
-	inline __declspec(naked) int 
+
+	inline __declspec(naked) int
 	lrint (double flt)
-	{	
+	{
 		int intgr;
 
 		_asm
-		{	
+		{
 			push ebp
 			mov ebp, esp
 			fld flt
@@ -65,7 +82,7 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 			pop ebp
 			ret
 		} ;
-	} 
+	}
 
 	inline __declspec(naked) __int64
 	llrint (double flt)
@@ -73,7 +90,7 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 		__int64 intgr;
 
 		_asm
-		{	
+		{
 			push ebp
 			mov ebp, esp
 			fld flt
@@ -85,13 +102,13 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 		} ;
 	}
 
-	inline __declspec(naked) int 
+	inline __declspec(naked) int
 	lrintf (float flt)
-	{	
+	{
 		int intgr;
 
 		_asm
-		{	
+		{
 			push ebp
 			mov ebp, esp
 			fld flt
@@ -101,8 +118,8 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 			ret
 		} ;
 	}
-
-#define HAVE_LRINT
+# define HAVE_LRINT
+# endif
 #endif
 
 #ifndef HAVE_LRINT
@@ -117,8 +134,27 @@ inline struct tm * localtime_r(const time_t *clock, struct tm *result)
 # include <unistd.h>
 #else
 # if !defined(ssize_t)
+#  if defined(_MSC_VER)
+#   if _MSC_VER >= 1800
+typedef SSIZE_T ssize_t;
+#   elif defined(_M_AMD64)
+typedef __int64 ssize_t;
+#   else
 typedef int ssize_t;
+#   endif
+#  elif defined(__amd64__)
+typedef long ssize_t;
+#  else
+typedef int ssize_t;
+#  endif
 # endif
 #endif
 
+#ifndef min
+#define min(x,y) ((x) < (y) ? (x) : (y))
+#endif
+
+#ifndef max
+#define max(x,y) ((x) > (y) ? (x) : (y))
+#endif
 #endif // PLATFORM_H

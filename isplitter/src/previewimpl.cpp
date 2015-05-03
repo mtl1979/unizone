@@ -60,11 +60,14 @@ Preview::Preview(QWidget* parent, const char* name, Qt::WFlags fl)
 {
     if ( !name )
 	setName( "PreviewBase" );
-    resize( 596, 480 ); 
+    resize( 596, 480 );
+
     setCaption( tr( "Preview" ) );
 
-    GridLayout = new Q3GridLayout( this ); 
-    GridLayout->setGeometry( QRect( 0, 0, 596, 480 ) ); 
+    GridLayout = new Q3GridLayout( this );
+
+    GridLayout->setGeometry( QRect( 0, 0, 596, 480 ) );
+
     GridLayout->setSpacing( 0 );
     GridLayout->setMargin( 0 );
 
@@ -99,7 +102,8 @@ Preview::Preview(QWidget* parent, const char* name, Qt::WFlags fl)
 	int ph = (PreviewWidget->height() - pxlPreview->height()) / 2;
 	pxlPreview->move(pw, ph);
 
-    
+
+
 	PreviewButton = new QPushButton( this, "PreviewButton" );
     PreviewButton->setText( tr( "Preview" ) );
 
@@ -133,11 +137,13 @@ Preview::ShowImage(QImage *img)
 	}
 }
 
-template <typename T> 
+template <typename T>
+
 bool clamp(T & a, const T b, const T c)
 {
 	bool ret = false;
-	if (a < b) 
+	if (a < b)
+
 	{
 		a = b;
 		ret = true;
@@ -243,13 +249,16 @@ Preview::PreviewImage()
 	//  Make sure we don't get 'divide by zero' error
 	//
 		
-	if (collageSizeX == 0) 
-	{ 
+	if (collageSizeX == 0)
+
+	{
+
 		collageSizeX = 1;
 		Splitter->ui->CollageSizeX->setText("1");
 	}
 		
-	if (collageSizeY == 0) 
+	if (collageSizeY == 0)
+
 	{
 		collageSizeY = 1;
 		Splitter->ui->CollageSizeY->setText("1");
@@ -406,7 +415,8 @@ Preview::mouseReleaseEvent(QMouseEvent *e)
 	QWidget::mouseReleaseEvent(e);
 }
 
-void 
+void
+
 Preview::startDrag()
 {
 	if (pixPreview)

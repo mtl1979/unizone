@@ -5,12 +5,12 @@
 <context>
     <name>Debug</name>
     <message>
-        <location filename="debugimpl.cpp" line="63"/>
+        <location filename="debugimpl.cpp" line="67"/>
         <source>Unizone (English)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="debugimpl.cpp" line="78"/>
+        <location filename="debugimpl.cpp" line="82"/>
         <source>Send this message to postmaster@raasu.org! This message has also been dumped to &apos;assert.txt&apos;.
 
 %1
@@ -21,7 +21,7 @@ Date: %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="debugimpl.cpp" line="101"/>
+        <location filename="debugimpl.cpp" line="105"/>
         <source>Attempt to read file larger than maximum allocatable memory amount!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -29,13 +29,13 @@ Date: %4</source>
 <context>
     <name>ImageSplitter</name>
     <message>
-        <location filename="mainwindowimpl.cpp" line="254"/>
         <location filename="mainwindowimpl.cpp" line="273"/>
+        <location filename="mainwindowimpl.cpp" line="293"/>
         <source>Image Splitter</source>
         <translation>Image Splitter</translation>
     </message>
     <message>
-        <location filename="mainwindowimpl.cpp" line="183"/>
+        <location filename="mainwindowimpl.cpp" line="202"/>
         <source>Open image...</source>
         <translation>Open image...</translation>
     </message>
@@ -196,26 +196,26 @@ Date: %4</source>
 <context>
     <name>Preview</name>
     <message>
-        <location filename="previewimpl.cpp" line="64"/>
-        <location filename="previewimpl.cpp" line="104"/>
-        <location filename="previewimpl.cpp" line="347"/>
-        <location filename="previewimpl.cpp" line="474"/>
+        <location filename="previewimpl.cpp" line="65"/>
+        <location filename="previewimpl.cpp" line="108"/>
+        <location filename="previewimpl.cpp" line="356"/>
+        <location filename="previewimpl.cpp" line="484"/>
         <source>Preview</source>
         <translation>Preview</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="72"/>
-        <location filename="previewimpl.cpp" line="453"/>
+        <location filename="previewimpl.cpp" line="75"/>
+        <location filename="previewimpl.cpp" line="463"/>
         <source>Save</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="347"/>
+        <location filename="previewimpl.cpp" line="356"/>
         <source>%1 x %2</source>
         <translation>%1 x %2</translation>
     </message>
     <message>
-        <location filename="previewimpl.cpp" line="453"/>
+        <location filename="previewimpl.cpp" line="463"/>
         <source>Unable to save output!</source>
         <translation>Unable to save output!</translation>
     </message>
@@ -223,7 +223,7 @@ Date: %4</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="main.cpp" line="111"/>
+        <location filename="main.cpp" line="113"/>
         <source>Open translation file...</source>
         <translation>Open translation file...</translation>
     </message>

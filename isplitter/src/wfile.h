@@ -8,8 +8,8 @@
 #endif
 
 #include "utypes.h"
+#include "wstring.h"
 
-class WString;
 class QString;
 class QByteArray;
 
@@ -24,6 +24,8 @@ public:
 	void Close();
 	static bool Exists(const QString &);
 	static bool Exists(const WString &);
+
+	WString Filename() const;
 
 	void Flush();
 	int64 ReadBlock(uint8 *, uint64);
@@ -43,6 +45,8 @@ public:
 private:
 	int TranslateMode(int);
 	int file;
+
+	WString filename;
 };
 
 // Close file if necessary and delete the object
