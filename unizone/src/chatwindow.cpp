@@ -268,8 +268,12 @@ ChatWindow::ParseString(const QString & str)
 		return str;
 
 	// Remove trailing line feeds
-	while (str[len - 1] == '\n')
+	while ((len > 0) && (str[len - 1] == '\n'))
 		len--;
+
+	// If text contains only line feeds, return empty string
+	if (len == 0)
+		return QString::null;
 
 	for (unsigned int i = 0; i < len; i++)
 	{
