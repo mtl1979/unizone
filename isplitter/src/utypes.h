@@ -2,7 +2,9 @@
 #define UTYPES_H
 
 #include <limits.h>
-
+#if defined(_MSC_VER) && _MSC_VER >= 1900
+#include <stdint.h>
+#endif
 
 #if defined(__amd64__) || defined(_M_AMD64)
 #define ISPLITTER_64_BIT_PLATFORM 1

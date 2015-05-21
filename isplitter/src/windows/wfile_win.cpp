@@ -26,11 +26,12 @@ WFile::Open(const WString &name, int mode)
 {
 	filename = name;
 #if	__STDC_WANT_SECURE_LIB__
-	_wsopen_s(&file, name.getBuffer(), mode, (mode & QIODevice::WriteOnly) ? _SH_DENYRW : _SH_DENYWR, (mode & _O_CREAT) ? S_IREAD | _S_IWRITE : 0);
+	errno_t err = _wsopen_s(&file, name.getBuffer(), mode, (mode & QIODevice::WriteOnly) ? _SH_DENYRW : _SH_DENYWR, (mode & _O_CREAT) ? S_IREAD | _S_IWRITE : 0);
+	return (err == 0);
 #else
 	file = _wopen(name.getBuffer(), mode, (mode & _O_CREAT) ? _S_IREAD | _S_IWRITE : 0);
-#endif
 	return (file != -1);
+#endif
 }
 
 bool
@@ -69,11 +70,12 @@ WFile::Exists(const WString &name)
 	{
 		FILE * f;
 #if	__STDC_WANT_SECURE_LIB__
-		_wfopen_s(&f, name.getBuffer(), L"r");
+		errno_t err = _wfopen_s(&f, name.getBuffer(), L"r");
+		if (err == 0)
 #else
 		f = _wfopen(name.getBuffer(), L"r");
-#endif
 		if (f)
+#endif
 		{
 			fclose(f);
 			ret = true;

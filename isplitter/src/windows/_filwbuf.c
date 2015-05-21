@@ -1,3 +1,4 @@
+#if _MSC_VER < 1900
 #include <windows.h>
 #include <winbase.h>
 #include <crtdbg.h>
@@ -149,3 +150,4 @@ int __cdecl _filwbuf (
         return (0xffff & *((wchar_t *)(stream->_ptr))++);
 
 }
+#endif
