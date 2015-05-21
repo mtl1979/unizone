@@ -1,3 +1,4 @@
+#if _MSC_VER < 1900
 #include <crtdbg.h>
 #include <malloc.h>
 #include <stdio.h>
@@ -81,3 +82,4 @@ void __cdecl _getbuf (
 
         return;
 }
+#endif

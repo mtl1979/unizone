@@ -2,6 +2,9 @@
 #define UTYPES_H
 
 #include <limits.h>
+#if defined(_MSC_VER) && _MSC_VER >= 1900
+#include <stdint.h>
+#endif
 
 /* We need to implement all typedefs that MUSCLE would define even though we
 	don't need them explicitly in our classes, because derived class might

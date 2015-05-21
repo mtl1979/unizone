@@ -52,10 +52,10 @@ public:
 	bool operator==(const WString &);
 	bool operator==(const QString &);
 
-	int sscanf(const WString &fmt, ...);
+	int sscanf(const WString fmt, ...);
 	int sscanf(const wchar_t *fmt, ...);
 
-	int sprintf(const WString &fmt, ...);
+	int sprintf(const WString fmt, ...);
 	int sprintf(const wchar_t *fmt, ...);
 protected:
 	void setBuffer(wchar_t *buf);

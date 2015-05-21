@@ -374,7 +374,7 @@ WString::replace(wchar_t in, wchar_t out)
 }
 
 int
-WString::sscanf(const WString &fmt, ...)
+WString::sscanf(const WString fmt, ...)
 {
 	int ret = -1;
 	if (buffer)
@@ -457,7 +457,7 @@ WString::_sprintf_internal(const size_t &bufsize, const wchar_t *fmt, va_list a)
 }
 
 int
-WString::sprintf(const WString &fmt, ...)
+WString::sprintf(const WString fmt, ...)
 {
 	int ret;
 	va_list a;
