@@ -296,42 +296,37 @@ main( int argc, char** argv )
 
 	// Setup SSL
 #ifdef MUSCLE_ENABLE_SSL
-   ByteBufferRef optCryptoBuf;
-#if defined(_WIN32)
-#  if defined(UNICODE)
-     FileDataIO fdio(_wfopen(publicKeyFilePath, L"rb"));
+	FILE *file;
+#  if defined(_WIN32) && defined(UNICODE)
+	file = _wfopen(publicKeyFilePath, L"rb");
 #  elif __STDC_WANT_SECURE_LIB__
-     FILE *file;
-     (void) fopen_s(&file, publicKeyFilePath, "rb");
-     FileDataIO fdio(file);
+	(void) fopen_s(&file, publicKeyFilePath, "rb");
 #  else
-     FileDataIO fdio(fopen(publicKeyFilePath, "rb"));
+	file = fopen(publicKeyFilePath, "rb");
 #  endif
-#else
-   FileDataIO fdio(fopen(publicKeyFilePath, "rb"));
-#endif
-   ByteBufferRef fileData = GetByteBufferFromPool((uint32)fdio.GetLength());
-   if ((fdio.GetFile())&&(fileData())&&(fdio.ReadFully(fileData()->GetBuffer(), fileData()->GetNumBytes()) == fileData()->GetNumBytes()))
-   {
-#ifdef _DEBUG
-# if defined(_WIN32) && defined(UNICODE)
-      PRINT("Using public key file [%S] to authenticate with servers\n", publicKeyFilePath);
-# else
-      PRINT("Using public key file [%s] to authenticate with servers\n", publicKeyFilePath);
-# endif
-#endif
-      window->SetSSLPublicKey(fileData);
-   }
-   else
-   {
-#ifdef _DEBUG
-# if defined(_WIN32) && defined(UNICODE)
-         PRINT("Couldn't load public key file [%S] (file not found?)\n", publicKeyFilePath);
-# else
-         PRINT("Couldn't load public key file [%s] (file not found?)\n", publicKeyFilePath);
-# endif
-#endif
-   }
+	FileDataIO fdio(file);
+	ByteBufferRef fileData = GetByteBufferFromPool((uint32)fdio.GetLength());
+	if ((fdio.GetFile())&&(fileData())&&(fdio.ReadFully(fileData()->GetBuffer(), fileData()->GetNumBytes()) == fileData()->GetNumBytes()))
+	{
+#  ifdef _DEBUG
+#    if defined(_WIN32) && defined(UNICODE)
+		PRINT("Using public key file [%S] to authenticate with servers\n", publicKeyFilePath);
+#    else
+		PRINT("Using public key file [%s] to authenticate with servers\n", publicKeyFilePath);
+#    endif
+#  endif
+		window->SetSSLPublicKey(fileData);
+	}
+	else
+	{
+#  ifdef _DEBUG
+#    if defined(_WIN32) && defined(UNICODE)
+		PRINT("Couldn't load public key file [%S] (file not found?)\n", publicKeyFilePath);
+#    else
+		PRINT("Couldn't load public key file [%s] (file not found?)\n", publicKeyFilePath);
+#    endif
+#  endif
+	}
 #endif
 
 
