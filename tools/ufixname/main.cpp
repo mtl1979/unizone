@@ -25,14 +25,13 @@ int main(int argc, char* argv[])
 			printf("Decoder error!\n");
 			return -1;
 		}
-
+		
 		uint sz = 0;
 		char buf[1024];
 		if (in != out)
 		{
 			QFile ifile(in);
 			QFile ofile(out);
-			
 			
 			if (ifile.open(QIODevice::ReadOnly) == false)
 			{
@@ -55,14 +54,14 @@ int main(int argc, char* argv[])
 				ofile.write(buf, r);
 				numbytes += r;
 			}
-			printf("Read %u bytes.\n", sz); 
+			printf("Read %u bytes.\n", sz);
 			printf("Wrote %Li bytes.\n", numbytes);
 			ifile.close();
 			ofile.close();
 			if (sz == numbytes)
 			{
 				ifile.remove();
-			}		
+			}
 		}
 	}
 	return 0;

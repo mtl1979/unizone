@@ -1,0 +1,17 @@
+[submodule "unizone/src/muscle"]
+	path = unizone/src/muscle
+	url = https://github.com/mtl1979/muscle.git
+	branch = unizone
+	update = rebase
+
+[submodule "unizone/regex"]
+	path = unizone/regex
+	url = https://github.com/mtl1979/regex.git
+	branch = unizone
+	update = rebase
+
+[submodule "unizone/zlib"]
+	path = unizone/zlib
+	url = https://github.com/mtl1979/zlib.git
+	branch = unizone
+	update = rebase

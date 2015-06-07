@@ -284,187 +284,187 @@
 <context>
     <name>ChatWindow</name>
     <message>
-        <location filename="chatwindow.cpp" line="580"/>
+        <location filename="chatwindow.cpp" line="584"/>
         <source>Name</source>
         <translation>이름</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="581"/>
+        <location filename="chatwindow.cpp" line="585"/>
         <source>ID</source>
         <translation>아이디</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="582"/>
+        <location filename="chatwindow.cpp" line="586"/>
         <source>Status</source>
         <translation>상태</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="583"/>
+        <location filename="chatwindow.cpp" line="587"/>
         <source>Files</source>
         <translation>파일</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="584"/>
+        <location filename="chatwindow.cpp" line="588"/>
         <source>Connection</source>
         <translation>연결</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="585"/>
+        <location filename="chatwindow.cpp" line="589"/>
         <source>Load</source>
         <translation>불러오기</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="586"/>
+        <location filename="chatwindow.cpp" line="590"/>
         <source>Client</source>
         <translation>클라이언트</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="587"/>
+        <location filename="chatwindow.cpp" line="591"/>
         <source>OS</source>
         <translation>OS</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="728"/>
+        <location filename="chatwindow.cpp" line="732"/>
         <source>Date: %1</source>
         <translation>날짜: %1</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="867"/>
+        <location filename="chatwindow.cpp" line="871"/>
         <source>System:</source>
         <translation>시스템:</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="879"/>
+        <location filename="chatwindow.cpp" line="883"/>
         <source>User #%1 is now connected.</source>
         <translation>사용자 #%1 님이 연결되었습니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="889"/>
+        <location filename="chatwindow.cpp" line="893"/>
         <source>User #%1 (a.k.a %2) has disconnected.</source>
         <translation>사용자 #%1 (a.k.a %2) 님이 끊었습니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="892"/>
+        <location filename="chatwindow.cpp" line="896"/>
         <source>User #%1 has disconnected.</source>
         <translation>사용자 #%1 님이 끊었습니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="900"/>
+        <location filename="chatwindow.cpp" line="904"/>
         <source>User #%1 is now known as %2.</source>
         <translation>사용자 #%1 님은 이제 %2 님입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="916"/>
+        <location filename="chatwindow.cpp" line="920"/>
         <source>User #%1 (a.k.a %2) is now known as %3.</source>
         <translation>사용자 #%1 (a.k.a %2) 님은 이제 %3 님입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="928"/>
+        <location filename="chatwindow.cpp" line="932"/>
         <source>User #%1 (a.k.a %2) is now %3.</source>
         <translation>사용자 #%1 (a.k.a %2) 님은 이제 %3 입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="932"/>
+        <location filename="chatwindow.cpp" line="936"/>
         <source>User #%1 is now %2.</source>
         <translation>사용자 #%1 님은 이제 %2 입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="941"/>
+        <location filename="chatwindow.cpp" line="945"/>
         <source>%1&apos;s IP address is %2.</source>
         <translation>%1 의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="978"/>
+        <location filename="chatwindow.cpp" line="982"/>
         <source>Error:</source>
         <translation>오류:</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="990"/>
+        <location filename="chatwindow.cpp" line="994"/>
         <source>Warning:</source>
         <translation>경보:</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="999"/>
+        <location filename="chatwindow.cpp" line="1003"/>
         <source>You are now %1.</source>
         <translation>당신은 이제 %1 입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1007"/>
+        <location filename="chatwindow.cpp" line="1011"/>
         <source>Name changed to %1.</source>
         <translation>당신은 %1 님 입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1060"/>
+        <location filename="chatwindow.cpp" line="1064"/>
         <source>Action:</source>
         <translation>행동:</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1090"/>
+        <location filename="chatwindow.cpp" line="1094"/>
         <source>User #%1 (a.k.a %2) pinged you.</source>
         <translation>User #%1 (a.k.a %2) pinged you.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1093"/>
+        <location filename="chatwindow.cpp" line="1097"/>
         <source>User #%1 pinged you.</source>
         <translation>User #%1 pinged you.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1106"/>
+        <location filename="chatwindow.cpp" line="1110"/>
         <source>Ping sent to user #%1 (a.k.a %2).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1109"/>
+        <location filename="chatwindow.cpp" line="1113"/>
         <source>Ping sent to user #%1.</source>
         <translation>Ping sent to user #%1.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1127"/>
+        <location filename="chatwindow.cpp" line="1131"/>
         <source>Time request sent to user #%1 (a.k.a %2).</source>
         <translation>Time request sent to user #%1 (a.k.a %2).</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1131"/>
+        <location filename="chatwindow.cpp" line="1135"/>
         <source>Time request sent to user #%1.</source>
         <translation>Time request sent to user #%1.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1140"/>
+        <location filename="chatwindow.cpp" line="1144"/>
         <source>User #%1 (a.k.a %2) is a bot!</source>
         <translation>User #%1 (a.k.a %2) is a bot!</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1143"/>
+        <location filename="chatwindow.cpp" line="1147"/>
         <source>User #%1 is a bot!</source>
         <translation>User #%1 is a bot!</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1152"/>
+        <location filename="chatwindow.cpp" line="1156"/>
         <source>User #%1 (a.k.a %2) was removed from the private chat window.</source>
         <translation>사용자 #%1 (a.k.a %2) 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="1155"/>
+        <location filename="chatwindow.cpp" line="1159"/>
         <source>User #%1 was removed from the private chat window.</source>
         <translation>사용자 #%1 님은 비밀 대화창에서 사라졌습니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="906"/>
+        <location filename="chatwindow.cpp" line="910"/>
         <source>User #%1 is now nameless.</source>
         <translation>사용자 #%1 님은 이제 nameless 님입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="948"/>
+        <location filename="chatwindow.cpp" line="952"/>
         <source>User #%1&apos;s IP address is %2.</source>
         <translation>사용자 #%1&apos;s 님의 IP 주소는 %2 입니다.</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="957"/>
+        <location filename="chatwindow.cpp" line="961"/>
         <source>Ping returned in %1 milliseconds</source>
         <translation>Ping %1 미리초 만에 돌아왔습니다</translation>
     </message>
     <message>
-        <location filename="chatwindow.cpp" line="967"/>
+        <location filename="chatwindow.cpp" line="971"/>
         <source>Uptime: %1, Logged on for %2</source>
         <translation>유지시간: %1, %2 에 로그온 되었음</translation>
     </message>
@@ -3250,8 +3250,8 @@ Date: %4</source>
 <context>
     <name>WUser</name>
     <message>
-        <location filename="chatwindow.cpp" line="1028"/>
-        <location filename="chatwindow.cpp" line="1048"/>
+        <location filename="chatwindow.cpp" line="1032"/>
+        <location filename="chatwindow.cpp" line="1052"/>
         <location filename="user.cpp" line="22"/>
         <location filename="user.cpp" line="53"/>
         <source>Unknown</source>
