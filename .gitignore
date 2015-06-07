@@ -1,0 +1,17 @@
+*.pdb
+*.qm
+*.sdf
+*.sln
+*.vcxproj
+*.vcxproj.filters
+.vs
+Makefile
+Makefile.debug
+Makefile.release
+isplitter/src/debug
+isplitter/src/release
+tools/*/debug
+tools/*/release
+ui_*.h
+unizone/src/debug
+unizone/src/release
