@@ -31,37 +31,36 @@ int main(int argc, char* argv[])
 		{
 			QFile ifile(in);
 			QFile ofile(out);
-		
 
-		if (ifile.open(QIODevice::ReadOnly) == false)
-		{
-			printf("Error opening input file!");
-			return -1;
-		}
-		
-		sz = ifile.size();
+			if (ifile.open(QIODevice::ReadOnly) == false)
+			{
+				printf("Error opening input file!");
+				return -1;
+			}
 
-		if (ofile.open(QIODevice::WriteOnly) == false)
-		{
-			printf("Error opening output file!");
+			sz = ifile.size();
+
+			if (ofile.open(QIODevice::WriteOnly) == false)
+			{
+				printf("Error opening output file!");
+				ifile.close();
+				return -1;
+			}
+			int r;
+			__int64 numbytes = 0;
+			while ((r = ifile.read(buf, 1024)) > 0)
+			{
+				ofile.write(buf, r);
+				numbytes += r;
+			}
+			printf("Read %u bytes.\n", sz);
+			printf("Wrote %Li bytes.\n", numbytes);
 			ifile.close();
-			return -1;
-		}
-		int r;
-		__int64 numbytes = 0;
-		while ((r = ifile.read(buf, 1024)) > 0)
-		{
-			ofile.write(buf, r);
-			numbytes += r;
-		}
-		printf("Read %u bytes.\n", sz); 
-		printf("Wrote %Li bytes.\n", numbytes);
-		ifile.close();
-		ofile.close();
-		if (sz == numbytes)
-		{
-			ifile.remove();
-		}		
+			ofile.close();
+			if (sz == numbytes)
+			{
+				ifile.remove();
+			}
 		}
 	}
 	return 0;

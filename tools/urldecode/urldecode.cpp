@@ -12,7 +12,7 @@
 char
 hextochar(const QByteArray &orig)
 {
-	if (orig.length() != 2) 
+	if (orig.length() != 2)
 		return (char) 0;
 	const char *buf = orig.data();
 	long l = strtol(buf, NULL, 16);
@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 				ofile.write(buf, r);
 				numbytes += r;
 			}
-			printf("Read %u bytes.\n", sz); 
+			printf("Read %u bytes.\n", sz);
 			printf("Wrote %Li bytes.\n", numbytes);
 			ifile.close();
 			ofile.close();

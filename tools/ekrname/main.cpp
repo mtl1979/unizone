@@ -98,7 +98,7 @@ main(int argc, char *argv[])
 				fwrite(buf, 1, r, fout);
 				numbytes += r;
 			}
-			printf("Read %Li bytes.\n", sz); 
+			printf("Read %Li bytes.\n", sz);
 			printf("Wrote %Li bytes.\n", numbytes);
 			fclose(fin);
 			fclose(fout);

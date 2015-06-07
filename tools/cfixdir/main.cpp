@@ -22,13 +22,13 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-        		QTextCodec *cc;
+		QTextCodec *cc;
 		switch (argv[2][0])
 		{
-			case '5': 
+			case '5':
 				cc = QTextCodec::codecForName("Big-5");
 				break;
-			case 'G': 
+			case 'G':
 				cc = QTextCodec::codecForName("GBK");
 				break;
 			default: return -2;
