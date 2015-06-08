@@ -1,13 +1,16 @@
+*.opensdf
 *.pdb
 *.qm
 *.sdf
 *.sln
 *.vcxproj
 *.vcxproj.filters
+*_pch.h.cpp
 .vs
 Makefile
 Makefile.debug
 Makefile.release
+ipch
 isplitter/src/debug
 isplitter/src/release
 tools/*/debug
