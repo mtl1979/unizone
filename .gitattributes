@@ -1,0 +1,12 @@
+*.bat		eol=crlf
+*.c		text
+*.cpp		text
+*.h		text
+*.ico		-text
+*.png		-text
+*.pro		text
+*.qrc		text
+*.rc		text
+*.ts		text
+*.txt		text
+*.ui		text
