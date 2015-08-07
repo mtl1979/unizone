@@ -13,8 +13,8 @@ public:
 	UFileInfo(const QFileInfo & info);
 	UFileInfo(const QString & file);
 	virtual ~UFileInfo();
-	
-	uint32 getModificationTime() const;
+
+	time_t getModificationTime() const;
 	QString getMIMEType() const;
 	QString getPath() const;
 	QString getAbsPath() const;
@@ -37,7 +37,7 @@ private:
 	QString fFilePath;
 	QString fAbsPath;
 	QString fMIMEType;
-	uint32 fModificationTime;
+	time_t fModificationTime;
 	uint64 fSize;
 
 	void InitMIMEType();

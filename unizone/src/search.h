@@ -32,6 +32,7 @@ struct WFileInfo
 	MessageRef fiRef;
 	bool fiFirewalled;
 	WSearchListItem * fiListItem;	// the list view item this file is tied to
+	QString fiInfo;					// Miscellaneous info attribute
 };
 
 class WSearch : public QDialog

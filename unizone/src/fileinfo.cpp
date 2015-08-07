@@ -35,7 +35,7 @@ UFileInfo::getMIMEType() const
 	return fMIMEType;
 }
 
-uint32
+time_t
 UFileInfo::getModificationTime() const
 {
 	return fModificationTime;

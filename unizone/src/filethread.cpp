@@ -123,8 +123,8 @@ WFileThread::ParseDir(const QString & d)
 	QString dir(d);
 
 	if (ParseDirAux(dir) != B_NO_ERROR)
-	{		
-		ScanFiles(dir);		
+	{
+		ScanFiles(dir);
 	}
 }
 
@@ -133,32 +133,32 @@ status_t
 WFileThread::ParseDirAux(QString &dir)
 {
 	status_t ret = B_NO_ERROR;
-	
+
 	dir = ResolveLink(dir);
 
 	PRINT("Symlinks resolved\n");
 
 	QFileInfo *info = new QFileInfo(dir);
-	
+
 	if (info)
 	{
 		// Directory doesn't exist?
 		if (info->exists())
-		{		
+		{
 			PRINT("Exists\n");
-						
+
 			if (info->isDir()) // Directory?
 			{
 				dir = info->absFilePath();
-				
+
 				Lock();
-				
+
 				{
 					ret = fScannedDirs.findIndex(dir) == -1 ? B_ERROR : B_NO_ERROR;
 				}
-				
+
 				Unlock();
-				
+
 				if (ret != B_NO_ERROR)
 				{
 					// Add to checked dirs
@@ -290,21 +290,21 @@ WFileThread::AddFile(const QString & filePath)
 	WString wpath(filePath);
 	PRINT2("Setting to filePath: %S\n", wpath.getBuffer());
 #endif
-	
+
 	UFileInfo *ufi = new UFileInfo(filePath);
-				
+
 	if (ufi)
 	{
 		PRINT2("Set\n");
-		
+
 		if (ufi->isValid())
 		{
 			PRINT2("Exists\n");
-			
+
 			// resolve symlink
 			QString gfn = ufi->getFullName();
 			QString ret = ResolveLink(gfn);
-			
+
 			if (gfn == ret)
 			{
 				// is this a directory?
@@ -320,7 +320,7 @@ WFileThread::AddFile(const QString & filePath)
 					if (size > 0)
 					{
 						QString name = ufi->getName();
-						
+
 						Lock();
 						fFiles.Put(name, filePath);
 						Unlock();
@@ -476,11 +476,14 @@ WFileThread::GetInfo(const QString &file, MessageRef &mref) const
          qPath = qPath.mid(7);
       //
 		int64 size = ufi.getSize();
-		
+
 		mref = GetMessageFromPool();
 		if ( mref() )
 		{
 			mref()->AddInt32("beshare:Modification Time", ufi.getModificationTime());
+#if _MSC_VER >= 1900
+			mref()->AddInt64("unishare:modification_time", ufi.getModificationTime());
+#endif
 			AddStringToMessage(mref, "beshare:Kind", ufi.getMIMEType()); // give BeSharer's some relief
 			AddStringToMessage(mref, "beshare:Path", qPath);
 			AddStringToMessage(mref, "winshare:Path", upath);
@@ -504,7 +507,7 @@ void
 WFileThread::UpdateFileCount()
 {
 	int n = fFiles.GetNumItems();
-	
+
 	SendInt(ScanEvent::ScannedFiles, n);
 }
 #endif

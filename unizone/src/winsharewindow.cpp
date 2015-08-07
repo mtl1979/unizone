@@ -420,7 +420,7 @@ WinShareWindow::Cleanup()
 
 	if (fMenus)
 	{
-		delete fMenus;
+//		Don't delete fMenus!
 		fMenus = NULL;
 	}
 

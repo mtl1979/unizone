@@ -45,9 +45,9 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fQueryBytes = 0;
 	fFileRegExpNeg = fUserRegExpNeg = false;
 	fPending = false;
-	
+
 	// Create the Search Pane
-	
+
 	fSearchTab = new Q3GridLayout(this, 14, 10, 0, -1, "Search Tab");
 	Q_CHECK_PTR(fSearchTab);
 
@@ -77,7 +77,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fSearchTab->setRowStretch(13, 1);
 
 	// Results ListView
-	
+
 	fSearchList = new WUniListView(this);
 	Q_CHECK_PTR(fSearchList);
 
@@ -87,6 +87,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fSearchList->addColumn(tr("Modified"));
 	fSearchList->addColumn(tr("Path"));
 	fSearchList->addColumn(tr("User"));
+	fSearchList->addColumn(tr("Info"));
 
 	fSearchList->setColumnAlignment(WSearchListItem::FileSize, Qt::AlignRight); // <postmaster@raasu.org> 20021103
 	fSearchList->setColumnAlignment(WSearchListItem::Modified, Qt::AlignRight);
@@ -136,7 +137,7 @@ WSearch::WSearch(QWidget * parent, NetClient * fNet)
 	fSearchLabel->setText(tr("Search:"));
 
 	fSearchTab->addMultiCellWidget(fSearchEdit, 1, 1, 4, 9);
-	
+
 	// Download Button
 
 	fDownload = new QPushButton(tr("Download"), this);
@@ -223,7 +224,7 @@ void
 WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled, MessageRef file)
 {
 	PRINT("ADDFILE called\n");
-	
+
 	QString sid = user()->GetUserID();
 
 	RemoveFile(user, filename);
@@ -247,7 +248,7 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 		if ((Match(sid, fUserRegExp) >= 0) != fUserRegExpNeg)
 		{
 			// yes!
-			
+
 			/*
 			 *
 			 * a) Both aren't firewalled or
@@ -257,15 +258,27 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 			 */
 			if (!firewalled || !gWin->fSettings->GetFirewalled() || user()->GetTunneling())
 			{
-				QString qpath, qkind;
+				QString qpath, qkind, qinfo, qmod;
 				uint64 size = 0;
-				int32 mod = 0;
-				
+				int64 mod = 0;
+
 				GetStringFromMessage(file, "beshare:Kind", qkind);
 				GetStringFromMessage(file, "beshare:Path", qpath);
-                                file()->FindInt32("beshare:Modification Time", mod);
-                                file()->FindInt64("beshare:File Size", size);
-				
+#if _MSC_VER >= 1900
+				if (file()->FindInt64("unishare:modification_time", mod) == B_OK)
+				{
+					qmod = QString::number(mod); // <postmaster@raasu.org> 20021126
+				}
+				else
+#endif
+				{
+					int32 mod32 = 0;
+					file()->FindInt32("beshare:Modification Time", mod32);
+					qmod = QString::number(mod32);
+				}
+                file()->FindInt64("beshare:File Size", size);
+				GetStringFromMessage(file, "BeShare:Info", qinfo);
+
 				WFileInfo * info = new WFileInfo;
 				Q_CHECK_PTR(info);
 				info->fiUser = user;
@@ -274,21 +287,21 @@ WSearch::AddFile(const WUserRef &user, const QString &filename, bool firewalled,
 				info->fiSize = size;
 				info->fiRef = file;
 				info->fiFirewalled = firewalled;
-				
+				info->fiInfo = qinfo;
+
 				fQueryBytes += size;
-				
+
 				QString qsize	= fromULongLong(size);
-				QString qmod	= QString::number(mod); // <postmaster@raasu.org> 20021126
 				QString quser	= user()->GetUserName();
-				
-				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser);
+
+				info->fiListItem = new WSearchListItem(fSearchList, filename, qsize, qkind, qmod, qpath, quser, qinfo);
 				Q_CHECK_PTR(info->fiListItem);
-				
+
 				PRINT("Setting key to " INT64_FORMAT_SPEC "\n", size);
-				
+
 				fFileList.Put(MakeKey(filename, sid), info);
 			}
-		}		
+		}
 	}
 	fSearchLock.Unlock();
 	SetResultsMessage();
@@ -422,7 +435,7 @@ WSearch::SplitQuery(const QString &fileExp)
 	{
 		WUserMap &users = fNetClient->Users();
 		WUserIter it = users.GetIterator(HTIT_FLAG_NOREGISTER);
-		
+
 		while (it.HasData())
 		{
 			WUserRef uref = it.GetValue();
@@ -435,9 +448,9 @@ WSearch::SplitQuery(const QString &fileExp)
 			// User Name?
 			QString name = uref()->GetUserName().lower();
 			name = "@" + StripURL(name).stripWhiteSpace();
-			
+
 			// Compare end of fileExp against stripped user name
-			
+
 			if (fileExp.endsWith(name, false))
 			{
 				return fileExp.length() - name.length();
@@ -872,7 +885,7 @@ WSearch::Download()
 		WFileInfo * fi;
 
 		HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
-		
+
 		while (iter.HasData())
 		{
 			fi = iter.GetValue();
@@ -886,9 +899,9 @@ WSearch::Download()
 			if (fi->fiListItem->isSelected())
 			{
 				PRINT("DOWNLOAD: Found item\n");
-				
+
 				fQueue.addItem(fi->fiFilename, fi->fiPath, fi->fiUser);
-			}					
+			}
 		}
 
 		fQueue.run();
@@ -908,7 +921,7 @@ WSearch::DownloadAll()
 
 		WFileInfo * fi;
 		HashtableIterator<QString, WFileInfo *> iter = fFileList.GetIterator(HTIT_FLAG_NOREGISTER);
-		
+
 		while (iter.HasData())
 		{
 			fi = iter.GetValue();
@@ -940,7 +953,7 @@ WSearch::SetResultsMessage()
 	fClear->setEnabled(!fFileList.IsEmpty());
 	fDownload->setEnabled(!fFileList.IsEmpty());
 	fDownloadAll->setEnabled(fFileList.GetNumItems() > 1);
-		
+
 	SetSearchStatus(qmsg, 1);
 }
 
