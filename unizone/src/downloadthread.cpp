@@ -1000,11 +1000,11 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 		killTimer(timerID);
 		timerID = 0;
 	}
-		
+
 	if (fActive) // Do it only once...
 	{
 		fActive = false;
-		
+
 		WDownloadEvent *dis;
 		if (fDownloading)
 		{
@@ -1032,7 +1032,7 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 				else
 				{
 					NextFile();
-					
+
 					dis = new WDownloadEvent(WDownloadEvent::FileFailed);
 					if (dis)
 					{
@@ -1051,11 +1051,11 @@ WDownloadThread::SessionDisconnected(const String & /* sessionID */)
 					dis->SetFailed(false);
 				else
 					dis->SetFailed(true);
-				
+
 				SendReply(dis);
 			}
 		}
-		
+
 		fDownloading = false;
 		fDisconnected = true;
 		if (!fManuallyQueued)
@@ -1271,7 +1271,7 @@ WDownloadThread::Reset()
 		SessionDisconnected(_sessionID);
 	else
 		qmtt->Reset();
-	
+
 	// Make sure we close the file if user queues the transfer manually
 	_CloseFile(fFile);
 
@@ -1615,7 +1615,8 @@ WDownloadThread::_CloseFile(WFile *& file)
 	{
 		QString name = QString::fromWCharArray(file->Filename());
 		CloseFile(file);
-		if (name.startsWith("temp") && fCurrentOffset >= fFileSize)
+		QString tempdir = qgetenv("TEMP");
+		if ((name.startsWith("temp") || name.startsWith(tempdir)) && fCurrentOffset >= fFileSize)
 		{
 			// Move temporary file to final destination
 			QString fixed = fLocalFileDl[fCurFile];

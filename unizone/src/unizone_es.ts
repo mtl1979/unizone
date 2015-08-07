@@ -2738,81 +2738,86 @@ Date: %4</translation>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="136"/>
+        <location filename="search.cpp" line="90"/>
+        <source>Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="search.cpp" line="137"/>
         <source>Search:</source>
         <translation>Buscar:</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="142"/>
+        <location filename="search.cpp" line="143"/>
         <source>Download</source>
         <translation>Descarga</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="163"/>
+        <location filename="search.cpp" line="164"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="156"/>
+        <location filename="search.cpp" line="157"/>
         <source>Stop</source>
         <translation>Detener</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="194"/>
-        <location filename="search.cpp" line="360"/>
-        <location filename="search.cpp" line="1069"/>
+        <location filename="search.cpp" line="195"/>
+        <location filename="search.cpp" line="373"/>
+        <location filename="search.cpp" line="1082"/>
         <source>Idle.</source>
         <translation>Idle.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="200"/>
-        <location filename="search.cpp" line="465"/>
-        <location filename="search.cpp" line="1080"/>
+        <location filename="search.cpp" line="201"/>
+        <location filename="search.cpp" line="478"/>
+        <location filename="search.cpp" line="1093"/>
         <source>Not connected.</source>
         <translation>No conectado.</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="935"/>
+        <location filename="search.cpp" line="948"/>
         <source>Results: %1</source>
         <translation>Resultados: %1</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="170"/>
+        <location filename="search.cpp" line="171"/>
         <source>Clear History</source>
         <translation>Clear History</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="532"/>
+        <location filename="search.cpp" line="545"/>
         <source>User(s) not found!</source>
         <translation>Usuario no introducido!</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="840"/>
+        <location filename="search.cpp" line="853"/>
         <source>Initializing...</source>
         <translation>Initializing...</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="855"/>
+        <location filename="search.cpp" line="868"/>
         <source>Searching for: &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="search.cpp" line="857"/>
+        <location filename="search.cpp" line="870"/>
         <source>Searching...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="search.cpp" line="858"/>
+        <location filename="search.cpp" line="871"/>
         <source>active</source>
         <translation>active</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="1056"/>
+        <location filename="search.cpp" line="1069"/>
         <source>passive</source>
         <translation>passive</translation>
     </message>
     <message>
-        <location filename="search.cpp" line="149"/>
+        <location filename="search.cpp" line="150"/>
         <source>Download All</source>
         <translation type="unfinished"></translation>
     </message>

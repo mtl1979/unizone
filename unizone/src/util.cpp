@@ -332,7 +332,7 @@ MakeSizeString(uint64 s)
 	}
 	else
 	{
-		result.sprintf(UINT64_FORMAT_SPEC " ", s);
+		result = QString::fromAscii("%1 ").arg(s);
 	}
 	result += postFix;
 
@@ -671,13 +671,18 @@ String MakePath(const String &dir, const String &file)
 
 QString MakePath(const QString &dir, const QString &file)
 {
-	QString ret = QDir::convertSeparators(dir);
-	if (!ret.endsWith(QDir::separator()))
-		ret += QDir::separator();
+	if (QDir::isRelativePath(file))
+	{
+		QString ret = QDir::convertSeparators(dir);
+		if (!ret.endsWith(QDir::separator()))
+			ret += QDir::separator();
 
-	ret += file;
+		ret += file;
 
-	return ret;
+		return ret;
+	}
+	else
+		return file;
 }
 
 /*
