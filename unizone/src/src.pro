@@ -78,14 +78,14 @@ SOURCES1 =	aboutdlgimpl.cpp \
 			wstring.cpp \
 			wsystemevent.cpp \
 			wwarningevent.cpp \
-			Log.cpp
+			Log.cpp \
+			muscle/qtsupport/QMessageTransceiverThread.cpp \
+			muscle/qtsupport/QAcceptSocketsThread.cpp
 
 SOURCES1 +=	$$DEBUG_SOURCES
 
 #Source files for MUSCLE
-SOURCES2 =  muscle/qtsupport/QMessageTransceiverThread.cpp \
-			muscle/qtsupport/QAcceptSocketsThread.cpp \
-			muscle/iogateway/AbstractMessageIOGateway.cpp \
+SOURCES2 =  		muscle/iogateway/AbstractMessageIOGateway.cpp \
 			muscle/iogateway/MessageIOGateway.cpp \
 			muscle/iogateway/PlainTextMessageIOGateway.cpp \
 			muscle/iogateway/RawDataMessageIOGateway.cpp \
