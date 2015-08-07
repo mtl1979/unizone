@@ -98,8 +98,13 @@ main(int argc, char *argv[])
 				fwrite(buf, 1, r, fout);
 				numbytes += r;
 			}
+#ifdef WIN32
+			printf("Read %I64i bytes.\n", sz);
+			printf("Wrote %I64i bytes.\n", numbytes);
+#else
 			printf("Read %Li bytes.\n", sz);
 			printf("Wrote %Li bytes.\n", numbytes);
+#endif
 			fclose(fin);
 			fclose(fout);
 			if (sz == numbytes)
