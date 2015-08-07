@@ -73,7 +73,11 @@ int main(int argc, char* argv[])
 		}
 		printf("Read %u bytes.\n", sz);
 
+#ifdef WIN32
+		printf("Wrote %I64i bytes.\n", numbytes);
+#else
 		printf("Wrote %Li bytes.\n", numbytes);
+#endif
 		ifile.close();
 		ofile.close();
 		if (sz == numbytes)
