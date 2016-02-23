@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = isplitter tools unizone
+SUBDIRS = tools unizone
