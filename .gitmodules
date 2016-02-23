@@ -15,9 +15,3 @@
 	url = https://github.com/mtl1979/zlib.git
 	branch = unizone
 	update = rebase
-
-[submodule "isplitter"]
-	path = isplitter
-	url = https://github.com/mtl1979/isplitter.git
-	branch = develop
-	update = rebase
