@@ -5,7 +5,7 @@
 #include "wstring.h"
 #include "wutil.h"
 
-#if defined(WIN32) || defined(_WIN32)
+#if (defined(WIN32) || defined(_WIN32)) && (_MSC_VER < 1800)
 #include "windows\vsscanf.h"
 #include <stdlib.h>
 #endif
@@ -60,7 +60,6 @@ WString::~WString()
 	free();
 }
 
-
 QString
 WString::toQString() const
 {
@@ -70,14 +69,23 @@ WString::toQString() const
 WString &
 WString::operator=(const wchar_t *str)
 {
-	free();
 	if (str)
 	{
-#ifdef _MSC_VER
-		buffer = _wcsdup(str);
+		size_t len = wcslen(str);
+		wchar_t *buf2 = (wchar_t*)realloc(buffer, (len + 1) * sizeof(wchar_t));
+		if (buf2)
+		{
+#if __STDC_WANT_SECURE_LIB__
+			wcopy_s(buf2, len + 1, str, len);
 #else
-		buffer = wcsdup(str);
+			buf2 = wcscpy(buf2, str);
 #endif
+			buffer = buf2;
+		}
+	}
+	else
+	{
+		free();
 	}
 	return *this;
 }
@@ -85,14 +93,23 @@ WString::operator=(const wchar_t *str)
 WString &
 WString::operator=(const WString &str)
 {
-	free();
 	if (str.getBuffer())
 	{
-#ifdef _MSC_VER
-		buffer = _wcsdup(str.getBuffer());
+		size_t len = str.length();
+		wchar_t *buf2 = (wchar_t*)realloc(buffer, (len + 1) * sizeof(wchar_t));
+		if (buf2)
+		{
+#if __STDC_WANT_SECURE_LIB__
+			wcopy_s(buf2, len + 1, str.getBuffer(), len);
 #else
-		buffer = wcsdup(str.getBuffer());
+			buf2 = wcscpy(buf2, str.getBuffer());
 #endif
+			buffer = buf2;
+		}
+	}
+	else
+	{
+		free();
 	}
 	return *this;
 }
@@ -100,8 +117,13 @@ WString::operator=(const WString &str)
 WString &
 WString::operator=(const QString &str)
 {
-	free();
-	buffer = qStringToWideChar(str);
+	wchar_t *buf2 = (wchar_t*)realloc(buffer, (str.length() + 1) * sizeof(wchar_t));
+	if (buf2)
+	{
+		int len = str.toWCharArray(buf2);
+		buf2[len] = 0;
+		buffer = buf2;
+	}
 	return *this;
 }
 
@@ -120,7 +142,7 @@ WString::operator+=(const wchar_t *str)
 #else
 			wcat(buf2, str, oldlen);
 #endif
-			setBuffer(buf2);
+			buffer = buf2;
 		}
 	}
 	else // No string to append to
@@ -149,7 +171,7 @@ WString::operator+=(const WString &str)
 #else
 			wcat(buf2, str.getBuffer(), oldlen);
 #endif
-			setBuffer(buf2);
+			buffer = buf2;
 		}
 	}
 	else // No string to append to
@@ -175,7 +197,7 @@ WString::operator+=(const QString &str)
 #else
 			wcat(buf2, s2.getBuffer(), oldlen);
 #endif
-			setBuffer(buf2);
+			buffer = buf2;
 		}
 	}
 	else // No string to append to
@@ -350,9 +372,14 @@ WString::reverse() const
 	if (buffer)
 	{
 		wchar_t *buf2;
+#ifdef _MSC_VER
+		buf2 = _wcsdup(buffer);
+		buf2 = _wcsrev(buf2);
+#else
 		size_t len = wcslen(buffer);
 		buf2 = new wchar_t[len + 1];
 		wreverse(buf2, buffer, len);
+#endif
 		s2.setBuffer(buf2);
 	}
 	return s2;
