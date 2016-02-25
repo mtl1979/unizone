@@ -69,13 +69,14 @@ WFile::Exists(const WString &name)
 	if (name.getBuffer() != NULL)
 	{
 		FILE * f;
-#if	__STDC_WANT_SECURE_LIB__
+#if __STDC_WANT_SECURE_LIB__
 		errno_t err = _wfopen_s(&f, name.getBuffer(), L"r");
-		if (err == 0)
+		if (err != 0)
+			return false;
 #else
 		f = _wfopen(name.getBuffer(), L"r");
-		if (f)
 #endif
+		if (f)
 		{
 			fclose(f);
 			ret = true;
