@@ -6,6 +6,7 @@
 *.qm
 *.sdf
 *.sln
+*.VC.opendb
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
@@ -20,6 +21,7 @@ isplitter/src/release
 tools/*/debug
 tools/*/release
 ui_*.h
-unizone/src/debug
-unizone/src/release
+src/debug
+src/release
 /plugins
+/Setup1
