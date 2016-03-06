@@ -1,0 +1,15 @@
+defined(qtPrepareTool)|load(qt_functions) ### Qt 5: see default_pre.prf
+qtPrepareTool(QMAKE_LUPDATE, lupdate)
+
+!isEmpty(TRANSLATIONS) {
+    lupdate.input = TRANSLATIONS
+    lupdate.depends = $$_PRO_FILE_ $$SOURCES $$FORMS
+    lupdate.output = ${QMAKE_FILE_BASE}.ts
+    lupdate.variable_out = TRANSLATION_FILES
+    lupdate.commands = $$QMAKE_LUPDATE $$_PRO_FILE_ -ts ${QMAKE_FILE_IN}
+    lupdate.CONFIG += no_link no_clean explicit_dependencies recursive target_predeps
+    lupdate.name = LUPDATE $$_PRO_FILE_
+    silent:lupdate.commands = @echo lupdate $$_PRO_FILE_ && $$lupdate.commands
+    QMAKE_EXTRA_COMPILERS += lupdate
+    INCREDIBUILD_XGE += lupdate
+}

@@ -9,7 +9,7 @@ CONFIG(debug, debug|release) {
 	DEBUG_SOURCES = debugimpl.cpp
 }
 
-CONFIG += precompile_header
+CONFIG += precompile_header lrelease lupdate
 CONFIG -= debug
 
 #Source files for Unizone
@@ -267,31 +267,6 @@ target.path = ../..
 INSTALLS += target
 
 !equals(TEMPLATE, vcapp) {
-isEmpty(QMAKE_LUPDATE) {
-	win32:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]\\lupdate.exe
-	else:QMAKE_LUPDATE = $$[QT_INSTALL_BINS]/lupdate
-}
-
-updatets.input = TRANSLATIONS
-updatets.depends = $$SOURCES1 $$FORMS src.pro
-updatets.output = ${QMAKE_FILE_IN}
-updatets.commands = $$QMAKE_LUPDATE src.pro
-updatets.CONFIG += no_link no_clean explicit_dependencies recursive target_predeps
-
-QMAKE_EXTRA_COMPILERS += updatets
-
-isEmpty(QMAKE_LRELEASE) {
-	win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe
-	else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
-}
-
-updateqm.input = TRANSLATIONS
-updateqm.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-updateqm.CONFIG += no_link recursive target_predeps
-
-QMAKE_EXTRA_COMPILERS += updateqm
-
 translations.files = $$TRANSLATIONS
 translations.files ~= s/\\.ts/.qm/g
 translations.path = ../../translations

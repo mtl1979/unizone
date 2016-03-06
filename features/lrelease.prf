@@ -1,0 +1,15 @@
+defined(qtPrepareTool)|load(qt_functions) ### Qt 5: see default_pre.prf
+qtPrepareTool(QMAKE_LRELEASE, lrelease)
+
+!isEmpty(TRANSLATIONS) {
+
+    lrelease.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_BASE}.qm
+    lrelease.output = ${QMAKE_FILE_BASE}.qm
+    lrelease.input = TRANSLATIONS
+    lrelease.variable_out = GENERATED_FILES
+    lrelease.CONFIG += no_link recursive target_predeps
+    lrelease.name = LRELEASE ${QMAKE_FILE_IN}
+    silent:lrelease.commands = @echo lrelease ${QMAKE_FILE_IN} && $$lrelease.commands
+    QMAKE_EXTRA_COMPILERS += lrelease
+    INCREDIBUILD_XGE += lrelease
+}
