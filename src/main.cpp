@@ -200,6 +200,7 @@ main( int argc, char** argv )
 	QString lfile;
 	if (!WFile::Exists(wlangfile))
 	{
+NoTranslation:
 		lfile = Q3FileDialog::getOpenFileName(
 #ifdef _WIN32
 			MakePath(gAppDir, "translations"),
@@ -212,9 +213,9 @@ main( int argc, char** argv )
 			// Save selected language's translator filename
 			if ( lang.Open(wlangfile,
 #if defined(WIN32) || defined(_WIN32)
-				O_WRONLY | O_CREAT | O_BINARY
+				O_WRONLY | O_CREAT | O_BINARY | O_TRUNC
 #else
-				O_WRONLY | O_CREAT
+				O_WRONLY | O_CREAT | O_TRUNC
 #endif
 			   ) )
 			{
@@ -244,16 +245,17 @@ main( int argc, char** argv )
 	// Install translator ;)
 	if (!lfile.isEmpty())
 	{
-		if (WFile::Exists(lfile))
+		if (WFile::Exists(lfile) && qtr.load(lfile))
 		{
-			if (qtr.load(lfile))
-			{
 #ifdef _DEBUG
-				WString wfile(QDir::convertSeparators(lfile));
-				PRINT("Loaded translation: %S\n", wfile.getBuffer());
+			WString wfile(QDir::convertSeparators(lfile));
+			PRINT("Loaded translation: %S\n", wfile.getBuffer());
 #endif
-				app.installTranslator( &qtr );
-			}
+			app.installTranslator(&qtr);
+		}
+		else
+		{
+			goto NoTranslation;
 		}
 		// Qt's own translator file
 		QFileInfo qfi(lfile);
