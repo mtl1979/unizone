@@ -56,7 +56,6 @@ SOURCES1 =	aboutdlgimpl.cpp \
 			titanic.cpp \
 			tokenizer.cpp \
 			transferitem.cpp \
-			uenv.cpp \
 			ulistview.cpp \
 			updateclient.cpp \
 			uploadimpl.cpp \

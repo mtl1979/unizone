@@ -22,7 +22,6 @@
 #include "wfile.h"
 #include "wstring.h"
 #include "util.h"
-#include "uenv.h"
 
 #ifdef MUSCLE_ENABLE_SSL
 #  ifdef UNICODE
@@ -66,64 +65,25 @@ SetWorkingDirectory(const char *app)
 		}
 	}
 }
-#else
-QString
-GetAppDirectory()
-{
-	// we have to use some windows api to get our path...
-	TCHAR * name = new TCHAR[MAX_PATH];	// maximum size for Win32 filenames
-	Q_CHECK_PTR(name);
-	if (GetModuleFileName(NULL,				/* current apps module */
-							name,			/* buffer */
-							MAX_PATH		/* buffer length */
-							) != 0)
-	{
-#ifdef UNICODE
-		qDebug("Module filename: %ls", name);
-#else
-		qDebug("Module filename; %s", name);
-#endif
-		PathRemoveFileSpec(name);
-		if (SetCurrentDirectory(name) == 0)
-		{
-			GetCurrentDirectory(MAX_PATH, name);
-#ifdef UNICODE
-			qDebug("Current directory: %ls", name);
-#else
-			qDebug("Current directory: %s", name);
-#endif
-		}
-		else
-#ifdef UNICODE
-			qDebug("Application directory: %ls", name);
-#else
-			qDebug("Application directory: %s", name);
-#endif
-	}
-#ifdef UNICODE
-	QString qname = QString::fromUtf16((const ushort *) name);
-#else
-	QString qname = QString::fromLocal8Bit(name);
-#endif
-	delete [] name;
-	name = NULL; // <postmaster@raasu.org> 20021027
-	return qname;
-}
 #endif
 
 int
 main( int argc, char** argv )
 {
+	QApplication app( argc, argv );
+	QTranslator qtr( 0 );
+	QTranslator qtr2( 0 );
+
 #ifdef _WIN32
 #  ifdef MUSCLE_ENABLE_SSL
      TCHAR publicKeyFilePath[255];
 #  endif
 
-	QString datadir = EnvironmentVariable("APPDATA");
+	QString datadir = qgetenv("APPDATA");
 	QDir(datadir).mkdir("Unizone");
 	datadir = MakePath(datadir, "Unizone");
 	gDataDir = datadir;
-	gAppDir = GetAppDirectory();
+	gAppDir = QDir::toNativeSeparators(app.applicationDirPath());
 	// Set our working directory
 	QDir::setCurrent(gDataDir);
 #else
@@ -135,10 +95,6 @@ main( int argc, char** argv )
 	muscle::CompleteSetupSystem fMuscle;
 
 	fStartTime = GetCurrentTime64();
-
-	QApplication app( argc, argv );
-	QTranslator qtr( 0 );
-	QTranslator qtr2( 0 );
 
 	// Set alternative settings file if requested
 
@@ -261,7 +217,7 @@ NoTranslation:
 		QFileInfo qfi(lfile);
 		QString langfile = qfi.fileName().replace(QRegExp("unizone"), "qt");
 		QString qt_lang = QString::null;
-		QString qtdir = EnvironmentVariable("QTDIR");
+		QString qtdir = qgetenv("QTDIR");
 		if (qtdir != QString::null)
 		{
 			QString tr_dir = MakePath(qtdir, "translations");
