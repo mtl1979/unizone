@@ -37,7 +37,21 @@ WListThread::InternalThreadEntry()
 	fFileScanThread->Lock();
 	int numShares = fFileScanThread->GetNumFiles();
 	if (win->Settings()->GetInfo())
-		SystemEvent(fOwner, tr("Sharing %1 file(s).").arg(numShares));
+	{
+		QString shares;
+		switch (numShares)
+		{
+		case 0:
+			shares = tr("No shared files.");
+			break;
+		case 1:
+			shares = tr("Sharing 1 file.");
+			break;
+		default:
+			shares = tr("Sharing %1 files.").arg(numShares);
+		}
+		SystemEvent(fOwner, shares);
+	}
 	fNet->SetFileCount(numShares);
 	PRINT("Doing a scan of the returned files for uploading.\n");
 	int m = 0;

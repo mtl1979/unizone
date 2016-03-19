@@ -1495,9 +1495,23 @@ Date: %4</translation>
 <context>
     <name>WListThread</name>
     <message>
-        <location filename="listthread.cpp" line="40"/>
         <source>Sharing %1 file(s).</source>
-        <translation>%1 fil(er) deladen.</translation>
+        <translation type="obsolete">%1 fil(er) deladen.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="45"/>
+        <source>No shared files.</source>
+        <translation>Inga filer deladen.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="48"/>
+        <source>Sharing 1 file.</source>
+        <translation>1 fil deladen.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="51"/>
+        <source>Sharing %1 files.</source>
+        <translation>%1 filer deladen.</translation>
     </message>
 </context>
 <context>

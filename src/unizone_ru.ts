@@ -1495,9 +1495,23 @@ Date: %4</translation>
 <context>
     <name>WListThread</name>
     <message>
-        <location filename="listthread.cpp" line="40"/>
         <source>Sharing %1 file(s).</source>
-        <translation>Доступно локальных файлов %1 file(s).</translation>
+        <translation type="obsolete">Доступно локальных файлов %1 file(s).</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="45"/>
+        <source>No shared files.</source>
+        <translation>Доступно локальных файлов 0 files.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="48"/>
+        <source>Sharing 1 file.</source>
+        <translation>Доступно локальных файлов 1 file.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="51"/>
+        <source>Sharing %1 files.</source>
+        <translation>Доступно локальных файлов %1 files.</translation>
     </message>
 </context>
 <context>

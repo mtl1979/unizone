@@ -1495,8 +1495,22 @@ Date: %4</source>
 <context>
     <name>WListThread</name>
     <message>
-        <location filename="listthread.cpp" line="40"/>
         <source>Sharing %1 file(s).</source>
+        <translation type="obsolete">%1 개의 파일 공유 중.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="45"/>
+        <source>No shared files.</source>
+        <translation>0개의 파일 공유 중.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="48"/>
+        <source>Sharing 1 file.</source>
+        <translation>1 개의 파일 공유 중.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="51"/>
+        <source>Sharing %1 files.</source>
         <translation>%1 개의 파일 공유 중.</translation>
     </message>
 </context>

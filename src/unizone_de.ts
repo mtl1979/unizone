@@ -1495,9 +1495,23 @@ Date: %4</translation>
 <context>
     <name>WListThread</name>
     <message>
-        <location filename="listthread.cpp" line="40"/>
         <source>Sharing %1 file(s).</source>
-        <translation>%1 anteilige Dateie(n).</translation>
+        <translation type="obsolete">%1 anteilige Dateie(n).</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="45"/>
+        <source>No shared files.</source>
+        <translation>Keine anteilige Dateien.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="48"/>
+        <source>Sharing 1 file.</source>
+        <translation>1 anteilige Dateie.</translation>
+    </message>
+    <message>
+        <location filename="listthread.cpp" line="51"/>
+        <source>Sharing %1 files.</source>
+        <translation></translation>
     </message>
 </context>
 <context>
