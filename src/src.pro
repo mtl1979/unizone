@@ -1,4 +1,5 @@
 TARGET = Unizone
+GUID = {B3762BFC-B170-3669-A95C-DB75E023DDB5}
 DEBUG_SOURCES =
 # uncomment and set following define to base directory of openssl to enable SSL support
 #SSLDIR = c:\\build\\openssl-1.0.1h
