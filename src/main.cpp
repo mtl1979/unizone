@@ -154,16 +154,31 @@ main( int argc, char** argv )
 	// Load language file
 	WFile lang;
 	QString lfile;
+	QString ldir = MakePath(gAppDir, "translations");
+	QDir ld(ldir);
+	// Try to find directory containing translation files
+	if (!ld.exists())
+	{
+		ld.cdUp();
+		// If there is no "translations" sub-directory, check the directory containing the executable
+		if (ld.exists("unizone_en.qm"))
+		{
+			ldir = gAppDir;
+		}
+		else
+		{
+			// ... then try its parent directory, for example if we are running from Visual Studio
+			ld.cdUp();
+			if (ld.exists("unizone_en.qm"))
+			{
+				ldir = QDir::convertSeparators(ld.absolutePath());
+			}
+		}
+	}
 	if (!WFile::Exists(wlangfile))
 	{
 NoTranslation:
-		lfile = Q3FileDialog::getOpenFileName(
-#ifdef _WIN32
-			MakePath(gAppDir, "translations"),
-#else
-			gAppDir,
-#endif
-			"unizone_*.qm", NULL );
+		lfile = Q3FileDialog::getOpenFileName( ldir, "unizone_*.qm", NULL );
 		if (!lfile.isEmpty())
 		{
 			// Save selected language's translator filename
