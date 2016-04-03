@@ -79,7 +79,7 @@ main( int argc, char** argv )
      TCHAR publicKeyFilePath[255];
 #  endif
 
-	QString datadir = qgetenv("APPDATA");
+	QString datadir = QString::fromLocal8Bit(qgetenv("APPDATA").constData());
 	QDir(datadir).mkdir("Unizone");
 	datadir = MakePath(datadir, "Unizone");
 	gDataDir = datadir;
@@ -232,7 +232,7 @@ NoTranslation:
 		QFileInfo qfi(lfile);
 		QString langfile = qfi.fileName().replace(QRegExp("unizone"), "qt");
 		QString qt_lang = QString::null;
-		QString qtdir = qgetenv("QTDIR");
+		QString qtdir = QString::fromLocal8Bit(qgetenv("QTDIR").constData());
 		if (qtdir != QString::null)
 		{
 			QString tr_dir = MakePath(qtdir, "translations");

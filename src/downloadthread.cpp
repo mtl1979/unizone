@@ -1615,7 +1615,7 @@ WDownloadThread::_CloseFile(WFile *& file)
 	{
 		QString name = QString::fromWCharArray(file->Filename());
 		CloseFile(file);
-		QString tempdir = qgetenv("TEMP");
+		QString tempdir = QString::fromLocal8Bit(qgetenv("TEMP").constData());
 		if ((name.startsWith("temp") || name.startsWith(tempdir)) && fCurrentOffset >= fFileSize)
 		{
 			// Move temporary file to final destination
