@@ -5,7 +5,6 @@
 #define NICKLIST_H
 
 #include "ulistview.h"
-#include "nicklist.h"
 
 #include <q3listview.h>
 #include <qpalette.h>

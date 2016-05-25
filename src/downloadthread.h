@@ -6,7 +6,6 @@
 #include <qdatetime.h>
 #include <qtimer.h>
 
-#include "downloadthread.h"
 #include "user.h"
 #include "wfile.h"
 
