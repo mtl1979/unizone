@@ -3274,5 +3274,5 @@ WinShareWindow::GetLocalIP() const
 double
 WinShareWindow::GetServerVersion()
 {
-	return fNetClient ? fNetClient->GetServerVersion() : 0.0f;
+	return fNetClient ? fNetClient->GetServerVersion() : 0.0;
 }

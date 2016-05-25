@@ -696,21 +696,21 @@ WUpload::uploadEvent(WUploadEvent *u)
 				PRINT2("\tSent  : " UINT64_FORMAT_SPEC "\n", got);
 				gWin->UpdateTransmitStats(got);
 
-				double secs = 0.0f;
+				double secs = 0.0;
 
 				if (ut->fLastData.elapsed() > 0)
 				{
-					secs = (double)((double)ut->fLastData.elapsed() / 1000.0f);
+					secs = (double)ut->fLastData.elapsed() / 1000.0;
 				}
 
-				double gotk = 0.0f;
+				double gotk = 0.0;
 
 				if (got > 0)
 				{
-					gotk = (double)((double)((int64)got) / 1024.0f);
+					gotk = (double)((int64)got) / 1024.0;
 				}
 
-				double kps = 0.0f;
+				double kps = 0.0;
 
 				if ( (gotk > 0) && (secs > 0) )
 				{
@@ -721,7 +721,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 				item->setText(WTransferItem::Received, fromULongLong(offset));
 				// <postmaster@raasu.org> 20021104, 20030217, 20030622
 				// elapsed time >= 1 s?
-				if (secs >= 1.0f)
+				if (secs >= 1.0)
 				{
 					ut->SetMostRecentRate(kps);
 					ut->fLastData.restart();
@@ -750,7 +750,7 @@ WUpload::uploadEvent(WUploadEvent *u)
 
 				item->setText(WTransferItem::ETA, ut->GetETA(offset / 1024, size / 1024, gcr));
 
-				item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
+				item->setText(WTransferItem::Rate, QString::number(gcr*1024.0));
 
 				if (done)
 				{

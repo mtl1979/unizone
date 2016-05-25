@@ -149,7 +149,7 @@ WUniListItem::key(int c, bool /* asc */) const
 					o = m;
 				else
 				{
-					o = lrint((double) ( (double) n / (double) m * 10000.0f ));
+					o = lrint(((double) n / (double) m * 10000.0));
 					o = o * 100 + m;
 				}
 #if defined(__amd64) || defined(__amd64__)
@@ -280,7 +280,7 @@ WUniListItem::item(int c)
 			}
 			else
 			{
-				o = llrint((double) ( (double) n / (double) m * 10000.0f ));
+				o = llrint(( (double) n / (double) m * 10000.0 ));
 				o = o * 100 + m;
 			}
 			return o;
@@ -378,21 +378,21 @@ WUniListItem::text(int c) const
 		postFix = qApp->translate( "WUniListItem", "B" );
 		if (ok)
 		{
-			if (n >= 1024.0f)	// > 1 kB?
+			if (n >= 1024.0)	// > 1 kB?
 			{
-				n /= 1024.0f;
+				n /= 1024.0;
 
-				if (n >= 1024.0f)	// > 1 MB?
+				if (n >= 1024.0)	// > 1 MB?
 				{
-					n /= 1024.0f;
+					n /= 1024.0;
 
-					if (n >= 1024.0f)	// > 1 GB?
+					if (n >= 1024.0)	// > 1 GB?
 					{
-						n /= 1024.0f;
+						n /= 1024.0;
 
-						if (n >= 1024.0f) // > 1 TB?
+						if (n >= 1024.0) // > 1 TB?
 						{
-							n /= 1024.f;
+							n /= 1024.0;
 							postFix = qApp->translate( "WUniListItem", "TB" );
 						}
 						else
@@ -408,9 +408,9 @@ WUniListItem::text(int c) const
 
 		}
 		else
-			n = 0.0f;
+			n = 0.0;
 
-		if (n != 0.0f)
+		if (n != 0.0)
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
@@ -433,21 +433,21 @@ WUniListItem::text(int c) const
 		postFix = qApp->translate( "WUniListItem", "B/s" );
 		if (ok)
 		{
-			if (n >= 1024.0f)	// > 1 kB?
+			if (n >= 1024.0)	// > 1 kB?
 			{
-				n /= 1024.0f;
+				n /= 1024.0;
 
-				if (n >= 1024.0f)	// > 1 MB?
+				if (n >= 1024.0)	// > 1 MB?
 				{
-					n /= 1024.0f;
+					n /= 1024.0;
 
-					if (n >= 1024.0f)	// > 1 GB?
+					if (n >= 1024.0)	// > 1 GB?
 					{
-						n /= 1024.0f;
+						n /= 1024.0;
 
-						if (n >= 1024.0f) // > 1 TB?
+						if (n >= 1024.0) // > 1 TB?
 						{
-							n /= 1024.0f;
+							n /= 1024.0;
 							postFix = qApp->translate( "WUniListItem", "TB/s" );
 						}
 						else
@@ -462,9 +462,9 @@ WUniListItem::text(int c) const
 			}
 		}
 		else
-			n = 0.0f;
+			n = 0.0;
 
-		if (n != 0.0f)
+		if (n != 0.0)
 		{
 			result.sprintf("%.2f ", n);
 			result += postFix;
@@ -486,7 +486,7 @@ WUniListItem::text(int c) const
 		q = toLongLong(q2, &ok2);
 		if (ok1 && ok2)
 		{
-			o = 0.0f;
+			o = 0.0;
 			if (q == WSettings::Unlimited)
 			{
 				QString tmp = fromLongLong(p);
@@ -496,9 +496,9 @@ WUniListItem::text(int c) const
 			if (q == 0)
 				return QString::null;
 			if (p == 0)
-				o = 0.0f;
+				o = 0.0;
 			else
-				o = (double) ( (double) p / (double) q * 100.0f );
+				o = (double) p / (double) q * 100.0;
 			QString qp = fromLongLong(p);
 			QString qq = fromLongLong(q);
 			QString qo; qo.sprintf("%3.2f %%", o);

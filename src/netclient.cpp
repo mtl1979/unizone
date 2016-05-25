@@ -169,7 +169,7 @@ NetClient::Disconnect()
 	Cleanup();
 	fLoggedIn = false;
 	fLoginTime = 0;
-	fServerVersion = 0.0f;
+	fServerVersion = 0.0;
 
 	if (IsConnected())
 	{
@@ -766,7 +766,7 @@ NetClient::HandleParameters(const MessageRef & next)
 	if (next()->FindString(PR_NAME_SERVER_VERSION, &serverVersion) == B_OK)
 		fServerVersion = atof(serverVersion);
 	else
-		fServerVersion = 0.0f;
+		fServerVersion = 0.0;
 
 	PRINT("Extracting session id\n");
 	const char * sessionRoot;

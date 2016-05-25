@@ -67,7 +67,7 @@ WDownloadThread::WDownloadThread(QObject * owner, bool * optShutdownFlag)
 	fTimeLeft = 0;
 	fStartTime = 0;
 	fAcceptingOn = 0;
-	fPacket = 8.0f;
+	fPacket = 8.0;
 	fIdles = 0;
 	InitTransferRate();
 	InitTransferETA();
@@ -810,7 +810,7 @@ WDownloadThread::MessageReceived(const MessageRef & msg, const String & /* sessi
 						fFile->Flush();
 						fCurrentOffset += bufsize;
 
-						SetPacketSize((double) bufsize / 1024.0f);
+						SetPacketSize((double) bufsize / 1024.0);
 
 						WDownloadEvent *update = new WDownloadEvent(WDownloadEvent::FileDataReceived);
 						if (update)
@@ -1242,11 +1242,11 @@ WDownloadThread::InitTransferRate()
 {
 	for (int i = 0; i < MAX_RATE_COUNT; i++)
 	{
-		fRate[i] = 0.0f;
+		fRate[i] = 0.0;
 	}
 
 	fRateCount = 0;
-	fPackets = 0.0f;
+	fPackets = 0.0;
 }
 
 void
@@ -1349,15 +1349,15 @@ WDownloadThread::GetETA(int64 cur, int64 max, double rate)
 double
 WDownloadThread::GetCalculatedRate() const
 {
-	double added = 0.0f;
-	double rate = 0.0f;
+	double added = 0.0;
+	double rate = 0.0;
 
 	for (int i = 0; i < fRateCount; i++)
 		added += fRate[i];
 
 	// <postmaster@raasu.org> 20021024,20021026,20021101 -- Don't try to divide zero or by zero
 
-	if ( (added > 0.0f) && (fRateCount > 0) )
+	if ( (added > 0.0) && (fRateCount > 0) )
 		rate = added / (double)fRateCount;
 
 	return rate;
@@ -1374,7 +1374,7 @@ WDownloadThread::SetPacketSize(double s)
 {
 	if (s != fPacket)
 	{
-		if (fPackets > 0.0f)
+		if (fPackets > 0.0)
 			fPackets *= fPacket / s;	// Adjust Packet Count
 		fPacket = s;
 	}
@@ -1389,7 +1389,7 @@ WDownloadThread::GetPacketSize()
 void
 WDownloadThread::SetMostRecentRate(double rate)
 {
-	if (fPackets != 0.0f)
+	if (fPackets != 0.0)
 	{
 		rate *= 1 + fPackets;
 	}
@@ -1402,7 +1402,7 @@ WDownloadThread::SetMostRecentRate(double rate)
 	}
 	else
 		fRate[fRateCount++] = rate;
-	fPackets = 0.0f; // reset packet count
+	fPackets = 0.0; // reset packet count
 }
 
 bool

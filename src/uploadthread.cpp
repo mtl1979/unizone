@@ -56,7 +56,7 @@ WUploadThread::WUploadThread(QObject * owner, bool * optShutdownFlag)
 	fTXRate = 0;
 	fTimeLeft = 0;
 	fStartTime = 0;
-	fPacket = 8.0f;
+	fPacket = 8.0;
 	fIdles = 0;
 	fCompression = -1;
 
@@ -514,11 +514,11 @@ WUploadThread::MessageReceived(const MessageRef & msg, const String & /* session
 				SetCompression(6);
 			}
 
-			double dpps = GetPacketSize() * 1024.0f;
+			double dpps = GetPacketSize() * 1024.0;
 			int32 pps = lrint(dpps);
 
                         if ((msg()->FindInt32("unishare:preferred_packet_size", pps) == B_OK) && (pps < lrint(dpps)))
-				SetPacketSize((double) pps / 1024.0f);
+				SetPacketSize((double) pps / 1024.0);
 			break;
 		}
 
@@ -757,7 +757,7 @@ WUploadThread::DoUpload()
 		if (uref())
 		{
 			// think about doing this in a dynamic way (depending on connection)
-			double dpps = GetPacketSize() * 1024.0f;
+			double dpps = GetPacketSize() * 1024.0;
 			uint32 bufferSize = lrint(dpps);
 			ByteBufferRef buf = GetByteBufferFromPool(bufferSize);
 
@@ -1234,11 +1234,11 @@ WUploadThread::InitTransferRate()
 {
 	for (int i = 0; i < MAX_RATE_COUNT; i++)
 	{
-		fRate[i] = 0.0f;
+		fRate[i] = 0.0;
 	}
 
 	fRateCount = 0;
-	fPackets = 0.0f;
+	fPackets = 0.0;
 }
 
 void
@@ -1269,7 +1269,7 @@ WUploadThread::SetPacketSize(double s)
 {
 	if (fPacket != s)
 	{
-		if (fPackets > 0.0f)
+		if (fPackets > 0.0)
 			fPackets *= fPacket / s;	// Adjust Packet Count
 		fPacket = s;
 	}
@@ -1327,15 +1327,15 @@ WUploadThread::GetETA(int64 cur, int64 max, double rate)
 double
 WUploadThread::GetCalculatedRate() const
 {
-	double added = 0.0f;
-	double rate = 0.0f;
+	double added = 0.0;
+	double rate = 0.0;
 
 	for (int i = 0; i < fRateCount; i++)
 		added += fRate[i];
 
 	// <postmaster@raasu.org> 20021024,20021026,20021101 -- Don't try to divide zero or by zero
 
-	if ( (added > 0.0f) && (fRateCount > 0) )
+	if ( (added > 0.0) && (fRateCount > 0) )
 		rate = added / (double)fRateCount;
 
 	return rate;
@@ -1350,7 +1350,7 @@ WUploadThread::SetPacketCount(double bytes)
 void
 WUploadThread::SetMostRecentRate(double rate)
 {
-	if (fPackets != 0.0f)
+	if (fPackets != 0.0)
 	{
 		rate *= 1 + fPackets;
 	}
@@ -1363,7 +1363,7 @@ WUploadThread::SetMostRecentRate(double rate)
 	}
 	else
 		fRate[fRateCount++] = rate;
-	fPackets = 0.0f; // reset packet count
+	fPackets = 0.0; // reset packet count
 }
 
 bool

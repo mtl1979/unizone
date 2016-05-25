@@ -859,21 +859,21 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				PRINT2("\tGot   : %z\n", got);
 				gWin->UpdateReceiveStats(got);
 
-				double secs = 0.0f;
+				double secs = 0.0;
 
 				if (dt->fLastData.elapsed() > 0)
 				{
-					secs = (double)((double)dt->fLastData.elapsed() / 1000.0f);
+					secs = (double)dt->fLastData.elapsed() / 1000.0;
 				}
 
-				double gotk = 0.0f;
+				double gotk = 0.0;
 
 				if (got > 0)
 				{
-					gotk = (double)((double)got / 1024.0f);
+					gotk = ((double)got / 1024.0);
 				}
 
-				double kps = 0.0f;
+				double kps = 0.0;
 
 				if ( (gotk > 0) && (secs > 0) )
 				{
@@ -884,7 +884,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 				item->setText(WTransferItem::Received, fromULongLong(offset));
 				// <postmaster@raasu.org> 20021104, 20030217, 20030622
 				// elapsed time >= 1 s?
-				if (secs >= 1.0f)
+				if (secs >= 1.0)
 				{
 					dt->SetMostRecentRate(kps);
 					dt->fLastData.restart();
@@ -911,7 +911,7 @@ WDownload::downloadEvent(WDownloadEvent * d)
 
 				item->setText(WTransferItem::ETA, dt->GetETA(offset / 1024, size / 1024, gcr));
 
-				item->setText(WTransferItem::Rate, QString::number(gcr*1024.0f));
+				item->setText(WTransferItem::Rate, QString::number(gcr*1024.0));
 
 				if (d->Done())
 				{

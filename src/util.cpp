@@ -312,19 +312,19 @@ MakeSizeString(uint64 s)
 	QString result, postFix;
 	double n = (double) (int64) s;
 	postFix = qApp->translate("MakeSizeString","B");
-	if (n > 1024.0f)	// > 1 kB?
+	if (n > 1024.0)	// > 1 kB?
 	{
-		n /= 1024.0f;
+		n /= 1024.0;
 		postFix = qApp->translate("MakeSizeString","kB"); // we're in kilobytes now, <postmaster@raasu.org> 20021024 KB -> kB
 
-		if (n > 1024.0f)	// > 1 MB?
+		if (n > 1024.0)	// > 1 MB?
 		{
-			n /= 1024.0f;
+			n /= 1024.0;
 			postFix = qApp->translate("MakeSizeString","MB");
 
-			if (n > 1024.0f)	// > 1 GB?
+			if (n > 1024.0)	// > 1 GB?
 			{
-				n /= 1024.0f;
+				n /= 1024.0;
 				postFix = qApp->translate("MakeSizeString","GB");
 			}
 		}
@@ -615,11 +615,11 @@ QString
 ComputePercentString(int64 cur, int64 max)
 {
 	QString ret;
-	double p = 0.0f;
+	double p = 0.0;
 
 	if ( (cur > 0) && (max > 0) )
 	{
-		p = ((double)cur / (double)max) * 100.0f;
+		p = ((double)cur / (double)max) * 100.0;
 	}
 
 	ret.sprintf("%.2f", p);
