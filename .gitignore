@@ -21,4 +21,8 @@ ipch
 ui_*.h
 /*/debug
 /*/release
+/src/moc_*.cpp
+/src/qrc_*.cpp
+/src/Unizone
+/src/Unizone.gch/
 /plugins

@@ -762,7 +762,7 @@ CalculateFileChecksum(const ByteBufferRef &buf)
 	return CalculateFileChecksum(data, bufsize);
 }
 
-muscle::ip_address
+muscle::IPAddress
 GetHostByName(const QString &name)
 {
 	return GetHostByName((const char *) name.local8Bit());

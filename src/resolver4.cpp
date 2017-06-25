@@ -125,7 +125,7 @@ ResolveAddress4(const QString &address)
 #ifdef MUSCLE_AVOID_IPV6
 		res = GetHostByName(address);
 #else
-		muscle::ip_address res2;
+		muscle::IPAddress res2;
 		res2 = GetHostByName(address);
 		res = ConvertIP4(res2);
 #endif

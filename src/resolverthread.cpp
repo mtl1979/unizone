@@ -42,7 +42,7 @@ ResolverThread::PrintAddressInfo(const WUserRef &user, bool verbose)
 #ifdef MUSCLE_AVOID_IPV6
 	uint32 address = 0;
 #else
-	muscle::ip_address address = 0;
+	muscle::IPAddress address = 0;
 #endif
 	String host;
 
@@ -95,7 +95,7 @@ bool
 #ifdef MUSCLE_AVOID_IPV6
 ResolverThread::PrintAddressInfo(uint32 address, bool verbose)
 #else
-ResolverThread::PrintAddressInfo(muscle::ip_address address, bool verbose)
+ResolverThread::PrintAddressInfo(muscle::IPAddress address, bool verbose)
 #endif
 {
 	String host;
@@ -180,7 +180,7 @@ ResolverThread::QueryEntry(const QString &user, bool verbose)
 #ifdef MUSCLE_AVOID_IPV6
 	uint32 address = 0;
 #else
-	muscle::ip_address address = 0;
+	muscle::IPAddress address = 0;
 #endif
 	if (numMatches > 0)
 	{

@@ -1017,7 +1017,7 @@ NetClient::GetServerIP() const
 #ifdef MUSCLE_AVOID_IPV6
 	uint32 address;
 #else
-	muscle::ip_address address;
+	muscle::IPAddress address;
 #endif
 	String host;;
 	address = ResolveAddress(fServer);

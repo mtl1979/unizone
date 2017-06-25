@@ -37,7 +37,7 @@ private:
 #ifdef MUSCLE_AVOID_IPV6
 	bool PrintAddressInfo(uint32 address, bool verbose);
 #else
-	bool PrintAddressInfo(muscle::ip_address address, bool verbose);
+	bool PrintAddressInfo(muscle::IPAddress address, bool verbose);
 #endif
 
 	mutable Mutex fQueueLock;

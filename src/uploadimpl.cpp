@@ -314,7 +314,7 @@ WUpload::AddUpload(const QString & remoteIP, uint32 port)
 }
 
 void
-WUpload::AddUpload(const ConstSocketRef & socket, muscle::ip_address remoteIP, bool /* queued */)
+WUpload::AddUpload(const ConstSocketRef & socket, muscle::IPAddress remoteIP, bool /* queued */)
 {
 	PRINT("WUpload::AddUpload(int, uint32, bool)\n");
 	WUploadThread * ut = new WUploadThread(this);

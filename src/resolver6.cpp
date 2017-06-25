@@ -33,7 +33,7 @@ using muscle::Queue;
 
 struct NetAddress6
 {
-	muscle::ip_address ip;
+	muscle::IPAddress ip;
 	QString address;
 #if !defined(_MSC_VER) || _MSC_VER < 1800
 	QString aliases;
@@ -67,7 +67,7 @@ UpdateEntry6(NetAddress6 &na, LPHOSTENT lpHostEntry)
 #endif
 
 void
-UpdateEntry6(NetAddress6 &na, muscle::ip_address ip)
+UpdateEntry6(NetAddress6 &na, muscle::IPAddress ip)
 {
 
 	na.ip = ip;					// We need to remember to initialize this
@@ -99,7 +99,7 @@ UpdateEntry6(NetAddress6 &na, muscle::ip_address ip)
 
 #if !defined(_MSC_VER) || _MSC_VER < 1800
 void
-ResolveAliasesAux6(NetAddress6 &na, muscle::ip_address ip)
+ResolveAliasesAux6(NetAddress6 &na, muscle::IPAddress ip)
 {
 	UpdateEntry6(na, ip);
 	if (na.address == QString::null)
@@ -111,10 +111,10 @@ ResolveAliasesAux6(NetAddress6 &na, muscle::ip_address ip)
 }
 #endif
 
-muscle::ip_address
+muscle::IPAddress
 ResolveAddress6(const QString &address)
 {
-	muscle::ip_address res;
+	muscle::IPAddress res;
 	NetAddress6 na;
 	res = GetHostByName(address);
 
@@ -177,14 +177,14 @@ ResolveAddress6(const QString &address)
 	return res;
 }
 
-muscle::ip_address
+muscle::IPAddress
 ResolveAddress6(const String &address)
 {
 	return ResolveAddress6( QString::fromLocal8Bit( address.Cstr() ) );
 }
 
 QString
-ResolveHost6(muscle::ip_address ip)
+ResolveHost6(muscle::IPAddress ip)
 {
 #if !defined(_MSC_VER) || _MSC_VER < 1800
 	struct in6_addr iaHost;	   // Internet address structure
@@ -275,7 +275,7 @@ ResolveHost6(muscle::ip_address ip)
 
 #if !defined(_MSC_VER) || _MSC_VER < 1800
 QString
-ResolveAliases6(muscle::ip_address ip)
+ResolveAliases6(muscle::IPAddress ip)
 {
 	//
 	NetAddress6 na;

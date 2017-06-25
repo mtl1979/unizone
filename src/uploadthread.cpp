@@ -129,7 +129,7 @@ WUploadThread::~WUploadThread()
 }
 
 void
-WUploadThread::SetUpload(const ConstSocketRef &socket, muscle::ip_address remoteIP, WFileThread * ft)
+WUploadThread::SetUpload(const ConstSocketRef &socket, muscle::IPAddress remoteIP, WFileThread * ft)
 {
 	String host;
 	fAccept = false;
@@ -137,7 +137,7 @@ WUploadThread::SetUpload(const ConstSocketRef &socket, muscle::ip_address remote
 	fSocket = socket;
 	fFileThread = ft;
 	// Set string ip too
-	muscle::ip_address _ip = GetPeerIPAddress(fSocket, true);
+	muscle::IPAddress _ip = GetPeerIPAddress(fSocket, true);
 	host = Inet_NtoA(_ip, true);
 	fStrRemoteIP = host.Cstr();
 }
@@ -200,7 +200,7 @@ WUploadThread::InitSession()
 	else if (fAccept)
 	{
 		// <postmaster@raasu.org> 20021026
-		muscle::ip_address sRemoteIP = ResolveAddress(fStrRemoteIP);
+		muscle::IPAddress sRemoteIP = ResolveAddress(fStrRemoteIP);
 		if (qmtt->AddNewConnectSession(sRemoteIP, (uint16)fPort, limit) != B_OK)
 		{
 			WUploadEvent *fail = new WUploadEvent(WUploadEvent::ConnectFailed);

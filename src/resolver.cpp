@@ -71,18 +71,18 @@ ResolveAliases(uint32 ip)
 	return ResolveAliases4(ip);
 }
 #else
-muscle::ip_address
+muscle::IPAddress
 ResolveAddress(const QString &address)
 {
 	uint32 res;
-	muscle::ip_address ip;
+	muscle::IPAddress ip;
 	if (ParseIP4(address, res))
 	{
 		ip.SetLowBits(res);
 		return ip;
 	}
 	ip = ResolveAddress6(address);
-	if (!IsValidAddress(ip))
+	if (!ip.IsValid())
 	{
 		res = ResolveAddress4(address);
 		ip.SetBits(res, 0);
@@ -90,36 +90,36 @@ ResolveAddress(const QString &address)
 	return ip;
 }
 
-muscle::ip_address
+muscle::IPAddress
 ResolveAddress(const String &address)
 {
 	return ResolveAddress( QString::fromLocal8Bit( address.Cstr() ) );
 }
 
 QString
-ResolveHost(muscle::ip_address ip)
+ResolveHost(muscle::IPAddress ip)
 {
-	if (IsIPv4Address(ip))
+	if (ip.IsIPv4())
 		return ResolveHost4(ConvertIP4(ip));
 	return ResolveHost6(ip);
 }
 
 #if !defined(_MSC_VER) || _MSC_VER < 1800
 QString
-ResolveAliases(muscle::ip_address ip)
+ResolveAliases(muscle::IPAddress ip)
 {
-	if (IsIPv4Address(ip))
+	if (ip.IsIPv4())
 		return ResolveAliases4(ConvertIP4(ip));
 	return ResolveAliases6(ip);
 }
 #endif
 
 uint32
-ConvertIP4(muscle::ip_address ip)
+ConvertIP4(muscle::IPAddress ip)
 {
-	if (IsIPv4Address(ip))
+	if (ip.IsIPv4())
 	{
-		return ip.GetLowBits() & 0xFFFFFFFF;
+		return ip.GetIPv4AddressAsUint32();
 	}
 	return 0;
 }

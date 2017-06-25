@@ -9,12 +9,12 @@ using muscle::String;
 
 class QString;
 
-muscle::ip_address ResolveAddress6(const QString &address);
-muscle::ip_address ResolveAddress6(const String &address);
+muscle::IPAddress ResolveAddress6(const QString &address);
+muscle::IPAddress ResolveAddress6(const String &address);
 
-QString ResolveHost6(muscle::ip_address ip);
+QString ResolveHost6(muscle::IPAddress ip);
 #if !defined(_MSC_VER) || _MSC_VER < 1800
-QString ResolveAliases6(muscle::ip_address ip);
+QString ResolveAliases6(muscle::IPAddress ip);
 #endif
 #endif
 #endif

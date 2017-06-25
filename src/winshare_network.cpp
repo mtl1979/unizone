@@ -3157,7 +3157,7 @@ void
 WinShareWindow::ConnectionAccepted(const ConstSocketRef &socketRef)
 {
 	PRINT("\tWinShareWindow::ConnectionAccepted\n");
-	muscle::ip_address ip;
+	muscle::IPAddress ip;
 	if (socketRef() && (ip = GetPeerIPAddress(socketRef, true)) > 0)
 	{
 		OpenUpload();

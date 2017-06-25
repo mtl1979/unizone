@@ -42,7 +42,7 @@ public:
 		UpLoad
 	};
 
-	void AddUpload(const ConstSocketRef & socket, muscle::ip_address remoteIP, bool queued);
+	void AddUpload(const ConstSocketRef & socket, muscle::IPAddress remoteIP, bool queued);
 	void AddUpload(const QString & remoteIP, uint32 port);
 
 	// Upload tunnel

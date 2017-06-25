@@ -20,14 +20,14 @@ QString ResolveAliases(uint32 ip);
 #endif
 #define ConvertIP4(x) x
 #else
-muscle::ip_address ResolveAddress(const QString &address);
-muscle::ip_address ResolveAddress(const String &address);
+muscle::IPAddress ResolveAddress(const QString &address);
+muscle::IPAddress ResolveAddress(const String &address);
 
-QString ResolveHost(muscle::ip_address ip);
+QString ResolveHost(muscle::IPAddress ip);
 #if !defined(_MSC_VER) || _MSC_VER < 1800
-QString ResolveAliases(muscle::ip_address ip);
+QString ResolveAliases(muscle::IPAddress ip);
 #endif
-uint32 ConvertIP4(muscle::ip_address ip);
+uint32 ConvertIP4(muscle::IPAddress ip);
 #endif
 
 #endif

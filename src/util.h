@@ -95,7 +95,7 @@ const QString & CheckIfEmpty(const QString & str, const QString & str2);
 uint32 CalculateFileChecksum(const ByteBufferRef &buf);
 
 // Return (first) IPv4/IPv6 address from hostname
-muscle::ip_address GetHostByName(const QString &name);
+muscle::IPAddress GetHostByName(const QString &name);
 
 
 QString UniqueName(const QString & file, int index); // build up unique name using 'file' and 'index'
