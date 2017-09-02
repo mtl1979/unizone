@@ -22,8 +22,8 @@ class WUploadEvent;
 
 /*
  *
- *  This is my wonderful file upload thread. It handles starting the
- *	connection remote peer and transfering a file(s) to him/her.
+ *  This is my wonderful file upload thread. It handles establishing the
+ *	connection to remote peer and transfering file(s) to him/her.
  *
  */
 

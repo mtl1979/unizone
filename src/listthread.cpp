@@ -43,7 +43,10 @@ WListThread::InternalThreadEntry()
 		{
 		case 0:
 			shares = tr("No shared files.");
-			break;
+			WarningEvent(fOwner, shares);
+			fNet->SetFileCount(0);
+			fFileScanThread->Unlock();
+			return;
 		case 1:
 			shares = tr("Sharing 1 file.");
 			break;

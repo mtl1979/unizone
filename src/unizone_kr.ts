@@ -1504,12 +1504,12 @@ Date: %4</source>
         <translation>0개의 파일 공유 중.</translation>
     </message>
     <message>
-        <location filename="listthread.cpp" line="48"/>
+        <location filename="listthread.cpp" line="51"/>
         <source>Sharing 1 file.</source>
         <translation>1 개의 파일 공유 중.</translation>
     </message>
     <message>
-        <location filename="listthread.cpp" line="51"/>
+        <location filename="listthread.cpp" line="54"/>
         <source>Sharing %1 files.</source>
         <translation>%1 개의 파일 공유 중.</translation>
     </message>

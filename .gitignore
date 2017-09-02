@@ -19,6 +19,7 @@ Makefile.debug
 Makefile.release
 ipch
 ui_*.h
+/enc_temp_folder
 /*/debug
 /*/release
 /src/moc_*.cpp
