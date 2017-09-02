@@ -290,7 +290,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0BEEF84112434BA3A1D302850852FD8B"
             {
-            "SourcePath" = "8:..\\..\\QtSql4.dll"
+            "SourcePath" = "8:c:\\qt\\bin\\QtSql4.dll"
             "TargetName" = "8:QtSql4.dll"
             "Tag" = "8:"
             "Folder" = "8:_1030C6AA9D3B45A2BC0D1B6087F0FF35"
@@ -370,7 +370,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_43DDAFC0DA4140C8AC24988E0EEFCEFB"
             {
-            "SourcePath" = "8:..\\..\\QtNetwork4.dll"
+            "SourcePath" = "8:c:\\qt\\bin\\QtNetwork4.dll"
             "TargetName" = "8:QtNetwork4.dll"
             "Tag" = "8:"
             "Folder" = "8:_1030C6AA9D3B45A2BC0D1B6087F0FF35"
@@ -390,7 +390,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_487BF298B03844D2984CFE082E097BB5"
             {
-            "SourcePath" = "8:..\\..\\Qt3Support4.dll"
+            "SourcePath" = "8:c:\\qt\\bin\\Qt3Support4.dll"
             "TargetName" = "8:Qt3Support4.dll"
             "Tag" = "8:"
             "Folder" = "8:_1030C6AA9D3B45A2BC0D1B6087F0FF35"
@@ -430,7 +430,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C7BE8E9FFA84059AC3AF851E35FA4C1"
             {
-            "SourcePath" = "8:..\\..\\QtGui4.dll"
+            "SourcePath" = "8:c:\\qt\\bin\\QtGui4.dll"
             "TargetName" = "8:QtGui4.dll"
             "Tag" = "8:"
             "Folder" = "8:_1030C6AA9D3B45A2BC0D1B6087F0FF35"
@@ -490,7 +490,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_67D78569D6A94E4DB33F46162D91D31B"
             {
-            "SourcePath" = "8:..\\..\\QtCore4.dll"
+            "SourcePath" = "8:c:\\qt\\bin\\QtCore4.dll"
             "TargetName" = "8:QtCore4.dll"
             "Tag" = "8:"
             "Folder" = "8:_1030C6AA9D3B45A2BC0D1B6087F0FF35"
@@ -710,7 +710,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F040D1E093344A97B42FCDDC2E2B7155"
             {
-            "SourcePath" = "8:..\\..\\QtXml4.dll"
+            "SourcePath" = "8:c:\\qt\\bin\\QtXml4.dll"
             "TargetName" = "8:QtXml4.dll"
             "Tag" = "8:"
             "Folder" = "8:_1030C6AA9D3B45A2BC0D1B6087F0FF35"
