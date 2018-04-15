@@ -1,20 +1,19 @@
-#include "md5.h"
 
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
 #include <qstring.h>
-#include "wfile.h"
 
 #include "util/ByteBuffer.h"
+
+#include "md5.h"
+#include "wfile.h"
 
 using namespace muscle;
 
 #if BYTE_ORDER == LITTLE_ENDIAN
 #define byteSwap(buf, words)	// we're little endian (linux & windows on intel hardware)
 										// so we don't need this
-#define HIDWORD(a) *((unsigned int*)((void *)&a)+1)
-#define LODWORD(a) *((unsigned int*)((void *)&a))
 #else
 void byteSwap(UWORD32 *buf, unsigned int words)
 {
@@ -23,9 +22,17 @@ void byteSwap(UWORD32 *buf, unsigned int words)
 		buf[x] = B_SWAP_INT32(buf[x]);
 	}
 }
-#define HIDWORD(a) *((unsigned int*)((void *)&a))
-#define LODWORD(a) *((unsigned int*)((void *)&a)+1)
 #endif
+
+uint32_t HIDWORD(uint64_t a)
+{
+	return (uint32_t)(a >> 32);
+}
+
+uint32_t LODWORD(uint64_t a)
+{
+	return (uint32_t)a;
+}
 
 /*
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious initialization constants.

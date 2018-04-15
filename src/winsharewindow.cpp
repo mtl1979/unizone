@@ -93,7 +93,7 @@
 
 // uptime
 
-#if defined(__LINUX__) || defined(linux)
+#if defined(__LINUX__) || defined(linux) || defined(__linux__)
 #include <sys/sysinfo.h>
 #elif defined(__FreeBSD__) || defined(__QNX__) || defined(__APPLE__)
 #include <sys/time.h>
@@ -2078,7 +2078,7 @@ WinShareWindow::GetUptime()
 {
 #ifdef WIN32
 	return ((uint64)GetTickCount64()) * 1000;
-#elif defined(__LINUX__) || defined(linux)
+#elif defined(__LINUX__) || defined(linux) || defined(__linux__)
 	struct sysinfo sinfo;
 	sysinfo(&sinfo);
 	uint64 uptime = sinfo.uptime;

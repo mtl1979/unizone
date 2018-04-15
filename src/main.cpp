@@ -45,6 +45,72 @@ int64 GetStartTime()
 	return fStartTime;
 }
 
+WString & GetLangFile()
+{
+	static WString _lf = L"";
+	if (_lf == L"")
+	{
+#ifndef _WIN32
+		_lf = L"unizone.lng";
+#else
+		QString datafile = MakePath(gDataDir, "unizone.lng");
+		_lf = datafile;
+#endif
+	}
+	return _lf;
+}
+
+QString
+ReloadLanguageFile()
+{
+	QString lfile;
+	WString wlangfile = GetLangFile();
+	WFile lang;
+
+	if (!WFile::Exists(wlangfile))
+	{
+		return QString::null;
+	}
+
+	// (Re-)load translator filename
+	if ( lang.Open(wlangfile,
+#if defined(WIN32) || defined(_WIN32)
+			O_RDONLY | O_BINARY
+#else
+			O_RDONLY
+#endif
+	   ) )
+	{
+		// file opened successfully
+		QByteArray plang(256);
+		lang.ReadLine(plang.data(), 255);
+		lfile = QString::fromUtf8(plang.data());
+		lang.Close();
+	}
+	return lfile;
+}
+
+void
+SaveLanguageFile(const QString &lfile)
+{
+	WString wlangfile = GetLangFile();
+	WFile lang;
+
+	// Save selected language's translator filename
+	if ( lang.Open(wlangfile,
+#if defined(WIN32) || defined(_WIN32)
+			O_WRONLY | O_CREAT | O_BINARY | O_TRUNC
+#else
+			O_WRONLY | O_CREAT | O_TRUNC
+#endif
+	   ) )
+	{
+		QByteArray clang = lfile.utf8();
+		lang.WriteBlock(clang, clang.length());
+		lang.Close();
+	}
+}
+
 #ifndef _WIN32
 void
 SetWorkingDirectory(const char *app)
@@ -73,6 +139,7 @@ main( int argc, char** argv )
 	QApplication app( argc, argv );
 	QTranslator qtr( 0 );
 	QTranslator qtr2( 0 );
+	QString lfile; // language file
 
 #ifdef _WIN32
 #  ifdef MUSCLE_ENABLE_SSL
@@ -131,20 +198,20 @@ main( int argc, char** argv )
 #endif
 		}
 #endif
+		else if (app.arguments().at(a) == "--langfile")
+		{
+			a++;
+			lfile = app.arguments().at(a);
+		}
 
 		a++;
 	}
 
-	WString wlangfile;
 #ifndef _WIN32
-	wlangfile = L"unizone.lng";
 	// Set our working directory
 	SetWorkingDirectory(argv[0]);
 	gAppDir = QDir::currentDirPath();
 #else
-	QString datafile = MakePath(gDataDir, "unizone.lng");
-	wlangfile = datafile;
-
 # ifdef _DEBUG
 	WString wDataDir(gDataDir);
 	PRINT("Data directory: %S\n", wDataDir.getBuffer());
@@ -152,8 +219,6 @@ main( int argc, char** argv )
 #endif
 
 	// Load language file
-	WFile lang;
-	QString lfile;
 	QString ldir = MakePath(gAppDir, "translations");
 	QDir ld(ldir);
 	// Try to find directory containing translation files
@@ -175,89 +240,63 @@ main( int argc, char** argv )
 			}
 		}
 	}
-	if (!WFile::Exists(wlangfile))
+
+	// Not specified on command-line, try loading the one used on previous run
+	if (lfile.isEmpty())
 	{
-NoTranslation:
-		lfile = Q3FileDialog::getOpenFileName( ldir, "unizone_*.qm", NULL );
-		if (!lfile.isEmpty())
-		{
-			// Save selected language's translator filename
-			if ( lang.Open(wlangfile,
-#if defined(WIN32) || defined(_WIN32)
-				O_WRONLY | O_CREAT | O_BINARY | O_TRUNC
-#else
-				O_WRONLY | O_CREAT | O_TRUNC
-#endif
-			   ) )
-			{
-				QByteArray clang = lfile.utf8();
-				lang.WriteBlock(clang, clang.length());
-				lang.Close();
-			}
-		}
+		lfile = ReloadLanguageFile();
 	}
 
-	// (Re-)load translator filename
-	if ( lang.Open(wlangfile,
-#if defined(WIN32) || defined(_WIN32)
-		O_RDONLY | O_BINARY
-#else
-		O_RDONLY
-#endif
-		) )
+	while (1)
 	{
-		// file opened successfully
-		QByteArray plang(256);
-		lang.ReadLine(plang.data(), 255);
-		lfile = QString::fromUtf8(plang.data());
-		lang.Close();
+		if (!lfile.isEmpty())
+		{
+			// Try to load translator...
+			if (QFile::exists(lfile) && qtr.load(lfile))
+			{
+#ifdef _DEBUG
+				WString wfile(QDir::convertSeparators(lfile));
+				PRINT("Loaded translation: %S\n", wfile.getBuffer());
+#endif
+				SaveLanguageFile(lfile);
+				break;
+			}
+		}
+		lfile = Q3FileDialog::getOpenFileName( ldir, "unizone_*.qm", NULL );
 	}
 
 	// Install translator ;)
-	if (!lfile.isEmpty())
-	{
-		if (WFile::Exists(lfile) && qtr.load(lfile))
-		{
-#ifdef _DEBUG
-			WString wfile(QDir::convertSeparators(lfile));
-			PRINT("Loaded translation: %S\n", wfile.getBuffer());
-#endif
-			app.installTranslator(&qtr);
-		}
-		else
-		{
-			goto NoTranslation;
-		}
-		// Qt's own translator file
-		QFileInfo qfi(lfile);
-		QString langfile = qfi.fileName().replace(QRegExp("unizone"), "qt");
-		QString qt_lang = QString::null;
-		QString qtdir = QString::fromLocal8Bit(qgetenv("QTDIR").constData());
-		if (qtdir != QString::null)
-		{
-			QString tr_dir = MakePath(qtdir, "translations");
-			qt_lang = MakePath(tr_dir, langfile);
-			if (!WFile::Exists(qt_lang))
-				qt_lang = QString::null;
-		}
-		if (qt_lang == QString::null)
-		{
-			// Try using same directory as Unizones translations
-			qt_lang = MakePath(qfi.dirPath(true), langfile);
-		}
+	app.installTranslator(&qtr);
 
-		if (!qt_lang.isEmpty())
+	// Qt's own translator file
+	QFileInfo qfi(lfile);
+	QString langfile = qfi.fileName().replace(QRegExp("unizone"), "qt");
+	QString qt_lang = QString::null;
+	QString qtdir = QString::fromLocal8Bit(qgetenv("QTDIR").constData());
+	if (qtdir != QString::null)
+	{
+		QString tr_dir = MakePath(qtdir, "translations");
+		qt_lang = MakePath(tr_dir, langfile);
+		if (!WFile::Exists(qt_lang))
+			qt_lang = QString::null;
+	}
+	if (qt_lang == QString::null)
+	{
+		// Try using same directory as Unizones translations
+		qt_lang = MakePath(qfi.dirPath(true), langfile);
+	}
+
+	if (!qt_lang.isEmpty())
+	{
+		if (WFile::Exists(qt_lang))
 		{
-			if (WFile::Exists(qt_lang))
+			if (qtr2.load(qt_lang))
 			{
-				if (qtr2.load(qt_lang))
-				{
 #ifdef _DEBUG
-					WString wfile(QDir::convertSeparators(qt_lang));
-					PRINT("Loaded translation: %S\n", wfile.getBuffer());
+				WString wfile(QDir::convertSeparators(qt_lang));
+				PRINT("Loaded translation: %S\n", wfile.getBuffer());
 #endif
-					app.installTranslator( &qtr2 );
-				}
+				app.installTranslator( &qtr2 );
 			}
 		}
 	}

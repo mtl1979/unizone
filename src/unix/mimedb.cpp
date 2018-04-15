@@ -1,12 +1,13 @@
-#include "mimedb.h"
-#include "debugimpl.h"
-#include "wfile.h"
 #include "util/String.h"
 #include "util/Hashtable.h"
 #include "util/StringTokenizer.h"
 
 #include <qstring.h>
 #include <qfile.h>
+
+#include "mimedb.h"
+#include "debugimpl.h"
+#include "wfile.h"
 
 using namespace muscle;
 

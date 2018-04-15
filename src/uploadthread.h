@@ -6,13 +6,13 @@
 #include <qfile.h>
 #include <qdatetime.h>
 
-#include "wfile.h"
-
 #include "iogateway/MessageIOGateway.h"
 #include "reflector/RateLimitSessionIOPolicy.h"
 #include "message/Message.h"
 #include "system/MessageTransceiverThread.h"
 #include "qtsupport/QMessageTransceiverThread.h"
+
+#include "wfile.h"
 
 using namespace muscle;
 

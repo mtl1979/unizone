@@ -17,6 +17,19 @@ WString::WString()
 	utflen = 0;
 }
 
+WString::WString(const WString &str)
+{
+	size_t len = str.length();
+	buffer = new wchar_t[len + 1];
+	if (buffer)
+#if __STDC_WANT_SECURE_LIB__
+		wcopy_s(buffer, len + 1, str.getBuffer(), len);
+#else
+		wcopy(buffer, str.getBuffer(), len);
+#endif
+	utfbuf = NULL;
+}
+
 WString::WString(const wchar_t *str)
 {
 	size_t len = wcslen(str);

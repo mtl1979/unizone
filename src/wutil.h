@@ -24,7 +24,7 @@ extern "C" {
 wchar_t *wcsdup(const wchar_t *);
 #endif
 
-#if defined(__APPLE__) || defined(__LINUX__)
+#if defined(__APPLE__) || defined(__LINUX__) || defined(__linux)
 wchar_t *wcslwr(wchar_t *);
 wchar_t *wcsupr(wchar_t *);
 #endif
