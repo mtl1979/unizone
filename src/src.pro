@@ -187,7 +187,7 @@ DEFINES += MUSCLE_ENABLE_ZLIB_ENCODING
 }
 
 win32 {
-	DEFINES += WIN32_LEAN_AND_MEAN UNICODE _UNICODE REGEX_USEDLL MUSCLE_PREFER_QT_OVER_WIN32 MUSCLE_USE_QT_THREADS MUSCLE_ENABLE_QTHREAD_EVENT_LOOP_INTEGRATION
+	DEFINES += WIN32_LEAN_AND_MEAN UNICODE _UNICODE REGEX_USEDLL MUSCLE_PREFER_QT_OVER_WIN32 MUSCLE_USE_QT_THREADS MUSCLE_ENABLE_QTHREAD_EVENT_LOOP_INTEGRATION MUSCLE_AVOID_CPLUSPLUS11 MUSCLE_AVOID_CPLUSPLUS11_THREADS
 	LIBS += ole32.lib shlwapi.lib user32.lib ws2_32.lib winmm.lib iphlpapi.lib shell32.lib advapi32.lib version.lib regex.lib
 	!contains(CONFIG, zlib):LIBS += zlib1.lib
 	SOURCES1 += scanprogressimpl.cpp \
@@ -238,11 +238,12 @@ win32 {
 	INSTALLS += qtimageformats
 }
 
-win32-msvc2013 {
-	DEFINES += MUSCLE_USE_CPLUSPLUS11
-}
+#win32-msvc2013|win32-msvc2015 {
+#	DEFINES += MUSCLE_USE_CPLUSPLUS11
+#}
 
 unix {
+	DEFINES += MUSCLE_USE_QT_THREADS MUSCLE_ENABLE_QTHREAD_EVENT_LOOP_INTEGRATION MUSCLE_AVOID_CPLUSPLUS11 MUSCLE_AVOID_CPLUSPLUS11_THREADS
 	SOURCES1 += unix/fileinfo_unix.cpp \
 			    unix/filethread_unix.cpp \
 			    unix/gotourl_unix.cpp \
@@ -254,7 +255,7 @@ unix {
 			    unix/wlaunchthread_unix.cpp \
 			    unix/wutil_unix.cpp
 	!contains(CONFIG, zlib):LIBS += -lz
-	QMAKE_CXXFLAGS += -std=c++11
+#	QMAKE_CXXFLAGS += -std=c++11
 }
 
 SOURCES  =  $$SOURCES1 $$SOURCES2

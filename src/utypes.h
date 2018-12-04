@@ -56,6 +56,12 @@ typedef unsigned long	uint32;
 # endif
 #endif
 
+#ifndef uint32_t
+typedef uint32						uint32_t;
+#endif
+#ifndef uint64_t
+typedef uint64						uint64_t;
+#endif
 #ifndef status_t
 typedef int32						status_t;
 #endif
